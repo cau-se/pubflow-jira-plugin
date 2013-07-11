@@ -22,8 +22,8 @@ public class WFBroker {
 	private static final String PARAMS = "WFPARAMS";
 	
 	private static volatile WFBroker instance;
-	private static final String WFCallChannel = "activemq:wf.in";
-	private static final String WFResponseChannel = "activemq:wf.out";
+	private static final String WFCallChannel = "WFBroker:to:msg.queue";
+	private static final String WFResponseChannel = "WFBroker:from:msg.queue";
 	
 	@Produce(uri = WFResponseChannel)
     ProducerTemplate Producer;
@@ -79,36 +79,38 @@ public class WFBroker {
 	@Consume(uri = WFCallChannel)
 	void reciveWFCall(String msg)
 	{
-		PubFlowMessage nachricht = PubFlowMessage.initFromString(msg);
-		if(nachricht.getAction().equalsIgnoreCase("START_WF"))
-		{
-			Set<Entry<String, String>> content = nachricht.getMessage().entrySet();
-			PubFlow wfToStart = null; 
-			for (Entry<String, String> entry : content) {
-				if(entry.getKey().equalsIgnoreCase(WFID))
-				{
-					long id = Long.parseLong(entry.getValue());
-					wfToStart = getWFByID(id);
-				}
-			}
-			HashMap<String, String> params = PubFlowMessage.getMap(PARAMS, nachricht.getMessage());
-			if(wfToStart!=null)
-			{
-				runWF(wfToStart, params);
-			}
-			else
-			{
-				// TODO
-				// It would be nice to throw an exception
-			}
-		}
+		System.out.println("Broker RECIVED:" + msg);
+//		PubFlowMessage nachricht = PubFlowMessage.initFromString(msg);
+//		if(nachricht.getAction().equalsIgnoreCase("START_WF"))
+//		{
+//			Set<Entry<String, String>> content = nachricht.getMessage().entrySet();
+//			PubFlow wfToStart = null;  
+//			for (Entry<String, String> entry : content) {
+//				if(entry.getKey().equalsIgnoreCase(WFID))
+//				{
+//					long id = Long.parseLong(entry.getValue());
+//					wfToStart = getWFByID(id);
+//				}
+//			}
+//			HashMap<String, String> params = PubFlowMessage.getMap(PARAMS, nachricht.getMessage());
+//			if(wfToStart!=null)
+//			{
+//				runWF(wfToStart, params);
+//			}
+//			else
+//			{
+//				
+//				// TODO
+//				// It would be nice to throw an exception
+//			}
+//		}
 	
 	}
 	
 	private void runWF(PubFlow wfToStart,HashMap<String, String> params)
 	{
 //		if(wfToStart==null)
-//		{
+//		{ 
 //			// TODO Exception
 //		}
 //		WFType type = wfToStart.getType();

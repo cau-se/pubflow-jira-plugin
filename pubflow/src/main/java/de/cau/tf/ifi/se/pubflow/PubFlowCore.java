@@ -11,15 +11,20 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.CamelContext;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.SimpleRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.cau.tf.ifi.se.pubflow.assistance.MockupEndpoint;
 import de.cau.tf.ifi.se.pubflow.common.exception.PropAlreadySetException;
 import de.cau.tf.ifi.se.pubflow.common.exception.PropNotSetException;
 import de.cau.tf.ifi.se.pubflow.server.Server;
+import de.cau.tf.ifi.se.pubflow.workflow.WFBroker;
 
 /**
  * 
@@ -32,57 +37,57 @@ public class PubFlowCore {
 	private static PubFlowCore instance;
 	private Logger myLogger;
 	private Server server;
-	
 
 	private static final String CONF_FILE = "Pubflow.conf";
 	private static final String SERVERFLAG = "CONFSERVER";
 	private static final String ACTIVEFLAG = "ON";
+	
+	private static final String WFBROKER_NAME = "WFBROKER";
+	private static final String MOCKUPENDPOINT_NAME = "MOCKUP";
 
 	// ----------------------------------------------------------------------------------------
-	// Initialisers
+	// Initializers
 	// ----------------------------------------------------------------------------------------
-
-	
-	
-	
 
 	// ----------------------------------------------------------------------------------------
 	//
 	// ----------------------------------------------------------------------------------------
 
 	private PubFlowCore() {
-		
-		
+
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting PubFlow System");
-		
+
 		FileInputStream fi = null;
 		try {
 			fi = new FileInputStream(CONF_FILE);
 		} catch (Exception e) {
 			myLogger.error("Could not find Properties File");
-			
-			
-			//e.printStackTrace();
+
+			// e.printStackTrace();
 		}
 		pubflowConf = new Properties();
 		try {
 			pubflowConf.loadFromXML(fi);
 		} catch (Exception e) {
 			myLogger.error("Could not load Properties File");
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		pubflowConf.list(System.out);
 		
-		context = new DefaultCamelContext();
+		//Register Beans in the Registry
+		SimpleRegistry reg = new SimpleRegistry();
+		reg.put(WFBROKER_NAME, WFBroker.getInstance());
+		reg.put(MOCKUPENDPOINT_NAME, new MockupEndpoint());
+
+		context = new DefaultCamelContext(reg);
 		initRoutes();
 		startConnections();
 		// Start the Confserver
 		myLogger.info("Starting Configuration GUI");
 		try {
 			String sflag = getProperty(SERVERFLAG, this.getClass().getName());
-			if(sflag.equalsIgnoreCase(ACTIVEFLAG))
-			{
+			if (sflag.equalsIgnoreCase(ACTIVEFLAG)) {
 				myLogger.info("Configuration GUI is active");
 				// TODO start a conf GUI
 			}
@@ -128,7 +133,7 @@ public class PubFlowCore {
 	public String getProperty(String key, String calleeSig)
 			throws PropNotSetException {
 		String prop = pubflowConf.getProperty(calleeSig + "-" + key);
-		if ((prop == null)||(prop.equals("")))
+		if ((prop == null) || (prop.equals("")))
 			throw new PropNotSetException();
 		return prop;
 	}
@@ -144,7 +149,7 @@ public class PubFlowCore {
 	public void updateProperty(String key, String calleeSig, String prop)
 			throws PropNotSetException {
 		String temp = pubflowConf.getProperty(calleeSig + "-" + key);
-		if ((temp == null)||(temp.equals("")) )
+		if ((temp == null) || (temp.equals("")))
 			throw new PropNotSetException();
 		pubflowConf.setProperty(calleeSig + "-" + key, prop);
 	}
@@ -157,14 +162,14 @@ public class PubFlowCore {
 			e1.printStackTrace();
 		}
 		try {
-			pubflowConf.storeToXML(fs, "PubFlow Properties File (last updated "+Calendar.getInstance().getTime().toLocaleString()+")");
+			pubflowConf.storeToXML(fs, "PubFlow Properties File (last updated "
+					+ Calendar.getInstance().getTime().toLocaleString() + ")");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void stopInternalServer()
-	{
+
+	public void stopInternalServer() {
 		server.stop();
 	}
 
@@ -180,9 +185,10 @@ public class PubFlowCore {
 			context.addRoutes(new RouteBuilder() {
 				public void configure() {
 					// Add the Basic Routes
-					from("Jira:from:msg.queue").to("WFBroker:to:msg.queue");
+					from("Jira:from:msg.queue").beanRef(MOCKUPENDPOINT_NAME).to("WFBroker:to:msg.queue").beanRef(WFBROKER_NAME);
 					// Route from WFBroker to Jira
 					from("WFBroker:from:msg.queue").to("Jira:to:msg.queue");
+					// Testing section
 				}
 			});
 		} catch (Exception e) {
@@ -219,6 +225,8 @@ public class PubFlowCore {
 
 	public static void main(String[] args) {
 		PubFlowCore.getInstance();
+		new MockupEndpoint().doSomething();
+
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -251,4 +259,5 @@ public class PubFlowCore {
 		}
 
 	}
+
 }
