@@ -37,7 +37,7 @@ public class ServiceProvider extends BasicProvider<ServiceEntity>{
 		super(ERepositoryName.SERVICE, new DBStorageAdapter());
 	}
 	
-	public static ServiceProvider getProvider(){
+	public static ServiceProvider getInstance(){
 		if(sp == null){
 			sp = new ServiceProvider();
 		}

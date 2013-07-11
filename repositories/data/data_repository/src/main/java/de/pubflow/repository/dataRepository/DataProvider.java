@@ -31,11 +31,19 @@ import de.pubflow.shared.entity.DataEntity;
 
 public class DataProvider extends BasicProvider<DataEntity> {
 
+	private static DataProvider dp;
+	
 	public DataProvider() {
 		super(ERepositoryName.DATA, new FSStorageAdapter());
 		// TODO Auto-generated constructor stub
 	}
 
-	
+	public static DataProvider getInstance(){
+		if(dp == null){
+			dp = new DataProvider();
+		}
+		
+		return dp;
+	}
 
 }

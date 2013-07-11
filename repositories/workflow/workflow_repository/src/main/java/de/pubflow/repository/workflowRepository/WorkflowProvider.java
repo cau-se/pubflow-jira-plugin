@@ -36,7 +36,7 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 		super(ERepositoryName.WORKFLOW, new FSStorageAdapter());
 	}
 
-	public static WorkflowProvider getProvider(){
+	public static WorkflowProvider getInstance(){
 		if(wfp == null){
 			wfp = new WorkflowProvider();
 		}
