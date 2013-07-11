@@ -10,7 +10,6 @@ public class MockupEndpoint {
 	
 	@EndpointInject(uri = "Jira:from:msg.queue")
 	ProducerTemplate producer;
-	
 	Logger myLogger;
 	
 	public MockupEndpoint()
@@ -21,8 +20,7 @@ public class MockupEndpoint {
 	
 	public void doSomething() {
 		myLogger.info("Preparing TestMsg");
-		try {
-			
+		try {		
 			producer.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -31,5 +29,4 @@ public class MockupEndpoint {
 		producer.sendBody("TestMsg");
 		myLogger.info("TestMsg send");
 	}
-
 }
