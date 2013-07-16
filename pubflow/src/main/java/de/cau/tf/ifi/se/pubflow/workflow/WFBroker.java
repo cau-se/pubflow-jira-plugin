@@ -3,14 +3,14 @@ package de.cau.tf.ifi.se.pubflow.workflow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.camel.Consume;
-import org.apache.camel.Produce;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 
-import de.cau.tf.ifi.se.pubflow.common.entity.PubFlowMessage;
+import de.cau.tf.ifi.se.pubflow.PubFlowCore;
 import de.cau.tf.ifi.se.pubflow.common.entity.workflow.PubFlow;
 import de.cau.tf.ifi.se.pubflow.common.enumerartion.WFType;
 import de.cau.tf.ifi.se.pubflow.workflow.engine.IWorkflowEngine;
@@ -22,17 +22,18 @@ public class WFBroker {
 	private static final String PARAMS = "WFPARAMS";
 	
 	private static volatile WFBroker instance;
-	private static final String WFCallChannel = "WFBroker:to:msg.queue";
+	private static final String WFCallChannel = "test-jms:WFBroker:out.queue";
 	private static final String WFResponseChannel = "WFBroker:from:msg.queue";
 	
-	@Produce(uri = WFResponseChannel)
-    ProducerTemplate Producer;
+	private Logger myLogger;
 	
 	private Hashtable<WFType, ArrayList<IWorkflowEngine>> registry;
 	private Hashtable<Long, PubFlow> workflows;
 	
 	private WFBroker()
 	{
+		myLogger = LoggerFactory.getLogger(this.getClass());	
+		myLogger.info("Starting WFBroker");
 		registry = new Hashtable<WFType,ArrayList<IWorkflowEngine>>();
 		
 		ArrayList<IWorkflowEngine> bpmn2Engines = new ArrayList<IWorkflowEngine>(); 
@@ -76,10 +77,11 @@ public class WFBroker {
 		return result;	
 	}
 	
-	@Consume(uri = WFCallChannel)
-	void reciveWFCall(String msg)
+	@Consume(uri = "test-jms:queue:out2.queue")
+	public void reciveWFCall(String msg)
 	{
-		System.out.println("Broker RECIVED:" + msg);
+		myLogger.info("RECIVED >> " + msg);
+		sendWFResponse("Recived!!!");
 //		PubFlowMessage nachricht = PubFlowMessage.initFromString(msg);
 //		if(nachricht.getAction().equalsIgnoreCase("START_WF"))
 //		{
@@ -128,20 +130,15 @@ public class WFBroker {
 //		} catch (WFException e) {
 //			e.printStackTrace();
 //		}
-		System.out.println("CALLED WFBroker");
 	}
 	
-	void sendWFResponse(PubFlowMessage msg)
+	private void sendWFResponse(String msg)
 	{
-		Producer.sendBody(msg.getMsgAsString());
+		myLogger.info("Sending Msg ...");
+		ProducerTemplate producer;
+		CamelContext context = PubFlowCore.getInstance().getContext();
+		producer = context.createProducerTemplate();
+		producer.sendBody("test-jms:queue:testOut.queue",msg);
+		myLogger.info("Msg sent!");
 	}
-	
-	
-	@Consume(uri = "file:config.conf?noop=true&initialDelay=100&delay=100")
-	void readconfig(String input)
-	{
-		//Nothing to do yet, just for start up
-	}
-	
-	
 }

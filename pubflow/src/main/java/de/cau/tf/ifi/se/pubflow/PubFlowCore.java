@@ -20,6 +20,7 @@ import org.apache.camel.impl.SimpleRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.cau.tf.ifi.se.pubflow.assistance.Consumer;
 import de.cau.tf.ifi.se.pubflow.assistance.MockupEndpoint;
 import de.cau.tf.ifi.se.pubflow.common.exception.PropAlreadySetException;
 import de.cau.tf.ifi.se.pubflow.common.exception.PropNotSetException;
@@ -32,7 +33,7 @@ import de.cau.tf.ifi.se.pubflow.workflow.WFBroker;
  */
 public class PubFlowCore {
 
-	private CamelContext context;
+	private DefaultCamelContext context;
 	private Properties pubflowConf;
 	private static PubFlowCore instance;
 	private Logger myLogger;
@@ -41,7 +42,7 @@ public class PubFlowCore {
 	private static final String CONF_FILE = "Pubflow.conf";
 	private static final String SERVERFLAG = "CONFSERVER";
 	private static final String ACTIVEFLAG = "ON";
-	
+
 	private static final String WFBROKER_NAME = "WFBROKER";
 	private static final String MOCKUPENDPOINT_NAME = "MOCKUP";
 
@@ -74,15 +75,30 @@ public class PubFlowCore {
 			// e.printStackTrace();
 		}
 		pubflowConf.list(System.out);
-		
-		//Register Beans in the Registry
-		SimpleRegistry reg = new SimpleRegistry();
-		reg.put(WFBROKER_NAME, WFBroker.getInstance());
-		reg.put(MOCKUPENDPOINT_NAME, new MockupEndpoint());
 
-		context = new DefaultCamelContext(reg);
-		initRoutes();
-		startConnections();
+		// Create CamelContext
+		context = new DefaultCamelContext();
+		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
+				"vm://localhost?broker.persistent=false");
+		// Add the queues to the DefaultContext
+		context.addComponent("test-jms",
+				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
+		context.addComponent("t2-jms",
+				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
+		myLogger.info("Creating Routes");
+		try {
+			initRoutes();
+		} catch (Exception e1) {
+			myLogger.error("An error occured while creating the CamelRoutes");
+			e1.printStackTrace();
+		}
+		myLogger.info("Starting the Routes");
+		try {
+			startConnections();
+		} catch (Exception e1) {
+			myLogger.error("An Error occured, while Starting the routes");
+			e1.printStackTrace();
+		}
 		// Start the Confserver
 		myLogger.info("Starting Configuration GUI");
 		try {
@@ -121,14 +137,6 @@ public class PubFlowCore {
 	// ----------------------------------------------------------------------------------------
 	// Public methods
 	// ----------------------------------------------------------------------------------------
-
-	public void stopContext() {
-		try {
-			context.stop();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	public String getProperty(String key, String calleeSig)
 			throws PropNotSetException {
@@ -172,61 +180,75 @@ public class PubFlowCore {
 	public void stopInternalServer() {
 		server.stop();
 	}
+	
+	public void stopCamel()
+	{
+		myLogger.info("Stopping CamelContext");
+		try {
+			context.stop();
+		} catch (Exception e) {
+			myLogger.error("Ups ...");
+			e.printStackTrace();
+		}
+	}
 
 	// ----------------------------------------------------------------------------------------
 	// Private methods
 	// ----------------------------------------------------------------------------------------
 
 	/**
+	 * @throws Exception
 	 * 
 	 */
-	private void initRoutes() {
-		try {
-			context.addRoutes(new RouteBuilder() {
-				public void configure() {
-					// Add the Basic Routes
-					from("Jira:from:msg.queue").beanRef(MOCKUPENDPOINT_NAME).to("WFBroker:to:msg.queue").beanRef(WFBROKER_NAME);
-					// Route from WFBroker to Jira
-					from("WFBroker:from:msg.queue").to("Jira:to:msg.queue");
-					// Testing section
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	private void initRoutes() throws Exception {
+		context.addRoutes(new RouteBuilder() {
+			public void configure() {
+				from("t2-jms:queue:test.queue").to(
+						"test-jms:queue:out.queue")
+						.bean(Consumer.getInstance()).to("test-jms:queue:out2.queue")
+						.bean(WFBroker.getInstance());
+				from("test-jms:queue:testOut.queue").to(
+						"test-jms:queue:out.queue")
+						.bean(Consumer.getInstance());
+			}
+		});
 	}
 
 	/**
+	 * @throws Exception
 	 * 
 	 */
-	private void startConnections() {
-		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
-				"vm://localhost?broker.persistent=false");
-		// Note we can explicit name the component
-		context.addComponent("Jira",
-				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
-		context.addComponent("WFBroker",
-				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
-
-		try {
-			context.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	private void startConnections() throws Exception {
+		// Now everything is set up - lets start the context
+		context.start();
 	}
 
 	// ----------------------------------------------------------------------------------------
 	// Getter & Setters
 	// ----------------------------------------------------------------------------------------
 
+	public DefaultCamelContext getContext() {
+		return context;
+	}
+
+	public void setContext(DefaultCamelContext context) {
+		this.context = context;
+	}
+	
 	// ----------------------------------------------------------------------------------------
 	// Main-method for starting PubFlow
 	// ----------------------------------------------------------------------------------------
 
-	public static void main(String[] args) {
-		PubFlowCore.getInstance();
-		new MockupEndpoint().doSomething();
+	
 
+	public static void main(String[] args) {
+		PubFlowCore c = PubFlowCore.getInstance();
+		// Do some tests
+		ProducerTemplate template = c.getContext().createProducerTemplate();
+		for (int i = 0; i < 10; i++) {
+            template.sendBody("t2-jms:queue:test.queue", "<msg><runWF><id>"+i+"</id><name>PI</name><type>BPMN2</type></runWF></msg>");
+            
+        }
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -240,14 +262,16 @@ public class PubFlowCore {
 	 */
 	class ShutdownActions implements Runnable {
 
+		
 		// Register all shutdown actions here
 		public void run() {
+			Thread.currentThread().setName("PubFlow Shutdownhook");
 			Logger shutdownLogger = LoggerFactory.getLogger(this.getClass());
 			shutdownLogger.info("<< Shutting down PubFlow >>");
 			PubFlowCore core = PubFlowCore.getInstance();
 			// Shutdown Camel & free ports
 			shutdownLogger.debug("Stopping Camel Context");
-			core.stopContext();
+			core.stopCamel();
 			shutdownLogger.debug("Camel Context is down");
 			// Stop internal server
 			shutdownLogger.debug("Stopping internal server");
