@@ -10,6 +10,7 @@ public class TextMessage extends Message {
 	
 	public TextMessage()
 	{
+		super();
 		clazz = this.getClass().toString();
 	}
 	
@@ -29,7 +30,12 @@ public class TextMessage extends Message {
 
 	@Override
 	public void initFromString(String content) {
+		myLogger.info("Loading msg from String");
+		myLogger.info("Msg. >> "+content);
 		String[] seq = content.split(seperatorSeq);
+		for (String string : seq) {
+			myLogger.info("Msg.-Part >> "+string);
+		}
 		if(seq.length==2)
 		{
 			clazz = seq[0];
