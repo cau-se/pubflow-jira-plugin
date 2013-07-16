@@ -60,5 +60,4 @@ public abstract class BasicProvider<T> implements IProvider<T> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
