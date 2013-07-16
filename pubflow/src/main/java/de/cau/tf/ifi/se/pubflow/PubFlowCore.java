@@ -24,6 +24,8 @@ import de.cau.tf.ifi.se.pubflow.assistance.Consumer;
 import de.cau.tf.ifi.se.pubflow.assistance.MockupEndpoint;
 import de.cau.tf.ifi.se.pubflow.common.exception.PropAlreadySetException;
 import de.cau.tf.ifi.se.pubflow.common.exception.PropNotSetException;
+import de.cau.tf.ifi.se.pubflow.communication.message.Message;
+import de.cau.tf.ifi.se.pubflow.communication.message.text.TextMessage;
 import de.cau.tf.ifi.se.pubflow.server.Server;
 import de.cau.tf.ifi.se.pubflow.workflow.WFBroker;
 
@@ -56,6 +58,16 @@ public class PubFlowCore {
 
 	private PubFlowCore() {
 
+		String art = " _____       _     ______ _"+"\n"
+				+ "|  __ \\     | |   |  ____| |"+"\n"
+				+ "| |__) |   _| |__ | |__  | | _____      __"+"\n"
+				+ "|  ___/ | | | '_ \\|  __| | |/ _ \\ \\ /\\ / /"+"\n"
+				+ "| |   | |_| | |_) | |    | | (_) \\ V  V /"+"\n"
+				+ "|_|    \\__,_|_.__/|_|    |_|\\___/ \\_/\\_/ "+"\n"
+				+ "__________________________________________"+"\n"
+				+ "Version 2.0 \n";
+		System.out.println(art);
+		
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting PubFlow System");
 
@@ -242,11 +254,14 @@ public class PubFlowCore {
 	
 
 	public static void main(String[] args) {
+		
 		PubFlowCore c = PubFlowCore.getInstance();
 		// Do some tests
 		ProducerTemplate template = c.getContext().createProducerTemplate();
-		for (int i = 0; i < 10; i++) {
-            template.sendBody("t2-jms:queue:test.queue", "<msg><runWF><id>"+i+"</id><name>PI</name><type>BPMN2</type></runWF></msg>");
+		for (int i = 0; i < 1; i++) {
+			TextMessage text = new TextMessage();
+			text.setContent("Test");
+            template.sendBody("t2-jms:queue:test.queue", text.transformToString());
             
         }
 	}
