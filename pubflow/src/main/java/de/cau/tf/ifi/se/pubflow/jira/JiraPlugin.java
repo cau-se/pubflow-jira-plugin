@@ -19,13 +19,13 @@ public class JiraPlugin {
 
 	private static final String KEYSTOREFILE="jira_keystore.ks";
 	private static final String KEYSTOREPW="rainbowdash_1";
-	
+
 	static{
 		System.getProperties().put("javax.net.ssl.keyStore", KEYSTOREFILE);
 		System.getProperties().put("javax.net.ssl.keyStorePassword", KEYSTOREPW);
 		new JiraPlugin().startHttpsServer();
 	}
-	
+
 	public void startHttpsServer(){
 		try{
 			HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress(8889), 0);
@@ -43,20 +43,21 @@ public class JiraPlugin {
 			char[] truststorePassword = KEYSTOREPW.toCharArray();
 			ks.load(new FileInputStream(KEYSTOREFILE), truststorePassword);
 			tmf.init(ks);
-			
+
 			sslContext.init(kmf.getKeyManagers(), null, null);
 
 			HttpsConfigurator configurator =  new HttpsConfigurator(sslContext) {
-			    /* (non-Javadoc)
-			     * @see com.sun.net.httpserver.HttpsConfigurator#configure(com.sun.net.httpserver.HttpsParameters)
-			     */
-			     @Override
-			     public void configure(HttpsParameters params) {
-			         SSLParameters sslParams = getSSLContext().getDefaultSSLParameters();
-			         sslParams.setNeedClientAuth(true);
-			         params.setSSLParameters(sslParams);
-			      }
-			 };
+				/* (non-Javadoc)
+				 * @see com.sun.net.httpserver.HttpsConfigurator#configure(com.sun.net.httpserver.HttpsParameters)
+				 */
+				@Override
+				public void configure(HttpsParameters params) {
+					SSLParameters sslParams = getSSLContext().getDefaultSSLParameters();
+					sslParams.setNeedClientAuth(true);
+					params.setSSLParameters(sslParams);
+				}
+			};
+
 			httpsServer.setHttpsConfigurator(configurator);
 
 			HttpContext httpContext = httpsServer.createContext(JiraToPubFlowConnector.class.getSimpleName());
@@ -68,11 +69,11 @@ public class JiraPlugin {
 			System.out.print("Unable to start https server");
 		}
 	}
-	
 
-	
-//	static{
-//
-//		Endpoint.publish("http://localhost:8889/" + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
-//	}
+
+
+	//	static{
+	//
+	//		Endpoint.publish("http://localhost:8889/" + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
+	//	}
 }
