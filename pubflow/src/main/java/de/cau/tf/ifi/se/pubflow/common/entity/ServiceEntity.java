@@ -22,28 +22,48 @@
  *
  */
 
-package de.pubflow.repository.dataRepository;
+package de.cau.tf.ifi.se.pubflow.common.entity;
 
-import de.cau.tf.ifi.se.pubflow.common.entity.DataEntity;
-import de.pubflow.repository.abstractRepository.interaction.BasicProvider;
-import de.pubflow.repository.abstractRepository.repository.ERepositoryName;
-import de.pubflow.repository.abstractRepository.storageAdapter.FSStorageAdapter;
+import java.io.Serializable;
 
-public class DataProvider extends BasicProvider<DataEntity> {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-	private static DataProvider dp;
-	
-	public DataProvider() {
-		super(ERepositoryName.DATA, new FSStorageAdapter());
-		// TODO Auto-generated constructor stub
+@Entity
+public class ServiceEntity implements Serializable{
+
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue
+	private int id;
+
+	private String serviceName;
+	private String serviceDescription;
+
+	public int getId() {
+		return id;
 	}
 
-	public static DataProvider getInstance(){
-		if(dp == null){
-			dp = new DataProvider();
-		}
-		
-		return dp;
+	public void setId(int id) {
+		this.id = id;
 	}
 
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
+	public String getServiceDescription() {
+		return serviceDescription;
+	}
+
+	public void setServiceDescription(String serviceDescription) {
+		this.serviceDescription = serviceDescription;
+	}	
 }

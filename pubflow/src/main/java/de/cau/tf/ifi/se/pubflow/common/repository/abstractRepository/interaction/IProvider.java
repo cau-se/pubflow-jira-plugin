@@ -2,7 +2,7 @@
  * Copyright 2012 by
  *  + Christian-Albrechts-University of Kiel
  *    + Department of Computer Science
- *      + Software Engineering Group 
+ *        + Software Engineering Group 
  *  and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,28 +22,13 @@
  *
  */
 
-package de.pubflow.repository.dataRepository;
+package de.cau.tf.ifi.se.pubflow.common.repository.abstractRepository.interaction;
 
-import de.cau.tf.ifi.se.pubflow.common.entity.DataEntity;
-import de.pubflow.repository.abstractRepository.interaction.BasicProvider;
-import de.pubflow.repository.abstractRepository.repository.ERepositoryName;
-import de.pubflow.repository.abstractRepository.storageAdapter.FSStorageAdapter;
+import java.util.List;
 
-public class DataProvider extends BasicProvider<DataEntity> {
-
-	private static DataProvider dp;
-	
-	public DataProvider() {
-		super(ERepositoryName.DATA, new FSStorageAdapter());
-		// TODO Auto-generated constructor stub
-	}
-
-	public static DataProvider getInstance(){
-		if(dp == null){
-			dp = new DataProvider();
-		}
-		
-		return dp;
-	}
-
+interface IProvider<T> {
+	long setEntry(T o);
+	T getEntry(long id);
+	void clear();
+	List<T> getAllEntries();
 }

@@ -24,10 +24,10 @@
 
 package de.pubflow.repository.serviceRepository;
 
+import de.cau.tf.ifi.se.pubflow.common.entity.ServiceEntity;
 import de.pubflow.repository.abstractRepository.interaction.BasicProvider;
 import de.pubflow.repository.abstractRepository.repository.ERepositoryName;
 import de.pubflow.repository.abstractRepository.storageAdapter.DBStorageAdapter;
-import de.pubflow.shared.entity.ServiceEntity;
 
 public class ServiceProvider extends BasicProvider<ServiceEntity>{
 

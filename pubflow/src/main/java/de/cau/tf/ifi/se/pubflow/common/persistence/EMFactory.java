@@ -22,28 +22,17 @@
  *
  */
 
-package de.pubflow.repository.dataRepository;
+package de.cau.tf.ifi.se.pubflow.common.persistence;
 
-import de.cau.tf.ifi.se.pubflow.common.entity.DataEntity;
-import de.pubflow.repository.abstractRepository.interaction.BasicProvider;
-import de.pubflow.repository.abstractRepository.repository.ERepositoryName;
-import de.pubflow.repository.abstractRepository.storageAdapter.FSStorageAdapter;
 
-public class DataProvider extends BasicProvider<DataEntity> {
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
-	private static DataProvider dp;
-	
-	public DataProvider() {
-		super(ERepositoryName.DATA, new FSStorageAdapter());
-		// TODO Auto-generated constructor stub
+
+public class EMFactory {
+	private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("pubflow");
+
+	public static EntityManagerFactory getEmf() {
+		return emf;
 	}
-
-	public static DataProvider getInstance(){
-		if(dp == null){
-			dp = new DataProvider();
-		}
-		
-		return dp;
-	}
-
 }

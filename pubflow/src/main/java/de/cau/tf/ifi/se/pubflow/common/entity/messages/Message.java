@@ -22,28 +22,23 @@
  *
  */
 
-package de.pubflow.repository.dataRepository;
+package de.cau.tf.ifi.se.pubflow.common.entity.messages;
 
-import de.cau.tf.ifi.se.pubflow.common.entity.DataEntity;
-import de.pubflow.repository.abstractRepository.interaction.BasicProvider;
-import de.pubflow.repository.abstractRepository.repository.ERepositoryName;
-import de.pubflow.repository.abstractRepository.storageAdapter.FSStorageAdapter;
 
-public class DataProvider extends BasicProvider<DataEntity> {
-
-	private static DataProvider dp;
+public class Message {
+	private Credential i_credential; 
+	private Payload i_payload;
 	
-	public DataProvider() {
-		super(ERepositoryName.DATA, new FSStorageAdapter());
-		// TODO Auto-generated constructor stub
+	public Credential getI_credential() {
+		return i_credential;
 	}
-
-	public static DataProvider getInstance(){
-		if(dp == null){
-			dp = new DataProvider();
-		}
-		
-		return dp;
+	public void setI_credential(Credential i_credential) {
+		this.i_credential = i_credential;
 	}
-
+	public Payload getI_payload() {
+		return i_payload;
+	}
+	public void setI_payload(Payload i_payload) {
+		this.i_payload = i_payload;
+	}
 }
