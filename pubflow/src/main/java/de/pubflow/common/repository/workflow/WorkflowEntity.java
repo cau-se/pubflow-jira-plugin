@@ -16,6 +16,7 @@ import java.util.zip.ZipFile;
 
 import de.pubflow.PubFlowCore;
 import de.pubflow.common.entity.workflow.PubFlow;
+import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.PropNotSetException;
 
 public class WorkflowEntity implements Serializable{
@@ -24,6 +25,10 @@ public class WorkflowEntity implements Serializable{
 
 	private byte[] gBpmn;
 	private String workflowName;
+	private long PubFlowWFID;
+	
+	private String WFID;
+	private WFType type;
 
 	public byte[] getgBpmn() {
 		return gBpmn;
@@ -169,5 +174,39 @@ public class WorkflowEntity implements Serializable{
 
 	public void setWorkflowName(String workflowName) {
 		this.workflowName = workflowName;
+	}
+	
+	public WFType getType() {
+		return type;
+	}
+
+	public void setType(WFType type) {
+		this.type = type;
+	}
+
+	public String getWFID() {
+		return WFID;
+	}
+
+	public byte[] getWFAsByteArray() {
+		return null;
+	}
+
+	public void setWFID(String wFID) {
+		WFID = wFID;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return super.equals(obj);
+	}
+
+	public long getPubFlowWFID() {
+		return PubFlowWFID;
+	}
+
+	public void setPubFlowWFID(long pubFlowWFID) {
+		PubFlowWFID = pubFlowWFID;
 	}
 }

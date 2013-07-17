@@ -40,7 +40,7 @@ public class ConfWriter_Assist {
 		{
 		  FileOutputStream fs = new FileOutputStream(CONF_FILE);
 
-		  String signiture = PubFlowCore.class.getName();
+		  String signiture = PubFlowCore.class.toString();
 		 
 		  pubflowConf.setProperty( signiture+"-CONFSERVER","ON" );
 		  
