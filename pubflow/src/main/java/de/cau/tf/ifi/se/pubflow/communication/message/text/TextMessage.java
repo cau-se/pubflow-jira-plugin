@@ -39,7 +39,8 @@ public class TextMessage extends Message {
 		if(seq.length==2)
 		{
 			clazz = seq[0];
-			content = seq[1];
+			setContent(content = seq[1]);
+			System.out.println(content);
 		}
 		else{
 			System.err.println(seq.length);

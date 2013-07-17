@@ -26,6 +26,4 @@ public class Consumer {
 		myLogger.info("content >> "+tm.getContent());
 		myLogger.info("type >> "+tm.getType());
 	}
-	
-	
 }

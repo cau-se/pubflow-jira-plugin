@@ -134,11 +134,11 @@ public class WFBroker {
 	
 	private void sendWFResponse(String msg)
 	{
-		myLogger.info("Sending Msg ...");
-		ProducerTemplate producer;
-		CamelContext context = PubFlowCore.getInstance().getContext();
-		producer = context.createProducerTemplate();
-		producer.sendBody("test-jms:queue:testOut.queue",msg);
-		myLogger.info("Msg sent!");
+//		myLogger.info("Sending Msg ...");
+//		ProducerTemplate producer;
+//		CamelContext context = PubFlowCore.getInstance().getContext();
+//		producer = context.createProducerTemplate();
+//		producer.sendBody("test-jms:queue:testOut.queue",msg);
+//		myLogger.info("Msg sent!");
 	}
 }

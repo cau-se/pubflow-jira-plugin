@@ -16,9 +16,15 @@ import de.cau.tf.ifi.se.pubflow.jira.wsArtifacts.PubFlowToJiraConnectorService;
 
 public class JiraPluginMsgConsumer {
 	
+	private static final String KEYSTOREFILE="pubflow_keystore.ks";
+	private static final String KEYSTOREPW="rainbowdash_1";	
+	
 	static{
+		System.getProperties().put("javax.net.ssl.trustStore", KEYSTOREFILE);
+		System.getProperties().put("javax.net.ssl.trustStorePassword", KEYSTOREPW);
+		
 		try {
-			Service service = PubFlowToJiraConnectorService.create(new URL("http://localhost:8999/PubFlowToJiraConnector?wsdl"), new QName("pubflow.de", "JiraToPubFlowConnectorService"));
+			Service service = PubFlowToJiraConnectorService.create(new URL("https://localhost:8999/PubFlowToJiraConnector?wsdl"), new QName("pubflow.de", "JiraToPubFlowConnectorService"));
 			pubFlowToJiraConnector = service.getPort(IPubFlowToJiraConnector.class);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
