@@ -114,7 +114,7 @@ public class PubFlowCore {
 		// Start the Confserver
 		myLogger.info("Starting Configuration GUI");
 		try {
-			String sflag = getProperty(SERVERFLAG, this.getClass().getName());
+			String sflag = getProperty(SERVERFLAG, this.getClass().toString());
 			if (sflag.equalsIgnoreCase(ACTIVEFLAG)) {
 				myLogger.info("Configuration GUI is active");
 				// TODO start a conf GUI

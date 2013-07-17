@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 public abstract class Message {
 
 	protected String clazz;
-	protected String seperatorSeq = ":";
+	protected static final String seperatorSeq = ":";
 	protected Logger myLogger;
 	
 	public Message()
@@ -22,13 +22,10 @@ public abstract class Message {
 		this.clazz = c;
 	}
 	
-	public String getSeperatorSeq() {
+	public static String getSeperatorSeq() {
 		return seperatorSeq;
 	}
 	
-	public void setSeperatorSeq(String seperatorSeq) {
-		this.seperatorSeq = seperatorSeq;
-	}
 	
 	public abstract String transformToString();
 	public abstract void initFromString(String content);

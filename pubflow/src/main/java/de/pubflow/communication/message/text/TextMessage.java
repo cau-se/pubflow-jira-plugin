@@ -1,6 +1,8 @@
 package de.pubflow.communication.message.text;
 
+
 import de.pubflow.communication.message.Message;
+import de.pubflow.communication.message.MessageFactory;
 
 
 
@@ -11,7 +13,8 @@ public class TextMessage extends Message {
 	public TextMessage()
 	{
 		super();
-		clazz = this.getClass().toString();
+		clazz = this.getClass().getCanonicalName();
+		
 	}
 	
 	public String getContent() {
@@ -31,6 +34,14 @@ public class TextMessage extends Message {
 	@Override
 	public void initFromString(String content) {
 		myLogger.info("Loading msg from String");
+		myLogger.info("Checking Msg-Type");
+		Class c = MessageFactory.getMsgType(content);
+		if (!c.equals(this.getClass()))
+		{
+			myLogger.error("Wrong msg-type");
+			return;
+		}
+		myLogger.info("Correct type ("+c.getCanonicalName()+")");
 		myLogger.info("Msg. >> "+content);
 		String[] seq = content.split(seperatorSeq);
 		for (String string : seq) {
@@ -39,8 +50,9 @@ public class TextMessage extends Message {
 		if(seq.length==2)
 		{
 			clazz = seq[0];
+			
+			myLogger.info(c.getCanonicalName());
 			setContent(content = seq[1]);
-			System.out.println(content);
 		}
 		else{
 			System.err.println(seq.length);
