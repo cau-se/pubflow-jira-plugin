@@ -310,7 +310,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>de.cau.tf.ifi.se.pubflow.PubFlowCore</mainClass>
+							<mainClass>de.pubflow.PubFlowCore</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -363,7 +363,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1</version>
 				<configuration>
-					<mainClass>de.cau.tf.ifi.se.pubflow.PubFlowCore</mainClass>
+					<mainClass>de.pubflow.PubFlowCore</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -371,7 +371,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.cau.tf.ifi.se.pubflow.PubFlowCore</mainClass>
+							<mainClass>de.pubflow.PubFlowCore</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
