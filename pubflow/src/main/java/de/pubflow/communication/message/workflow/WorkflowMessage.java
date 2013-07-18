@@ -1,10 +1,12 @@
 package de.pubflow.communication.message.workflow;
 
+import de.pubflow.common.entity.StringSerializable;
+import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.communication.message.Message;
 
 public class WorkflowMessage extends Message {
-	
-	protected String wfRef;
+
+	protected PubFlow workflow;
 
 
 	@Override

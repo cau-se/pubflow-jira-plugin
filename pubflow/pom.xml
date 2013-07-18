@@ -81,7 +81,7 @@
 			<artifactId>xbean-spring</artifactId>
 		</dependency>
 
-		<!-- LOG4J -->
+		<!-- LOG4J and SL4F-->
 		<dependency>
 			<version>1.7.5</version>
 			<groupId>org.slf4j</groupId>
