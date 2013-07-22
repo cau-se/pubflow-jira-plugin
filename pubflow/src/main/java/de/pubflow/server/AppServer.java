@@ -16,14 +16,14 @@ import org.eclipse.jetty.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Server {
+public class AppServer {
 
 	private Logger logger;
 	private static org.eclipse.jetty.server.Server server;
 	private String jettyHome;
 
-	public Server(){
-		logger = LoggerFactory.getLogger(Server.class);
+	public AppServer(){
+		logger = LoggerFactory.getLogger(AppServer.class);
 		logger.debug("Entering application.");
 	}
 

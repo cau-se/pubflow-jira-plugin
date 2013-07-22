@@ -10,23 +10,19 @@ import java.util.Properties;
 import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.camel.CamelContext;
-import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.impl.SimpleRegistry;
+import org.hsqldb.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
-import de.pubflow.assistance.MockupEndpoint;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
-import de.pubflow.communication.message.Message;
 import de.pubflow.communication.message.text.TextMessage;
-import de.pubflow.server.Server;
+import de.pubflow.server.AppServer;
 import de.pubflow.workflow.WFBroker;
 
 /**
@@ -39,7 +35,7 @@ public class PubFlowCore {
 	private Properties pubflowConf;
 	private static PubFlowCore instance;
 	private Logger myLogger;
-	private Server server;
+	private AppServer server;
 
 	private static final String CONF_FILE = "Pubflow.conf";
 	private static final String SERVERFLAG = "CONFSERVER";
@@ -125,7 +121,7 @@ public class PubFlowCore {
 		}
 		// start the internal Server
 		myLogger.info("Starting the internal PubFlow Server");
-		server = new Server();
+		server = new AppServer();
 		try {
 			server.startup();
 			myLogger.info("PubFlow Server up and running");
@@ -208,6 +204,35 @@ public class PubFlowCore {
 	// Private methods
 	// ----------------------------------------------------------------------------------------
 
+	/**
+	 * This method initializes the PubFlow database
+	 */
+	private void initDB() {
+		Server hsqlServer = null;
+		try {
+			hsqlServer = new Server();
+
+			// HSQLDB prints out a lot of informations when
+			// starting and closing, which we don't need now.
+			// Normally you should point the setLogWriter
+			// to some Writer object that could store the logs.
+			hsqlServer.setLogWriter(null);
+			hsqlServer.setSilent(true);
+
+			// The actual database will be named 'xdb' and its
+			// settings and data will be stored in files
+			// testdb.properties and testdb.script
+			hsqlServer.setDatabaseName(0, "pubflow");
+			hsqlServer.setDatabasePath(0, "file:etc/db/pubflow");
+
+			// Start the database!
+			hsqlServer.start();
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * @throws Exception
 	 * 
