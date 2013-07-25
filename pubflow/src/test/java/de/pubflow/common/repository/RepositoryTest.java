@@ -35,6 +35,8 @@ public class RepositoryTest {
 				
 				WorkflowEntity we1 = wp.getEntry(id);
 				
+				assertTrue(we1!=null);
+
 				assertTrue(we1.getPubFlowWFID() == 1l);
 				assertTrue(we1.getType().equals(WFType.BPMN2));
 				assertTrue(we1.getWorkflowName().equals("Test"));
@@ -49,8 +51,7 @@ public class RepositoryTest {
 				
 				assertTrue(cp!=null);
 				
-				ContextEntity ce = new ContextEntity();
-				
+				ContextEntity ce = new ContextEntity();	
 				ce.setServiceUrl("test");
 				
 				Map<String, String> parameters = new HashMap<String, String>();
@@ -60,18 +61,16 @@ public class RepositoryTest {
 				parameters.put("5", "6");
 				
 				ce.setParameters(parameters);
-				
-				assertTrue(parameters == ce.getParameters());
-				
+								
 				long id = cp.setEntry(ce);
-				ce = null;
 				
-				assertTrue(ce==null);
+				ContextEntity ce1;
+								
+				ce1 = cp.getEntry(id);
 				
-				ce = cp.getEntry(id);
+				assertTrue(ce!=null);
 				
-				assertTrue(ce.getServiceUrl() == "test");
-				assertTrue(ce.getParameters() == parameters);
+				assertTrue(ce1.getServiceUrl() == "test");
 
 	}
 }

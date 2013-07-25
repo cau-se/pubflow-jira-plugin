@@ -26,6 +26,10 @@ public class ObjectEntity implements Serializable{
 
 	private long lastEdit = System.currentTimeMillis();
 	
+	@SuppressWarnings("unused")
+	private ObjectEntity(){
+	}
+	
 	public ObjectEntity(long id) {
 		this.id = id;
 	}

@@ -32,6 +32,8 @@ import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.Query;
 
 import org.hsqldb.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowCore;
 import de.pubflow.common.exception.PropNotSetException;
@@ -40,6 +42,7 @@ import de.pubflow.common.exception.PropNotSetException;
 @SuppressWarnings("unchecked")
 public class PersistenceProvider {
 
+	static Logger myLogger = LoggerFactory.getLogger(PersistenceProvider.class);
 	private EntityManager em;
 	private EntityTransaction tx;
 	private static Server hsqlServer = null;
