@@ -34,6 +34,7 @@ import javax.persistence.Query;
 import org.hsqldb.Server;
 
 import de.pubflow.PubFlowCore;
+import de.pubflow.common.exception.PropNotSetException;
 
 
 @SuppressWarnings("unchecked")
@@ -63,8 +64,14 @@ public class PersistenceProvider {
 				// settings and data will be stored in files
 				// testdb.properties and testdb.script
 				hsqlServer.setDatabaseName(0, "pubflow");
-				
-				hsqlServer.setDatabasePath(0, "file:" + PubFlowCore.getInstance().getProperty("path", PersistenceProvider.class.toString()) + "/DB/pubflow");
+
+
+				try{
+					hsqlServer.setDatabasePath(0, "file:" + PubFlowCore.getInstance().getProperty("path", PersistenceProvider.class.toString()) + "/DB/pubflow");
+				}catch(PropNotSetException e){
+					hsqlServer.setDatabasePath(0, "file:" + "etc/DB/pubflow");
+					
+				}
 
 				// Start the database!
 				hsqlServer.start();

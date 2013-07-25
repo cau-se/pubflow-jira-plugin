@@ -14,7 +14,6 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.hsqldb.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +32,7 @@ public class PubFlowCore {
 
 	private DefaultCamelContext context;
 	private Properties pubflowConf;
-	private static PubFlowCore instance;
+	private static PubFlowCore instance = null;
 	private Logger myLogger;
 	private AppServer server;
 
@@ -63,7 +62,7 @@ public class PubFlowCore {
 				+ "__________________________________________"+"\n"
 				+ "Version 2.0 \n";
 		System.out.println(art);
-		
+
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting PubFlow System");
 
@@ -117,7 +116,7 @@ public class PubFlowCore {
 			}
 		} catch (PropNotSetException e) {
 			myLogger.warn("Configuration GUI is disabled");
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		// start the internal Server
 		myLogger.info("Starting the internal PubFlow Server");
@@ -148,29 +147,37 @@ public class PubFlowCore {
 
 	public String getProperty(String key, String calleeSig)
 			throws PropNotSetException {
+		myLogger.info("Getting Property - " + key + " : " + calleeSig);
 		String prop = pubflowConf.getProperty(calleeSig + "-" + key);
-		if ((prop == null) || (prop.equals("")))
+		if ((prop == null) || (prop.equals(""))){
+			myLogger.warn("Property " + key + " : " + calleeSig + " is empty!");
 			throw new PropNotSetException();
+		}
 		return prop;
 	}
 
-	public void setProperty(String key, String calleeSig, String prop)
-			throws PropAlreadySetException {
+	public void setProperty(String key, String calleeSig, String prop) throws PropAlreadySetException {
+		myLogger.info("Setting Property - " + key + " : " + calleeSig);
 		String temp = pubflowConf.getProperty(calleeSig + "-" + key);
-		if (temp != null)
+		if (temp != null){
+			myLogger.warn("Property " + key + " : " + calleeSig + " was already set!");
 			throw new PropAlreadySetException();
+		}
 		pubflowConf.setProperty(calleeSig + "-" + key, prop);
 	}
 
-	public void updateProperty(String key, String calleeSig, String prop)
-			throws PropNotSetException {
+	public void updateProperty(String key, String calleeSig, String prop) throws PropNotSetException {
+		myLogger.info("Updating Property - " + key + " : " + calleeSig);
 		String temp = pubflowConf.getProperty(calleeSig + "-" + key);
-		if ((temp == null) || (temp.equals("")))
+		if ((temp == null) || (temp.equals(""))){
+			myLogger.warn("Property " + key + " : " + calleeSig + " is empty!");
 			throw new PropNotSetException();
+		}
 		pubflowConf.setProperty(calleeSig + "-" + key, prop);
 	}
 
 	public void saveProperties() {
+		myLogger.info("Persisting Properties");
 		FileOutputStream fs = null;
 		try {
 			fs = new FileOutputStream(CONF_FILE);
@@ -188,7 +195,7 @@ public class PubFlowCore {
 	public void stopInternalServer() {
 		server.stop();
 	}
-	
+
 	public void stopCamel()
 	{
 		myLogger.info("Stopping CamelContext");
@@ -204,35 +211,6 @@ public class PubFlowCore {
 	// Private methods
 	// ----------------------------------------------------------------------------------------
 
-	/**
-	 * This method initializes the PubFlow database
-	 */
-	private void initDB() {
-		Server hsqlServer = null;
-		try {
-			hsqlServer = new Server();
-
-			// HSQLDB prints out a lot of informations when
-			// starting and closing, which we don't need now.
-			// Normally you should point the setLogWriter
-			// to some Writer object that could store the logs.
-			hsqlServer.setLogWriter(null);
-			hsqlServer.setSilent(true);
-
-			// The actual database will be named 'xdb' and its
-			// settings and data will be stored in files
-			// testdb.properties and testdb.script
-			hsqlServer.setDatabaseName(0, "pubflow");
-			hsqlServer.setDatabasePath(0, "file:etc/db/pubflow");
-
-			// Start the database!
-			hsqlServer.start();
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-	
 	/**
 	 * @throws Exception
 	 * 
@@ -271,24 +249,24 @@ public class PubFlowCore {
 	public void setContext(DefaultCamelContext context) {
 		this.context = context;
 	}
-	
+
 	// ----------------------------------------------------------------------------------------
 	// Main-method for starting PubFlow
 	// ----------------------------------------------------------------------------------------
 
-	
+
 
 	public static void main(String[] args) {
-		
+
 		PubFlowCore c = PubFlowCore.getInstance();
 		// Do some tests
 		ProducerTemplate template = c.getContext().createProducerTemplate();
 		for (int i = 0; i < 1; i++) {
 			TextMessage text = new TextMessage();
 			text.setContent("Test");
-            template.sendBody("t2-jms:queue:test.queue", text.transformToString());
-            
-        }
+			template.sendBody("t2-jms:queue:test.queue", text.transformToString());
+
+		}
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -302,7 +280,7 @@ public class PubFlowCore {
 	 */
 	class ShutdownActions implements Runnable {
 
-		
+
 		// Register all shutdown actions here
 		public void run() {
 			Thread.currentThread().setName("PubFlow Shutdownhook");
