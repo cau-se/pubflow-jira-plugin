@@ -49,7 +49,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/apache/xbean/xbean-spring/3.13/xbean-spring-3.13.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.7.5/slf4j-log4j12-1.7.5.jar"/>
 	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.17/log4j-1.2.17.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hsqldb/hsqldb/2.2.8/hsqldb-2.2.8.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/hsqldb/hsqldb/2.3.0/hsqldb-2.3.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/quartz-scheduler/quartz/2.1.7/quartz-2.1.7.jar"/>
 	<classpathentry kind="var" path="M2_REPO/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/quartz-scheduler/quartz-oracle/2.1.7/quartz-oracle-2.1.7.jar"/>
