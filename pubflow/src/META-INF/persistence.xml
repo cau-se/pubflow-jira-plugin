@@ -7,6 +7,7 @@
 	<persistence-unit name="pubflow" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>de.pubflow.common.entity.BPELProcess</class>
+		<class>de.pubflow.common.entity.ObjectEntity</class>
 		
 
 		<properties>
@@ -17,7 +18,7 @@
 
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.hbm2ddl.auto" value="create" />
 			<property name="hibernate.show_sql" value="true" />
 			<!-- <property name="javax.persistence.lock.timeout" value="1000" /> -->
 			<!-- <property name="javax.persistence.query.timeout" value="100" /> -->

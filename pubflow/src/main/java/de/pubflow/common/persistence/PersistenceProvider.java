@@ -35,9 +35,6 @@ import org.hsqldb.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.PubFlowCore;
-import de.pubflow.common.exception.PropNotSetException;
-
 
 @SuppressWarnings("unchecked")
 public class PersistenceProvider {
@@ -61,7 +58,7 @@ public class PersistenceProvider {
 				// Normally you should point the setLogWriter
 				// to some Writer object that could store the logs.
 				hsqlServer.setLogWriter(null);
-				hsqlServer.setSilent(true);
+				hsqlServer.setSilent(false);
 
 				// The actual database will be named 'xdb' and its
 				// settings and data will be stored in files
@@ -69,12 +66,12 @@ public class PersistenceProvider {
 				hsqlServer.setDatabaseName(0, "pubflow");
 
 
-				try{
-					hsqlServer.setDatabasePath(0, "file:" + PubFlowCore.getInstance().getProperty("path", PersistenceProvider.class.toString()) + "/DB/pubflow");
-				}catch(PropNotSetException e){
-					hsqlServer.setDatabasePath(0, "file:" + "etc/DB/pubflow");
-					
-				}
+				//				try{
+				//					hsqlServer.setDatabasePath(0, "file:" + PubFlowCore.getInstance().getProperty("path", PersistenceProvider.class.toString()) + "/DB/pubflow");
+				//				}catch(PropNotSetException e){
+				hsqlServer.setDatabasePath(0, "file:" + "etc/DB/pubflow");
+
+				//				}
 
 				// Start the database!
 				hsqlServer.start();
