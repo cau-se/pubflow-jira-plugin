@@ -13,7 +13,6 @@ import de.pubflow.common.repository.context.ContextEntity;
 import de.pubflow.common.repository.context.ContextProvider;
 import de.pubflow.common.repository.workflow.WorkflowEntity;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
-
 public class RepositoryTest {
 
 	@Test
@@ -46,6 +45,21 @@ public class RepositoryTest {
 
 	@Test
 	public void dbRepo() {	
+//		ServiceProvider sp = ServiceProvider.getInstance();
+//		
+//		ServiceEntity se = new ServiceEntity();
+//		
+//		se.setId(1);
+//		se.setServiceDescription("lululu");
+//		se.setServiceName("nonono");
+//		
+//		long id = sp.setEntry(se);
+//		
+//		ServiceEntity se1 = sp.getEntry(id);
+//		
+//
+//		assertTrue(se1.getId());
+		
 
 				ContextProvider cp = ContextProvider.getInstance();
 				
@@ -70,7 +84,7 @@ public class RepositoryTest {
 				
 				assertTrue(ce!=null);
 				
-				assertTrue(ce1.getServiceUrl() == "test");
+				assertTrue(ce1.getServiceUrl().equals("test"));
 
 	}
 }

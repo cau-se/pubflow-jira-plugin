@@ -22,7 +22,7 @@
  *
  */
 
-package de.pubflow.common.entity;
+package de.pubflow.common.repository.service;
 
 import java.io.Serializable;
 

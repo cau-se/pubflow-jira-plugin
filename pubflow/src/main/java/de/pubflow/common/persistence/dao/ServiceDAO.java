@@ -24,7 +24,7 @@
 
 package de.pubflow.common.persistence.dao;
 
-import de.pubflow.common.entity.ServiceEntity;
+import de.pubflow.common.repository.service.ServiceEntity;
 
 
 public class ServiceDAO extends BasicDAO<ServiceEntity>{

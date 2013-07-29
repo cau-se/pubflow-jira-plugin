@@ -24,7 +24,6 @@
 
 package de.pubflow.common.repository.configuration;
 
-import de.pubflow.common.entity.ConfigurationEntity;
 import de.pubflow.common.repository.abstractRepository.interaction.BasicProvider;
 import de.pubflow.common.repository.abstractRepository.repository.ERepositoryName;
 import de.pubflow.common.repository.abstractRepository.storageAdapter.DBStorageAdapter;
@@ -34,7 +33,7 @@ public class ConfigurationProvider extends BasicProvider<ConfigurationEntity>{
 
 	private static ConfigurationProvider cp;
 	
-	public ConfigurationProvider() {
+	private ConfigurationProvider() {
 		super(ERepositoryName.CONFIGURATION, new DBStorageAdapter());
 	}
 	

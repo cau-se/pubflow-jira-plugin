@@ -24,7 +24,6 @@
 
 package de.pubflow.common.repository.data;
 
-import de.pubflow.common.entity.DataEntity;
 import de.pubflow.common.repository.abstractRepository.interaction.BasicProvider;
 import de.pubflow.common.repository.abstractRepository.repository.ERepositoryName;
 import de.pubflow.common.repository.abstractRepository.storageAdapter.FSStorageAdapter;
@@ -34,7 +33,7 @@ public class DataProvider extends BasicProvider<DataEntity> {
 
 	private static DataProvider dp;
 	
-	public DataProvider() {
+	private DataProvider() {
 		super(ERepositoryName.DATA, new FSStorageAdapter());
 		// TODO Auto-generated constructor stub
 	}

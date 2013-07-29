@@ -10,7 +10,7 @@ public class ContextProvider extends BasicProvider<ContextEntity>{
 
 	private static ContextProvider cp;
 
-	public ContextProvider() {
+	private ContextProvider() {
 		super(ERepositoryName.CONTEXT, new DBStorageAdapter());
 	}
 
