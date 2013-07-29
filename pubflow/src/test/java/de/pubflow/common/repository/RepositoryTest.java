@@ -85,6 +85,8 @@ public class RepositoryTest {
 				assertTrue(ce!=null);
 				
 				assertTrue(ce1.getServiceUrl().equals("test"));
+				assertTrue(ce1.getParameters().equals(parameters));
+				
 
 	}
 }
