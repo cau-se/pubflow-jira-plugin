@@ -17,11 +17,14 @@ import org.apache.axiom.om.util.Base64;
 import org.apache.axis2.AxisFault;
 import org.apache.ode.axis2.service.ServiceClientUtil;
 
+import de.pubflow.PubFlowCore;
 import de.pubflow.common.entity.BPELProcess;
 import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
+import de.pubflow.common.exception.PropAlreadySetException;
+import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.common.exception.WFException;
 import de.pubflow.common.repository.workflow.WorkflowLocationInformation;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
@@ -29,19 +32,31 @@ import de.pubflow.workflow.engine.IWorkflowEngine;
 
 public class ODEEngine implements IWorkflowEngine{
 
-	static String ODE_URL = "http://localhost:8080/ode/processes/DeploymentService";
+	static String odeUrl;
 	static 	OMFactory factory;
 	static ServiceClientUtil serviceClient;
-
+	static String port;
 	
 	static{
-		// create a factory
 		factory = OMAbstractFactory.getOMFactory();
 		serviceClient = new ServiceClientUtil();
+		
+		try {
+			port = PubFlowCore.getInstance().getProperty("port", ODEEngine.class.toString());
+		} catch (PropNotSetException e) {
+			try {
+				PubFlowCore.getInstance().setProperty("port", ODEEngine.class.toString(), "8080");
+			} catch (PropAlreadySetException e1) {
+				//Impussibru!
+			}
+			port = "8800";
+		}
+		
+		odeUrl = "http://localhost:" + port + "/ode/processes/DeploymentService";
 	}
 
 	private static OMElement sendToODE(OMElement msg) throws AxisFault {
-		return serviceClient.send(msg, ODE_URL);
+		return serviceClient.send(msg, odeUrl);
 	}
 
 	@Override
@@ -94,27 +109,19 @@ public class ODEEngine implements IWorkflowEngine{
 			String workingDir = wli.getWorkingDir();
 			String baseDir = wli.getBaseDir();
 			String processName = wfe.getWorkflowName();
-			String odeDeploymentUrl = "http://localhost:" +  
-					//TODO: PropLoader
-					//		PropLoader.loadProperties().getProperty("port") 
-
-			"8800" + 
-			"/ode/processes/DeploymentService";
-
+			
 			System.out.println("XXXXXXXXXXXXXXXXXXXXXXX");
 			System.out.println(bpmnFile);
 			System.out.println(workingDir);
 			System.out.println(baseDir);
 			System.out.println(processName);
-			System.out.println(odeDeploymentUrl);
+			System.out.println(odeUrl);
 
 			PubFlowWorkflowDeployer deployer = new PubFlowWorkflowDeployer();
-			
-//			for(WFParameter parameter : params){
-//				
-//			}
 
-			WorkflowExecutorResult deployResult = deployer.deploy(bpmnFile, workingDir, baseDir, odeDeploymentUrl, processName, new Properties());
+			//TODO: Params?
+			
+			WorkflowExecutorResult deployResult = deployer.deploy(bpmnFile, workingDir, baseDir, odeUrl, processName, new Properties());
 
 			String deployedOdeProcessName = deployResult.getStatusCode();
 
