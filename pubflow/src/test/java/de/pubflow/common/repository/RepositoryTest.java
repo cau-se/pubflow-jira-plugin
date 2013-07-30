@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import de.pubflow.common.entity.repository.ContextEntity;
+import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.enumerartion.WFType;
-import de.pubflow.common.repository.context.ContextEntity;
 import de.pubflow.common.repository.context.ContextProvider;
-import de.pubflow.common.repository.workflow.WorkflowEntity;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
 public class RepositoryTest {
 

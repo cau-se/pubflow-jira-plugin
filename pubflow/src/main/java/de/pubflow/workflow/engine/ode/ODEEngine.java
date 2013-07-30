@@ -18,11 +18,11 @@ import org.apache.axis2.AxisFault;
 import org.apache.ode.axis2.service.ServiceClientUtil;
 
 import de.pubflow.common.entity.BPELProcess;
+import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
-import de.pubflow.common.repository.workflow.WorkflowEntity;
 import de.pubflow.common.repository.workflow.WorkflowLocationInformation;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.workflow.engine.IWorkflowEngine;

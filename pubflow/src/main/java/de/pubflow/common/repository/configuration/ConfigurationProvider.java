@@ -24,6 +24,7 @@
 
 package de.pubflow.common.repository.configuration;
 
+import de.pubflow.common.entity.repository.ConfigurationEntity;
 import de.pubflow.common.repository.abstractRepository.interaction.BasicProvider;
 import de.pubflow.common.repository.abstractRepository.repository.ERepositoryName;
 import de.pubflow.common.repository.abstractRepository.storageAdapter.DBStorageAdapter;

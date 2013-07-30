@@ -1,4 +1,4 @@
-package de.pubflow.common.repository.workflow;
+package de.pubflow.common.entity.repository;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -18,6 +18,7 @@ import de.pubflow.PubFlowCore;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.PropNotSetException;
+import de.pubflow.common.repository.workflow.WorkflowLocationInformation;
 
 public class WorkflowEntity implements Serializable{
 

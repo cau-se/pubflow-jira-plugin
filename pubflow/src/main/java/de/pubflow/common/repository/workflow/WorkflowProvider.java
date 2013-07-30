@@ -24,6 +24,7 @@
 
 package de.pubflow.common.repository.workflow;
 
+import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.repository.abstractRepository.interaction.BasicProvider;
 import de.pubflow.common.repository.abstractRepository.repository.ERepositoryName;
 import de.pubflow.common.repository.abstractRepository.storageAdapter.FSStorageAdapter;

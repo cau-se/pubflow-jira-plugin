@@ -10,8 +10,12 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.pubflow.PubFlowCore;
+import de.pubflow.common.exception.PropNotSetException;
 
 public class AppServer {
 
@@ -37,20 +41,23 @@ public class AppServer {
 		//			configuration.configure(server);  
 		//		}
 
-		//TODO
+		
+		jettyHome = "./";
+		
+		//TODO: Verursacht Endlosschleife
 		//		try{
 		//			jettyHome = PubFlowCore.getInstance().getProperty("jetty.home", this.getClass().toString());
 		//
 		//		}catch(PropNotSetException e){	
-		//			PubFlowCore.getInstance().setProperty("jetty.home", this.getClass().toString(), ".");
+		//			PubFlowCore.getInstance().setProperty("jetty.home", this.getClass().toString(), "./");
 		//		}
 
-		//		logger.info("Initializing ODE");
-		//		// Init the ODE WebApp
-		//		WebAppContext l_ODEAppContainer = new WebAppContext();
-		//		l_ODEAppContainer.setContextPath("/ode");
-		//		l_ODEAppContainer.setWar(jettyHome + "webapps/ode.war");
-		//		logger.info("done!");
+		logger.info("Initializing ODE");
+		// Init the ODE WebApp
+		WebAppContext odeAppContainer = new WebAppContext();
+		odeAppContainer.setContextPath("/ode");
+		odeAppContainer.setWar(jettyHome + "webapps/ode.war");
+		logger.info("done!");
 
 		//		
 		//		logger.info("Initializing Ocn-WS");
@@ -78,8 +85,9 @@ public class AppServer {
 
 		logger.info("Setting Webapps");
 		HandlerList contexts = new HandlerList();  
-		contexts.setHandlers(new Handler[] {  new HelloHandler()/*, l_thermContainer*/});
-		server.setHandler(new HelloHandler());
+		contexts.setHandlers(new Handler[] {new HelloHandler(), odeAppContainer});
+		//server.setHandler(new HelloHandler());
+		server.setHandler(contexts);
 		logger.info("done!");
 
 

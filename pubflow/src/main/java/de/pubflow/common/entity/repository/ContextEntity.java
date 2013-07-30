@@ -1,4 +1,4 @@
-package de.pubflow.common.repository.context;
+package de.pubflow.common.entity.repository;
 
 import java.io.Serializable;
 import java.util.Map;
