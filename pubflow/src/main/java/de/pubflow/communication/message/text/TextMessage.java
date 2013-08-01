@@ -2,13 +2,13 @@ package de.pubflow.communication.message.text;
 
 
 import de.pubflow.communication.message.Message;
-import de.pubflow.communication.message.MessageFactory;
+import de.pubflow.communication.message.MessageToolbox;
 
 
 
 public class TextMessage extends Message {
 
-	private String content;
+	private String content = "empty";
 	
 	public TextMessage()
 	{
@@ -27,7 +27,7 @@ public class TextMessage extends Message {
 
 	@Override
 	public String transformToString() {
-		String serial = clazz + seperatorSeq + content;
+		String serial = clazz + coreSeperatorSeq + content;
 		return serial;
 	}
 
@@ -35,7 +35,7 @@ public class TextMessage extends Message {
 	public void initFromString(String content) {
 		myLogger.info("Loading msg from String");
 		myLogger.info("Checking Msg-Type");
-		Class c = MessageFactory.getMsgType(content);
+		Class c = MessageToolbox.getMsgType(content);
 		if (!c.equals(this.getClass()))
 		{
 			myLogger.error("Wrong msg-type");
@@ -43,7 +43,7 @@ public class TextMessage extends Message {
 		}
 		myLogger.info("Correct type ("+c.getCanonicalName()+")");
 		myLogger.info("Msg. >> "+content);
-		String[] seq = content.split(seperatorSeq);
+		String[] seq = content.split(coreSeperatorSeq);
 		for (String string : seq) {
 			myLogger.info("Msg.-Part >> "+string);
 		}
@@ -57,6 +57,12 @@ public class TextMessage extends Message {
 		else{
 			System.err.println(seq.length);
 		}
+	}
+
+	@Override
+	public boolean isValid() {
+		if(content==null)return false;
+		return true;
 	}
 
 }

@@ -8,7 +8,8 @@ import de.pubflow.common.entity.StringSerializable;
 public abstract class Message implements StringSerializable{
 
 	protected String clazz;
-	protected static final String seperatorSeq = ":";
+	protected static final String fieldSeperatorSeq = "|";
+	protected static final String coreSeperatorSeq = "|";
 	protected Logger myLogger;
 	
 	public Message()
@@ -25,9 +26,10 @@ public abstract class Message implements StringSerializable{
 	}
 	
 	public static String getSeperatorSeq() {
-		return seperatorSeq;
+		return coreSeperatorSeq;
 	}
-
+	
+	public abstract boolean isValid();
 	public abstract String transformToString();
 	public abstract void initFromString(String content);
 	
