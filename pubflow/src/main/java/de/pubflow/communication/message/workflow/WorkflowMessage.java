@@ -138,14 +138,14 @@ public class WorkflowMessage extends Message {
 	/**
 	 * @return the wfparams
 	 */
-	public synchronized Parameter getWfparams() {
+	public synchronized WFParamList getWfparams() {
 		return wfparams;
 	}
 
 	/**
 	 * @param wfparams the wfparams to set
 	 */
-	public synchronized void setWfparams(Parameter wfparams) {
+	public synchronized void setWfparams(WFParamList wfparams) {
 		this.wfparams = wfparams;
 	}
 
