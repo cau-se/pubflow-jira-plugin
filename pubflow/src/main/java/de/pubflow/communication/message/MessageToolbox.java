@@ -1,7 +1,28 @@
 package de.pubflow.communication.message;
 
+import de.pubflow.common.entity.StringSerializable;
 
-public class MessageFactory {
+
+public class MessageToolbox {
+	
+	
+	public String transformObjectToMessageString(Object o )
+	{
+		String result ="empty";
+		if (o!=null)
+		{
+			if(o instanceof StringSerializable)
+			{
+				result = ((StringSerializable) o).transformToString();
+			}
+			
+			else if(o.getClass().isEnum())
+			{
+				
+			}
+		}
+		return result;
+	}
 	
 	public static Class<?> getMsgType(String msg)
 	{
