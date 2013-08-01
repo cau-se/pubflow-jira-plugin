@@ -17,17 +17,16 @@ import org.apache.axiom.om.util.Base64;
 import org.apache.axis2.AxisFault;
 import org.apache.ode.axis2.service.ServiceClientUtil;
 
-import de.pubflow.PubFlowCore;
+import de.pubflow.common.PropLoader;
 import de.pubflow.common.entity.BPELProcess;
 import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
-import de.pubflow.common.exception.PropAlreadySetException;
-import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.common.exception.WFException;
 import de.pubflow.common.repository.workflow.WorkflowLocationInformation;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
+import de.pubflow.server.AppServer;
 import de.pubflow.workflow.engine.IWorkflowEngine;
 
 public class ODEEngine implements IWorkflowEngine{
@@ -36,22 +35,11 @@ public class ODEEngine implements IWorkflowEngine{
 	static 	OMFactory factory;
 	static ServiceClientUtil serviceClient;
 	static String port;
-	
+
 	static{
 		factory = OMAbstractFactory.getOMFactory();
 		serviceClient = new ServiceClientUtil();
-		
-		try {
-			port = PubFlowCore.getInstance().getProperty("port", ODEEngine.class.toString());
-		} catch (PropNotSetException e) {
-			try {
-				PubFlowCore.getInstance().setProperty("port", ODEEngine.class.toString(), "8080");
-			} catch (PropAlreadySetException e1) {
-				//Impussibru!
-			}
-			port = "8080";
-		}
-		
+		port = PropLoader.getInstance().getProperty("port", ODEEngine.class.toString(), AppServer.DEFAULT_PORT);
 		odeUrl = "http://localhost:" + port + "/ode/processes/DeploymentService";
 	}
 
@@ -98,18 +86,18 @@ public class ODEEngine implements IWorkflowEngine{
 	@Override
 	public void startWF(long wfID, ArrayList<WFParameter> params) throws WFException {
 		try {
-			
+
 			WorkflowProvider wfp = WorkflowProvider.getInstance();
 			WorkflowEntity wfe = wfp.getEntry(wfID);
 			WorkflowLocationInformation wli;
-			
+
 			wli = wfe.writeToTempFS();
 
 			String bpmnFile = wli.getBpmnFile();
 			String workingDir = wli.getWorkingDir();
 			String baseDir = wli.getBaseDir();
 			String processName = wfe.getWorkflowName();
-			
+
 			System.out.println("XXXXXXXXXXXXXXXXXXXXXXX");
 			System.out.println(bpmnFile);
 			System.out.println(workingDir);
@@ -119,13 +107,13 @@ public class ODEEngine implements IWorkflowEngine{
 
 			PubFlowWorkflowDeployer deployer = new PubFlowWorkflowDeployer();
 
-			
+
 			Properties props = new Properties();
-			
+
 			for(WFParameter wfParam : params){
 				//props.setProperty(wfParam., value)
 			}
-			
+
 			WorkflowExecutorResult deployResult = deployer.deploy(bpmnFile, workingDir, baseDir, odeUrl, processName, new Properties());
 
 			String deployedOdeProcessName = deployResult.getStatusCode();

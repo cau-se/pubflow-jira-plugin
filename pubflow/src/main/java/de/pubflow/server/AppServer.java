@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowCore;
+import de.pubflow.common.PropLoader;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 
@@ -25,6 +26,10 @@ public class AppServer {
 	private String jettyHome;
 	private String port;
 
+	/** PROPERTIES **/
+	public static final String DEFAULT_PORT = "8080";
+	public static final String DEFAULT_PATH = "./";
+
 
 	public AppServer(){
 		logger = LoggerFactory.getLogger(AppServer.class);
@@ -34,16 +39,9 @@ public class AppServer {
 	// TODO load the webapps from the database ...
 	public void startup() throws Exception{
 
-		try {
-			port = PubFlowCore.getInstance().getProperty("port", AppServer.class.toString());
-		} catch (PropNotSetException e) {
-			try {
-				PubFlowCore.getInstance().setProperty("port", AppServer.class.toString(), "8080");
-			} catch (PropAlreadySetException e1) {
-				//Impussibru!
-			}
-			port = "8080";
-		}
+		port = PropLoader.getInstance().getProperty("port", AppServer.class.toString(), DEFAULT_PORT);
+		jettyHome = PropLoader.getInstance().getProperty("jetty.home", this.getClass().toString(), DEFAULT_PATH);
+
 
 		server = new org.eclipse.jetty.server.Server(Integer.parseInt(port));
 
@@ -56,15 +54,6 @@ public class AppServer {
 		//		}
 
 
-		jettyHome = "./";
-
-		//TODO: Verursacht Endlosschleife
-		//		try{
-		//			jettyHome = PubFlowCore.getInstance().getProperty("jetty.home", this.getClass().toString());
-		//
-		//		}catch(PropNotSetException e){	
-		//			PubFlowCore.getInstance().setProperty("jetty.home", this.getClass().toString(), "./");
-		//		}
 
 		logger.info("Initializing ODE");
 		// Init the ODE WebApp

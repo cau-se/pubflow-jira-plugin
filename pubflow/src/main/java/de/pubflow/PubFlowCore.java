@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
+import de.pubflow.common.PropLoader;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.communication.message.text.TextMessage;
@@ -31,17 +32,20 @@ import de.pubflow.workflow.WFBroker;
 public class PubFlowCore {
 
 	private DefaultCamelContext context;
-	private Properties pubflowConf;
 	private static PubFlowCore instance = null;
 	private Logger myLogger;
 	private AppServer server;
 
-	private static final String CONF_FILE = "Pubflow.conf";
 	private static final String SERVERFLAG = "CONFSERVER";
 	private static final String ACTIVEFLAG = "ON";
-
+	
 	private static final String WFBROKER_NAME = "WFBROKER";
 	private static final String MOCKUPENDPOINT_NAME = "MOCKUP";
+
+	
+	/** DEFAULT PROPERTIES **/
+	private static final String DEFAULT_ACTIVEFLAG = "ON";
+
 
 	// ----------------------------------------------------------------------------------------
 	// Initializers
@@ -66,22 +70,6 @@ public class PubFlowCore {
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting PubFlow System");
 
-		FileInputStream fi = null;
-		try {
-			fi = new FileInputStream(CONF_FILE);
-		} catch (Exception e) {
-			myLogger.error("Could not find Properties File");
-
-			// e.printStackTrace();
-		}
-		pubflowConf = new Properties();
-		try {
-			pubflowConf.loadFromXML(fi);
-		} catch (Exception e) {
-			myLogger.error("Could not load Properties File");
-			// e.printStackTrace();
-		}
-		pubflowConf.list(System.out);
 
 		// Create CamelContext
 		context = new DefaultCamelContext();
@@ -108,13 +96,12 @@ public class PubFlowCore {
 		}
 		// Start the Confserver
 		myLogger.info("Starting Configuration GUI");
-		try {
-			String sflag = getProperty(SERVERFLAG, this.getClass().toString());
-			if (sflag.equalsIgnoreCase(ACTIVEFLAG)) {
-				myLogger.info("Configuration GUI is active");
-				// TODO start a conf GUI
-			}
-		} catch (PropNotSetException e) {
+
+		String sflag = PropLoader.getInstance().getProperty(SERVERFLAG, this.getClass().toString(), DEFAULT_ACTIVEFLAG);
+		if (sflag.equalsIgnoreCase(ACTIVEFLAG)) {
+			myLogger.info("Configuration GUI is active");
+			// TODO start a conf GUI
+		}else{
 			myLogger.warn("Configuration GUI is disabled");
 			//e.printStackTrace();
 		}
@@ -147,52 +134,7 @@ public class PubFlowCore {
 	// Public methods
 	// ----------------------------------------------------------------------------------------
 
-	public String getProperty(String key, String calleeSig)
-			throws PropNotSetException {
-		myLogger.info("Getting Property - " + key + " : " + calleeSig);
-		String prop = pubflowConf.getProperty(calleeSig + "-" + key);
-		if ((prop == null) || (prop.equals(""))){
-			myLogger.warn("Property " + key + " : " + calleeSig + " is empty!");
-			throw new PropNotSetException();
-		}
-		return prop;
-	}
 
-	public void setProperty(String key, String calleeSig, String prop) throws PropAlreadySetException {
-		myLogger.info("Setting Property - " + key + " : " + calleeSig);
-		String temp = pubflowConf.getProperty(calleeSig + "-" + key);
-		if (temp != null){
-			myLogger.warn("Property " + key + " : " + calleeSig + " was already set!");
-			throw new PropAlreadySetException();
-		}
-		pubflowConf.setProperty(calleeSig + "-" + key, prop);
-	}
-
-	public void updateProperty(String key, String calleeSig, String prop) throws PropNotSetException {
-		myLogger.info("Updating Property - " + key + " : " + calleeSig);
-		String temp = pubflowConf.getProperty(calleeSig + "-" + key);
-		if ((temp == null) || (temp.equals(""))){
-			myLogger.warn("Property " + key + " : " + calleeSig + " is empty!");
-			throw new PropNotSetException();
-		}
-		pubflowConf.setProperty(calleeSig + "-" + key, prop);
-	}
-
-	public void saveProperties() {
-		myLogger.info("Persisting Properties");
-		FileOutputStream fs = null;
-		try {
-			fs = new FileOutputStream(CONF_FILE);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			pubflowConf.storeToXML(fs, "PubFlow Properties File (last updated "
-					+ Calendar.getInstance().getTime().toLocaleString() + ")");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public void stopInternalServer() {
 		server.stop();
@@ -298,7 +240,7 @@ public class PubFlowCore {
 			core.stopInternalServer();
 			// Write props to file
 			shutdownLogger.debug("Saving Properties to file");
-			core.saveProperties();
+			PropLoader.getInstance().saveProperties();
 			shutdownLogger.info("<< BYE >>");
 		}
 

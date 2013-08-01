@@ -2,25 +2,21 @@ package de.pubflow.assistance;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
 
 import de.pubflow.PubFlowCore;
 
 
-public class ConfWriter_Assist {
+public class ConfWriterAssist {
 
 	private static Properties pubflowConf;
 	private static final String CONF_FILE = "Pubflow.conf";
 	
 	public static void main(String[] args) {
 		Writer writer = null;
-		
-		
 		
 		FileInputStream fi = null;
 		try {

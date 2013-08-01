@@ -32,9 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 import de.pubflow.PubFlowCore;
+import de.pubflow.common.PropLoader;
 import de.pubflow.common.entity.ObjectEntity;
-import de.pubflow.common.exception.PropAlreadySetException;
-import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.common.repository.abstractRepository.storageAdapter.StorageAdapter;
 
 public class BasicRepository {
@@ -45,45 +44,30 @@ public class BasicRepository {
 	private boolean cachingEnabled = false;
 	private PubFlowCore core;
 
+	/** DEFAULT PROPERTIES **/
+	private static final String DEFAULT_ID_CONFIGURATION = "1";
+	private static final String DEFAULT_ID_CONTEXT = "2";
+	private static final String DEFAULT_ID_DATA = "3";
+	private static final String DEFAULT_ID_SERVICE = "4";
+	private static final String DEFAULT_ID_WORKFLOW = "5";
+
+
 	public BasicRepository(ERepositoryName repositoryName, StorageAdapter storageAdapter) throws IOException {
 		this.storageAdapter = storageAdapter;
 		core = PubFlowCore.getInstance();
-		try {
-			id = Long.parseLong(core.getProperty(repositoryName.name(),this.getClass().toString()));
 
-		} catch (NumberFormatException | PropNotSetException e1) {
-			//TODO
-			try {
-				if(repositoryName.equals(ERepositoryName.CONFIGURATION)){
-					id = 1;
-					core.setProperty(ERepositoryName.CONFIGURATION.toString(), this.getClass().toString(), "1");
-				}
-				
-				else if(repositoryName.equals(ERepositoryName.CONTEXT)){
-					id = 2;
-					core.setProperty(ERepositoryName.CONTEXT.toString(), this.getClass().toString(), "2");
-				}
-				
-				else if(repositoryName.equals(ERepositoryName.DATA)){
-					id = 3;
-					core.setProperty(ERepositoryName.DATA.toString(), this.getClass().toString(), "3");
-				}
-				
-				else if(repositoryName.equals(ERepositoryName.SERVICE)){
-					id = 4;
-					core.setProperty(ERepositoryName.SERVICE.toString(), this.getClass().toString(), "4");
-				}
-				
-				else if(repositoryName.equals(ERepositoryName.WORKFLOW)){
-					id = 5;
-					core.setProperty(ERepositoryName.WORKFLOW.toString(), this.getClass().toString(), "5");
-				}
+		String strId = "";
 
-			} catch (PropAlreadySetException e) {
-				// TODO Auto-generated catch block
-			}
-
+		//UGLY!
+		switch(repositoryName.name()){
+		case("CONFIGURATION"): strId = PropLoader.getInstance().getProperty(repositoryName.name(), this.getClass().toString(), DEFAULT_ID_CONFIGURATION) ;break;
+		case("CONTEXT"): strId = PropLoader.getInstance().getProperty(repositoryName.name(), this.getClass().toString(), DEFAULT_ID_CONTEXT) ;break;
+		case("DATA"): strId = PropLoader.getInstance().getProperty(repositoryName.name(), this.getClass().toString(), DEFAULT_ID_DATA) ;break;
+		case("SERVICE"): strId = PropLoader.getInstance().getProperty(repositoryName.name(), this.getClass().toString(), DEFAULT_ID_SERVICE) ;break;
+		case("WORKFLOW"): strId = PropLoader.getInstance().getProperty(repositoryName.name(), this.getClass().toString(), DEFAULT_ID_WORKFLOW) ;break;
 		}
+
+		id = Long.parseLong(strId);
 
 		try{
 			repositoryMap.setEntries(StorageAdapter.loadMapping(repositoryMap, id));

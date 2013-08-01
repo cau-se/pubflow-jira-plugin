@@ -15,9 +15,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import de.pubflow.PubFlowCore;
+import de.pubflow.common.PropLoader;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.PropNotSetException;
+import de.pubflow.common.repository.abstractRepository.storageAdapter.FSStorageAdapter;
 import de.pubflow.common.repository.workflow.WorkflowLocationInformation;
 
 public class WorkflowEntity implements Serializable{
@@ -27,7 +29,7 @@ public class WorkflowEntity implements Serializable{
 	private byte[] gBpmn;
 	private String workflowName;
 	private long PubFlowWFID;
-	
+
 	private String WFID;
 	private WFType type;
 
@@ -65,14 +67,11 @@ public class WorkflowEntity implements Serializable{
 	 * @throws IOException
 	 */
 	public WorkflowLocationInformation writeToTempFS() throws IOException{
-		
+
 		String pathProb = "";
-		try {
-			pathProb = PubFlowCore.getInstance().getProperty("path", WorkflowEntity.class.toString());
-		} catch (PropNotSetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		pathProb = PropLoader.getInstance().getProperty("path", WorkflowEntity.class.toString(), FSStorageAdapter.DEFAULT_FS_STORAGE_PATH);
+
 		String path = pathProb + "/Temp/" + workflowName;
 
 		int i;
@@ -176,7 +175,7 @@ public class WorkflowEntity implements Serializable{
 	public void setWorkflowName(String workflowName) {
 		this.workflowName = workflowName;
 	}
-	
+
 	public WFType getType() {
 		return type;
 	}
