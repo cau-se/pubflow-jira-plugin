@@ -49,7 +49,7 @@ public class ODEEngine implements IWorkflowEngine{
 			} catch (PropAlreadySetException e1) {
 				//Impussibru!
 			}
-			port = "8800";
+			port = "8080";
 		}
 		
 		odeUrl = "http://localhost:" + port + "/ode/processes/DeploymentService";
@@ -119,7 +119,12 @@ public class ODEEngine implements IWorkflowEngine{
 
 			PubFlowWorkflowDeployer deployer = new PubFlowWorkflowDeployer();
 
-			//TODO: Params?
+			
+			Properties props = new Properties();
+			
+			for(WFParameter wfParam : params){
+				//props.setProperty(wfParam., value)
+			}
 			
 			WorkflowExecutorResult deployResult = deployer.deploy(bpmnFile, workingDir, baseDir, odeUrl, processName, new Properties());
 

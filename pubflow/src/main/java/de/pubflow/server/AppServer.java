@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowCore;
+import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 
 public class AppServer {
@@ -22,6 +23,8 @@ public class AppServer {
 	private Logger logger;
 	private static org.eclipse.jetty.server.Server server;
 	private String jettyHome;
+	private String port;
+
 
 	public AppServer(){
 		logger = LoggerFactory.getLogger(AppServer.class);
@@ -31,7 +34,18 @@ public class AppServer {
 	// TODO load the webapps from the database ...
 	public void startup() throws Exception{
 
-		server = new org.eclipse.jetty.server.Server();
+		try {
+			port = PubFlowCore.getInstance().getProperty("port", AppServer.class.toString());
+		} catch (PropNotSetException e) {
+			try {
+				PubFlowCore.getInstance().setProperty("port", AppServer.class.toString(), "8080");
+			} catch (PropAlreadySetException e1) {
+				//Impussibru!
+			}
+			port = "8080";
+		}
+
+		server = new org.eclipse.jetty.server.Server(Integer.parseInt(port));
 
 		// Define the Jetty home directory
 		//		String[] configFiles = {"etc/jetty.xml"};  
@@ -41,9 +55,9 @@ public class AppServer {
 		//			configuration.configure(server);  
 		//		}
 
-		
+
 		jettyHome = "./";
-		
+
 		//TODO: Verursacht Endlosschleife
 		//		try{
 		//			jettyHome = PubFlowCore.getInstance().getProperty("jetty.home", this.getClass().toString());

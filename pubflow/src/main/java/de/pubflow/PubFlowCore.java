@@ -134,11 +134,13 @@ public class PubFlowCore {
 		Runtime.getRuntime().addShutdownHook(t);
 	}
 
-	public static PubFlowCore getInstance() {
+	public static synchronized PubFlowCore getInstance() {
+
 		if (instance == null) {
 			instance = new PubFlowCore();
 		}
 		return instance;
+
 	}
 
 	// ----------------------------------------------------------------------------------------
