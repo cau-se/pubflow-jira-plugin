@@ -10,7 +10,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 
 public class PropLoader {
@@ -46,7 +45,7 @@ public class PropLoader {
 			pubflowConf.loadFromXML(fi);
 		} catch (Exception e) {
 			myLogger.error("Could not load Properties File");
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 		pubflowConf.list(System.out);
 
@@ -60,7 +59,9 @@ public class PropLoader {
 			myLogger.warn("Property " + key + " : " + calleeSig + " is not set!");
 			myLogger.info("Property " + key + " : " + calleeSig + " has been set to: " + defaultValue);
 
-			pubflowConf.setProperty(calleeSig + "-" + key, prop);
+			pubflowConf.setProperty(calleeSig + "-" + key, defaultValue);
+			
+			prop = defaultValue;
 		}
 		return prop;
 	}
