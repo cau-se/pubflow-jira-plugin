@@ -1,19 +1,16 @@
 package de.pubflow.communication.message.text;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import de.pubflow.common.exception.MsgParsingException;
 import de.pubflow.communication.message.Message;
-import de.pubflow.communication.message.MessageToolbox;
 
+@XmlRootElement(namespace = "http://pubflow.de/message/text")
 public class TextMessage extends Message {
 
-	private String content = "empty";
+	private String content;
 
-	public TextMessage() {
-		super();
-		clazz = this.getClass().getCanonicalName();
 
-	}
-
+	@XmlElement(name="content")
 	public String getContent() {
 		return content;
 	}
@@ -23,22 +20,11 @@ public class TextMessage extends Message {
 	}
 
 	@Override
-	public String transformToString() {
-		String serial = clazz + coreSeperatorSeq + content;
-		return serial;
-	}
-
-	@Override
 	public boolean isValid() {
 		if (content == null)
 			return false;
 		return true;
 	}
 
-	@Override
-	public void parseBody(String pContent) {
-
-		content = pContent;
-	}
 
 }

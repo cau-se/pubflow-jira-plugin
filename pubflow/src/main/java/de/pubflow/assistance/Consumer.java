@@ -24,6 +24,6 @@ public class Consumer {
 		TextMessage tm = new TextMessage();
 		tm.initFromString(name);
 		myLogger.info("content >> "+tm.getContent());
-		myLogger.info("type >> "+tm.getType());
+		myLogger.info("type >> "+tm.getMsgType());
 	}
 }
