@@ -54,16 +54,16 @@ public class MessageToolbox {
 	public static void main(String[] args) {
 		TextMessage test = new TextMessage();
 		test.setContent("This is a test");
-		String msgAsString = (new MessageToolbox()).transformToString(test);
+		String msgAsString = MessageToolbox.transformToString(test);
 		System.out.println(msgAsString);
-		TextMessage nT = (new MessageToolbox()).loadFromString(msgAsString, TextMessage.class);
+		TextMessage nT = MessageToolbox.loadFromString(msgAsString, TextMessage.class);
 		System.out.println(nT.getContent());
 		
 		WorkflowMessage wm = new WorkflowMessage();
 		wm.setComments("TestWFMsg");
-		String temp = (new MessageToolbox()).transformToString(wm);
+		String temp = MessageToolbox.transformToString(wm);
 		System.out.println(temp);
-		WorkflowMessage nwm = (new MessageToolbox()).loadFromString(temp, WorkflowMessage.class);
+		WorkflowMessage nwm = MessageToolbox.loadFromString(temp, WorkflowMessage.class);
 		System.out.println(nwm.getComments());
 	}
 }
