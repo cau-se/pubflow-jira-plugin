@@ -1,22 +1,19 @@
 package de.pubflow.communication.message.text;
 
-
+import de.pubflow.common.exception.MsgParsingException;
 import de.pubflow.communication.message.Message;
 import de.pubflow.communication.message.MessageToolbox;
-
-
 
 public class TextMessage extends Message {
 
 	private String content = "empty";
-	
-	public TextMessage()
-	{
+
+	public TextMessage() {
 		super();
 		clazz = this.getClass().getCanonicalName();
-		
+
 	}
-	
+
 	public String getContent() {
 		return content;
 	}
@@ -32,36 +29,31 @@ public class TextMessage extends Message {
 	}
 
 	@Override
-	public void initFromString(String content) {
-		myLogger.info("Loading msg from String");
+	public void initFromString(String envelope) {
+		myLogger.info("Loading msg from String: " + envelope);
 		myLogger.info("Checking Msg-Type");
-		Class c = MessageToolbox.getMsgType(content);
-		if (!c.equals(this.getClass()))
+		if (!MessageToolbox.checkType(this.getClass(), envelope))
 		{
 			myLogger.error("Wrong msg-type");
 			return;
 		}
-		myLogger.info("Correct type ("+c.getCanonicalName()+")");
-		myLogger.info("Msg. >> "+content);
-		String[] seq = content.split(coreSeperatorSeq);
-		for (String string : seq) {
-			myLogger.info("Msg.-Part >> "+string);
+
+		try {
+			clazz = getmsgPart(envelope, Message.MsgPart.HEADER);
+			setContent(getmsgPart(envelope, Message.MsgPart.BODY));
+		} catch (MsgParsingException e) {
+			myLogger.error("An exception occurred while parsing this msg.");
+			e.printStackTrace();
 		}
-		if(seq.length==2)
-		{
-			clazz = seq[0];
-			
-			myLogger.info(c.getCanonicalName());
-			setContent(content = seq[1]);
-		}
-		else{
-			System.err.println(seq.length);
-		}
+
+		
+
 	}
 
 	@Override
 	public boolean isValid() {
-		if(content==null)return false;
+		if (content == null)
+			return false;
 		return true;
 	}
 

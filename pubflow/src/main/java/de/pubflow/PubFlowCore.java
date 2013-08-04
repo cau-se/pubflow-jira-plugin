@@ -203,10 +203,13 @@ public class PubFlowCore {
 	public static void main(String[] args) {
 
 		PubFlowCore c = PubFlowCore.getInstance();
+		System.out.println(">>>>>>>>>>>>>> Testing <<<<<<<<<<<<<<<<");
 		// Do some tests
 		ProducerTemplate template = c.getContext().createProducerTemplate();
 		for (int i = 0; i < 1; i++) {
+			System.out.println("sending testmsg");
 			TextMessage text = new TextMessage();
+			
 			text.setContent("Test");
 			template.sendBody("t2-jms:queue:test.queue", text.transformToString());
 

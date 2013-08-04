@@ -1,15 +1,14 @@
 package de.pubflow.communication.message.workflow;
 
-import de.pubflow.common.entity.Parameter;
-import de.pubflow.common.entity.StringSerializable;
 import de.pubflow.common.entity.Timestamp;
 import de.pubflow.common.entity.User;
 import de.pubflow.common.entity.WFParamList;
-import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.enumerartion.UserRole;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.enumerartion.WFType;
+import de.pubflow.common.exception.StringTransformationException;
 import de.pubflow.communication.message.Message;
+import de.pubflow.communication.message.MessageToolbox;
 
 public class WorkflowMessage extends Message {
 
@@ -32,6 +31,12 @@ public class WorkflowMessage extends Message {
 	protected long 			wfEngine				= -1;
 	
 
+	public WorkflowMessage()
+	{
+		super();
+		clazz = this.getClass().getCanonicalName();
+	}
+	
 	// -----------------------------------
 	// Implementation of abstract methods
 	// -----------------------------------
@@ -39,27 +44,50 @@ public class WorkflowMessage extends Message {
 	@Override
 	public String transformToString() {
 		StringBuffer msgBody=new StringBuffer();
-		msgBody.append(""+dataset);
-		msgBody.append(fieldSeperatorSeq);
-		msgBody.append(""+workflowID);
-		msgBody.append(fieldSeperatorSeq);
-		msgBody.append(wftype.toString());
-		msgBody.append(fieldSeperatorSeq);
-		msgBody.append(wfstate.toString());
-		msgBody.append(fieldSeperatorSeq);
-		msgBody.append(wfparams.toString());
-		msgBody.append(fieldSeperatorSeq);
-		msgBody.append(user.transformToString());
-		msgBody.append(fieldSeperatorSeq);
-		msgBody.append(userAuthenticated);
-		msgBody.append(fieldSeperatorSeq);
-		msgBody.append(wfparams.toString());
-		msgBody.append(fieldSeperatorSeq);
 		
+		try {
+			msgBody.append(MessageToolbox.transformObjectToMessageString(dataset,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(workflowID,false));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(wftype,false));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(wfstate,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(wfparams,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(user,false));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(userAuthenticated,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(userRole,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(datamanager,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(datamanagerApproved,false));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(msgCreatedTimestamp,false));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(wfStartedTimestamp,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(wfEndedTimestamp,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(userResponseTimestamp,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(comments,true));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(pubflowVersion,false));
+			msgBody.append(fieldSeperatorSeq);
+			msgBody.append(MessageToolbox.transformObjectToMessageString(wfEngine,true));
+		} catch (StringTransformationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String serial = clazz + coreSeperatorSeq + msgBody.toString();
-		
 		return serial;
 	}
+	
+	
 
 	@Override
 	public void initFromString(String content) {
