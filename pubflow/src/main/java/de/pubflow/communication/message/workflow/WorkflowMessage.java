@@ -31,6 +31,8 @@ public class WorkflowMessage extends Message {
 	protected long 			pubflowVersion			= -1;
 	protected long 			wfEngine				= -1;
 	
+	public static final int fieldCount = 17;
+	
 
 	public WorkflowMessage()
 	{
@@ -88,10 +90,23 @@ public class WorkflowMessage extends Message {
 		return serial;
 	}
 
+	public static WorkflowMessage getTestMsg()
+	{
+		WorkflowMessage ret = new WorkflowMessage();
+		
+		
+		
+		return ret;
+	}
 
 	@Override
 	public void parseBody(String pContent) {
-		// TODO Auto-generated method stub
+		String[] splitresult = pContent.split(Message.fieldSeperatorSeq);
+		if (splitresult.length!=fieldCount)
+		{
+			myLogger.error("An error occured while loading a wfMessage - wrong FieldCount");
+			return;
+		}
 		
 	}
 
