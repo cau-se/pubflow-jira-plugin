@@ -11,6 +11,7 @@ import javax.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 
 import de.pubflow.communication.message.text.TextMessage;
+import de.pubflow.communication.message.workflow.WorkflowMessage;
 
 public class MessageToolbox {
 
@@ -53,9 +54,16 @@ public class MessageToolbox {
 	public static void main(String[] args) {
 		TextMessage test = new TextMessage();
 		test.setContent("This is a test");
-		String msgAsString = transformToString(test);
+		String msgAsString = (new MessageToolbox()).transformToString(test);
 		System.out.println(msgAsString);
-		TextMessage nT = loadFromString(msgAsString, TextMessage.class);
+		TextMessage nT = (new MessageToolbox()).loadFromString(msgAsString, TextMessage.class);
 		System.out.println(nT.getContent());
+		
+		WorkflowMessage wm = new WorkflowMessage();
+		wm.setComments("TestWFMsg");
+		String temp = (new MessageToolbox()).transformToString(wm);
+		System.out.println(temp);
+		WorkflowMessage nwm = (new MessageToolbox()).loadFromString(temp, WorkflowMessage.class);
+		System.out.println(nwm.getComments());
 	}
 }
