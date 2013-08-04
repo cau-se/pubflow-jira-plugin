@@ -16,6 +16,7 @@ public abstract class Message implements StringSerializable{
 	public Message()
 	{
 		myLogger = LoggerFactory.getLogger(this.getClass());
+		clazz = this.getClass().getCanonicalName();
 	}
 	
 	public String getType() {
@@ -60,9 +61,29 @@ public abstract class Message implements StringSerializable{
 		return result;
 	}
 	
+	public void initFromString(String pContent)
+	{
+		myLogger.info("Loading msg from String: " + pContent);
+		myLogger.info("Checking Msg-Type");
+		if (!MessageToolbox.checkType(this.getClass(), pContent))
+		{
+			myLogger.error("Wrong msg-type");
+			return;
+		}
+
+		try {
+			clazz = getmsgPart(pContent, Message.MsgPart.HEADER);
+			parseBody(getmsgPart(pContent, Message.MsgPart.BODY));
+		} catch (MsgParsingException e) {
+			myLogger.error("An exception occurred while parsing this msg.");
+			e.printStackTrace();
+		}
+	}
+	
 	public abstract boolean isValid();
 	public abstract String transformToString();
-	public abstract void initFromString(String content);
+	
+	public abstract void parseBody(String pContent);
 	
 	public enum MsgPart
 	{

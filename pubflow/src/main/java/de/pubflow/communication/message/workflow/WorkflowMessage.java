@@ -6,6 +6,7 @@ import de.pubflow.common.entity.WFParamList;
 import de.pubflow.common.enumerartion.UserRole;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.enumerartion.WFType;
+import de.pubflow.common.exception.MsgParsingException;
 import de.pubflow.common.exception.StringTransformationException;
 import de.pubflow.communication.message.Message;
 import de.pubflow.communication.message.MessageToolbox;
@@ -86,15 +87,13 @@ public class WorkflowMessage extends Message {
 		String serial = clazz + coreSeperatorSeq + msgBody.toString();
 		return serial;
 	}
-	
-	
+
 
 	@Override
-	public void initFromString(String content) {
+	public void parseBody(String pContent) {
 		// TODO Auto-generated method stub
-
+		
 	}
-	
 
 	@Override
 	public boolean isValid() {
@@ -345,5 +344,6 @@ public class WorkflowMessage extends Message {
 	public synchronized void setWfEngine(long wfEngine) {
 		this.wfEngine = wfEngine;
 	}
+
 
 }

@@ -29,32 +29,16 @@ public class TextMessage extends Message {
 	}
 
 	@Override
-	public void initFromString(String envelope) {
-		myLogger.info("Loading msg from String: " + envelope);
-		myLogger.info("Checking Msg-Type");
-		if (!MessageToolbox.checkType(this.getClass(), envelope))
-		{
-			myLogger.error("Wrong msg-type");
-			return;
-		}
-
-		try {
-			clazz = getmsgPart(envelope, Message.MsgPart.HEADER);
-			setContent(getmsgPart(envelope, Message.MsgPart.BODY));
-		} catch (MsgParsingException e) {
-			myLogger.error("An exception occurred while parsing this msg.");
-			e.printStackTrace();
-		}
-
-		
-
-	}
-
-	@Override
 	public boolean isValid() {
 		if (content == null)
 			return false;
 		return true;
+	}
+
+	@Override
+	public void parseBody(String pContent) {
+
+		content = pContent;
 	}
 
 }
