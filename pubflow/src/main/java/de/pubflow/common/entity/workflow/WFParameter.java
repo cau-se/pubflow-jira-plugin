@@ -5,9 +5,6 @@ import java.util.HashMap;
 
 public class WFParameter {
 	
-	public static ArrayList<WFParameter> loadFromHashmap(HashMap<String, String> map)
-	{
-		return null;
-	}
+	
 
 }

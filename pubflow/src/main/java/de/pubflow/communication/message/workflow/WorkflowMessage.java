@@ -2,7 +2,7 @@ package de.pubflow.communication.message.workflow;
 
 import de.pubflow.common.entity.Timestamp;
 import de.pubflow.common.entity.User;
-import de.pubflow.common.entity.WFParamList;
+import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.enumerartion.UserRole;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.enumerartion.WFType;
