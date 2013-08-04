@@ -4,6 +4,7 @@ import org.apache.camel.Consume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.pubflow.communication.message.MessageToolbox;
 import de.pubflow.communication.message.text.TextMessage;
 
 public class Consumer {
@@ -21,8 +22,8 @@ public class Consumer {
 	@Consume(uri = "test-jms:queue:out.queue")
 	public void onCheese(String name) {
 		myLogger.info("Input recived >> "+name);
-		TextMessage tm = new TextMessage();
-		tm.initFromString(name);
+		TextMessage tm = MessageToolbox.loadFromString(name, TextMessage.class);
+		
 		myLogger.info("content >> "+tm.getContent());
 		myLogger.info("type >> "+tm.getMsgType());
 	}

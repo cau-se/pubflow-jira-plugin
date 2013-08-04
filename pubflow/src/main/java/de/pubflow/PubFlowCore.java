@@ -21,6 +21,7 @@ import de.pubflow.assistance.Consumer;
 import de.pubflow.common.PropLoader;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
+import de.pubflow.communication.message.MessageToolbox;
 import de.pubflow.communication.message.text.TextMessage;
 import de.pubflow.server.AppServer;
 import de.pubflow.workflow.WFBroker;
@@ -211,7 +212,7 @@ public class PubFlowCore {
 			TextMessage text = new TextMessage();
 			
 			text.setContent("Test");
-			template.sendBody("t2-jms:queue:test.queue", text.transformToString());
+			template.sendBody("t2-jms:queue:test.queue", MessageToolbox.transformToString(text));
 
 		}
 	}
