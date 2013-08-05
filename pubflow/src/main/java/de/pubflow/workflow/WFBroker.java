@@ -3,18 +3,16 @@ package de.pubflow.workflow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.apache.camel.Consume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
 
-import de.pubflow.PubFlowCore;
 import de.pubflow.common.entity.repository.WorkflowEntity;
+import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.enumerartion.WFType;
+import de.pubflow.common.exception.WFException;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.communication.message.MessageToolbox;
 import de.pubflow.communication.message.workflow.WorkflowMessage;
@@ -69,9 +67,34 @@ public class WFBroker {
 		WorkflowEntity wfEntity = provider.getEntry(wm.getWorkflowID());
 		
 		WFType type = wfEntity.getType();
+		IWorkflowEngine engine = null;
+		if(type!=null){
 		ArrayList<IWorkflowEngine> engineList = registry.get(type);
-		IWorkflowEngine engine = engineList.get(0);
-		//engine.deployWF(wfEntity.)
+		engine = engineList.get(0);
+		}
+		else{
+			myLogger.error("Workflow NOT deployed >> Msg was malformed / No type provided");
+			return;
+		}
+		PubFlow myWF = null;
+		if(type.equals(WFType.BPMN2))
+		{
+			myWF = new JBPMPubflow();
+		}
+		else if (type.equals(WFType.BPEL)) {
+			
+		}
+		else
+		{
+			myLogger.error("Workflow NOT deployed >> Type could not be resolved");
+			return;
+		}
+		try {
+			long wfRef = engine.deployWF(myWF);
+			engine.startWF(wfRef, wm.getWfparams().getParameter());
+		} catch (WFException e) {
+			e.printStackTrace();
+		}
 		
 //		PubFlowMessage nachricht = PubFlowMessage.initFromString(msg);
 //		if(nachricht.getAction().equalsIgnoreCase("START_WF"))

@@ -11,14 +11,14 @@ public class WorkflowWriter {
 		System.out.println("STARTING");
 		WorkflowEntity wf = new WorkflowEntity();
 		
-		wf.setWFID("123321");
+		wf.setWFID("12356755555555");
 		WorkflowProvider pro = WorkflowProvider.getInstance(); 
 		pro.setEntry(wf);
 		
 		List<WorkflowEntity> wfList = pro.getAllEntries();
 		System.out.println(wfList.size());
 		for (WorkflowEntity workflowEntity : wfList) {
-			System.out.println(workflowEntity.getPubFlowWFID());
+			System.out.println(workflowEntity.getWFID());
 		}
 	
 	}
