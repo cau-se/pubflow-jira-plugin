@@ -64,7 +64,7 @@ public class WFBroker {
 		WorkflowMessage wm = MessageToolbox.loadFromString(msg, WorkflowMessage.class);
 		myLogger.info("Loading WF with ID ("+wm.getWorkflowID()+") from WFRepo");
 		WorkflowProvider provider = WorkflowProvider.getInstance();
-		WorkflowEntity wfEntity = provider.getEntry(wm.getWorkflowID());
+		WorkflowEntity wfEntity = provider.getByWFID(wm.getWorkflowID());
 		
 		WFType type = wfEntity.getType();
 		IWorkflowEngine engine = null;
