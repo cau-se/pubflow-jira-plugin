@@ -42,7 +42,7 @@ public class BasicRepository {
 	private Map<Long, EObjectModification> modifiedEntries = new HashMap<Long, EObjectModification>();
 	private final StorageAdapter storageAdapter;
 	private boolean cachingEnabled = false;
-	private PubFlowCore core;
+	//private PubFlowCore core;
 
 	/** DEFAULT PROPERTIES **/
 	private static final String DEFAULT_ID_CONFIGURATION = "1";
@@ -54,7 +54,7 @@ public class BasicRepository {
 
 	public BasicRepository(ERepositoryName repositoryName, StorageAdapter storageAdapter) throws IOException {
 		this.storageAdapter = storageAdapter;
-		core = PubFlowCore.getInstance();
+		//core = PubFlowCore.getInstance();
 
 		String strId = "";
 

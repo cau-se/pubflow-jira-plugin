@@ -23,6 +23,7 @@ import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.communication.message.MessageToolbox;
 import de.pubflow.communication.message.text.TextMessage;
+import de.pubflow.communication.message.workflow.WorkflowMessage;
 import de.pubflow.server.AppServer;
 import de.pubflow.workflow.WFBroker;
 
@@ -165,11 +166,10 @@ public class PubFlowCore {
 			public void configure() {
 				from("t2-jms:queue:test.queue").to(
 						"test-jms:queue:out.queue")
-						.bean(Consumer.getInstance()).to("test-jms:queue:out2.queue")
-						.bean(WFBroker.getInstance());
-				from("test-jms:queue:testOut.queue").to(
-						"test-jms:queue:out.queue")
 						.bean(Consumer.getInstance());
+				from("test-jms:queue:testOut.queue").to(
+						"test-jms:wfbroker:in.queue")
+						.bean(WFBroker.getInstance());
 			}
 		});
 	}
@@ -208,11 +208,15 @@ public class PubFlowCore {
 		// Do some tests
 		ProducerTemplate template = c.getContext().createProducerTemplate();
 		for (int i = 0; i < 1; i++) {
-			System.out.println("sending testmsg");
+			System.out.println("sending test textmsg");
 			TextMessage text = new TextMessage();
-			
 			text.setContent("Test");
 			template.sendBody("t2-jms:queue:test.queue", MessageToolbox.transformToString(text));
+			
+			System.out.println("sending test textmsg");
+			WorkflowMessage wm = new WorkflowMessage();
+			wm.setComments("It's alive!");
+			template.sendBody("test-jms:queue:testOut.queue", MessageToolbox.transformToString(wm));
 
 		}
 	}

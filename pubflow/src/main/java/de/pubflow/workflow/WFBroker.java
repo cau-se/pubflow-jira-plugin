@@ -3,6 +3,7 @@ package de.pubflow.workflow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.apache.camel.Consume;
 import org.slf4j.Logger;
@@ -11,8 +12,12 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 
 import de.pubflow.PubFlowCore;
+import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.enumerartion.WFType;
+import de.pubflow.common.repository.workflow.WorkflowProvider;
+import de.pubflow.communication.message.MessageToolbox;
+import de.pubflow.communication.message.workflow.WorkflowMessage;
 import de.pubflow.workflow.engine.IWorkflowEngine;
 import de.pubflow.workflow.engine.jbpm.JBPMEngine;
 
@@ -28,7 +33,7 @@ public class WFBroker {
 	private Logger myLogger;
 	
 	private Hashtable<WFType, ArrayList<IWorkflowEngine>> registry;
-	private Hashtable<Long, PubFlow> workflows;
+
 	
 	private WFBroker()
 	{
@@ -41,23 +46,8 @@ public class WFBroker {
 		
 		registry.put(WFType.BPMN2, bpmn2Engines);
 		
-		workflows = new Hashtable<Long, PubFlow>();
-		loadWorkflows();
 	}
-	
-	private synchronized void loadWorkflows()
-	{
-		
-		//TODO
-		/*
-		 * Load all existing Workflows from the DB and add them to the workflows hashtable.
-		 * 
-		 * The PubFlowID (long) of the WF is the key
-		 * 
-		 * Extension (to be done later):
-		 * Maybe start a Quartz job to update WF list in a predefined intervall?!?
-		 */
-	}
+
 	
 	public static synchronized WFBroker getInstance()
 	{
@@ -67,21 +57,19 @@ public class WFBroker {
 		}
 		return instance;
 	}
+
 	
-	private PubFlow getWFByID(long pubflowID)
-	{
-		PubFlow result = null;
-		
-		result = workflows.get(pubflowID);
-		
-		return result;	
-	}
-	
-	@Consume(uri = "test-jms:queue:out2.queue")
+	@Consume(uri = "test-jms:wfbroker:in.queue")
 	public void reciveWFCall(String msg)
 	{
-		myLogger.info("RECIVED >> " + msg);
-		sendWFResponse("Recived!!!");
+		myLogger.info("recived WF-Msg: " + msg);
+		WorkflowMessage wm = MessageToolbox.loadFromString(msg, WorkflowMessage.class);
+		myLogger.info("Loading WF with ID ("+wm.getWorkflowID()+") from WFRepo");
+		WorkflowProvider provider = WorkflowProvider.getInstance();
+		List<WorkflowEntity> wfList = provider.getAllEntries();
+		
+		
+		
 //		PubFlowMessage nachricht = PubFlowMessage.initFromString(msg);
 //		if(nachricht.getAction().equalsIgnoreCase("START_WF"))
 //		{
