@@ -16,6 +16,7 @@ public class WorkflowWriter {
 		pro.setEntry(wf);
 		
 		List<WorkflowEntity> wfList = pro.getAllEntries();
+		System.out.println(wfList.size());
 		for (WorkflowEntity workflowEntity : wfList) {
 			System.out.println(workflowEntity.getPubFlowWFID());
 		}

@@ -18,7 +18,7 @@ import de.pubflow.communication.message.MessageToolbox;
 public class WorkflowMessage extends Message {
 
 	protected long 			dataset 				= -1;
-	protected String 		workflowID 				= "empty";
+	protected long 			workflowID 				= -1;
 	protected WFType 		wftype 					= null;
 	protected WFState 		wfstate 				= null;
 	protected WFParamList 	wfparams 				= null;
@@ -75,14 +75,14 @@ public class WorkflowMessage extends Message {
 	 * @return the workflowID
 	 */
 	@XmlElement(name="WorkflowRef")
-	public synchronized String getWorkflowID() {
+	public synchronized long getWorkflowID() {
 		return workflowID;
 	}
 
 	/**
 	 * @param workflowID the workflowID to set
 	 */
-	public synchronized void setWorkflowID(String workflowID) {
+	public synchronized void setWorkflowID(long workflowID) {
 		this.workflowID = workflowID;
 	}
 
