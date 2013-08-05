@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
+import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
@@ -60,6 +61,7 @@ public class WFBroker {
 	@Consume(uri = "test-jms:wfbroker:in.queue")
 	public void reciveWFCall(String msg)
 	{
+		//TODO implement rest
 		myLogger.info("recived WF-Msg: " + msg);
 		WorkflowMessage wm = MessageToolbox.loadFromString(msg, WorkflowMessage.class);
 		myLogger.info("Loading WF with ID ("+wm.getWorkflowID()+") from WFRepo");
@@ -79,10 +81,13 @@ public class WFBroker {
 		PubFlow myWF = null;
 		if(type.equals(WFType.BPMN2))
 		{
+			myLogger.info("BPMN2.0 Workflow detected");
 			myWF = new JBPMPubflow();
+			//TODO fill var
 		}
 		else if (type.equals(WFType.BPEL)) {
-			
+			myLogger.info("BPEL Workflow detected");
+			//TODO
 		}
 		else
 		{
@@ -91,60 +96,20 @@ public class WFBroker {
 		}
 		try {
 			long wfRef = engine.deployWF(myWF);
+			WFParamList params = wm.getWfparams();
+			if (params!=null){
 			engine.startWF(wfRef, wm.getWfparams().getParameter());
+			}
+			else
+			{
+				engine.startWF(wfRef, null);
+			}
 		} catch (WFException e) {
 			e.printStackTrace();
 		}
-		
-//		PubFlowMessage nachricht = PubFlowMessage.initFromString(msg);
-//		if(nachricht.getAction().equalsIgnoreCase("START_WF"))
-//		{
-//			Set<Entry<String, String>> content = nachricht.getMessage().entrySet();
-//			PubFlow wfToStart = null;  
-//			for (Entry<String, String> entry : content) {
-//				if(entry.getKey().equalsIgnoreCase(WFID))
-//				{
-//					long id = Long.parseLong(entry.getValue());
-//					wfToStart = getWFByID(id);
-//				}
-//			}
-//			HashMap<String, String> params = PubFlowMessage.getMap(PARAMS, nachricht.getMessage());
-//			if(wfToStart!=null)
-//			{
-//				runWF(wfToStart, params);
-//			}
-//			else
-//			{
-//				
-//				// TODO
-//				// It would be nice to throw an exception
-//			}
-//		}
-	
 	}
 	
-	private void runWF(PubFlow wfToStart,HashMap<String, String> params)
-	{
-//		if(wfToStart==null)
-//		{ 
-//			// TODO Exception
-//		}
-//		WFType type = wfToStart.getType();
-//		ArrayList<IWorkflowEngine> engines = registry.get(type);
-//		if(engines==null)
-//		{
-//			//TODO Exception
-//		}
-//		//TODO better engine selection
-//		IWorkflowEngine currentEngine = engines.get(0);
-//		try {
-//			long pointer = currentEngine.deployWF(wfToStart);
-//			ArrayList<WFParameter> currentParameters = WFParameter.loadFromHashmap(params); 
-//			currentEngine.startWF(pointer, currentParameters);
-//		} catch (WFException e) {
-//			e.printStackTrace();
-//		}
-	}
+
 	
 	private void sendWFResponse(String msg)
 	{
