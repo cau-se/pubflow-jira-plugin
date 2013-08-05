@@ -60,7 +60,7 @@ public class PropLoader {
 			myLogger.info("Property " + key + " : " + calleeSig + " has been set to: " + defaultValue);
 
 			pubflowConf.setProperty(calleeSig + "-" + key, defaultValue);
-			
+			saveProperties();
 			prop = defaultValue;
 		}
 		return prop;
@@ -84,6 +84,7 @@ public class PropLoader {
 			throw new PropNotSetException();
 		}
 		pubflowConf.setProperty(calleeSig + "-" + key, prop);
+		saveProperties();
 	}
 
 	public void saveProperties() {

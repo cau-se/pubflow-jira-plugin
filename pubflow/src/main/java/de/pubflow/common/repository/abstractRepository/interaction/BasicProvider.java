@@ -59,7 +59,6 @@ public abstract class BasicProvider<T> implements IProvider<T> {
 
 	public List<T> getAllEntries() {
 		List<Long> allIds = br.getAllIds();
-		
 		List<T> result = new ArrayList<T>();
 		
 		for(Long l : allIds){

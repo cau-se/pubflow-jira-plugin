@@ -11,7 +11,7 @@ public class WorkflowWriter {
 		System.out.println("STARTING");
 		WorkflowEntity wf = new WorkflowEntity();
 		
-		wf.setWFID("123321");
+		wf.setWFID("123567555555555555555555555555555555555555555555555555555555555555555555555555555555321");
 		WorkflowProvider pro = WorkflowProvider.getInstance(); 
 		pro.setEntry(wf);
 		

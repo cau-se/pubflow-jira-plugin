@@ -41,6 +41,9 @@ public class RepositoryTest {
 				assertTrue(we1.getWorkflowName().equals("Test"));
 				assertTrue(Arrays.equals(we1.getgBpmn(), sampleBytes));
 				assertTrue(we1.getWFID().equals("wfID"));
+				
+				
+				
 	}
 
 	@Test
