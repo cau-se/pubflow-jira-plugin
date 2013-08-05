@@ -10,15 +10,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Enumeration;
-import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import de.pubflow.PubFlowCore;
 import de.pubflow.common.PropLoader;
-import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.enumerartion.WFType;
-import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.common.repository.abstractRepository.storageAdapter.FSStorageAdapter;
 import de.pubflow.common.repository.workflow.WorkflowLocationInformation;
 

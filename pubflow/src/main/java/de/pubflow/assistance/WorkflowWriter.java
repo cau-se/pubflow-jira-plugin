@@ -12,7 +12,7 @@ public class WorkflowWriter {
 		WorkflowEntity wf = new WorkflowEntity();
 		
 		wf.setWFID("123321");
-		WorkflowProvider pro =WorkflowProvider.getInstance(); 
+		WorkflowProvider pro = WorkflowProvider.getInstance(); 
 		pro.setEntry(wf);
 		
 		List<WorkflowEntity> wfList = pro.getAllEntries();

@@ -25,6 +25,7 @@
 package de.pubflow.common.repository.abstractRepository.interaction;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.pubflow.common.repository.abstractRepository.repository.BasicRepository;
@@ -57,7 +58,14 @@ public abstract class BasicProvider<T> implements IProvider<T> {
 	}
 
 	public List<T> getAllEntries() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Long> allIds = br.getAllIds();
+		
+		List<T> result = new ArrayList<T>();
+		
+		for(Long l : allIds){
+			result.add((T) br.get(l));
+		}
+
+		return result;
 	}
 }
