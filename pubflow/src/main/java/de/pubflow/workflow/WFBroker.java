@@ -101,11 +101,12 @@ public class WFBroker {
 			long wfRef = engine.deployWF(myWF);
 			WFParamList params = wm.getWfparams();
 			if (params!=null){
-				myLogger.info("NO Parameter found!");
+				myLogger.info("Parameter found ...");
 			engine.startWF(wfRef, wm.getWfparams());
 			}
 			else
 			{
+				myLogger.info("No Parameter found!");
 				engine.startWF(wfRef, null);
 			}
 		} catch (WFException e) {

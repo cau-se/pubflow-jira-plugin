@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
 import de.pubflow.common.PropLoader;
-import de.pubflow.common.entity.workflow.IntegerParameter;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
@@ -219,7 +218,9 @@ public class PubFlowCore {
 			
 			System.out.println("sending test textmsg");
 			System.out.println("Composing test wfmsg");
-			WFParameter param1 = new IntegerParameter("tropfenzahl", 100);
+			WFParameter param1 = new WFParameter();
+			param1.setKey("tropfenzahl");
+			param1.setIntValue(100);
 			WFParamList params = new WFParamList();
 			params.add(param1);
 			WorkflowMessage wm = new WorkflowMessage();

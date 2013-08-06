@@ -17,7 +17,6 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.common.entity.workflow.IntegerParameter;
 import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParamList;
@@ -172,7 +171,7 @@ public class JBPMEngine implements IWorkflowEngine {
 			myLogger.info("Setting process parameter");
 			for(WFParameter wfParam : params.getParameter()){
 				String key = wfParam.getKey();
-				int value = ((IntegerParameter)wfParam).getValue();
+				int value = wfParam.getIntValue();
 				myLogger.info("Setting parameter >>"+key+"<< to >>"+value+"<<");
 				ksession.setGlobal(key, value);
 			}
