@@ -8,8 +8,4 @@ public enum UserRole {
 	ADMIN,
 	DEVELOPER;
 	
-	public static UserRole loadFromString()
-	{
-		return UserRole.GUEST;
-	}
 }
