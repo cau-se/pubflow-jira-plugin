@@ -22,7 +22,5 @@ public class WorkflowWriter {
 		for (WorkflowEntity workflowEntity : wfList) {
 			System.out.println(workflowEntity.getWFID());
 		}
-	
 	}
-
 }
