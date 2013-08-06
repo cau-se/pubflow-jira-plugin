@@ -13,11 +13,13 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
+import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
@@ -70,7 +72,7 @@ public class JBPMEngine implements IWorkflowEngine {
 		try {
 			KnowledgeBase knowledgeBase = createKnowledgeBase(wf);
 			//TODO PARAMS!!!
-			runWF(knowledgeBase, wf.getWFID());
+			runWF(knowledgeBase, wf.getWFID(), new WFParamList());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -159,14 +161,17 @@ public class JBPMEngine implements IWorkflowEngine {
 	 * @return (ProcessInstance) : the instance of the running workflow
 	 * @throws Exception
 	 */
-	private ProcessInstance runWF(KnowledgeBase kbase, String processID) throws Exception
+	private ProcessInstance runWF(KnowledgeBase kbase, String processID, WFParamList params) throws Exception
 	{
 		myLogger.info("Trying to start workflow: "+processID);
 		ProcessInstance instance = null;
 		try{
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		ksession.setGlobal("tropfenzahl", 100);
 		instance = ksession.startProcess(processID);
-		myLogger.info("Workflow started");
+		Double TempPi =(Double) ((WorkflowProcessInstance) instance).getVariable("pi");
+		myLogger.info("Result= "+TempPi);
+		myLogger.info("Workflow executed sucessfuly");
 		}
 		catch (Exception ex)
 		{
