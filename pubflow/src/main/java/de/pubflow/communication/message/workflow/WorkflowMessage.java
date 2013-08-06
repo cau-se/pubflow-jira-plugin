@@ -9,10 +9,7 @@ import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.enumerartion.UserRole;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.enumerartion.WFType;
-import de.pubflow.common.exception.MsgParsingException;
-import de.pubflow.common.exception.StringTransformationException;
 import de.pubflow.communication.message.Message;
-import de.pubflow.communication.message.MessageToolbox;
 
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
 public class WorkflowMessage extends Message {
