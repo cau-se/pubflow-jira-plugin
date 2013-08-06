@@ -21,6 +21,7 @@ import de.pubflow.common.PropLoader;
 import de.pubflow.common.entity.BPELProcess;
 import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.entity.workflow.PubFlow;
+import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
@@ -84,7 +85,7 @@ public class ODEEngine implements IWorkflowEngine{
 	}
 
 	@Override
-	public void startWF(long wfID, ArrayList<WFParameter> params) throws WFException {
+	public void startWF(long wfID, WFParamList params) throws WFException {
 		try {
 
 			WorkflowProvider wfp = WorkflowProvider.getInstance();
@@ -110,7 +111,7 @@ public class ODEEngine implements IWorkflowEngine{
 
 			Properties props = new Properties();
 
-			for(WFParameter wfParam : params){
+			for(WFParameter wfParam : params.getParameter()){
 				//props.setProperty(wfParam., value)
 			}
 

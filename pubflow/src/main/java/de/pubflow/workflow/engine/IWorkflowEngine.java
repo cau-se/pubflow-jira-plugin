@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.pubflow.common.entity.workflow.PubFlow;
+import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
@@ -25,7 +26,7 @@ public interface IWorkflowEngine {
 	 * @param params (WFParameter ...) : The list of the parameters needed by the Workflow
 	 * @throws WFException
 	 */
-	void startWF(long wfID, ArrayList<WFParameter> params) throws WFException;
+	void startWF(long wfID, WFParamList params) throws WFException;
 	
 	/**
 	 * Method to undeploy a deployed pubflow

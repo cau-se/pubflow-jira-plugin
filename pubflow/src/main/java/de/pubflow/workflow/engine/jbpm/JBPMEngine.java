@@ -17,6 +17,7 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.pubflow.common.entity.workflow.IntegerParameter;
 import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParamList;
@@ -65,14 +66,14 @@ public class JBPMEngine implements IWorkflowEngine {
 	}
 
 	@Override
-	public void startWF(long wfID, ArrayList<WFParameter> params) throws WFException {
+	public void startWF(long wfID, WFParamList params) throws WFException {
 		
 		JBPMPubflow wf = processTable.get(wfID);
 		
 		try {
 			KnowledgeBase knowledgeBase = createKnowledgeBase(wf);
 			//TODO PARAMS!!!
-			runWF(knowledgeBase, wf.getWFID(), new WFParamList());
+			runWF(knowledgeBase, wf.getWFID(), params);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -166,8 +167,16 @@ public class JBPMEngine implements IWorkflowEngine {
 		myLogger.info("Trying to start workflow: "+processID);
 		ProcessInstance instance = null;
 		try{
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		ksession.setGlobal("tropfenzahl", 100);
+			myLogger.info("Creating Knowledgebase ...");
+			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+			myLogger.info("Setting process parameter");
+			for(WFParameter wfParam : params.getParameter()){
+				String key = wfParam.getKey();
+				int value = ((IntegerParameter)wfParam).getValue();
+				myLogger.info("Setting parameter >>"+key+"<< to >>"+value+"<<");
+				ksession.setGlobal(key, value);
+			}
+		
 		instance = ksession.startProcess(processID);
 		Double TempPi =(Double) ((WorkflowProcessInstance) instance).getVariable("pi");
 		myLogger.info("Result= "+TempPi);

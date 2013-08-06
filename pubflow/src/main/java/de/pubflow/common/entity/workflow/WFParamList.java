@@ -6,18 +6,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import de.pubflow.common.entity.StringSerializable;
 
+@XmlRootElement(name="ParameterList")
 public class WFParamList{
 
-	ArrayList<WFParameter> parameterList = new ArrayList<WFParameter>();
+	List<WFParameter> parameterList = new ArrayList<WFParameter>();
 	
+	
+
 	/**
-	 * 
-	 * @see java.util.ArrayList#trimToSize()
+	 * @return the parameterList
 	 */
-	public void trimToSize() {
-		parameterList.trimToSize();
+	public List<WFParameter> getParameterList() {
+		return parameterList;
+	}
+
+	/**
+	 * @param parameterList the parameterList to set
+	 */
+	public void setParameterList(List<WFParameter> parameterList) {
+		this.parameterList = parameterList;
 	}
 
 	/**
@@ -72,13 +84,6 @@ public class WFParamList{
 		return parameterList.lastIndexOf(o);
 	}
 
-	/**
-	 * @return
-	 * @see java.util.ArrayList#clone()
-	 */
-	public Object clone() {
-		return parameterList.clone();
-	}
 
 	/**
 	 * @return
@@ -231,7 +236,7 @@ public class WFParamList{
 		return parameterList.subList(fromIndex, toIndex);
 	}
 
-	public ArrayList<WFParameter> getParameter()
+	public List<WFParameter> getParameter()
 	{
 		return parameterList;
 	}

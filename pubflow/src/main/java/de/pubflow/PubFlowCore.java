@@ -19,6 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
 import de.pubflow.common.PropLoader;
+import de.pubflow.common.entity.workflow.IntegerParameter;
+import de.pubflow.common.entity.workflow.WFParamList;
+import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
@@ -215,7 +218,12 @@ public class PubFlowCore {
 			template.sendBody("t2-jms:queue:test.queue", MessageToolbox.transformToString(text));
 			
 			System.out.println("sending test textmsg");
+			System.out.println("Composing test wfmsg");
+			WFParameter param1 = new IntegerParameter("tropfenzahl", 100);
+			WFParamList params = new WFParamList();
+			params.add(param1);
 			WorkflowMessage wm = new WorkflowMessage();
+			wm.setWfparams(params);
 			wm.setWorkflowID(654321l);
 			wm.setWftype(WFType.BPMN2);
 			wm.setComments("It's alive!");
