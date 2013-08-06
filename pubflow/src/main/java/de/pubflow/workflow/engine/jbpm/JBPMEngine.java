@@ -13,6 +13,8 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
@@ -26,9 +28,14 @@ public class JBPMEngine implements IWorkflowEngine {
 
 	private static JBPMEngine instance;
 	private Hashtable<Long, JBPMPubflow> processTable;
-	private static final String inputChannel = "activemq:JBPMworkflow.input";
+	static Logger myLogger;
 
+	
+	static{
+		myLogger = LoggerFactory.getLogger(JBPMEngine.class);
+	}
 	private JBPMEngine() {
+		
 		processTable = new Hashtable<Long, JBPMPubflow>();
 	}
 
@@ -67,7 +74,6 @@ public class JBPMEngine implements IWorkflowEngine {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -127,10 +133,21 @@ public class JBPMEngine implements IWorkflowEngine {
 	 * @throws Exception
 	 */
 	private static KnowledgeBase createKnowledgeBase(JBPMPubflow wf) throws Exception {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+		myLogger.info("Trying to add WF to knowledgebase");
+		KnowledgeBuilder kbuilder = null;
+		try{
+		kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newByteArrayResource(wf.getWFAsByteArray()),
+		kbuilder.add(ResourceFactory.newByteArrayResource(wf.getWfDef()),
 				ResourceType.BPMN2);
+			myLogger.debug("Knowledgebase created");
+		}
+		
+		catch (Exception e)
+		{
+			myLogger.error("Couldn't create knowledgebase");
+			e.printStackTrace();
+		}
 		return kbuilder.newKnowledgeBase();
 	}
 	

@@ -14,6 +14,21 @@ public class PubFlow {
 	
 	private String WFID;
 	private WFType type;
+	private byte[] wfDef;
+
+	/**
+	 * @return the wfDef
+	 */
+	public synchronized byte[] getWfDef() {
+		return wfDef;
+	}
+
+	/**
+	 * @param wfDef the wfDef to set
+	 */
+	public synchronized void setWfDef(byte[] wfDef) {
+		this.wfDef = wfDef;
+	}
 
 	public WFType getType() {
 		return type;
@@ -25,10 +40,6 @@ public class PubFlow {
 
 	public String getWFID() {
 		return WFID;
-	}
-
-	public byte[] getWFAsByteArray() {
-		return null;
 	}
 
 	public void setWFID(String wFID) {

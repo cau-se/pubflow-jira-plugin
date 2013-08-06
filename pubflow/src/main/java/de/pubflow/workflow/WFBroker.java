@@ -83,6 +83,9 @@ public class WFBroker {
 		{
 			myLogger.info("BPMN2.0 Workflow detected");
 			myWF = new JBPMPubflow();
+			
+			myWF.setWfDef(wfEntity.getgBpmn());
+			myLogger.info("Set WFDef: "+wfEntity.getgBpmn().toString());
 			//TODO fill var
 		}
 		else if (type.equals(WFType.BPEL)) {
