@@ -26,10 +26,14 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jbpm</groupId>
-			<artifactId>jbpm-bpmn2</artifactId>
-			<version>5.0.0</version>
-		</dependency>
+
+      <groupId>org.jbpm</groupId>
+
+      <artifactId>jbpm-bpmn2</artifactId>
+
+      <version>5.4.0.Final</version>
+
+    </dependency>
 
 
 
