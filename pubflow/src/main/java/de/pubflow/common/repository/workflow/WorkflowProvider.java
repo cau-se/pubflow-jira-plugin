@@ -87,16 +87,17 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 	
 	@Override
 	public long setEntry(WorkflowEntity o) {
-		myLogger.info("Registering WF >>"+o.getWFID());
+		myLogger.info("Registering WF >>"+o.getPubFlowWFID());
 		long intWfRef = super.br.add(o);
-		myLogger.info(" WF Mapping added: "+o.getWFID()+" >> "+intWfRef);
-		workflowMap.put(o.getWFID()+"",intWfRef+"");
+		myLogger.info(" WF Mapping added: "+o.getPubFlowWFID()+" >> "+intWfRef);
+		workflowMap.put(o.getPubFlowWFID()+"",intWfRef+"");
 		return intWfRef;
 	}
 	
 	public WorkflowEntity getByWFID(long pID)
 	{
 		String temp = workflowMap.getProperty(pID+"");
+		myLogger.info("Parsing id: "+pID+" > "+temp);
 		long internalID = Long.parseLong(temp);
 		return super.getEntry(internalID);
 	}

@@ -216,7 +216,7 @@ public class PubFlowCore {
 			
 			System.out.println("sending test textmsg");
 			WorkflowMessage wm = new WorkflowMessage();
-			wm.setWorkflowID(54321l);
+			wm.setWorkflowID(654321l);
 			wm.setWftype(WFType.BPMN2);
 			wm.setComments("It's alive!");
 			template.sendBody("test-jms:queue:testOut.queue", MessageToolbox.transformToString(wm));

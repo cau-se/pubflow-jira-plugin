@@ -140,7 +140,7 @@ public class JBPMEngine implements IWorkflowEngine {
 				.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newByteArrayResource(wf.getWfDef()),
 				ResourceType.BPMN2);
-			myLogger.debug("Knowledgebase created");
+			myLogger.info("Knowledgebase created");
 		}
 		
 		catch (Exception e)
@@ -161,8 +161,19 @@ public class JBPMEngine implements IWorkflowEngine {
 	 */
 	private ProcessInstance runWF(KnowledgeBase kbase, String processID) throws Exception
 	{
+		myLogger.info("Trying to start workflow: "+processID);
+		ProcessInstance instance = null;
+		try{
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		return ksession.startProcess(processID);
+		instance = ksession.startProcess(processID);
+		myLogger.info("Workflow started");
+		}
+		catch (Exception ex)
+		{
+			myLogger.error("Couldn't start workflow");
+			ex.printStackTrace();
+		}
+		return instance;
 	}
 
 	@Override

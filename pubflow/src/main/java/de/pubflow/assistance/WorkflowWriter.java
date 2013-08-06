@@ -14,8 +14,9 @@ public class WorkflowWriter {
 		System.out.println("STARTING");
 		WorkflowEntity wf = new WorkflowEntity();
 		
-		wf.setWFID("54321");
+		wf.setPubFlowWFID(654321l);
 		wf.setType(WFType.BPMN2);
+		wf.setWFID("de.pubflow.pi");
 		try {
 			wf.setgBpmn(new File("pi.bpmn"));
 		} catch (IOException e) {
