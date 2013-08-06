@@ -44,6 +44,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlTransient;
 
+import de.pubflow.common.entity.workflow.BPELProcess;
+
 @Entity
 public class ProcessLog {
 	

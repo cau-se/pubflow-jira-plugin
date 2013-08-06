@@ -331,7 +331,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>de.pubflow.PubFlowCore</mainClass>
+							<mainClass>de.pubflow.PubFlowSystem</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -387,7 +387,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1</version>
 				<configuration>
-					<mainClass>de.pubflow.PubFlowCore</mainClass>
+					<mainClass>de.pubflow.PubFlowSystem</mainClass>
 				</configuration>
 			</plugin>
 
@@ -397,7 +397,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.pubflow.PubFlowCore</mainClass>
+							<mainClass>de.pubflow.PubFlowSystem</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

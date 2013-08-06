@@ -31,8 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.pubflow.common.PropLoader;
 import de.pubflow.common.entity.ObjectEntity;
+import de.pubflow.common.properties.PropLoader;
 import de.pubflow.common.repository.abstractRepository.storageAdapter.StorageAdapter;
 
 public class BasicRepository {

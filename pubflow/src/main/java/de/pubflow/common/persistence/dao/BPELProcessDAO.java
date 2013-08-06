@@ -28,9 +28,9 @@ import java.util.List;
 
 import org.hibernate.Hibernate;
 
-import de.pubflow.common.entity.BPELProcess;
 import de.pubflow.common.entity.Parameter;
 import de.pubflow.common.entity.ProcessLog;
+import de.pubflow.common.entity.workflow.BPELProcess;
 import de.pubflow.common.persistence.PersistenceProvider;
 
 

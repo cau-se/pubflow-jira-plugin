@@ -4,8 +4,8 @@ import org.apache.camel.Consume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.communication.message.MessageToolbox;
-import de.pubflow.communication.message.text.TextMessage;
+import de.pubflow.core.communication.message.MessageToolbox;
+import de.pubflow.core.communication.message.text.TextMessage;
 
 public class Consumer {
 

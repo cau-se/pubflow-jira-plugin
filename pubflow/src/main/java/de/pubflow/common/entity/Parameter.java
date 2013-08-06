@@ -33,6 +33,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlTransient;
 
+import de.pubflow.common.entity.workflow.BPELProcess;
+
 @Entity
 public class Parameter implements Serializable{
 

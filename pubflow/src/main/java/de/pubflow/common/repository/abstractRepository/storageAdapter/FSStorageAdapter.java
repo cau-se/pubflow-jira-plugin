@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import de.pubflow.common.PropLoader;
 import de.pubflow.common.entity.ObjectEntity;
+import de.pubflow.common.properties.PropLoader;
 
 public class FSStorageAdapter extends StorageAdapter {
 

@@ -7,7 +7,7 @@ import java.io.Writer;
 import java.util.Calendar;
 import java.util.Properties;
 
-import de.pubflow.PubFlowCore;
+import de.pubflow.PubFlowSystem;
 
 
 public class ConfWriterAssist {
@@ -36,7 +36,7 @@ public class ConfWriterAssist {
 		{
 		  FileOutputStream fs = new FileOutputStream(CONF_FILE);
 
-		  String signiture = PubFlowCore.class.toString();
+		  String signiture = PubFlowSystem.class.toString();
 		 
 		  pubflowConf.setProperty( signiture+"-CONFSERVER","ON" );
 		  

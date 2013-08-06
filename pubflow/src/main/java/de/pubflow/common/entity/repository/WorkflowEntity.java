@@ -13,8 +13,8 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import de.pubflow.common.PropLoader;
 import de.pubflow.common.enumerartion.WFType;
+import de.pubflow.common.properties.PropLoader;
 import de.pubflow.common.repository.abstractRepository.storageAdapter.FSStorageAdapter;
 import de.pubflow.common.repository.workflow.WorkflowLocationInformation;
 
