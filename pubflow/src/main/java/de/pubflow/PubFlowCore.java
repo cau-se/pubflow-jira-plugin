@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
 import de.pubflow.common.PropLoader;
+import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.communication.message.MessageToolbox;
@@ -215,7 +216,8 @@ public class PubFlowCore {
 			
 			System.out.println("sending test textmsg");
 			WorkflowMessage wm = new WorkflowMessage();
-			wm.setWorkflowID(12356755555555l);
+			wm.setWorkflowID(123567555555533451l);
+			wm.setWftype(WFType.BPMN2);
 			wm.setComments("It's alive!");
 			template.sendBody("test-jms:queue:testOut.queue", MessageToolbox.transformToString(wm));
 

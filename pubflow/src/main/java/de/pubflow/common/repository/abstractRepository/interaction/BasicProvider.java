@@ -34,7 +34,7 @@ import de.pubflow.common.repository.abstractRepository.storageAdapter.StorageAda
 
 public abstract class BasicProvider<T> implements IProvider<T> {
 
-	private BasicRepository br;
+	protected BasicRepository br;
 	
 	protected BasicProvider(ERepositoryName repositoryName, StorageAdapter storageAdapter){
 		try {
