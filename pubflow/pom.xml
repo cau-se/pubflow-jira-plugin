@@ -38,6 +38,12 @@
 
 
 		<!-- MESSAGING -->
+		
+		<dependency>
+	<groupId>javax.mail</groupId>
+	<artifactId>mail</artifactId>
+	<version>1.4.7</version>
+</dependency>
 
 		<dependency>
 			<version>5.8.0</version>
