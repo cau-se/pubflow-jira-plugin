@@ -2,7 +2,7 @@
  * 
  * @author pcb
  * 
- *         Ein Teil der Methoden stammt aus:
+ *         Basis dieser Klasse ist:
  *         http://openbook.galileocomputing.de/
  *         java7/1507_11_012.html
  */
