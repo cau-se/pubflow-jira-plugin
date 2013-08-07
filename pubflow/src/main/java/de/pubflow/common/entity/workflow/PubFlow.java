@@ -15,6 +15,22 @@ public class PubFlow {
 	private String WFID;
 	private WFType type;
 	private byte[] wfDef;
+	
+	private ReturnTypeList returnList = new ReturnTypeList();
+
+	/**
+	 * @return the returnList
+	 */
+	public synchronized ReturnTypeList getReturnList() {
+		return returnList;
+	}
+
+	/**
+	 * @param returnList the returnList to set
+	 */
+	public synchronized void setReturnList(ReturnTypeList returnList) {
+		this.returnList = returnList;
+	}
 
 	/**
 	 * @return the wfDef
