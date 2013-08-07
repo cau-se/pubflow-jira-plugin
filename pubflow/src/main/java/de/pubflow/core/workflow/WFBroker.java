@@ -31,17 +31,17 @@ public class WFBroker {
 	
 	private Logger myLogger;
 	
-	private Hashtable<WFType, ArrayList<IWorkflowEngine>> registry;
+	private Hashtable<WFType, ArrayList<Class<? extends IWorkflowEngine> >> registry;
 
 	
 	private WFBroker()
 	{
 		myLogger = LoggerFactory.getLogger(this.getClass());	
 		myLogger.info("Starting WFBroker");
-		registry = new Hashtable<WFType,ArrayList<IWorkflowEngine>>();
+		registry = new Hashtable<WFType,ArrayList<Class<? extends IWorkflowEngine> >>();
 		
-		ArrayList<IWorkflowEngine> bpmn2Engines = new ArrayList<IWorkflowEngine>(); 
-		bpmn2Engines.add(JBPMEngine.getInstance());
+		ArrayList<Class<? extends IWorkflowEngine> > bpmn2Engines = new ArrayList<Class<? extends IWorkflowEngine> >(); 
+		bpmn2Engines.add(JBPMEngine.class);
 		
 		registry.put(WFType.BPMN2, bpmn2Engines);
 		
@@ -67,17 +67,8 @@ public class WFBroker {
 		myLogger.info("Loading WF with ID ("+wm.getWorkflowID()+") from WFRepo");
 		WorkflowProvider provider = WorkflowProvider.getInstance();
 		WorkflowEntity wfEntity = provider.getByWFID(wm.getWorkflowID());
-		
 		WFType type = wfEntity.getType();
-		IWorkflowEngine engine = null;
-		if(type!=null){
-		ArrayList<IWorkflowEngine> engineList = registry.get(type);
-		engine = engineList.get(0);
-		}
-		else{
-			myLogger.error("Workflow NOT deployed >> Msg was malformed / No type provided");
-			return;
-		}
+		
 		PubFlow myWF = null;
 		if(type.equals(WFType.BPMN2))
 		{
@@ -97,18 +88,46 @@ public class WFBroker {
 			myLogger.error("Workflow NOT deployed >> Type could not be resolved");
 			return;
 		}
+		
+		
+		IWorkflowEngine engine = null;
+		if(type!=null){
+		ArrayList<Class<? extends IWorkflowEngine> > engineList = registry.get(type);
+		Class<? extends IWorkflowEngine> clazz = engineList.get(0);
 		try {
-			long wfRef = engine.deployWF(myWF);
+			myLogger.info("Creating new "+clazz.getCanonicalName());
+			engine = clazz.newInstance();
+			myLogger.info("Instance created! ");
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+		else{
+			myLogger.error("Workflow NOT deployed >> Msg was malformed / No type provided");
+			return;
+		}
+		
+		try {
+			myLogger.info("deploying WF");
+			engine.deployWF(myWF);
 			WFParamList params = wm.getWfparams();
 			if (params!=null){
 				myLogger.info("Parameter found ...");
-			engine.startWF(wfRef, wm.getWfparams());
+			engine.setParams(wm.getWfparams());
 			}
 			else
 			{
 				myLogger.info("No Parameter found!");
-				engine.startWF(wfRef, null);
+				
 			}
+			myLogger.info("Starting wf ...");
+			Thread wfEngineThread = new Thread(engine);
+			wfEngineThread.start();
+			myLogger.info("... engine up and running");
 		} catch (WFException e) {
 			e.printStackTrace();
 		}

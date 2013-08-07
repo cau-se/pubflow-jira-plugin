@@ -26,57 +26,90 @@ import de.pubflow.common.exception.WFException;
 import de.pubflow.common.exception.WFOperationNotSupported;
 import de.pubflow.core.workflow.engine.IWorkflowEngine;
 
-public class JBPMEngine implements IWorkflowEngine {
+public class JBPMEngine extends IWorkflowEngine {
 
-	private static JBPMEngine instance;
-	private Hashtable<Long, JBPMPubflow> processTable;
+	private PubFlow myWF;
+	WFParamList parameter;
 	static Logger myLogger;
+	private ProcessInstance processInstance = null;
+	private KnowledgeBase kbase= null;
 
 	
+	/**
+	 * @return the myWF
+	 */
+	public synchronized PubFlow getMyWF() {
+		return myWF;
+	}
+
+
+
+	/**
+	 * @param myWF the myWF to set
+	 */
+	public synchronized void setMyWF(PubFlow myWF) {
+		this.myWF = myWF;
+	}
+
+
+
+	/**
+	 * @return the parameter
+	 */
+	public synchronized WFParamList getParameter() {
+		return parameter;
+	}
+
+
+
+	/**
+	 * @param parameter the parameter to set
+	 */
+	public synchronized void setParameter(WFParamList parameter) {
+		this.parameter = parameter;
+	}
+
+
+
+	/**
+	 * @return the getProcessInstance
+	 */
+	public synchronized ProcessInstance getProcessInstance() {
+		return processInstance;
+	}
+
+
+
+	/**
+	 * @param getProcessInstance the getProcessInstance to set
+	 */
+	public synchronized void setProcessInstance(
+			ProcessInstance getProcessInstance) {
+		this.processInstance = getProcessInstance;
+	}
+
 	static{
 		myLogger = LoggerFactory.getLogger(JBPMEngine.class);
 	}
-	private JBPMEngine() {
+	
+	
+public JBPMEngine() {
 		
-		processTable = new Hashtable<Long, JBPMPubflow>();
+		
+	}
+	public JBPMEngine(PubFlow wf) {
+		
+		myWF = wf;
 	}
 
-	public static JBPMEngine getInstance() {
-		if (instance == null) {
-			instance = new JBPMEngine();
-		}
-		return instance;
-	}
 	
 
 	@Override
-	public long deployWF(PubFlow wf) throws WFException {
-		if (!(wf instanceof JBPMPubflow))
-		{
-			throw new WFException();
-		}
-		long tempID = isProcessInProcessTable(wf);
-		if(tempID==-1)
-		{
-			tempID = getNextFreeID();
-			processTable.put(tempID, (JBPMPubflow)wf);
-		}
-		return tempID;
+	public void deployWF(PubFlow wf) throws WFException {
+		myWF = wf;
 	}
 
-	@Override
-	public void startWF(long wfID, WFParamList params) throws WFException {
-		
-		JBPMPubflow wf = processTable.get(wfID);
-		
-		try {
-			KnowledgeBase knowledgeBase = createKnowledgeBase(wf);
-			//TODO PARAMS!!!
-			runWF(knowledgeBase, wf.getWFID(), params);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
 
 	@Override
 	public void undeployWF(long wfID) throws WFException {
@@ -87,44 +120,6 @@ public class JBPMEngine implements IWorkflowEngine {
 	public void stopWF(long wfID) throws WFException {
 		throw new WFOperationNotSupported();
 	}
-	
-	/**
-	 * Checks, if a given PubFlow is already listed in the process table.
-	 * If the process is listed the Pubflow id (the key in the processtable IT IS NOT the workflow id) is returned, otherwise -1 is returned
-	 * @param wf (PubFlow) : the workflow
-	 * @return (long) : the id
-	 */
-	private long isProcessInProcessTable(PubFlow wf)
-	{
-		Set<Entry<Long, JBPMPubflow>> entryset = processTable.entrySet();
-		for (Entry<Long, JBPMPubflow> entry : entryset) {
-			PubFlow localPubFlow = entry.getValue();
-			boolean isEqual = localPubFlow.equals(wf);
-			if(isEqual)
-			{
-				return entry.getKey();
-			}
-		}
-		return -1;
-	}
-	
-	/**
-	 * Returns the next free id for the process table
-	 * 
-	 * @return (long) : the id
-	 */
-	private long getNextFreeID()
-	{
-		long maxID = 0;
-		Set<Long> entryset = processTable.keySet();
-		for (Long idValue : entryset) {
-			if(idValue>=maxID)
-			{
-				maxID = idValue+1;
-			}
-		}
-		return maxID;
-	}
 
 	/**
 	 * Loads a process (processType BPMN2.0!) from the given location in a new knowledgeBase and returns
@@ -134,7 +129,7 @@ public class JBPMEngine implements IWorkflowEngine {
 	 * @return (KnowledgeBase) : the KnowledgeBase
 	 * @throws Exception
 	 */
-	private static KnowledgeBase createKnowledgeBase(JBPMPubflow wf) throws Exception {
+	private void createKnowledgeBase(JBPMPubflow wf) throws Exception {
 		myLogger.info("Trying to add WF to knowledgebase");
 		KnowledgeBuilder kbuilder = null;
 		try{
@@ -150,7 +145,7 @@ public class JBPMEngine implements IWorkflowEngine {
 			myLogger.error("Couldn't create knowledgebase");
 			e.printStackTrace();
 		}
-		return kbuilder.newKnowledgeBase();
+		kbase = kbuilder.newKnowledgeBase();
 	}
 	
 	/**
@@ -161,9 +156,10 @@ public class JBPMEngine implements IWorkflowEngine {
 	 * @return (ProcessInstance) : the instance of the running workflow
 	 * @throws Exception
 	 */
-	private ProcessInstance runWF(KnowledgeBase kbase, String processID, WFParamList params) throws Exception
+	private void runWF() throws Exception
 	{
-		myLogger.info("Trying to start workflow: "+processID);
+		myLogger.info("Trying to start workflow: "+myWF.getWFID());
+		WFParamList params = parameter;
 		ProcessInstance instance = null;
 		try{
 			myLogger.info("Creating Knowledgebase ...");
@@ -176,7 +172,7 @@ public class JBPMEngine implements IWorkflowEngine {
 				ksession.setGlobal(key, value);
 			}
 		
-		instance = ksession.startProcess(processID);
+		instance = ksession.startProcess(myWF.getWFID());
 		Double TempPi =(Double) ((WorkflowProcessInstance) instance).getVariable("pi");
 		myLogger.info("Result= "+TempPi);
 		myLogger.info("Workflow executed sucessfuly");
@@ -186,7 +182,7 @@ public class JBPMEngine implements IWorkflowEngine {
 			myLogger.error("Couldn't start workflow");
 			ex.printStackTrace();
 		}
-		return instance;
+		processInstance = instance;
 	}
 
 	@Override
@@ -195,5 +191,27 @@ public class JBPMEngine implements IWorkflowEngine {
 		result.add(WFType.BPMN2);
 		return result;
 	}
+
+	@Override
+	public void run() {
+		try {
+			myLogger.info("Starting ...");
+			createKnowledgeBase((JBPMPubflow)myWF);
+			runWF();
+			myLogger.info("Success!");
+			Thread.sleep(10000);
+			myLogger.info("Still alive :)");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+
+	@Override
+	public void setParams(WFParamList params) throws WFException {
+		parameter = params;
+		
+	}
+
 
 }
