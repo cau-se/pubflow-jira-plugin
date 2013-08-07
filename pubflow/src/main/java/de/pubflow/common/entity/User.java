@@ -5,6 +5,7 @@ import de.pubflow.common.enumerartion.UserRole;
 public class User implements StringSerializable{
 
 	private UserRole role;
+	
 	private String title;
 	private String prename;
 	private String surname;
@@ -12,6 +13,21 @@ public class User implements StringSerializable{
 	private Institute institute;
 	private String phoneNumber;
 	
+	private String publicKey; 
+	/**
+	 * @return the publicKey
+	 */
+	public String getPublicKey() {
+		return publicKey;
+	}
+
+	/**
+	 * @param publicKey the publicKey to set
+	 */
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
+	}
+
 	/**
 	 * @return the role
 	 */
