@@ -28,7 +28,7 @@ import de.pubflow.core.workflow.engine.IWorkflowEngine;
 
 public class JBPMEngine extends IWorkflowEngine {
 
-	private PubFlow myWF;
+	private JBPMPubflow myWF;
 	WFParamList parameter;
 	static Logger myLogger;
 	private ProcessInstance processInstance = null;
@@ -48,7 +48,12 @@ public class JBPMEngine extends IWorkflowEngine {
 	 * @param myWF the myWF to set
 	 */
 	public synchronized void setMyWF(PubFlow myWF) {
-		this.myWF = myWF;
+		if (!(myWF instanceof JBPMPubflow))
+		{
+			myLogger.error("Wrong workflow type!");
+			return;
+		}
+		this.myWF = (JBPMPubflow)myWF;
 	}
 
 
@@ -97,7 +102,7 @@ public JBPMEngine() {
 		
 		
 	}
-	public JBPMEngine(PubFlow wf) {
+	public JBPMEngine(JBPMPubflow wf) {
 		
 		myWF = wf;
 	}
@@ -106,7 +111,7 @@ public JBPMEngine() {
 
 	@Override
 	public void deployWF(PubFlow wf) throws WFException {
-		myWF = wf;
+		myWF = (JBPMPubflow)wf;
 	}
 
 	
@@ -199,8 +204,6 @@ public JBPMEngine() {
 			createKnowledgeBase((JBPMPubflow)myWF);
 			runWF();
 			myLogger.info("Success!");
-			Thread.sleep(10000);
-			myLogger.info("Still alive :)");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
