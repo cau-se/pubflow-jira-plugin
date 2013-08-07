@@ -14,14 +14,14 @@ import de.pubflow.core.communication.message.Message;
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
 public class WorkflowMessage extends Message {
 
-	protected long 			dataset 				= -1;
+	//protected long 			dataset 				= -1;
 	protected long 			workflowID 				= -1;
 	protected WFType 		wftype 					= null;
 	protected WFState 		wfstate 				= null;
 	protected WFParamList 	wfparams 				= null;
 	protected User 			user 					= null;
 	protected boolean 		userAuthenticated 		= false;
-	protected UserRole 		userRole 				= null;
+	//protected UserRole 		userRole 				= null;
 	protected User 			datamanager 			= null;
 	protected boolean 		datamanagerApproved 	= false;
 	protected Timestamp 	msgCreatedTimestamp 	= null;
@@ -30,7 +30,7 @@ public class WorkflowMessage extends Message {
 	protected Timestamp 	userResponseTimestamp 	= null;
 	protected String 		comments 				= "empty";
 	protected long 			pubflowVersion			= -1;
-	protected long 			wfEngine				= -1;
+	//protected long 			wfEngine				= -1;
 	
 	// TODO add list off possible return values and their types
 
@@ -55,20 +55,20 @@ public class WorkflowMessage extends Message {
 	// Getters & Setters
 	// -----------------------------------
 
-	/**
-	 * @return the dataset
-	 */
-	@XmlElement(name="DataSet")
-	public synchronized long getDataset() {
-		return dataset;
-	}
-
-	/**
-	 * @param dataset the dataset to set
-	 */
-	public synchronized void setDataset(long dataset) {
-		this.dataset = dataset;
-	}
+//	/**
+//	 * @return the dataset
+//	 */
+//	@XmlElement(name="DataSet")
+//	public synchronized long getDataset() {
+//		return dataset;
+//	}
+//
+//	/**
+//	 * @param dataset the dataset to set
+//	 */
+//	public synchronized void setDataset(long dataset) {
+//		this.dataset = dataset;
+//	}
 
 	/**
 	 * @return the workflowID
@@ -160,20 +160,20 @@ public class WorkflowMessage extends Message {
 		this.userAuthenticated = userAuthenticated;
 	}
 
-	/**
-	 * @return the userRole
-	 */
-	@XmlElement(name="UserRole")
-	public synchronized UserRole getUserRole() {
-		return userRole;
-	}
-
-	/**
-	 * @param userRole the userRole to set
-	 */
-	public synchronized void setUserRole(UserRole userRole) {
-		this.userRole = userRole;
-	}
+//	/**
+//	 * @return the userRole
+//	 */
+//	@XmlElement(name="UserRole")
+//	public synchronized UserRole getUserRole() {
+//		return userRole;
+//	}
+//
+//	/**
+//	 * @param userRole the userRole to set
+//	 */
+//	public synchronized void setUserRole(UserRole userRole) {
+//		this.userRole = userRole;
+//	}
 
 	/**
 	 * @return the datamanager
@@ -296,20 +296,20 @@ public class WorkflowMessage extends Message {
 		this.pubflowVersion = pubflowVersion;
 	}
 
-	/**
-	 * @return the wfEngine
-	 */
-	@XmlElement(name="WFEngineRef")
-	public synchronized long getWfEngine() {
-		return wfEngine;
-	}
-
-	/**
-	 * @param wfEngine the wfEngine to set
-	 */
-	public synchronized void setWfEngine(long wfEngine) {
-		this.wfEngine = wfEngine;
-	}
+//	/**
+//	 * @return the wfEngine
+//	 */
+//	@XmlElement(name="WFEngineRef")
+//	public synchronized long getWfEngine() {
+//		return wfEngine;
+//	}
+//
+//	/**
+//	 * @param wfEngine the wfEngine to set
+//	 */
+//	public synchronized void setWfEngine(long wfEngine) {
+//		this.wfEngine = wfEngine;
+//	}
 
 	@Override
 	public boolean isValid() {
