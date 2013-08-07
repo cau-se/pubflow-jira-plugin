@@ -3,13 +3,27 @@ package de.pubflow.core.workflow.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.camel.CamelContext;
+import org.apache.camel.ProducerTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.pubflow.PubFlowSystem;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
+import de.pubflow.core.communication.message.MessageToolbox;
+import de.pubflow.core.communication.message.email.Email;
 
-public abstract class IWorkflowEngine implements Runnable{
+public abstract class WorkflowEngine implements Runnable{
+	
+	private static Logger myLogger;
+	static
+	{
+		myLogger = LoggerFactory.getLogger(WorkflowEngine.class);
+	}
 	
 	/**
 	 * Method to deploy a new Publication Workflow in a Workflow Engine
@@ -44,5 +58,14 @@ public abstract class IWorkflowEngine implements Runnable{
 	public abstract void stopWF(long wfID) throws WFException;
 	
 	public abstract List<WFType> getCompatibleWFTypes();
+	
+	protected void sendEmailMsg(Email pMsg) {
+		myLogger.info("Sending Msg ...");
+		ProducerTemplate producer;
+		CamelContext context = PubFlowSystem.getInstance().getContext();
+		producer = context.createProducerTemplate();
+		producer.sendBody("mail-jms:mailqueue:in.queue",MessageToolbox.transformToString(pMsg));
+		myLogger.info("Msg sent!");
+	}
 
 }

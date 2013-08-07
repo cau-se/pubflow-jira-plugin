@@ -28,7 +28,7 @@ import de.pubflow.common.properties.PropLoader;
 import de.pubflow.common.repository.workflow.WorkflowLocationInformation;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.core.server.AppServer;
-import de.pubflow.core.workflow.engine.IWorkflowEngine;
+import de.pubflow.core.workflow.engine.WorkflowEngine;
 
 public class ODEEngine{
 

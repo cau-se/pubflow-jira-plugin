@@ -24,6 +24,7 @@ import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.common.properties.PropLoader;
+import de.pubflow.components.mailEndpoint.MailProxy;
 import de.pubflow.core.communication.message.MessageToolbox;
 import de.pubflow.core.communication.message.text.TextMessage;
 import de.pubflow.core.communication.message.workflow.WorkflowMessage;
@@ -84,6 +85,8 @@ public class PubFlowSystem {
 		context.addComponent("test-jms",
 				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
 		context.addComponent("t2-jms",
+				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
+		context.addComponent("mail-jms",
 				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
 		myLogger.info("Creating Routes");
 		try {
@@ -173,6 +176,9 @@ public class PubFlowSystem {
 				from("test-jms:queue:testOut.queue").to(
 						"test-jms:wfbroker:in.queue")
 						.bean(WFBroker.getInstance());
+				from("mail-jms:mailqueue:in.queue").to(
+						"mail-jms:mailproxy:in.queue")
+						.bean(MailProxy.getInstance());
 			}
 		});
 	}

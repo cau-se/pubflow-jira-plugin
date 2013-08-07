@@ -24,9 +24,10 @@ import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
 import de.pubflow.common.exception.WFOperationNotSupported;
-import de.pubflow.core.workflow.engine.IWorkflowEngine;
+import de.pubflow.core.communication.message.email.Email;
+import de.pubflow.core.workflow.engine.WorkflowEngine;
 
-public class JBPMEngine extends IWorkflowEngine {
+public class JBPMEngine extends WorkflowEngine {
 
 	private JBPMPubflow myWF;
 	WFParamList parameter;
@@ -179,6 +180,12 @@ public JBPMEngine() {
 		
 		instance = ksession.startProcess(myWF.getWFID());
 		Double TempPi =(Double) ((WorkflowProcessInstance) instance).getVariable("pi");
+		Email lMail = new Email();
+		
+		lMail.setRecipient("pcb@informatik.uni-kiel.de");
+		lMail.setTopic("Workflow: "+myWF.getWFID());
+		lMail.setText("Workflow finished! Result: "+TempPi);
+		sendEmailMsg(lMail);
 		myLogger.info("Result= "+TempPi);
 		myLogger.info("Workflow executed sucessfuly");
 		}

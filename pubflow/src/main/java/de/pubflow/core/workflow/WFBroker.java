@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import org.apache.camel.CamelContext;
 import org.apache.camel.Consume;
+import org.apache.camel.ProducerTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.pubflow.PubFlowSystem;
 import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
@@ -17,7 +20,7 @@ import de.pubflow.common.exception.WFException;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.core.communication.message.MessageToolbox;
 import de.pubflow.core.communication.message.workflow.WorkflowMessage;
-import de.pubflow.core.workflow.engine.IWorkflowEngine;
+import de.pubflow.core.workflow.engine.WorkflowEngine;
 import de.pubflow.core.workflow.engine.jbpm.JBPMEngine;
 
 public class WFBroker {
@@ -31,16 +34,16 @@ public class WFBroker {
 	
 	private Logger myLogger;
 	
-	private Hashtable<WFType, ArrayList<Class<? extends IWorkflowEngine> >> registry;
+	private Hashtable<WFType, ArrayList<Class<? extends WorkflowEngine> >> registry;
 
 	
 	private WFBroker()
 	{
 		myLogger = LoggerFactory.getLogger(this.getClass());	
 		myLogger.info("Starting WFBroker");
-		registry = new Hashtable<WFType,ArrayList<Class<? extends IWorkflowEngine> >>();
+		registry = new Hashtable<WFType,ArrayList<Class<? extends WorkflowEngine> >>();
 		
-		ArrayList<Class<? extends IWorkflowEngine> > bpmn2Engines = new ArrayList<Class<? extends IWorkflowEngine> >(); 
+		ArrayList<Class<? extends WorkflowEngine> > bpmn2Engines = new ArrayList<Class<? extends WorkflowEngine> >(); 
 		bpmn2Engines.add(JBPMEngine.class);
 		
 		registry.put(WFType.BPMN2, bpmn2Engines);
@@ -90,10 +93,10 @@ public class WFBroker {
 		}
 		
 		
-		IWorkflowEngine engine = null;
+		WorkflowEngine engine = null;
 		if(type!=null){
-		ArrayList<Class<? extends IWorkflowEngine> > engineList = registry.get(type);
-		Class<? extends IWorkflowEngine> clazz = engineList.get(0);
+		ArrayList<Class<? extends WorkflowEngine> > engineList = registry.get(type);
+		Class<? extends WorkflowEngine> clazz = engineList.get(0);
 		try {
 			myLogger.info("Creating new "+clazz.getCanonicalName());
 			engine = clazz.newInstance();
@@ -128,6 +131,7 @@ public class WFBroker {
 			Thread wfEngineThread = new Thread(engine);
 			wfEngineThread.start();
 			myLogger.info("... engine up and running");
+			sendWFResponse("WF Started");
 		} catch (WFException e) {
 			e.printStackTrace();
 		}
@@ -137,11 +141,6 @@ public class WFBroker {
 	
 	private void sendWFResponse(String msg)
 	{
-//		myLogger.info("Sending Msg ...");
-//		ProducerTemplate producer;
-//		CamelContext context = PubFlowCore.getInstance().getContext();
-//		producer = context.createProducerTemplate();
-//		producer.sendBody("test-jms:queue:testOut.queue",msg);
-//		myLogger.info("Msg sent!");
+		//TODO
 	}
 }
