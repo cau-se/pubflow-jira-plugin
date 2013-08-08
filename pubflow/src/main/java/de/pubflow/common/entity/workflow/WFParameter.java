@@ -1,7 +1,6 @@
 package de.pubflow.common.entity.workflow;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 
 public class WFParameter {

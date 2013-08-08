@@ -6,9 +6,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.common.entity.StringSerializable;
-import de.pubflow.common.exception.MsgParsingException;
-
 @XmlRootElement( namespace = "http://pubflow.de/message" )
 public abstract class Message{
 
