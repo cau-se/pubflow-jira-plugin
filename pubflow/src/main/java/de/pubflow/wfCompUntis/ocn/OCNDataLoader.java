@@ -190,17 +190,18 @@ public class OCNDataLoader {
 	public static void main(String[] args) {
 		OCNDataLoader loader = new OCNDataLoader();
 		OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
+		FileCreator4D fc4d = new FileCreator4D();
 		String data="";
 		String result = "";
 		try {
 			data = loader.getData(3, 0);
 			result = mapper.replaceArtefacts(data, 0);
+			fc4d.toCSV(result, "3", "arl", "0", "0", "0", "0", "0", "etc/4d.4d", "0", "4d.4d", "0", 0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		System.out.println(result);
 	}
 
 }
