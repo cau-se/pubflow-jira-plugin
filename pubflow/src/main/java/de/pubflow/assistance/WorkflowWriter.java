@@ -14,11 +14,11 @@ public class WorkflowWriter {
 		System.out.println("STARTING");
 		WorkflowEntity wf = new WorkflowEntity();
 		
-		wf.setPubFlowWFID(654321l);
+		wf.setPubFlowWFID(1l);
 		wf.setType(WFType.BPMN2);
-		wf.setWFID("de.pubflow.pi");
+		wf.setWFID("de.pubflow.OCN");
 		try {
-			wf.setgBpmn(new File("pi.bpmn"));
+			wf.setgBpmn(new File("OCN.bpmn"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
