@@ -224,14 +224,14 @@ public class PubFlowSystem {
 			
 			System.out.println("sending test textmsg");
 			{System.out.println("Composing test wfmsg");
-			WFParameter param1 = new WFParameter();
-			param1.setKey("tropfenzahl");
-			param1.setIntValue(100);
-			WFParamList params = new WFParamList();
-			params.add(param1);
+//			WFParameter param1 = new WFParameter();
+//			param1.setKey("tropfenzahl");
+//			param1.setIntValue(100);
+//			WFParamList params = new WFParamList();
+//			params.add(param1);
 			WorkflowMessage wm = new WorkflowMessage();
-			wm.setWfparams(params);
-			wm.setWorkflowID(654321l);
+//			wm.setWfparams(params);
+			wm.setWorkflowID(1l);
 			wm.setWftype(WFType.BPMN2);
 			wm.setComments("It's alive!");
 			template.sendBody("test-jms:queue:testOut.queue", MessageToolbox.transformToString(wm));}
