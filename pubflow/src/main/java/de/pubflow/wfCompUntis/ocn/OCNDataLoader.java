@@ -189,15 +189,18 @@ public class OCNDataLoader {
 	
 	public static void main(String[] args) {
 		OCNDataLoader loader = new OCNDataLoader();
+		OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
 		String data="";
+		String result = "";
 		try {
 			data = loader.getData(3, 0);
+			result = mapper.replaceArtefacts(data, 0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		System.out.println(data);
+		System.out.println(result);
 	}
 
 }
