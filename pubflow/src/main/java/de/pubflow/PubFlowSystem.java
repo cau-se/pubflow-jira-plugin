@@ -25,6 +25,7 @@ import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.common.properties.PropLoader;
+import de.pubflow.components.jiraConnector.JiraPlugin;
 import de.pubflow.components.jiraConnector.JiraToPubFlowConnector;
 import de.pubflow.components.mailEndpoint.MailProxy;
 import de.pubflow.core.communication.message.MessageToolbox;
@@ -46,11 +47,11 @@ public class PubFlowSystem {
 
 	private static final String SERVERFLAG = "CONFSERVER";
 	private static final String ACTIVEFLAG = "ON";
-	
+
 	private static final String WFBROKER_NAME = "WFBROKER";
 	private static final String MOCKUPENDPOINT_NAME = "MOCKUP";
 
-	
+
 	/** DEFAULT PROPERTIES **/
 	private static final String DEFAULT_ACTIVEFLAG = "ON";
 
@@ -126,7 +127,7 @@ public class PubFlowSystem {
 			e.printStackTrace();
 		}
 		myLogger.info("Starting Jira Component Endpoint");
-		createJiraEndpoint();
+		startJiraPlugin();
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
 		Runtime.getRuntime().addShutdownHook(t);
@@ -162,14 +163,10 @@ public class PubFlowSystem {
 			e.printStackTrace();
 		}
 	}
-	
-	private void createJiraEndpoint()
-	{
-		String JiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "http://localhost:" );
-		String JiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().toString(), "8890" );
-		String jiraAdress = (JiraEndpointURL+JiraEndpointPort+("/"));
-		myLogger.info("Jira Adress: "+jiraAdress);
-		Endpoint.publish(jiraAdress + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
+
+	private void startJiraPlugin(){
+		JiraPlugin jp = new JiraPlugin();
+		jp.startHttpsServer();
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -226,28 +223,28 @@ public class PubFlowSystem {
 	public static void main(String[] args) {
 
 		PubFlowSystem c = PubFlowSystem.getInstance();
-//		System.out.println(">>>>>>>>>>>>>> Testing <<<<<<<<<<<<<<<<");
-//		// Do some tests
-//		ProducerTemplate template = c.getContext().createProducerTemplate();
-//		for (int i = 0; i < 1; i++) {
-//			System.out.println("sending test textmsg");
-//			TextMessage text = new TextMessage();
-//			text.setContent("Test");
-//			template.sendBody("t2-jms:queue:test.queue", MessageToolbox.transformToString(text));
-//			
-//			System.out.println("sending test textmsg");
-//			{System.out.println("Composing test wfmsg");
-////			WFParameter param1 = new WFParameter();
-////			param1.setKey("tropfenzahl");
-////			param1.setIntValue(100);
-////			WFParamList params = new WFParamList();
-////			params.add(param1);
-//			WorkflowMessage wm = new WorkflowMessage();
-////			wm.setWfparams(params);
-//			wm.setWorkflowID(1l);
-//			wm.setWftype(WFType.BPMN2);
-//			wm.setComments("It's alive!");
-//		
+		//		System.out.println(">>>>>>>>>>>>>> Testing <<<<<<<<<<<<<<<<");
+		//		// Do some tests
+		//		ProducerTemplate template = c.getContext().createProducerTemplate();
+		//		for (int i = 0; i < 1; i++) {
+		//			System.out.println("sending test textmsg");
+		//			TextMessage text = new TextMessage();
+		//			text.setContent("Test");
+		//			template.sendBody("t2-jms:queue:test.queue", MessageToolbox.transformToString(text));
+		//			
+		//			System.out.println("sending test textmsg");
+		//			{System.out.println("Composing test wfmsg");
+		////			WFParameter param1 = new WFParameter();
+		////			param1.setKey("tropfenzahl");
+		////			param1.setIntValue(100);
+		////			WFParamList params = new WFParamList();
+		////			params.add(param1);
+		//			WorkflowMessage wm = new WorkflowMessage();
+		////			wm.setWfparams(params);
+		//			wm.setWorkflowID(1l);
+		//			wm.setWftype(WFType.BPMN2);
+		//			wm.setComments("It's alive!");
+		//		
 	}
 
 	// ----------------------------------------------------------------------------------------

@@ -10,25 +10,40 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 import javax.xml.ws.Endpoint;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
+
+import de.pubflow.common.properties.PropLoader;
 
 public class JiraPlugin {
 
 	private static final String KEYSTOREFILE="jira_keystore.ks";
 	private static final String KEYSTOREPW="rainbowdash_1";
 
+	private static Logger myLogger;
+	private static final String START_WF = "";
+
 	static{
+		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);
 		System.getProperties().put("javax.net.ssl.keyStore", KEYSTOREFILE);
 		System.getProperties().put("javax.net.ssl.keyStorePassword", KEYSTOREPW);
-		new JiraPlugin().startHttpsServer();
 	}
 
 	public void startHttpsServer(){
+		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "http://localhost:" );
+		String jiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", "class de.pubflow.components.jiraConnector.JiraPlugin", calleeSig, defaultValue);
+
+		String jiraAdress = jiraEndpointURL + jiraEndpointPort + ("/");
+		myLogger.info("Jira Adress: "+jiraAdress);
+
+
 		try{
-			HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress(8889), 0);
+			HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress(Integer.parseInt(PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().toString(),"8890"))), 0);
 			SSLContext sslContext = SSLContext.getInstance("TLS");
 
 			// keystore
