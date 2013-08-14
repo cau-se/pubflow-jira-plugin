@@ -39,6 +39,7 @@ public class JiraPluginMsgProducer {
 	 */
 	public void onMsg(PubFlowMessage msg) {
 		myLogger.info("Received Msg from Jira-Plugin");
+		myLogger.info(msg.getMsgAsString());
 		WorkflowMessage wfMsg = new WorkflowMessage();
 		WFParamList paramList = new WFParamList();
 		// Mapping PubFlowMsg to WorkflowMessage
@@ -97,7 +98,7 @@ public class JiraPluginMsgProducer {
 
 				break;
 			case "workflowName":
-				wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName(value));
+				wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
 				break;
 			case "PID_OCN":
 
