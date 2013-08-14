@@ -247,10 +247,7 @@ public class PubFlowSystem {
 //			wm.setWorkflowID(1l);
 //			wm.setWftype(WFType.BPMN2);
 //			wm.setComments("It's alive!");
-//			template.sendBody("test-jms:queue:testOut.queue", MessageToolbox.transformToString(wm));}
-			
-			
-		}
+//		
 	}
 
 	// ----------------------------------------------------------------------------------------
