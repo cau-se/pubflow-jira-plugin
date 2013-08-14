@@ -4,7 +4,7 @@ import javax.jws.WebService;
 
 import de.pubflow.common.entity.PubFlowMessage;
 
-@WebService(endpointInterface = "de.cau.tf.ifi.se.pubflow.jira.IJiraToPubFlowConnector")
+@WebService(endpointInterface = "de.pubflow.components.jiraConnector.IJiraToPubFlowConnector")
 public class JiraToPubFlowConnector implements IJiraToPubFlowConnector{
 
 	@Override

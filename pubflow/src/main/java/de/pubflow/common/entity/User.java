@@ -137,5 +137,11 @@ public class User implements StringSerializable{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public static User getUserFromJiraID(String value)
+	{
+		//TODO
+		return null;
+	}
 
 }

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 public class SimpleWFRunner {
 
 	private static SimpleWFRunner instance;
-	
 	private volatile KnowledgeBuilder knowledgeBuilder;
 	private volatile KnowledgeBase knowledgeBase;
 	private static Logger logger;
@@ -46,7 +45,6 @@ public class SimpleWFRunner {
 	public synchronized ProcessInstance startWF(String wf_ID, StatefulKnowledgeSession p_Session)
 	{
 		 return p_Session.startProcess(wf_ID);
-		
 	}
 	
 	public static void main(String[] args) {

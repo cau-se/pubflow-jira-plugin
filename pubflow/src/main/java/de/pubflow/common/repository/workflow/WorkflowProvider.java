@@ -28,7 +28,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -100,6 +102,19 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 		myLogger.info("Parsing id: "+pID+" > "+temp);
 		long internalID = Long.parseLong(temp);
 		return super.getEntry(internalID);
+	}
+	
+	public long getIDByWFName(String pName)
+	{
+		List<WorkflowEntity> entries = getAllEntries();
+		for (WorkflowEntity workflowEntity : entries) {
+			if(workflowEntity.getWFID().equalsIgnoreCase(pName))
+			{
+				return workflowEntity.getPubFlowWFID();
+			}
+		}
+		
+		return 0;
 	}
 	
 	public void saveProps()

@@ -34,6 +34,8 @@ public class PubFlowMessage {
 		this.action = action;
 	}
 	
+	public PubFlowMessage(){}
+	
 	public PubFlowMessage(String action, HashMap<String, String> message){
 		this.action = action;
 		this.message = message;
