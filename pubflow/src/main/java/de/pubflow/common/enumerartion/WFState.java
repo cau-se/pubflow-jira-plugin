@@ -7,5 +7,11 @@ public enum WFState {
 	RUNNING,
 	CANCELED,
 	STOPPED,
-	DELETED
+	DELETED;
+	
+	public static WFState parseJiraString(String val)
+	{
+		//TODO
+		return null;
+	}
 }
