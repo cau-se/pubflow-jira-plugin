@@ -27,7 +27,7 @@ public class AppServer {
 	private String port;
 
 	/** PROPERTIES **/
-	public static final String DEFAULT_PORT = "8080";
+	public static final String DEFAULT_PORT = "8282";
 	public static final String DEFAULT_PATH = "./";
 
 

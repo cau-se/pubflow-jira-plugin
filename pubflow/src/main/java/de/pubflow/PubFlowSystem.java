@@ -166,7 +166,7 @@ public class PubFlowSystem {
 	private void createJiraEndpoint()
 	{
 		String JiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "http://localhost:" );
-		String JiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().toString(), "8889" );
+		String JiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().toString(), "8890" );
 		String jiraAdress = (JiraEndpointURL+JiraEndpointPort+("/"));
 		myLogger.info("Jira Adress: "+jiraAdress);
 		Endpoint.publish(jiraAdress + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
