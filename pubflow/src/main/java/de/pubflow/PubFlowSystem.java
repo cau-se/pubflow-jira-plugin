@@ -226,28 +226,28 @@ public class PubFlowSystem {
 	public static void main(String[] args) {
 
 		PubFlowSystem c = PubFlowSystem.getInstance();
-		System.out.println(">>>>>>>>>>>>>> Testing <<<<<<<<<<<<<<<<");
-		// Do some tests
-		ProducerTemplate template = c.getContext().createProducerTemplate();
-		for (int i = 0; i < 1; i++) {
-			System.out.println("sending test textmsg");
-			TextMessage text = new TextMessage();
-			text.setContent("Test");
-			template.sendBody("t2-jms:queue:test.queue", MessageToolbox.transformToString(text));
-			
-			System.out.println("sending test textmsg");
-			{System.out.println("Composing test wfmsg");
-//			WFParameter param1 = new WFParameter();
-//			param1.setKey("tropfenzahl");
-//			param1.setIntValue(100);
-//			WFParamList params = new WFParamList();
-//			params.add(param1);
-			WorkflowMessage wm = new WorkflowMessage();
-//			wm.setWfparams(params);
-			wm.setWorkflowID(1l);
-			wm.setWftype(WFType.BPMN2);
-			wm.setComments("It's alive!");
-			template.sendBody("test-jms:queue:testOut.queue", MessageToolbox.transformToString(wm));}
+//		System.out.println(">>>>>>>>>>>>>> Testing <<<<<<<<<<<<<<<<");
+//		// Do some tests
+//		ProducerTemplate template = c.getContext().createProducerTemplate();
+//		for (int i = 0; i < 1; i++) {
+//			System.out.println("sending test textmsg");
+//			TextMessage text = new TextMessage();
+//			text.setContent("Test");
+//			template.sendBody("t2-jms:queue:test.queue", MessageToolbox.transformToString(text));
+//			
+//			System.out.println("sending test textmsg");
+//			{System.out.println("Composing test wfmsg");
+////			WFParameter param1 = new WFParameter();
+////			param1.setKey("tropfenzahl");
+////			param1.setIntValue(100);
+////			WFParamList params = new WFParamList();
+////			params.add(param1);
+//			WorkflowMessage wm = new WorkflowMessage();
+////			wm.setWfparams(params);
+//			wm.setWorkflowID(1l);
+//			wm.setWftype(WFType.BPMN2);
+//			wm.setComments("It's alive!");
+//			template.sendBody("test-jms:queue:testOut.queue", MessageToolbox.transformToString(wm));}
 			
 			
 		}
