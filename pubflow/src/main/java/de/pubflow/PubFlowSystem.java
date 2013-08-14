@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Properties;
 
 import javax.jms.ConnectionFactory;
+import javax.xml.ws.Endpoint;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.ProducerTemplate;
@@ -24,6 +25,7 @@ import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.PropAlreadySetException;
 import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.common.properties.PropLoader;
+import de.pubflow.components.jiraConnector.JiraToPubFlowConnector;
 import de.pubflow.components.mailEndpoint.MailProxy;
 import de.pubflow.core.communication.message.MessageToolbox;
 import de.pubflow.core.communication.message.text.TextMessage;
@@ -123,10 +125,12 @@ public class PubFlowSystem {
 			myLogger.error("Failed to start the internal PubFlow Server");
 			e.printStackTrace();
 		}
-
+		myLogger.info("Starting Jira Component Endpoint");
+		createJiraEndpoint();
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
 		Runtime.getRuntime().addShutdownHook(t);
+		myLogger.info("Running");
 	}
 
 	public static synchronized PubFlowSystem getInstance() {
@@ -157,6 +161,15 @@ public class PubFlowSystem {
 			myLogger.error("Ups ...");
 			e.printStackTrace();
 		}
+	}
+	
+	private void createJiraEndpoint()
+	{
+		String JiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "http://localhost:" );
+		String JiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().toString(), "8889" );
+		String jiraAdress = (JiraEndpointURL+JiraEndpointPort+("/"));
+		myLogger.info("Jira Adress: "+jiraAdress);
+		Endpoint.publish(jiraAdress + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
 	}
 
 	// ----------------------------------------------------------------------------------------
