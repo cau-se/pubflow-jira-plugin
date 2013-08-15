@@ -77,7 +77,7 @@ public class JiraPlugin {
 
 			httpsServer.setHttpsConfigurator(configurator);
 
-			HttpContext httpContext = httpsServer.createContext(JiraToPubFlowConnector.class.getSimpleName());
+			HttpContext httpContext = httpsServer.createContext("/" + JiraToPubFlowConnector.class.getSimpleName());
 
 			Endpoint endpoint = Endpoint.create( new JiraToPubFlowConnector());
 			endpoint.publish(httpContext);
