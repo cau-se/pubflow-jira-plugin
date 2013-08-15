@@ -86,10 +86,12 @@ public class JiraPlugin {
 
 			httpsServer.setHttpsConfigurator(configurator);
 
-			HttpContext httpContext = httpsServer.createContext("/" + JiraToPubFlowConnector.class.getSimpleName());
+			String path = PropLoader.getInstance().getProperty("JiraEndpointContext", this.getClass().getCanonicalName(), "/JiraToPubFlowConnector");
+			HttpContext httpContext = httpsServer.createContext(path);
 
 			Endpoint endpoint = Endpoint.create( new JiraToPubFlowConnector());
 			endpoint.publish(httpContext);
+			myLogger.info("WSDLService: "+endpoint.WSDL_SERVICE);
 
 			httpsServer.start();
 
