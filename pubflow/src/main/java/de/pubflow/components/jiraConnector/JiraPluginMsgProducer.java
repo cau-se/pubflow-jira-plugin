@@ -12,6 +12,7 @@ import de.pubflow.PubFlowSystem;
 import de.pubflow.common.entity.PubFlowMessage;
 import de.pubflow.common.entity.User;
 import de.pubflow.common.entity.workflow.WFParamList;
+import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.core.communication.message.MessageToolbox;
@@ -86,7 +87,12 @@ public class JiraPluginMsgProducer {
 
 				break;
 			case "Leg ID_OCN":
-
+				WFParameter param1 = new WFParameter();
+				param1.setKey("legID");
+				int val = Integer.parseInt(value);
+				myLogger.info("Set Leg_ID to "+val);
+				param1.setIntValue(val);
+				paramList.add(param1);
 				break;
 			case "Project_OCN":
 
@@ -98,7 +104,10 @@ public class JiraPluginMsgProducer {
 
 				break;
 			case "workflowName":
+				myLogger.info("Val: "+key+" > "+value);
+				if(value.equalsIgnoreCase("OCN")){
 				wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
+				myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));}
 				break;
 			case "PID_OCN":
 

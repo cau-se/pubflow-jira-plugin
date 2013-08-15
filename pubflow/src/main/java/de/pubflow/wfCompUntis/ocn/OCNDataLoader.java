@@ -11,6 +11,9 @@ import java.sql.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.pubflow.common.properties.PropLoader;
 import de.pubflow.wfCompUntis.ocn.entity.Bottle;
 import de.pubflow.wfCompUntis.ocn.entity.Leg;
@@ -20,11 +23,14 @@ import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
 
 public class OCNDataLoader {
 	
+	static Logger myLogger = LoggerFactory.getLogger(OCNDataLoader.class);
+	
 	public String getData(int id, int instanceId) throws Exception {
 
 		
 		
 		try{
+			myLogger.info("Loading data from DB ( id: "+id+")");
 			StringBuilder log = new StringBuilder();
 			String queryString;
 			Connection connection;
@@ -43,6 +49,7 @@ public class OCNDataLoader {
 			try {
 				Class.forName("org.postgresql.Driver").newInstance();
 			} catch (Exception e) {
+				myLogger.error("JDBC driver not found");
 				e.printStackTrace();
 			}		
 			
