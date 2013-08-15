@@ -36,7 +36,7 @@ public class JiraPlugin {
 
 	public void startHttpsServer(){
 		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "http://localhost:" );
-		String jiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", "de.pubflow.components.jiraConnector.JiraPlugin", "8890");
+		String jiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().getCanonicalName(), "8890");
 
 		String jiraAdress = jiraEndpointURL + jiraEndpointPort + ("/");
 		myLogger.info("Jira Adress: "+jiraAdress);
