@@ -164,15 +164,15 @@ public class PubFlowSystem {
 		}
 	}
 
-//	private void startJiraPlugin(){
-//		JiraPlugin jp = new JiraPlugin();
-//		jp.startHttpsServer();
-//	}
-	
-	private void startJiraPlugin()
-	{
-		Endpoint.publish("http://localhost:8890/" + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
+	private void startJiraPlugin(){
+		JiraPlugin jp = new JiraPlugin();
+		jp.startHttpsServer();
 	}
+	
+//	private void startJiraPlugin()
+//	{
+//		Endpoint.publish("http://localhost:8890/" + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
+//	}
 
 	// ----------------------------------------------------------------------------------------
 	// Private methods
