@@ -29,13 +29,15 @@ public class JiraPlugin {
 	private static final String START_WF = "";
 
 	static{
-		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);
+		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);	
 		System.getProperties().put("javax.net.ssl.keyStore", KEYSTOREFILE);
 		System.getProperties().put("javax.net.ssl.keyStorePassword", KEYSTOREPW);
+		System.getProperties().put("javax.net.ssl.trustStore", KEYSTOREFILE);
+		System.getProperties().put("javax.net.ssl.trustStorePassword", KEYSTOREPW);
 	}
 
 	public void startHttpsServer(){
-		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "http://localhost:" );
+		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "https://localhost:" );
 		String jiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().getCanonicalName(), "8890");
 
 		String jiraAdress = jiraEndpointURL + jiraEndpointPort + ("/");
@@ -43,7 +45,7 @@ public class JiraPlugin {
 
 
 		try{
-			HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress(Integer.parseInt(PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().toString(),"8890"))), 0);
+			HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress(Integer.parseInt(jiraEndpointPort)), 0);
 			SSLContext sslContext = SSLContext.getInstance("TLS");
 
 			// keystore
@@ -68,7 +70,7 @@ public class JiraPlugin {
 				@Override
 				public void configure(HttpsParameters params) {
 					SSLParameters sslParams = getSSLContext().getDefaultSSLParameters();
-					sslParams.setNeedClientAuth(true);
+					sslParams.setNeedClientAuth(false);
 					params.setSSLParameters(sslParams);
 				}
 			};
