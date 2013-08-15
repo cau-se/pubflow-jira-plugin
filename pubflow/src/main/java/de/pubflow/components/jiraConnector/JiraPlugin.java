@@ -81,6 +81,7 @@ public class JiraPlugin {
 			endpoint.publish(httpContext);
 
 		}catch(Exception e){
+			e.printStackTrace();
 			System.out.print("Unable to start https server");
 		}
 	}
