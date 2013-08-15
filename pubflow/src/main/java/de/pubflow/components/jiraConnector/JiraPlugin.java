@@ -61,7 +61,7 @@ public class JiraPlugin {
 			ks.load(new FileInputStream(KEYSTOREFILE), truststorePassword);
 			tmf.init(ks);
 
-			sslContext.init(kmf.getKeyManagers(), null, null);
+			sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
 			HttpsConfigurator configurator =  new HttpsConfigurator(sslContext) {
 				/* (non-Javadoc)
@@ -71,6 +71,7 @@ public class JiraPlugin {
 				public void configure(HttpsParameters params) {
 					SSLParameters sslParams = getSSLContext().getDefaultSSLParameters();
 					sslParams.setNeedClientAuth(false);
+					sslParams.setWantClientAuth(false);
 					params.setSSLParameters(sslParams);
 				}
 			};
