@@ -22,7 +22,7 @@ import de.pubflow.common.properties.PropLoader;
 
 public class JiraPlugin {
 
-	private static final String KEYSTOREFILE="jira_keystore.ks";
+	private static final String KEYSTOREFILE="pubflow_keystore.ks";
 	private static final String KEYSTOREPW="rainbowdash_1";
 
 	private static Logger myLogger;
