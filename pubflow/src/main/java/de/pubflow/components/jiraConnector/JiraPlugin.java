@@ -28,6 +28,14 @@ public class JiraPlugin {
 	private static Logger myLogger;
 	private static final String START_WF = "";
 
+	
+	
+	//FOR TESTING
+	public static void main (String [] args){
+		JiraPlugin jp = new JiraPlugin();
+		jp.startHttpsServer();
+	}
+	
 	static{
 		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);	
 		System.getProperties().put("javax.net.ssl.keyStore", KEYSTOREFILE);
@@ -82,6 +90,8 @@ public class JiraPlugin {
 
 			Endpoint endpoint = Endpoint.create( new JiraToPubFlowConnector());
 			endpoint.publish(httpContext);
+
+			httpsServer.start();
 
 		}catch(Exception e){
 			e.printStackTrace();
