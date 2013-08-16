@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import de.pubflow.common.entity.Timestamp;
 import de.pubflow.common.entity.User;
 import de.pubflow.common.entity.workflow.WFParamList;
-import de.pubflow.common.enumerartion.UserRole;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.core.communication.message.Message;
