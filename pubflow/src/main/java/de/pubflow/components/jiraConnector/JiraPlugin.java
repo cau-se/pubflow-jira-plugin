@@ -28,7 +28,6 @@ public class JiraPlugin {
 	public static final String DEFAULT_JIRAENDPOINTURL = "https://localhost:";
 	public static final String DEFAULT_JIRAENDPOINTPORT = "8890";
 	
-	
 	private static Logger myLogger;
 	private static final String START_WF = "";
 	
