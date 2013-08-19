@@ -24,10 +24,14 @@ public class JiraPlugin {
 
 	private static final String KEYSTOREFILE="pubflow_keystore.ks";
 	private static final String KEYSTOREPW="rainbowdash_1";
-
+	
+	public static final String DEFAULT_JIRAENDPOINTURL = "https://localhost:";
+	public static final String DEFAULT_JIRAENDPOINTPORT = "8890";
+	
+	
 	private static Logger myLogger;
 	private static final String START_WF = "";
-
+	
 	static{
 		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);	
 		System.getProperties().put("javax.net.ssl.keyStore", KEYSTOREFILE);
@@ -37,8 +41,8 @@ public class JiraPlugin {
 	}
 
 	public void startHttpsServer(){
-		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "https://localhost:" );
-		String jiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().getCanonicalName(), "8890");
+		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(),  DEFAULT_JIRAENDPOINTURL);
+		String jiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().getCanonicalName(), DEFAULT_JIRAENDPOINTPORT);
 
 		String jiraAdress = jiraEndpointURL + jiraEndpointPort + ("/");
 		myLogger.info("Jira Adress: "+jiraAdress);
@@ -61,7 +65,7 @@ public class JiraPlugin {
 			ks.load(new FileInputStream(KEYSTOREFILE), truststorePassword);
 			tmf.init(ks);
 
-			sslContext.init(kmf.getKeyManagers(), null, null);
+			sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
 			HttpsConfigurator configurator =  new HttpsConfigurator(sslContext) {
 				/* (non-Javadoc)
@@ -71,16 +75,21 @@ public class JiraPlugin {
 				public void configure(HttpsParameters params) {
 					SSLParameters sslParams = getSSLContext().getDefaultSSLParameters();
 					sslParams.setNeedClientAuth(false);
+					sslParams.setWantClientAuth(false);
 					params.setSSLParameters(sslParams);
 				}
 			};
 
 			httpsServer.setHttpsConfigurator(configurator);
 
-			HttpContext httpContext = httpsServer.createContext(JiraToPubFlowConnector.class.getSimpleName());
+			String path = PropLoader.getInstance().getProperty("JiraEndpointContext", this.getClass().getCanonicalName(), "/JiraToPubFlowConnector");
+			HttpContext httpContext = httpsServer.createContext(path);
 
 			Endpoint endpoint = Endpoint.create( new JiraToPubFlowConnector());
 			endpoint.publish(httpContext);
+			myLogger.info("WSDLService: "+Endpoint.WSDL_SERVICE);
+
+			httpsServer.start();
 
 		}catch(Exception e){
 			e.printStackTrace();
