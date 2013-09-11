@@ -1,6 +1,7 @@
 package de.pubflow;
 
 import javax.jms.ConnectionFactory;
+import javax.xml.ws.Endpoint;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.builder.RouteBuilder;
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
 import de.pubflow.common.properties.PropLoader;
-import de.pubflow.components.jiraConnector.JiraPlugin;
+import de.pubflow.components.jiraConnector.JiraToPubFlowConnector;
 import de.pubflow.components.mailEndpoint.MailProxy;
 import de.pubflow.core.server.AppServer;
 import de.pubflow.core.workflow.WFBroker;
@@ -146,15 +147,15 @@ public class PubFlowSystem {
 		}
 	}
 
-	private void startJiraPlugin(){
-		JiraPlugin jp = new JiraPlugin();
-		jp.startHttpsServer();
-	}
-	
-//	private void startJiraPlugin()
-//	{
-//		Endpoint.publish("http://localhost:8890/" + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
+//	private void startJiraPlugin(){
+//		JiraPlugin jp = new JiraPlugin();
+//		jp.startHttpsServer();
 //	}
+	
+	private void startJiraPlugin()
+	{
+		Endpoint.publish("http://localhost:8890/" + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
+	}
 
 	// ----------------------------------------------------------------------------------------
 	// Private methods

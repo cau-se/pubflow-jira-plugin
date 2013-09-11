@@ -24,17 +24,12 @@ public class JiraPlugin {
 
 	private static final String KEYSTOREFILE="pubflow_keystore.ks";
 	private static final String KEYSTOREPW="rainbowdash_1";
-
+	
+	public static final String DEFAULT_JIRAENDPOINTURL = "https://localhost:";
+	public static final String DEFAULT_JIRAENDPOINTPORT = "8890";
+	
 	private static Logger myLogger;
 	private static final String START_WF = "";
-
-	
-	
-	//FOR TESTING
-	public static void main (String [] args){
-		JiraPlugin jp = new JiraPlugin();
-		jp.startHttpsServer();
-	}
 	
 	static{
 		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);	
@@ -45,8 +40,8 @@ public class JiraPlugin {
 	}
 
 	public void startHttpsServer(){
-		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(), "https://localhost:" );
-		String jiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().getCanonicalName(), "8890");
+		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", this.getClass().toString(),  DEFAULT_JIRAENDPOINTURL);
+		String jiraEndpointPort = PropLoader.getInstance().getProperty("JiraEndpointPort", this.getClass().getCanonicalName(), DEFAULT_JIRAENDPOINTPORT);
 
 		String jiraAdress = jiraEndpointURL + jiraEndpointPort + ("/");
 		myLogger.info("Jira Adress: "+jiraAdress);
@@ -91,7 +86,7 @@ public class JiraPlugin {
 
 			Endpoint endpoint = Endpoint.create( new JiraToPubFlowConnector());
 			endpoint.publish(httpContext);
-			myLogger.info("WSDLService: "+endpoint.WSDL_SERVICE);
+			myLogger.info("WSDLService: "+Endpoint.WSDL_SERVICE);
 
 			httpsServer.start();
 
