@@ -1,16 +1,12 @@
 package de.pubflow.core.workflow;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.apache.camel.CamelContext;
 import org.apache.camel.Consume;
-import org.apache.camel.ProducerTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.PubFlowSystem;
 import de.pubflow.common.entity.repository.WorkflowEntity;
 import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
@@ -109,6 +105,8 @@ public class WFBroker {
 			e.printStackTrace();
 		}
 		}
+		
+		//TODO: dead code??
 		else{
 			myLogger.error("Workflow NOT deployed >> Msg was malformed / No type provided");
 			return;

@@ -36,6 +36,7 @@ public abstract class PubJect{
 		return out;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T extends PubJect> T createFromResultSet(Class <T> clazz, String[] definition, ResultSet rs) throws SQLException, InstantiationException, IllegalAccessException{
 		PubJect pj = clazz.newInstance();
 
@@ -45,6 +46,7 @@ public abstract class PubJect{
 		return (T)pj;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T extends PubJect> T createFromResultSet(Class<T> clazz, String[] definition, String[] types, ResultSet rs) throws InstantiationException, IllegalAccessException, SQLException, PubJectException {
 		PubJect pj = clazz.newInstance();
 

@@ -1,10 +1,7 @@
 package de.pubflow.core.workflow.engine.jbpm;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;

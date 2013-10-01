@@ -5,9 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
-import java.util.Properties;
 
-import javax.jws.WebService;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 

@@ -1,7 +1,5 @@
 package de.pubflow.components.mailEndpoint;
 
-import java.util.Properties;
-
 import org.apache.camel.Consume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

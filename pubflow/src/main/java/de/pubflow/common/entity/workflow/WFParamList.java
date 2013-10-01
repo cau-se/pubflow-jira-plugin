@@ -6,10 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import de.pubflow.common.entity.StringSerializable;
 
 @XmlRootElement(name="ParameterList")
 public class WFParamList{
