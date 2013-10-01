@@ -84,7 +84,7 @@ public class JiraPluginMsgProducer {
 
 				break;
 			case "date":
-
+				
 				break;
 			case "Leg ID_OCN":
 				WFParameter param1 = new WFParameter();

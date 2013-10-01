@@ -19,9 +19,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="wfName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="comment" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="params">
+ *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg3">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -43,6 +44,7 @@ import javax.xml.bind.annotation.XmlType;
  *             &lt;/complexContent>
  *           &lt;/complexType>
  *         &lt;/element>
+ *         &lt;element name="arg4" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -53,87 +55,139 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "createIssue", propOrder = {
-    "wfName",
-    "comment",
-    "params"
+    "arg0",
+    "arg1",
+    "arg2",
+    "arg3",
+    "arg4"
 })
 public class CreateIssue {
 
-    protected String wfName;
-    protected String comment;
+    protected String arg0;
+    protected String arg1;
+    protected String arg2;
     @XmlElement(required = true)
-    protected CreateIssue.Params params;
+    protected CreateIssue.Arg3 arg3;
+    protected String arg4;
 
     /**
-     * Gets the value of the wfName property.
+     * Gets the value of the arg0 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getWfName() {
-        return wfName;
+    public String getArg0() {
+        return arg0;
     }
 
     /**
-     * Sets the value of the wfName property.
+     * Sets the value of the arg0 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setWfName(String value) {
-        this.wfName = value;
+    public void setArg0(String value) {
+        this.arg0 = value;
     }
 
     /**
-     * Gets the value of the comment property.
+     * Gets the value of the arg1 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getComment() {
-        return comment;
+    public String getArg1() {
+        return arg1;
     }
 
     /**
-     * Sets the value of the comment property.
+     * Sets the value of the arg1 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setComment(String value) {
-        this.comment = value;
+    public void setArg1(String value) {
+        this.arg1 = value;
     }
 
     /**
-     * Gets the value of the params property.
+     * Gets the value of the arg2 property.
      * 
      * @return
      *     possible object is
-     *     {@link CreateIssue.Params }
+     *     {@link String }
      *     
      */
-    public CreateIssue.Params getParams() {
-        return params;
+    public String getArg2() {
+        return arg2;
     }
 
     /**
-     * Sets the value of the params property.
+     * Sets the value of the arg2 property.
      * 
      * @param value
      *     allowed object is
-     *     {@link CreateIssue.Params }
+     *     {@link String }
      *     
      */
-    public void setParams(CreateIssue.Params value) {
-        this.params = value;
+    public void setArg2(String value) {
+        this.arg2 = value;
+    }
+
+    /**
+     * Gets the value of the arg3 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link CreateIssue.Arg3 }
+     *     
+     */
+    public CreateIssue.Arg3 getArg3() {
+        return arg3;
+    }
+
+    /**
+     * Sets the value of the arg3 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CreateIssue.Arg3 }
+     *     
+     */
+    public void setArg3(CreateIssue.Arg3 value) {
+        this.arg3 = value;
+    }
+
+    /**
+     * Gets the value of the arg4 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getArg4() {
+        return arg4;
+    }
+
+    /**
+     * Sets the value of the arg4 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setArg4(String value) {
+        this.arg4 = value;
     }
 
 
@@ -171,9 +225,9 @@ public class CreateIssue {
     @XmlType(name = "", propOrder = {
         "entry"
     })
-    public static class Params {
+    public static class Arg3 {
 
-        protected List<CreateIssue.Params.Entry> entry;
+        protected List<CreateIssue.Arg3 .Entry> entry;
 
         /**
          * Gets the value of the entry property.
@@ -193,13 +247,13 @@ public class CreateIssue {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link CreateIssue.Params.Entry }
+         * {@link CreateIssue.Arg3 .Entry }
          * 
          * 
          */
-        public List<CreateIssue.Params.Entry> getEntry() {
+        public List<CreateIssue.Arg3 .Entry> getEntry() {
             if (entry == null) {
-                entry = new ArrayList<CreateIssue.Params.Entry>();
+                entry = new ArrayList<CreateIssue.Arg3 .Entry>();
             }
             return this.entry;
         }
