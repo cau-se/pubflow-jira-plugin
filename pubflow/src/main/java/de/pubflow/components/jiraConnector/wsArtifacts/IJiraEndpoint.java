@@ -32,13 +32,13 @@ public interface IJiraEndpoint {
      * @param arg1
      * @param arg0
      * @return
-     *     returns long
+     *     returns java.lang.String
      */
     @WebMethod
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "createIssue", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.CreateIssue")
     @ResponseWrapper(localName = "createIssueResponse", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.CreateIssueResponse")
-    public long createIssue(
+    public String createIssue(
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0,
         @WebParam(name = "arg1", targetNamespace = "")
@@ -46,7 +46,7 @@ public interface IJiraEndpoint {
         @WebParam(name = "arg2", targetNamespace = "")
         String arg2,
         @WebParam(name = "arg3", targetNamespace = "")
-        de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3 arg3,
+        de.pubflow.components.jiraConnector.wsArtifacts.jira.webservice.CreateIssue.Arg3 arg3,
         @WebParam(name = "arg4", targetNamespace = "")
         String arg4);
 
@@ -68,11 +68,10 @@ public interface IJiraEndpoint {
         @WebParam(name = "arg1", targetNamespace = "")
         String arg1,
         @WebParam(name = "arg2", targetNamespace = "")
-        de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 arg2);
+        de.pubflow.components.jiraConnector.wsArtifacts.jira.webservice.CreateIssueType.Arg2 arg2);
 
     /**
      * 
-     * @param arg2
      * @param arg1
      * @param arg0
      * @return
@@ -86,9 +85,7 @@ public interface IJiraEndpoint {
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0,
         @WebParam(name = "arg1", targetNamespace = "")
-        long arg1,
-        @WebParam(name = "arg2", targetNamespace = "")
-        String arg2);
+        String arg1);
 
     /**
      * 
@@ -103,7 +100,7 @@ public interface IJiraEndpoint {
     @ResponseWrapper(localName = "addIssueCommentResponse", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.AddIssueCommentResponse")
     public boolean addIssueComment(
         @WebParam(name = "arg0", targetNamespace = "")
-        long arg0,
+        String arg0,
         @WebParam(name = "arg1", targetNamespace = "")
         String arg1);
 
@@ -155,16 +152,27 @@ public interface IJiraEndpoint {
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "appendFile", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.AppendFile")
-    @ResponseWrapper(localName = "appendFileResponse", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.AppendFileResponse")
-    public boolean appendFile(
+    @RequestWrapper(localName = "addAttachment", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.AddAttachment")
+    @ResponseWrapper(localName = "addAttachmentResponse", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.AddAttachmentResponse")
+    public boolean addAttachment(
         @WebParam(name = "arg0", targetNamespace = "")
-        long arg0,
+        String arg0,
         @WebParam(name = "arg1", targetNamespace = "")
         byte[] arg1,
         @WebParam(name = "arg2", targetNamespace = "")
         String arg2,
         @WebParam(name = "arg3", targetNamespace = "")
         String arg3);
+
+    /**
+     * 
+     * @param arg0
+     */
+    @WebMethod
+    @RequestWrapper(localName = "removeAttachment", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.RemoveAttachment")
+    @ResponseWrapper(localName = "removeAttachmentResponse", targetNamespace = "http://webservice.jira.pubflow.de/", className = "de.pubflow.jira.webservice.RemoveAttachmentResponse")
+    public void removeAttachment(
+        @WebParam(name = "arg0", targetNamespace = "")
+        long arg0);
 
 }
