@@ -46,7 +46,7 @@ public interface IJiraEndpoint {
         @WebParam(name = "arg2", targetNamespace = "")
         String arg2,
         @WebParam(name = "arg3", targetNamespace = "")
-        de.pubflow.components.jiraConnector.wsArtifacts.jira.webservice.CreateIssue.Arg3 arg3,
+        de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3 arg3,
         @WebParam(name = "arg4", targetNamespace = "")
         String arg4);
 
@@ -68,7 +68,7 @@ public interface IJiraEndpoint {
         @WebParam(name = "arg1", targetNamespace = "")
         String arg1,
         @WebParam(name = "arg2", targetNamespace = "")
-        de.pubflow.components.jiraConnector.wsArtifacts.jira.webservice.CreateIssueType.Arg2 arg2);
+        de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 arg2);
 
     /**
      * 
