@@ -2,6 +2,9 @@ package de.pubflow.components.jiraConnector;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -12,7 +15,6 @@ import org.apache.camel.Consume;
 
 import de.pubflow.common.entity.PubFlowMessage;
 import de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpointService;
-
 public class JiraPluginMsgConsumer {
 	
 	private static final String KEYSTOREFILE="pubflow_keystore.ks";
@@ -41,6 +43,12 @@ public class JiraPluginMsgConsumer {
 		jiraEndpointService.getJiraEndpointPort().changeStatus(map.get("issueKey"), map.get("statusId"));
 	}
 
+	private void addAttachment(HashMap<String, String> map){
+		byte[] data = Charset.forName(StandardCharsets.UTF_8.name()).encode(map.get("attachmentString")).array();
+		
+		jiraEndpointService.getJiraEndpointPort().addAttachment(map.get("issueKey"), data,  map.get("attachmentFileName"), map.get("attachmentFileType"));
+	}
+	
 	private void createIssueType(HashMap<String, String> map){
 		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 params = 
 				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2();
@@ -79,6 +87,7 @@ public class JiraPluginMsgConsumer {
 			case "jira.newIssue": createIssue(msg.getMessage()) ;break;
 			case "jira.newIssueType": createIssueType(msg.getMessage()) ;break;
 			case "jira.changeStatus": changeStatus(msg.getMessage()) ;break;
+			case "jira.addAttachment": addAttachment(msg.getMessage()) ;break;
 		}
 	}
 }
