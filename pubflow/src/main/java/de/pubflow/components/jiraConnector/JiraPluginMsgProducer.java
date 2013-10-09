@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowSystem;
-import de.pubflow.common.entity.PubFlowMessage;
 import de.pubflow.common.entity.User;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.core.communication.message.MessageToolbox;
+import de.pubflow.core.communication.message.jira.JiraMessage;
 import de.pubflow.core.communication.message.workflow.WorkflowMessage;
 
 public class JiraPluginMsgProducer {
@@ -38,7 +38,7 @@ public class JiraPluginMsgProducer {
 	 * 
 	 * @param msg
 	 */
-	public void onMsg(PubFlowMessage msg) {
+	public void onMsg(JiraMessage msg) {
 		myLogger.info("Received Msg from Jira-Plugin");
 		myLogger.info(msg.getMsgAsString());
 		WorkflowMessage wfMsg = new WorkflowMessage();
@@ -71,8 +71,8 @@ public class JiraPluginMsgProducer {
 			case "assignee":
 
 				break;
-			case "issueId":
-
+			case "issueKey":
+				wfMsg.setCorrespondingIssue(key);
 				break;
 			case "Source_OCN":
 

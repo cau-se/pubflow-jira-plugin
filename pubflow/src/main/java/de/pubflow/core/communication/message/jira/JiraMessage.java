@@ -1,26 +1,20 @@
-package de.pubflow.common.entity;
+package de.pubflow.core.communication.message.jira;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class PubFlowMessage {
+import javax.xml.bind.annotation.XmlRootElement;
+
+import de.pubflow.core.communication.message.Message;
+
+@XmlRootElement(namespace = "http://pubflow.de/message/jira")
+public class JiraMessage extends Message{
 
 	String target = "";
 	public String getTarget() {
 		return target;
 	}
 
-	public String getMsgAsString()
-	{
-		//TODO
-		return "";
-	}
-	
-	public static PubFlowMessage initFromString(String msg)
-	{
-		//TODO
-		return null;
-	}
 
 	public void setTarget(String target) {
 		this.target = target;
@@ -30,13 +24,13 @@ public class PubFlowMessage {
 
 	HashMap<String, String> message = new HashMap<String, String>();
 
-	public PubFlowMessage(String action){
+	public JiraMessage(String action){
 		this.action = action;
 	}
 	
-	public PubFlowMessage(){}
+	public JiraMessage(){}
 	
-	public PubFlowMessage(String action, HashMap<String, String> message){
+	public JiraMessage(String action, HashMap<String, String> message){
 		this.action = action;
 		this.message = message;
 	}
@@ -67,5 +61,12 @@ public class PubFlowMessage {
 		}
 		
 		return map;
+	}
+
+
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

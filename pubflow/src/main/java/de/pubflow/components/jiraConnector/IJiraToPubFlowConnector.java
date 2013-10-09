@@ -4,7 +4,7 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
-import de.pubflow.common.entity.PubFlowMessage;
+import de.pubflow.core.communication.message.jira.JiraMessage;
 
 
 @WebService(targetNamespace = "pubflow.de")
@@ -12,6 +12,6 @@ import de.pubflow.common.entity.PubFlowMessage;
 public interface IJiraToPubFlowConnector {
 
 	@javax.jws.WebMethod
-	public void eventNotification(@javax.jws.WebParam(name = "jiraMessage") PubFlowMessage message);
+	public void eventNotification(@javax.jws.WebParam(name = "jiraMessage") JiraMessage message);
 
 }

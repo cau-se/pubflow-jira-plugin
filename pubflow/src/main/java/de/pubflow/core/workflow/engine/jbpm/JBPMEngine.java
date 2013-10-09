@@ -176,14 +176,7 @@ public JBPMEngine() {
 			}
 		
 		instance = ksession.startProcess(myWF.getWFID());
-		Double TempPi =(Double) ((WorkflowProcessInstance) instance).getVariable("pi");
-		Email lMail = new Email();
 		
-		lMail.setRecipient("pcb@informatik.uni-kiel.de");
-		lMail.setTopic("Workflow: "+myWF.getWFID());
-		lMail.setText("Workflow finished! Result: "+TempPi);
-		sendEmailMsg(lMail);
-		myLogger.info("Result= "+TempPi);
 		myLogger.info("Workflow executed sucessfuly");
 		}
 		catch (Exception ex)

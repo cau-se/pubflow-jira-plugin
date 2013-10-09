@@ -203,7 +203,7 @@ public class OCNDataLoader {
 		try {
 			data = loader.getData(3, 0);
 			result = mapper.replaceArtefacts(data, 0);
-			fc4d.toCSV(result, "3", "arl", "0", "0", "0", "0", "0", "etc/4d.4d", "0", "4d.4d", "0", 0);
+			//fc4d.toCSV(result, "3", "arl", "0", "0", "0", "0", "0", "etc/4d.4d", "0", "4d.4d", "0", 0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
