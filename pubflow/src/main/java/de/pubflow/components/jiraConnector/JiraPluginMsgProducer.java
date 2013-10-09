@@ -40,7 +40,6 @@ public class JiraPluginMsgProducer {
 	 */
 	public void onMsg(JiraMessage msg) {
 		myLogger.info("Received Msg from Jira-Plugin");
-		myLogger.info(msg.getMsgAsString());
 		WorkflowMessage wfMsg = new WorkflowMessage();
 		WFParamList paramList = new WFParamList();
 		// Mapping PubFlowMsg to WorkflowMessage

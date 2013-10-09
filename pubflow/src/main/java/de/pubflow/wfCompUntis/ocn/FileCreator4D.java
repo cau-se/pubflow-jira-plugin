@@ -232,7 +232,7 @@ public class FileCreator4D {
 				e1.printStackTrace();
 			}
 			
-			return "";
+			return new byte[0];
 		}
 
 	}
