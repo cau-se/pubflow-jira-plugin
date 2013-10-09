@@ -29,6 +29,7 @@ public class WorkflowMessage extends Message {
 	protected Timestamp 	userResponseTimestamp 	= null;
 	protected String 		comments 				= "empty";
 	protected long 			pubflowVersion			= -1;
+	protected String		CorrespondingIssue		= "";
 	//protected long 			wfEngine				= -1;
 	
 	// TODO add list off possible return values and their types
@@ -309,6 +310,20 @@ public class WorkflowMessage extends Message {
 //	public synchronized void setWfEngine(long wfEngine) {
 //		this.wfEngine = wfEngine;
 //	}
+
+	/**
+	 * @return the correspondingIssue
+	 */
+	public synchronized String getCorrespondingIssue() {
+		return CorrespondingIssue;
+	}
+
+	/**
+	 * @param correspondingIssue the correspondingIssue to set
+	 */
+	public synchronized void setCorrespondingIssue(String correspondingIssue) {
+		CorrespondingIssue = correspondingIssue;
+	}
 
 	@Override
 	public boolean isValid() {

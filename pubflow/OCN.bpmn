@@ -7,13 +7,15 @@
       <tns:import name="de.pubflow.wfCompUntis.ocn.OCNDataLoader"/>
       <tns:import name="de.pubflow.wfCompUntis.ocn.OCNToPangaeaMapper"/>
       <tns:import name="de.pubflow.wfCompUntis.ocn.FileCreator4D"/>
+      <tns:import name="de.pubflow.components.jira.JiraWFEndpoint"/>
+      <tns:global id="issueKey" identifier="issueKey" type="String"/>
     </bpmn2:extensionElements>
     <bpmn2:property id="tempResult" itemSubjectRef="ItemDefinition_22"/>
     <bpmn2:startEvent id="StartEvent_1" name="StartProcess">
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:endEvent id="EndEvent_1" name="">
-      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:scriptTask id="ScriptTask_1" name="Check Startparameters" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
@@ -52,24 +54,20 @@ kcontext.setVariable(&quot;tempResult&quot;, result);
 System.out.println(result);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="ScriptTask_3"/>
-    <bpmn2:scriptTask id="ScriptTask_4" name="Create Export File" scriptFormat="http://www.java.com/java">
+    <bpmn2:scriptTask id="ScriptTask_4" name="Communicate Result" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
       <bpmn2:script>FileCreator4D fc4d = new FileCreator4D();
 try {
-	fc4d.toCSV((String)tempResult, &quot;3&quot;, &quot;arl&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;etc/3d.4d&quot;, &quot;0&quot;, &quot;4d.4d&quot;, &quot;0&quot;, 0);
+	byte[] tResult = fc4d.toCSV((String)tempResult, &quot;3&quot;, &quot;arl&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;etc/temp.4d&quot;, &quot;0&quot;, &quot;4d.4d&quot;, &quot;0&quot;, 0);
+	String issue = (String)issueKey;
+	JiraWFEndpoint.RespondToJira(issue, tResult);
 } catch (Exception e) {
 	e.printStackTrace();
 }</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" name="" sourceRef="ScriptTask_3" targetRef="ScriptTask_4"/>
-    <bpmn2:scriptTask id="ScriptTask_5" name="Send File by Email" scriptFormat="http://www.java.com/java">
-      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
-      <bpmn2:script>System.out.println(&quot;Sending Mail ...&quot;);</bpmn2:script>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="ScriptTask_4" targetRef="ScriptTask_5"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" name="" sourceRef="ScriptTask_5" targetRef="EndEvent_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="ScriptTask_4" targetRef="EndEvent_1"/>
     <bpmn2:textAnnotation id="dok1"/>
     <bpmn2:association id="Association_1" sourceRef="dok1" targetRef="StartEvent_1"/>
   </bpmn2:process>
@@ -78,13 +76,15 @@ try {
   <bpmn2:itemDefinition id="ItemDefinition_127" itemKind="Physical" structureRef="de.pubflow.wfCompUntis.ocn.OCNDataLoader"/>
   <bpmn2:itemDefinition id="ItemDefinition_494" itemKind="Physical" structureRef="de.pubflow.wfCompUntis.ocn.OCNToPangaeaMapper"/>
   <bpmn2:itemDefinition id="ItemDefinition_495" itemKind="Physical" structureRef="de.pubflow.wfCompUntis.ocn.FileCreator4D"/>
+  <bpmn2:itemDefinition id="ItemDefinition_2" itemKind="Physical" structureRef="de.pubflow.components.jira.JiraWFEndpoint"/>
+  <bpmn2:interface id="Interface_1" implementationRef="de.pubflow.components.jira.JiraWFEndpoint" name="JiraWFEndpoint"/>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="de.pubflow.OCN">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="60.0" y="43.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="960.0" y="45.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="815.0" y="43.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="dok1">
         <dc:Bounds height="100.0" width="100.0" x="28.0" y="170.0"/>
@@ -121,16 +121,9 @@ try {
         <di:waypoint xsi:type="dc:Point" x="590.0" y="61.0"/>
         <di:waypoint xsi:type="dc:Point" x="640.0" y="62.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_5" bpmnElement="ScriptTask_5">
-        <dc:Bounds height="50.0" width="110.0" x="800.0" y="38.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_ScriptTask_4" targetElement="BPMNShape_ScriptTask_5">
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_ScriptTask_4" targetElement="BPMNShape_EndEvent_1">
         <di:waypoint xsi:type="dc:Point" x="750.0" y="62.0"/>
-        <di:waypoint xsi:type="dc:Point" x="800.0" y="63.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_ScriptTask_5" targetElement="BPMNShape_EndEvent_1">
-        <di:waypoint xsi:type="dc:Point" x="910.0" y="63.0"/>
-        <di:waypoint xsi:type="dc:Point" x="960.0" y="63.0"/>
+        <di:waypoint xsi:type="dc:Point" x="815.0" y="61.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -171,6 +171,9 @@ public class PubFlowSystem {
 				from("t2-jms:queue:test.queue").to(
 						"test-jms:queue:out.queue")
 						.bean(Consumer.getInstance());
+				from("t2-jms:jiraendpoint:out.queue").to(
+						"t2-jms:jira:toJira.queue")
+						.bean(Consumer.getInstance());
 				from("test-jms:queue:testOut.queue").to(
 						"test-jms:wfbroker:in.queue")
 						.bean(WFBroker.getInstance());
