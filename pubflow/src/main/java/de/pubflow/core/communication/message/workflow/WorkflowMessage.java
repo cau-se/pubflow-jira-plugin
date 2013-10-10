@@ -29,7 +29,7 @@ public class WorkflowMessage extends Message {
 	protected Timestamp 	userResponseTimestamp 	= null;
 	protected String 		comments 				= "empty";
 	protected long 			pubflowVersion			= -1;
-	protected String		CorrespondingIssue		= "";
+	protected String		CorrespondingIssue		= "empty";
 	//protected long 			wfEngine				= -1;
 	
 	// TODO add list off possible return values and their types
@@ -314,6 +314,7 @@ public class WorkflowMessage extends Message {
 	/**
 	 * @return the correspondingIssue
 	 */
+	@XmlElement(name="CorrespondingIssue")
 	public synchronized String getCorrespondingIssue() {
 		return CorrespondingIssue;
 	}
@@ -322,7 +323,7 @@ public class WorkflowMessage extends Message {
 	 * @param correspondingIssue the correspondingIssue to set
 	 */
 	public synchronized void setCorrespondingIssue(String correspondingIssue) {
-		CorrespondingIssue = correspondingIssue;
+		this.CorrespondingIssue = correspondingIssue;
 	}
 
 	@Override
