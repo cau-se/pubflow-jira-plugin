@@ -10,6 +10,10 @@ import javax.xml.bind.Unmarshaller;
 
 import org.slf4j.Logger;
 
+import de.pubflow.common.entity.workflow.WFParamList;
+import de.pubflow.common.entity.workflow.WFParameter;
+import de.pubflow.common.enumerartion.WFType;
+import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.core.communication.message.text.TextMessage;
 import de.pubflow.core.communication.message.workflow.WorkflowMessage;
 
@@ -59,8 +63,21 @@ public class MessageToolbox {
 		TextMessage nT = MessageToolbox.loadFromString(msgAsString, TextMessage.class);
 		System.out.println(nT.getContent());
 		
+		WFParameter param0 = new WFParameter();
+		param0.setKey("issueKey");
+		param0.setIntValue(3);
+		WFParameter param1 = new WFParameter();
+		param1.setKey("legID");
+		param1.setIntValue(3);
+		WFParamList params = new WFParamList();
+		params.add(param0);
+		params.add(param1);
 		WorkflowMessage wm = new WorkflowMessage();
-		wm.setComments("TestWFMsg");
+		wm.setWfparams(params);
+		wm.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName(
+				"de.pubflow.OCN"));
+		wm.setWftype(WFType.BPMN2);
+		wm.setComments("It's alive!");
 		String temp = MessageToolbox.transformToString(wm);
 		System.out.println(temp);
 		WorkflowMessage nwm = MessageToolbox.loadFromString(temp, WorkflowMessage.class);

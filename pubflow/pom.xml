@@ -274,6 +274,7 @@
 			<systemPath>${project.basedir}/lib/ode-axis2-1.3.5.jar</systemPath>
 		</dependency>
 
+<!-- 
 		<dependency>
 			<groupId>net.scherp.tf.application</groupId>
 			<artifactId>pubflow</artifactId>
@@ -328,7 +329,7 @@
 			<version>0.1</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/bpmn2bpel-0.1.jar</systemPath>
-		</dependency>
+		</dependency>  -->
 	</dependencies>
 
 
