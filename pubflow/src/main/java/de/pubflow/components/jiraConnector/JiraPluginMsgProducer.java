@@ -3,6 +3,8 @@ package de.pubflow.components.jiraConnector;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javassist.compiler.ast.Keyword;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ public class JiraPluginMsgProducer {
 	private static Logger myLogger;
 	private static final String START_WF = "";
 
+	public enum KEYWORDS{ status };
 	static {
 		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);
 	}
@@ -48,6 +51,8 @@ public class JiraPluginMsgProducer {
 		for (Entry<String, String> entry : fieldmap) {
 			String key = entry.getKey();
 			String value = entry.getValue();
+			
+			
 			switch (key) {
 			case "Author_OCN":
 				wfMsg.setUser(User.getUserFromJiraID(value));
@@ -71,7 +76,12 @@ public class JiraPluginMsgProducer {
 
 				break;
 			case "issueKey":
-				wfMsg.setCorrespondingIssue(key);
+				WFParameter param = new WFParameter();
+				param.setKey("issueKey");
+				
+				myLogger.info("Set issueKey to "+value);
+				param.setStringValue(value);
+				paramList.add(param);
 				break;
 			case "Source_OCN":
 
@@ -130,4 +140,6 @@ public class JiraPluginMsgProducer {
 
 		myLogger.info("Msg sent!");
 	}
+	
+	
 }
