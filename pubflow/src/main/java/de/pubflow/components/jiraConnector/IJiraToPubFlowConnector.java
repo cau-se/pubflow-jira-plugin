@@ -6,6 +6,8 @@ import javax.jws.soap.SOAPBinding.Style;
 
 import de.pubflow.core.communication.message.jira.JiraMessage;
 
+//import de.pubflow.core.communication.message.jira.JiraMessage;
+
 
 @WebService(targetNamespace = "pubflow.de")
 @SOAPBinding(style = Style.RPC)

@@ -19,10 +19,12 @@ public class JiraWFEndpoint {
 		msgBody.put("attachmentString", new String(file));
 		msgBody.put("attachmentFileName", "data");
 		msgBody.put("attachmentFileType", ".4d");
+		msg.setMessage(msgBody);
 		// Sending Msg
 		ProducerTemplate producer;
 		CamelContext context = PubFlowSystem.getInstance().getContext();
 		producer = context.createProducerTemplate();
+		System.out.println(MessageToolbox.transformToString(msg));
 		//producer.sendBody("t2-jms:jiraendpoint:out.queue",
 		//		MessageToolbox.transformToString(msg));
 	}

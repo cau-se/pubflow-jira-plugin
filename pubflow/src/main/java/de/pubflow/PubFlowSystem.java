@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
+import de.pubflow.common.entity.workflow.ParameterType;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
@@ -67,7 +68,7 @@ public class PubFlowSystem {
 
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting PubFlow System");
-
+//
 		// Create CamelContext
 		context = new DefaultCamelContext();
 		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
@@ -115,7 +116,7 @@ public class PubFlowSystem {
 			myLogger.error("Failed to start the internal PubFlow Server");
 			e.printStackTrace();
 		}
-		myLogger.info("Starting Jira Component Endpoint");
+//		myLogger.info("Starting Jira Component Endpoint");
 		startJiraPlugin();
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
@@ -129,7 +130,7 @@ public class PubFlowSystem {
 			instance = new PubFlowSystem();
 		}
 		return instance;
-
+		//return null;
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -156,9 +157,9 @@ public class PubFlowSystem {
 	// }
 
 	private void startJiraPlugin() {
-		Endpoint.publish("http://localhost:8890/"
-				+ JiraToPubFlowConnector.class.getSimpleName(),
-				new JiraToPubFlowConnector());
+//		Endpoint.publish("http://localhost:8890/"
+//				+ JiraToPubFlowConnector.class.getSimpleName(),
+//				new JiraToPubFlowConnector());
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -202,6 +203,7 @@ public class PubFlowSystem {
 
 	public DefaultCamelContext getContext() {
 		return context;
+		//return null;
 	}
 
 	public void setContext(DefaultCamelContext context) {
@@ -217,7 +219,7 @@ public class PubFlowSystem {
 		PubFlowSystem c = PubFlowSystem.getInstance();
 		System.out.println(">>>>>>>>>>>>>> Testing <<<<<<<<<<<<<<<<");
 		// Do some tests
-		ProducerTemplate template = c.getContext().createProducerTemplate();
+		//ProducerTemplate template = c.getContext().createProducerTemplate();
 		for (int i = 0; i < 1; i++) {
 			// System.out.println("sending test textmsg");
 			// TextMessage text = new TextMessage();
@@ -230,10 +232,12 @@ public class PubFlowSystem {
 			System.out.println("Composing test wfmsg");
 			WFParameter param0 = new WFParameter();
 			param0.setKey("issueKey");
-			param0.setIntValue(3);
+			param0.setStringValue("3");
+			param0.setPayloadClazz(ParameterType.STRING);
 			WFParameter param1 = new WFParameter();
 			param1.setKey("legID");
 			param1.setIntValue(3);
+			param1.setPayloadClazz(ParameterType.INTEGER);
 			WFParamList params = new WFParamList();
 			params.add(param0);
 			params.add(param1);
@@ -245,10 +249,12 @@ public class PubFlowSystem {
 			wm.setComments("It's alive!");
 			//
 			// Sending WFMsg
+			System.out.println(MessageToolbox.transformToString(wm));
 			ProducerTemplate producer;
+			
 			CamelContext context = PubFlowSystem.getInstance().getContext();
 			producer = context.createProducerTemplate();
-			System.out.println(MessageToolbox.transformToString(wm));
+			
 			producer.sendBody("test-jms:queue:testOut.queue",
 					MessageToolbox.transformToString(wm));
 			System.out.println("DONE!");

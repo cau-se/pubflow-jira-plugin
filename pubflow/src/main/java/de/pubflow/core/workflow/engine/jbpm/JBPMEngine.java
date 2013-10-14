@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.common.entity.workflow.JBPMPubflow;
+import de.pubflow.common.entity.workflow.ParameterType;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
@@ -170,9 +171,34 @@ public JBPMEngine() {
 			myLogger.info("Setting process parameter");
 			for(WFParameter wfParam : params.getParameter()){
 				String key = wfParam.getKey();
-				int value = wfParam.getIntValue();
-				myLogger.info("Setting parameter >>"+key+"<< to >>"+value+"<<");
-				ksession.setGlobal(key, value);
+				ParameterType payloadClazz = wfParam.getPayloadClazz();
+				
+				switch (payloadClazz) {
+				case INTEGER:
+					int value = wfParam.getIntValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+value+"<<");
+					ksession.setGlobal(key, value);
+					break;
+				case STRING:
+					String valueString = wfParam.getStringValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueString+"<<");
+					ksession.setGlobal(key, valueString);
+					break;
+				case DOUBLE:
+					Double valuedoubel = wfParam.getDoubleValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valuedoubel+"<<");
+					ksession.setGlobal(key, valuedoubel);
+					break;
+				case LONG:
+					Long valueLong = wfParam.getLongValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueLong+"<<");
+					ksession.setGlobal(key, valueLong);
+					break;
+				default:
+					break;
+				}
+				
+				
 			}
 		
 		instance = ksession.startProcess(myWF.getWFID());

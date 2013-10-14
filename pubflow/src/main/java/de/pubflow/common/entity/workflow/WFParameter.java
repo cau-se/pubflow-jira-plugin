@@ -8,7 +8,7 @@ public class WFParameter {
 	public WFParameter(){}
 	
 	private String key;
-	private String payloadClazz;
+	private ParameterType payloadClazz;
 	private int intValue;
 	private String stringValue;
 	private long longValue;
@@ -17,13 +17,13 @@ public class WFParameter {
 	/**
 	 * @return the payloadClazz
 	 */
-	public String getPayloadClazz() {
+	public ParameterType getPayloadClazz() {
 		return payloadClazz;
 	}
 	/**
 	 * @param payloadClazz the payloadClazz to set
 	 */
-	public void setPayloadClazz(String payloadClazz) {
+	public void setPayloadClazz(ParameterType payloadClazz) {
 		this.payloadClazz = payloadClazz;
 	}
 	/**

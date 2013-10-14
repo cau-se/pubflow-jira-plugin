@@ -9,6 +9,7 @@ public class JiraToPubFlowConnector implements IJiraToPubFlowConnector{
 
 	@Override
 	public void eventNotification(JiraMessage message) {
+		System.out.println("Starting");
 		JiraPluginMsgProducer msgProducer = new JiraPluginMsgProducer();
 		msgProducer.onMsg(message);
 	}
