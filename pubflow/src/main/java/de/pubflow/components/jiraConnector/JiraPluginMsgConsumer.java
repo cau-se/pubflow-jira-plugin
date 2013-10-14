@@ -15,14 +15,14 @@ import org.apache.camel.Consume;
 import de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpointService;
 import de.pubflow.core.communication.message.jira.JiraMessage;
 public class JiraPluginMsgConsumer {
-	
+
 	private static final String KEYSTOREFILE="pubflow_keystore.ks";
 	private static final String KEYSTOREPW="rainbowdash_1";	
-	
+
 	static{
 		System.getProperties().put("javax.net.ssl.trustStore", KEYSTOREFILE);
 		System.getProperties().put("javax.net.ssl.trustStorePassword", KEYSTOREPW);
-		
+
 		try {
 			Service service = JiraEndpointService.create(new URL("http://localhost:8889/JiraEndpointService?wsdl"), new QName("pubflow.de", "JiraEndpointService"));
 			jiraEndpointService = service.getPort(JiraEndpointService.class);
@@ -31,7 +31,7 @@ public class JiraPluginMsgConsumer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	static JiraEndpointService jiraEndpointService;
 
 	private void addIssueComment(HashMap<String, String> map){
@@ -44,14 +44,14 @@ public class JiraPluginMsgConsumer {
 
 	private void addAttachment(HashMap<String, String> map){
 		byte[] data = Charset.forName(StandardCharsets.UTF_8.name()).encode(map.get("attachmentString")).array();
-		
+
 		jiraEndpointService.getJiraEndpointPort().addAttachment(map.get("issueKey"), data,  map.get("attachmentFileName"), map.get("attachmentFileType"));
 	}
-	
+
 	private void createIssueType(HashMap<String, String> map){
 		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 params = 
 				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2();
-		
+
 		for(Entry<String, String> entry : JiraMessage.getMap("parameters", map).entrySet()){
 			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry newEntry = 
 					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry();
@@ -59,10 +59,10 @@ public class JiraPluginMsgConsumer {
 			newEntry.setValue(entry.getValue());
 			params.getEntry().add(newEntry);
 		}
-		
+
 		jiraEndpointService.getJiraEndpointPort().createIssueType("PubFlow", map.get("wfName"), params);
 	}
-	
+
 	private void createIssue(HashMap<String, String> map){
 		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3 params = 
 				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3();
@@ -75,16 +75,16 @@ public class JiraPluginMsgConsumer {
 		}
 		jiraEndpointService.getJiraEndpointPort().createIssue("PUB", map.get("wfName"), map.get("comment"), params, "admin");
 	}
-	
+
 	@Consume(uri="t2-jms:jira:toJira.queue")
 	public void onMsg(JiraMessage msg){
 
 		switch(msg.getAction()){
-			case "jira.newComment":  addIssueComment(msg.getMessage()) ;break;
-			case "jira.newIssue": createIssue(msg.getMessage()) ;break;
-			case "jira.newIssueType": createIssueType(msg.getMessage()) ;break;
-			case "jira.changeStatus": changeStatus(msg.getMessage()) ;break;
-			case "jira.addAttachment": addAttachment(msg.getMessage()) ;break;
+		case "jira.newComment":  addIssueComment(msg.getMessage()) ;break;
+		case "jira.newIssue": createIssue(msg.getMessage()) ;break;
+		case "jira.newIssueType": createIssueType(msg.getMessage()) ;break;
+		case "jira.changeStatus": changeStatus(msg.getMessage()) ;break;
+		case "jira.addAttachment": addAttachment(msg.getMessage()) ;break;
 		}
 	}
 }
