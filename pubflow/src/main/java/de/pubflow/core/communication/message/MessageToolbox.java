@@ -48,7 +48,8 @@ public class MessageToolbox {
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.marshal(msg, oStream);
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
+			System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx");
+			// TODO Auto-generatd catch block
 			e.printStackTrace();
 		}
 
