@@ -54,6 +54,10 @@ public class MessageToolbox {
 		}
 
 		return oStream.toString();
+<<<<<<< HEAD
+=======
+		//return "";
+>>>>>>> e3d3706b4067258e7e43b3364356019fa39e779c
 	}
 
 	public static void main(String[] args) {
