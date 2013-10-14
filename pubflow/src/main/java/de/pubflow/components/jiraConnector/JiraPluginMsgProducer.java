@@ -17,7 +17,7 @@ import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.core.communication.message.MessageToolbox;
-import de.pubflow.core.communication.message.jira.JiraMessage;
+import de.pubflow.core.communication.message.jira.CamelJiraMessage;
 import de.pubflow.core.communication.message.workflow.WorkflowMessage;
 
 public class JiraPluginMsgProducer {
@@ -41,7 +41,7 @@ public class JiraPluginMsgProducer {
 	 * 
 	 * @param msg
 	 */
-	public void onMsg(JiraMessage msg) {
+	public void onMsg(CamelJiraMessage msg) {
 		myLogger.info("Received Msg from Jira-Plugin");
 		WorkflowMessage wfMsg = new WorkflowMessage();
 		WFParamList paramList = new WFParamList();

@@ -13,7 +13,7 @@ import javax.xml.ws.Service;
 import org.apache.camel.Consume;
 
 import de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpointService;
-import de.pubflow.core.communication.message.jira.JiraMessage;
+import de.pubflow.core.communication.message.jira.CamelJiraMessage;
 public class JiraPluginMsgConsumer {
 
 	private static final String KEYSTOREFILE="pubflow_keystore.ks";
@@ -52,7 +52,7 @@ public class JiraPluginMsgConsumer {
 		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 params = 
 				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2();
 
-		for(Entry<String, String> entry : JiraMessage.getMap("parameters", map).entrySet()){
+		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
 			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry newEntry = 
 					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry();
 			newEntry.setKey(entry.getKey());
@@ -66,7 +66,7 @@ public class JiraPluginMsgConsumer {
 	private void createIssue(HashMap<String, String> map){
 		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3 params = 
 				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3();
-		for(Entry<String, String> entry : JiraMessage.getMap("parameters", map).entrySet()){
+		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
 			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3.Entry newEntry = 
 					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3.Entry();
 			newEntry.setKey(entry.getKey());
@@ -77,7 +77,7 @@ public class JiraPluginMsgConsumer {
 	}
 
 	@Consume(uri="t2-jms:jira:toJira.queue")
-	public void onMsg(JiraMessage msg){
+	public void onMsg(CamelJiraMessage msg){
 
 		switch(msg.getAction()){
 		case "jira.newComment":  addIssueComment(msg.getMessage()) ;break;

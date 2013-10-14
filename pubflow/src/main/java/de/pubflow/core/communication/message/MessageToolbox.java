@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.slf4j.Logger;
 
+import de.pubflow.PubFlowSystem;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
@@ -41,22 +42,23 @@ public class MessageToolbox {
 
 	public static String transformToString(Message msg) {
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-//		try {
-//			JAXBContext context = JAXBContext.newInstance(msg.getClass());
-//
-//			Marshaller m = context.createMarshaller();
-//			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-//			m.marshal(msg, oStream);
-//		} catch (JAXBException e) {
-//			// TODO Auto-generatd catch block
-//			e.printStackTrace();
-//		}
+		try {
+			JAXBContext context = JAXBContext.newInstance(msg.getClass());
 
-		//return oStream.toString();
-		return "";
+			Marshaller m = context.createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			m.marshal(msg, oStream);
+		} catch (JAXBException e) {
+			// TODO Auto-generatd catch block
+			e.printStackTrace();
+		}
+
+		return oStream.toString();
 	}
 
 	public static void main(String[] args) {
+		PubFlowSystem s = PubFlowSystem.getInstance();
+		
 		TextMessage test = new TextMessage();
 		test.setContent("This is a test");
 		String msgAsString = MessageToolbox.transformToString(test);
