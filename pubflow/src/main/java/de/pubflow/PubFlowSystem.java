@@ -248,8 +248,10 @@ public class PubFlowSystem {
 			ProducerTemplate producer;
 			CamelContext context = PubFlowSystem.getInstance().getContext();
 			producer = context.createProducerTemplate();
+			System.out.println(MessageToolbox.transformToString(wm));
 			producer.sendBody("test-jms:queue:testOut.queue",
 					MessageToolbox.transformToString(wm));
+			System.out.println("DONE!");
 
 		}
 

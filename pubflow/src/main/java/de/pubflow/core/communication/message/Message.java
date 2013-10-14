@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 public abstract class Message{
 
 	
+	
 	public String clazz;
 	protected static Logger myLogger;
 	

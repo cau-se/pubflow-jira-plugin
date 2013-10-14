@@ -310,7 +310,6 @@ public class WorkflowMessage extends Message {
 //		this.wfEngine = wfEngine;
 //	}
 
-
 	@Override
 	public boolean isValid() {
 		// TODO Auto-generated method stub
