@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-<<<<<<< HEAD
-<comment>Workflow list (last updated Oct 14, 2013 5:02:36 PM)</comment>
-<entry key="1">144</entry>
-=======
 <comment>Workflow list (last updated 14.10.2013 16:34:00)</comment>
 <entry key="1">145</entry>
 >>>>>>> e3d3706b4067258e7e43b3364356019fa39e779c
