@@ -41,16 +41,16 @@ public class MessageToolbox {
 
 	public static String transformToString(Message msg) {
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-		try {
-			JAXBContext context = JAXBContext.newInstance(msg.getClass());
-
-			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			m.marshal(msg, oStream);
-		} catch (JAXBException e) {
-			// TODO Auto-generatd catch block
-			e.printStackTrace();
-		}
+//		try {
+//			JAXBContext context = JAXBContext.newInstance(msg.getClass());
+//
+//			Marshaller m = context.createMarshaller();
+//			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+//			m.marshal(msg, oStream);
+//		} catch (JAXBException e) {
+//			// TODO Auto-generatd catch block
+//			e.printStackTrace();
+//		}
 
 		//return oStream.toString();
 		return "";
