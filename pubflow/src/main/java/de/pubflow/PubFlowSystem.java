@@ -4,8 +4,6 @@ import javax.jms.ConnectionFactory;
 import javax.xml.ws.Endpoint;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -13,16 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
-import de.pubflow.common.entity.workflow.ParameterType;
-import de.pubflow.common.entity.workflow.WFParamList;
-import de.pubflow.common.entity.workflow.WFParameter;
-import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.properties.PropLoader;
-import de.pubflow.common.repository.workflow.WorkflowProvider;
 import de.pubflow.components.jiraConnector.JiraToPubFlowConnector;
 import de.pubflow.components.mailEndpoint.MailProxy;
-import de.pubflow.core.communication.message.MessageToolbox;
-import de.pubflow.core.communication.message.workflow.WorkflowMessage;
 import de.pubflow.core.server.AppServer;
 import de.pubflow.core.workflow.WFBroker;
 

@@ -3,8 +3,6 @@ package de.pubflow.components.jiraConnector;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javassist.compiler.ast.Keyword;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.slf4j.Logger;
@@ -48,17 +46,22 @@ public class JiraPluginMsgProducer {
 		// Mapping PubFlowMsg to WorkflowMessage
 		myLogger.info("Transforming msg to wfMessage");
 		Set<Entry<String, String>> fieldmap = msg.getMessage().entrySet();
+
+		for(Entry<String, String> e : fieldmap){ 
+			myLogger.info(e.getKey() + " : " + e.getValue());
+		}
+
 		for (Entry<String, String> entry : fieldmap) {
 			String key = entry.getKey();
 			String value = entry.getValue();
-			
-			
+
+
 			switch (key) {
 			case "Author_OCN":
 				wfMsg.setUser(User.getUserFromJiraID(value));
 				break;
 			case "Reference_OCN":
-				
+
 				break;
 			case "status":
 				wfMsg.setWfstate(WFState.parseJiraString(value));
@@ -78,7 +81,7 @@ public class JiraPluginMsgProducer {
 			case "issueKey":
 				WFParameter param = new WFParameter();
 				param.setKey("issueKey");
-				
+
 				myLogger.info("Set issueKey to "+value);
 				param.setStringValue(value);
 				paramList.add(param);
@@ -93,7 +96,7 @@ public class JiraPluginMsgProducer {
 
 				break;
 			case "date":
-				
+
 				break;
 			case "Leg ID_OCN":
 				WFParameter param1 = new WFParameter();
@@ -115,8 +118,8 @@ public class JiraPluginMsgProducer {
 			case "workflowName":
 				myLogger.info("Val: "+key+" > "+value);
 				if(value.equalsIgnoreCase("OCN")){
-				wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
-				myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));}
+					wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
+					myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));}
 				break;
 			case "PID_OCN":
 
@@ -140,6 +143,6 @@ public class JiraPluginMsgProducer {
 
 		myLogger.info("Msg sent!");
 	}
-	
-	
+
+
 }
