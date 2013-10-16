@@ -35,7 +35,7 @@ import de.pubflow.common.repository.abstractRepository.storageAdapter.StorageAda
 public abstract class BasicProvider<T> implements IProvider<T> {
 
 	protected BasicRepository br;
-	
+
 	protected BasicProvider(ERepositoryName repositoryName, StorageAdapter storageAdapter){
 		try {
 			br = new BasicRepository(repositoryName, storageAdapter);
@@ -44,7 +44,7 @@ public abstract class BasicProvider<T> implements IProvider<T> {
 			e.printStackTrace();
 		}
 	}
-		
+
 	public void clear() {
 		// TODO Auto-generated method stub
 	}
@@ -53,14 +53,18 @@ public abstract class BasicProvider<T> implements IProvider<T> {
 		return br.add(o);
 	}
 
+	@SuppressWarnings("unchecked")
 	public  T getEntry(long id) {
 		return (T)br.get(id);
+
 	}
 
+
+	@SuppressWarnings("unchecked")
 	public List<T> getAllEntries() {
 		List<Long> allIds = br.getAllIds();
 		List<T> result = new ArrayList<T>();
-		
+
 		for(Long l : allIds){
 			result.add((T) br.get(l));
 		}

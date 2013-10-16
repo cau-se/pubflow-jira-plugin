@@ -1,13 +1,15 @@
 package de.pubflow.wfCompUntis.ocn;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
-import java.util.Properties;
 
-import javax.jws.WebService;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
@@ -20,7 +22,7 @@ import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
 
 public class FileCreator4D {
 	
-	public String toCSV(String input, String pid, String login, 
+	public byte[] toCSV(String input, String pid, String login, 
 			String source, String author, String project, 
 			String topology, String status, String savePath, 
 			String reference, String fileName, String comment, int instanceId) throws Exception{
@@ -192,12 +194,29 @@ public class FileCreator4D {
 			log.append("done!\n");
 
 			leg.add(Leg.c_logString, leg.getString(Leg.c_logString) + log.toString());
-			FileWriter fstream = new FileWriter(savePath);
-			BufferedWriter out = new BufferedWriter(fstream);
+//			FileWriter fstream = new FileWriter(savePath);
+//			BufferedWriter out = new BufferedWriter(fstream);
+//			out.write(sb.toString());
+//			out.close();
+
+			File output = new File(savePath);
+			FileWriter os = new FileWriter(output);
+			BufferedWriter out = new BufferedWriter(os);
 			out.write(sb.toString());
 			out.close();
-
-			return leg.getString(Leg.c_logString);
+			
+			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+			  FileInputStream fileInputStream = new FileInputStream(output);
+			  
+		        byte[] buffer = new byte[16384];
+		 
+		        for (int len = fileInputStream.read(buffer); len > 0; len = fileInputStream
+		                .read(buffer)) {
+		            byteOut.write(buffer, 0, len);
+		        }
+		 
+		        fileInputStream.close();
+			return byteOut.toByteArray();
 
 		}catch(Exception e){
 			try {
@@ -213,7 +232,7 @@ public class FileCreator4D {
 				e1.printStackTrace();
 			}
 			
-			return "";
+			return new byte[0];
 		}
 
 	}

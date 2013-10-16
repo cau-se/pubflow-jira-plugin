@@ -19,8 +19,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="wfName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="params">
+ *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg2">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -52,61 +53,87 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "createIssueType", propOrder = {
-    "wfName",
-    "params"
+    "arg0",
+    "arg1",
+    "arg2"
 })
 public class CreateIssueType {
 
-    protected String wfName;
+    protected String arg0;
+    protected String arg1;
     @XmlElement(required = true)
-    protected CreateIssueType.Params params;
+    protected CreateIssueType.Arg2 arg2;
 
     /**
-     * Gets the value of the wfName property.
+     * Gets the value of the arg0 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getWfName() {
-        return wfName;
+    public String getArg0() {
+        return arg0;
     }
 
     /**
-     * Sets the value of the wfName property.
+     * Sets the value of the arg0 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setWfName(String value) {
-        this.wfName = value;
+    public void setArg0(String value) {
+        this.arg0 = value;
     }
 
     /**
-     * Gets the value of the params property.
+     * Gets the value of the arg1 property.
      * 
      * @return
      *     possible object is
-     *     {@link CreateIssueType.Params }
+     *     {@link String }
      *     
      */
-    public CreateIssueType.Params getParams() {
-        return params;
+    public String getArg1() {
+        return arg1;
     }
 
     /**
-     * Sets the value of the params property.
+     * Sets the value of the arg1 property.
      * 
      * @param value
      *     allowed object is
-     *     {@link CreateIssueType.Params }
+     *     {@link String }
      *     
      */
-    public void setParams(CreateIssueType.Params value) {
-        this.params = value;
+    public void setArg1(String value) {
+        this.arg1 = value;
+    }
+
+    /**
+     * Gets the value of the arg2 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link CreateIssueType.Arg2 }
+     *     
+     */
+    public CreateIssueType.Arg2 getArg2() {
+        return arg2;
+    }
+
+    /**
+     * Sets the value of the arg2 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CreateIssueType.Arg2 }
+     *     
+     */
+    public void setArg2(CreateIssueType.Arg2 value) {
+        this.arg2 = value;
     }
 
 
@@ -144,9 +171,9 @@ public class CreateIssueType {
     @XmlType(name = "", propOrder = {
         "entry"
     })
-    public static class Params {
+    public static class Arg2 {
 
-        protected List<CreateIssueType.Params.Entry> entry;
+        protected List<CreateIssueType.Arg2 .Entry> entry;
 
         /**
          * Gets the value of the entry property.
@@ -166,13 +193,13 @@ public class CreateIssueType {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link CreateIssueType.Params.Entry }
+         * {@link CreateIssueType.Arg2 .Entry }
          * 
          * 
          */
-        public List<CreateIssueType.Params.Entry> getEntry() {
+        public List<CreateIssueType.Arg2 .Entry> getEntry() {
             if (entry == null) {
-                entry = new ArrayList<CreateIssueType.Params.Entry>();
+                entry = new ArrayList<CreateIssueType.Arg2 .Entry>();
             }
             return this.entry;
         }

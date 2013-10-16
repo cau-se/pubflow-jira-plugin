@@ -14,9 +14,6 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.PubFlowSystem;
-import de.pubflow.common.exception.PropAlreadySetException;
-import de.pubflow.common.exception.PropNotSetException;
 import de.pubflow.common.properties.PropLoader;
 
 public class AppServer {

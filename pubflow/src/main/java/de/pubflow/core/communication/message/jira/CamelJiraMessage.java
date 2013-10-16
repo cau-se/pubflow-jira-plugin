@@ -1,50 +1,42 @@
-package de.pubflow.common.entity;
+package de.pubflow.core.communication.message.jira;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class PubFlowMessage {
+import javax.xml.bind.annotation.XmlRootElement;
 
-	String target = "";
+import de.pubflow.core.communication.message.Message;
+
+@XmlRootElement(namespace = "http://pubflow.de/message/jira")
+public class CamelJiraMessage extends Message{
+
+	private String target = "";
+	private String action = "";
+	private HashMap<String, String> message = new HashMap<String, String>();
+	
+	public CamelJiraMessage(){}
+
 	public String getTarget() {
 		return target;
-	}
-
-	public String getMsgAsString()
-	{
-		//TODO
-		return "";
-	}
-	
-	public static PubFlowMessage initFromString(String msg)
-	{
-		//TODO
-		return null;
 	}
 
 	public void setTarget(String target) {
 		this.target = target;
 	}
-
-	String action = "";
-
-	HashMap<String, String> message = new HashMap<String, String>();
-
-	public PubFlowMessage(String action){
+	
+	public CamelJiraMessage(String action){
 		this.action = action;
-	}
+	}	
 	
-	public PubFlowMessage(){}
-	
-	public PubFlowMessage(String action, HashMap<String, String> message){
+	public CamelJiraMessage(String action, HashMap<String, String> message){
 		this.action = action;
 		this.message = message;
 	}
 	
-
 	public String getAction() {
 		return action;
 	}
+	
 	public void setAction(String action) {
 		this.action = action;
 	}
@@ -67,5 +59,11 @@ public class PubFlowMessage {
 		}
 		
 		return map;
+	}
+
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

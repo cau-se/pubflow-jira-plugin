@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 @XmlRootElement( namespace = "http://pubflow.de/message" )
 public abstract class Message{
 
-	
 	public String clazz;
 	protected static Logger myLogger;
 	
@@ -20,7 +19,7 @@ public abstract class Message{
 	}
 	
 	@XmlElement(name="clazz")
-	public String getMsgType() {
+	public String getType() {
 		return clazz;
 	}
 	
@@ -28,12 +27,10 @@ public abstract class Message{
 		this.clazz = c;
 	}
 	
-	public void initFromString(String pContent)
-	{
+	public void initFromString(String pContent){
 		
 	}
 	
 	public abstract boolean isValid();
 	
-
 }

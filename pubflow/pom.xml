@@ -27,28 +27,28 @@
 		</dependency>
 		<dependency>
 
-      <groupId>org.jbpm</groupId>
+			<groupId>org.jbpm</groupId>
 
-      <artifactId>jbpm-bpmn2</artifactId>
+			<artifactId>jbpm-bpmn2</artifactId>
 
-      <version>5.4.0.Final</version>
+			<version>5.4.0.Final</version>
 
-    </dependency>
-<dependency>
-	<groupId>postgresql</groupId>
-	<artifactId>postgresql</artifactId>
-	<version>9.1-901.jdbc3</version>
-</dependency>
-            
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.1-901.jdbc3</version>
+		</dependency>
+
 
 
 		<!-- MESSAGING -->
-		
+
 		<dependency>
-	<groupId>javax.mail</groupId>
-	<artifactId>mail</artifactId>
-	<version>1.4.7</version>
-</dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
 
 		<dependency>
 			<version>5.8.0</version>
@@ -188,12 +188,12 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>${jettyVersion}</version>
-			<!-- <exclusions> -->
-			<!-- <exclusion> -->
-			<!-- <artifactId>javax.servlet</artifactId> -->
-			<!-- <groupId>org.eclipse.jetty.orbit</groupId> -->
-			<!-- </exclusion> -->
-			<!-- </exclusions> -->
+<!-- 			<exclusions> -->
+<!-- 				<exclusion> -->
+<!-- 					<artifactId>javax.servlet</artifactId> -->
+<!-- 					<groupId>org.eclipse.jetty.orbit</groupId> -->
+<!-- 				</exclusion> -->
+<!-- 			</exclusions> -->
 		</dependency>
 
 		<dependency>
@@ -274,61 +274,21 @@
 			<systemPath>${project.basedir}/lib/ode-axis2-1.3.5.jar</systemPath>
 		</dependency>
 
-		<dependency>
-			<groupId>net.scherp.tf.application</groupId>
-			<artifactId>pubflow</artifactId>
-			<version>0.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/bpmn2bpel-0.1.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>net.scherp.tf</groupId>
-			<artifactId>application</artifactId>
-			<version>0.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/application-0.1.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>net.scherp.tf</groupId>
-			<artifactId>chaining</artifactId>
-			<version>0.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/chaining-0.1.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>net.scherp.tf</groupId>
-			<artifactId>common</artifactId>
-			<version>0.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/common-0.1.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>net.scherp.tf</groupId>
-			<artifactId>transformation</artifactId>
-			<version>0.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/transformation-0.1.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>net.scherp.tf</groupId>
-			<artifactId>xtend</artifactId>
-			<version>0.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/xtend-0.1.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>net.scherp.tf.application</groupId>
-			<artifactId>pubflow</artifactId>
-			<version>0.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/bpmn2bpel-0.1.jar</systemPath>
-		</dependency>
+		<!-- <dependency> <groupId>net.scherp.tf.application</groupId> <artifactId>pubflow</artifactId> 
+			<version>0.1</version> <scope>system</scope> <systemPath>${project.basedir}/lib/bpmn2bpel-0.1.jar</systemPath> 
+			</dependency> <dependency> <groupId>net.scherp.tf</groupId> <artifactId>application</artifactId> 
+			<version>0.1</version> <scope>system</scope> <systemPath>${project.basedir}/lib/application-0.1.jar</systemPath> 
+			</dependency> <dependency> <groupId>net.scherp.tf</groupId> <artifactId>chaining</artifactId> 
+			<version>0.1</version> <scope>system</scope> <systemPath>${project.basedir}/lib/chaining-0.1.jar</systemPath> 
+			</dependency> <dependency> <groupId>net.scherp.tf</groupId> <artifactId>common</artifactId> 
+			<version>0.1</version> <scope>system</scope> <systemPath>${project.basedir}/lib/common-0.1.jar</systemPath> 
+			</dependency> <dependency> <groupId>net.scherp.tf</groupId> <artifactId>transformation</artifactId> 
+			<version>0.1</version> <scope>system</scope> <systemPath>${project.basedir}/lib/transformation-0.1.jar</systemPath> 
+			</dependency> <dependency> <groupId>net.scherp.tf</groupId> <artifactId>xtend</artifactId> 
+			<version>0.1</version> <scope>system</scope> <systemPath>${project.basedir}/lib/xtend-0.1.jar</systemPath> 
+			</dependency> <dependency> <groupId>net.scherp.tf.application</groupId> <artifactId>pubflow</artifactId> 
+			<version>0.1</version> <scope>system</scope> <systemPath>${project.basedir}/lib/bpmn2bpel-0.1.jar</systemPath> 
+			</dependency> -->
 	</dependencies>
 
 

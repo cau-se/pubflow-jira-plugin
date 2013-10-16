@@ -97,7 +97,6 @@ public class WorkflowEntity implements Serializable{
 		ZipFile	zipfile = new ZipFile(archive);
 
 		try {
-			zipfile = new ZipFile(archive);
 			for (Enumeration<? extends ZipEntry> e = zipfile.entries(); e.hasMoreElements(); ) {
 				ZipEntry entry = (ZipEntry) e.nextElement();
 

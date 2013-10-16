@@ -1,6 +1,5 @@
 package de.pubflow.core.workflow.engine;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.camel.CamelContext;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import de.pubflow.PubFlowSystem;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParamList;
-import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
 import de.pubflow.core.communication.message.MessageToolbox;

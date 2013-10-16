@@ -1,10 +1,7 @@
 package de.pubflow.core.workflow.engine.jbpm;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
@@ -18,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.common.entity.workflow.JBPMPubflow;
+import de.pubflow.common.entity.workflow.ParameterType;
 import de.pubflow.common.entity.workflow.PubFlow;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
@@ -173,20 +171,38 @@ public JBPMEngine() {
 			myLogger.info("Setting process parameter");
 			for(WFParameter wfParam : params.getParameter()){
 				String key = wfParam.getKey();
-				int value = wfParam.getIntValue();
-				myLogger.info("Setting parameter >>"+key+"<< to >>"+value+"<<");
-				ksession.setGlobal(key, value);
+				ParameterType payloadClazz = wfParam.getPayloadClazz();
+				
+				switch (payloadClazz) {
+				case INTEGER:
+					int value = wfParam.getIntValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+value+"<<");
+					ksession.setGlobal(key, value);
+					break;
+				case STRING:
+					String valueString = wfParam.getStringValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueString+"<<");
+					ksession.setGlobal(key, valueString);
+					break;
+				case DOUBLE:
+					Double valuedoubel = wfParam.getDoubleValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valuedoubel+"<<");
+					ksession.setGlobal(key, valuedoubel);
+					break;
+				case LONG:
+					Long valueLong = wfParam.getLongValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueLong+"<<");
+					ksession.setGlobal(key, valueLong);
+					break;
+				default:
+					break;
+				}
+				
+				
 			}
 		
 		instance = ksession.startProcess(myWF.getWFID());
-		Double TempPi =(Double) ((WorkflowProcessInstance) instance).getVariable("pi");
-		Email lMail = new Email();
 		
-		lMail.setRecipient("pcb@informatik.uni-kiel.de");
-		lMail.setTopic("Workflow: "+myWF.getWFID());
-		lMail.setText("Workflow finished! Result: "+TempPi);
-		sendEmailMsg(lMail);
-		myLogger.info("Result= "+TempPi);
 		myLogger.info("Workflow executed sucessfuly");
 		}
 		catch (Exception ex)

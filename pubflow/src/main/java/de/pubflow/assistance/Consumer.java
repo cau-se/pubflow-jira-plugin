@@ -25,6 +25,6 @@ public class Consumer {
 		TextMessage tm = MessageToolbox.loadFromString(name, TextMessage.class);
 		
 		myLogger.info("content >> "+tm.getContent());
-		myLogger.info("type >> "+tm.getMsgType());
+		myLogger.info("type >> "+tm.getType());
 	}
 }
