@@ -45,7 +45,7 @@ public class PropLoader {
 			pubflowConf.loadFromXML(fi);
 		} catch (Exception e) {
 			myLogger.error("Could not load Properties File");
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		pubflowConf.list(System.out);
 
