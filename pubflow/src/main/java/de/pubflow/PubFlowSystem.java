@@ -157,9 +157,9 @@ public class PubFlowSystem {
 	// }
 
 	private void startJiraPlugin() {
-//		Endpoint.publish("http://localhost:8890/"
-//				+ JiraToPubFlowConnector.class.getSimpleName(),
-//				new JiraToPubFlowConnector());
+		Endpoint.publish("http://localhost:8890/"
+				+ JiraToPubFlowConnector.class.getSimpleName(),
+				new JiraToPubFlowConnector());
 	}
 
 	// ----------------------------------------------------------------------------------------
