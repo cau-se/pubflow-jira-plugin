@@ -217,47 +217,47 @@ public class PubFlowSystem {
 	public static void main(String[] args) {
 
 		PubFlowSystem c = PubFlowSystem.getInstance();
-		System.out.println(">>>>>>>>>>>>>> Testing <<<<<<<<<<<<<<<<");
+		//System.out.println(">>>>>>>>>>>>>> Testing <<<<<<<<<<<<<<<<");
 		// Do some tests
 		//ProducerTemplate template = c.getContext().createProducerTemplate();
-		for (int i = 0; i < 1; i++) {
+		//for (int i = 0; i < 1; i++) {
 			// System.out.println("sending test textmsg");
 			// TextMessage text = new TextMessage();
 			// text.setContent("Test");
 			// template.sendBody("t2-jms:queue:test.queue",
 			// MessageToolbox.transformToString(text));
 
-			System.out.println("sending test textmsg");
-
-			System.out.println("Composing test wfmsg");
-			WFParameter param0 = new WFParameter();
-			param0.setKey("issueKey");
-			param0.setStringValue("3");
-			param0.setPayloadClazz(ParameterType.STRING);
-			WFParameter param1 = new WFParameter();
-			param1.setKey("legID");
-			param1.setIntValue(3);
-			param1.setPayloadClazz(ParameterType.INTEGER);
-			WFParamList params = new WFParamList();
-			params.add(param0);
-			params.add(param1);
-			WorkflowMessage wm = new WorkflowMessage();
-			wm.setWfparams(params);
-			wm.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName(
-					"de.pubflow.OCN"));
-			wm.setWftype(WFType.BPMN2);
-			wm.setComments("It's alive!");
-			//
-			// Sending WFMsg
-			System.out.println(MessageToolbox.transformToString(wm));
-			ProducerTemplate producer;
-			
-			CamelContext context = PubFlowSystem.getInstance().getContext();
-			producer = context.createProducerTemplate();
-			
-			producer.sendBody("test-jms:queue:testOut.queue",
-					MessageToolbox.transformToString(wm));
-			System.out.println("DONE!");
+//			System.out.println("sending test textmsg");
+//
+//			System.out.println("Composing test wfmsg");
+//			WFParameter param0 = new WFParameter();
+//			param0.setKey("issueKey");
+//			param0.setStringValue("3");
+//			param0.setPayloadClazz(ParameterType.STRING);
+//			WFParameter param1 = new WFParameter();
+//			param1.setKey("legID");
+//			param1.setIntValue(3);
+//			param1.setPayloadClazz(ParameterType.INTEGER);
+//			WFParamList params = new WFParamList();
+//			params.add(param0);
+//			params.add(param1);
+//			WorkflowMessage wm = new WorkflowMessage();
+//			wm.setWfparams(params);
+//			wm.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName(
+//					"de.pubflow.OCN"));
+//			wm.setWftype(WFType.BPMN2);
+//			wm.setComments("It's alive!");
+//			//
+//			// Sending WFMsg
+//			System.out.println(MessageToolbox.transformToString(wm));
+//			ProducerTemplate producer;
+//			
+//			CamelContext context = PubFlowSystem.getInstance().getContext();
+//			producer = context.createProducerTemplate();
+//			
+//			producer.sendBody("test-jms:queue:testOut.queue",
+//					MessageToolbox.transformToString(wm));
+//			System.out.println("DONE!");
 
 		}
 
