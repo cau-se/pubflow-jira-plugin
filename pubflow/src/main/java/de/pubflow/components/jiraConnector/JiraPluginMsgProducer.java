@@ -47,9 +47,11 @@ public class JiraPluginMsgProducer {
 		myLogger.info("Transforming msg to wfMessage");
 		Set<Entry<String, String>> fieldmap = msg.getMessage().entrySet();
 
+		String mapDebugString = "";
 		for(Entry<String, String> e : fieldmap){ 
-			myLogger.info(e.getKey() + " : " + e.getValue());
+			mapDebugString += e.getKey() + " : " + e.getValue() + "\n";
 		}
+		myLogger.info(mapDebugString);
 
 		for (Entry<String, String> entry : fieldmap) {
 			String key = entry.getKey();
