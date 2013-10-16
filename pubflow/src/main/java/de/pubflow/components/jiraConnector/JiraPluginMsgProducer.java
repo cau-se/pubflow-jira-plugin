@@ -57,22 +57,22 @@ public class JiraPluginMsgProducer {
 
 
 			switch (key) {
-			case "Author_OCN":
+			case "Author":
 				wfMsg.setUser(User.getUserFromJiraID(value));
 				break;
-			case "Reference_OCN":
+			case "Reference":
 
 				break;
 			case "status":
 				wfMsg.setWfstate(WFState.parseJiraString(value));
 				break;
-			case "Login_OCN":
+			case "Login":
 
 				break;
-			case "Topology_OCN":
+			case "Topology":
 
 				break;
-			case "Zielpfad_OCN":
+			case "Zielpfad":
 
 				break;
 			case "assignee":
@@ -86,19 +86,19 @@ public class JiraPluginMsgProducer {
 				param.setStringValue(value);
 				paramList.add(param);
 				break;
-			case "Source_OCN":
+			case "Source":
 
 				break;
 			case "eventType":
 
 				break;
-			case "File name_OCN":
+			case "File name":
 
 				break;
 			case "date":
 
 				break;
-			case "Leg ID_OCN":
+			case "Leg ID":
 				WFParameter param1 = new WFParameter();
 				param1.setKey("legID");
 				int val = Integer.parseInt(value);
@@ -106,13 +106,13 @@ public class JiraPluginMsgProducer {
 				param1.setIntValue(val);
 				paramList.add(param1);
 				break;
-			case "Project_OCN":
+			case "Project":
 
 				break;
 			case "reporter":
 
 				break;
-			case "Status_OCN":
+			case "Status":
 
 				break;
 			case "workflowName":
@@ -121,10 +121,10 @@ public class JiraPluginMsgProducer {
 					wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
 					myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));}
 				break;
-			case "PID_OCN":
+			case "PID":
 
 				break;
-			case "Leg comment_OCN":
+			case "Leg comment":
 
 				break;
 
