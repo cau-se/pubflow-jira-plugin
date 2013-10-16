@@ -68,7 +68,7 @@ public class PubFlowSystem {
 
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting PubFlow System");
-//
+		//
 		// Create CamelContext
 		context = new DefaultCamelContext();
 		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
@@ -116,7 +116,7 @@ public class PubFlowSystem {
 			myLogger.error("Failed to start the internal PubFlow Server");
 			e.printStackTrace();
 		}
-//		myLogger.info("Starting Jira Component Endpoint");
+		//		myLogger.info("Starting Jira Component Endpoint");
 		startJiraPlugin();
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
@@ -174,16 +174,16 @@ public class PubFlowSystem {
 		context.addRoutes(new RouteBuilder() {
 			public void configure() {
 				from("t2-jms:queue:test.queue").to("test-jms:queue:out.queue")
-						.bean(Consumer.getInstance());
+				.bean(Consumer.getInstance());
 				from("t2-jms:jiraendpoint:out.queue").to(
 						"t2-jms:jira:toJira.queue")
 						.bean(Consumer.getInstance());
 				from("test-jms:queue:testOut.queue").to(
 						"test-jms:wfbroker:in.queue").bean(
-						WFBroker.getInstance());
+								WFBroker.getInstance());
 				from("mail-jms:mailqueue:in.queue").to(
 						"mail-jms:mailproxy:in.queue").bean(
-						MailProxy.getInstance());
+								MailProxy.getInstance());
 			}
 		});
 	}
@@ -221,78 +221,78 @@ public class PubFlowSystem {
 		// Do some tests
 		//ProducerTemplate template = c.getContext().createProducerTemplate();
 		//for (int i = 0; i < 1; i++) {
-			// System.out.println("sending test textmsg");
-			// TextMessage text = new TextMessage();
-			// text.setContent("Test");
-			// template.sendBody("t2-jms:queue:test.queue",
-			// MessageToolbox.transformToString(text));
+		// System.out.println("sending test textmsg");
+		// TextMessage text = new TextMessage();
+		// text.setContent("Test");
+		// template.sendBody("t2-jms:queue:test.queue",
+		// MessageToolbox.transformToString(text));
 
-//			System.out.println("sending test textmsg");
-//
-//			System.out.println("Composing test wfmsg");
-//			WFParameter param0 = new WFParameter();
-//			param0.setKey("issueKey");
-//			param0.setStringValue("3");
-//			param0.setPayloadClazz(ParameterType.STRING);
-//			WFParameter param1 = new WFParameter();
-//			param1.setKey("legID");
-//			param1.setIntValue(3);
-//			param1.setPayloadClazz(ParameterType.INTEGER);
-//			WFParamList params = new WFParamList();
-//			params.add(param0);
-//			params.add(param1);
-//			WorkflowMessage wm = new WorkflowMessage();
-//			wm.setWfparams(params);
-//			wm.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName(
-//					"de.pubflow.OCN"));
-//			wm.setWftype(WFType.BPMN2);
-//			wm.setComments("It's alive!");
-//			//
-//			// Sending WFMsg
-//			System.out.println(MessageToolbox.transformToString(wm));
-//			ProducerTemplate producer;
-//			
-//			CamelContext context = PubFlowSystem.getInstance().getContext();
-//			producer = context.createProducerTemplate();
-//			
-//			producer.sendBody("test-jms:queue:testOut.queue",
-//					MessageToolbox.transformToString(wm));
-//			System.out.println("DONE!");
+		//			System.out.println("sending test textmsg");
+		//
+		//			System.out.println("Composing test wfmsg");
+		//			WFParameter param0 = new WFParameter();
+		//			param0.setKey("issueKey");
+		//			param0.setStringValue("3");
+		//			param0.setPayloadClazz(ParameterType.STRING);
+		//			WFParameter param1 = new WFParameter();
+		//			param1.setKey("legID");
+		//			param1.setIntValue(3);
+		//			param1.setPayloadClazz(ParameterType.INTEGER);
+		//			WFParamList params = new WFParamList();
+		//			params.add(param0);
+		//			params.add(param1);
+		//			WorkflowMessage wm = new WorkflowMessage();
+		//			wm.setWfparams(params);
+		//			wm.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName(
+		//					"de.pubflow.OCN"));
+		//			wm.setWftype(WFType.BPMN2);
+		//			wm.setComments("It's alive!");
+		//			//
+		//			// Sending WFMsg
+		//			System.out.println(MessageToolbox.transformToString(wm));
+		//			ProducerTemplate producer;
+		//			
+		//			CamelContext context = PubFlowSystem.getInstance().getContext();
+		//			producer = context.createProducerTemplate();
+		//			
+		//			producer.sendBody("test-jms:queue:testOut.queue",
+		//					MessageToolbox.transformToString(wm));
+		//			System.out.println("DONE!");
 
+		//		}
+
+	}
+
+	// ----------------------------------------------------------------------------------------
+	// Inner Classes
+	// ----------------------------------------------------------------------------------------
+
+	/**
+	 * 
+	 * @author pcb
+	 * 
+	 */
+	class ShutdownActions implements Runnable {
+
+
+		// Register all shutdown actions here
+		public void run() {
+			Thread.currentThread().setName("PubFlow Shutdownhook");
+			Logger shutdownLogger = LoggerFactory.getLogger(this.getClass());
+			shutdownLogger.info("<< Shutting down PubFlow >>");
+			PubFlowSystem core = PubFlowSystem.getInstance();
+			// Shutdown Camel & free ports
+			shutdownLogger.debug("Stopping Camel Context");
+			core.stopCamel();
+			shutdownLogger.debug("Camel Context is down");
+			// Stop internal server
+			shutdownLogger.debug("Stopping internal server");
+			core.stopInternalServer();
+			// Write props to file
+			shutdownLogger.debug("Saving Properties to file");
+			PropLoader.getInstance().saveProperties();
+			shutdownLogger.info("<< BYE >>");
 		}
 
 	}
-	
-	// ----------------------------------------------------------------------------------------
-		// Inner Classes
-		// ----------------------------------------------------------------------------------------
-
-		/**
-		 * 
-		 * @author pcb
-		 * 
-		 */
-		class ShutdownActions implements Runnable {
-
-
-			// Register all shutdown actions here
-			public void run() {
-				Thread.currentThread().setName("PubFlow Shutdownhook");
-				Logger shutdownLogger = LoggerFactory.getLogger(this.getClass());
-				shutdownLogger.info("<< Shutting down PubFlow >>");
-				PubFlowSystem core = PubFlowSystem.getInstance();
-				// Shutdown Camel & free ports
-				shutdownLogger.debug("Stopping Camel Context");
-				core.stopCamel();
-				shutdownLogger.debug("Camel Context is down");
-				// Stop internal server
-				shutdownLogger.debug("Stopping internal server");
-				core.stopInternalServer();
-				// Write props to file
-				shutdownLogger.debug("Saving Properties to file");
-				PropLoader.getInstance().saveProperties();
-				shutdownLogger.info("<< BYE >>");
-			}
-
-		}
 }
