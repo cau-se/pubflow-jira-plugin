@@ -63,6 +63,11 @@ public class WFBroker {
 		//TODO implement rest
 		myLogger.info("recived WF-Msg: " + msg);
 		WorkflowMessage wm = MessageToolbox.loadFromString(msg, WorkflowMessage.class);
+		if(!wm.isValid())
+		{
+			myLogger.error("Workflow NOT deployed >> Msg is not valid ");
+			return;
+		}
 		myLogger.info("Loading WF with ID ("+wm.getWorkflowID()+") from WFRepo");
 		WorkflowProvider provider = WorkflowProvider.getInstance();
 		WorkflowEntity wfEntity = provider.getByWFID(wm.getWorkflowID());

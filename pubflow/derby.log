@@ -1,6 +1,10 @@
 ----------------------------------------------------------------
-2013-10-16 09:07:27.910 GMT:
- Booting Derby version The Apache Software Foundation - Apache Derby - 10.5.3.0 - (802917): instance a816c00e-0141-c085-0ba5-000007943f70
+2013-10-16 09:13:03.529 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.5.3.0 - (802917): instance a816c00e-0141-c08a-2c62-000005b58230
 on database directory /private/var/folders/pk/lrty2zgx7jbdv8bv747_413w0000gn/T/jetty-0.0.0.0-8282-ode.war-_ode-any-/webapp/WEB-INF/jpadb  
 
 Database Class Loader started - derby.database.classpath=''
+
+2013-10-16 09:13:18.336 GMT:
+Shutting down instance a816c00e-0141-c08a-2c62-000005b58230
+----------------------------------------------------------------
