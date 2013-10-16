@@ -55,6 +55,7 @@ public class JiraPluginMsgProducer {
 			String key = entry.getKey();
 			String value = entry.getValue();
 
+			//TODO: add params?
 
 			switch (key) {
 			case "Author":
