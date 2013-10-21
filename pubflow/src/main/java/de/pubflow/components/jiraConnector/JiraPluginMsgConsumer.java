@@ -24,7 +24,7 @@ public class JiraPluginMsgConsumer {
 		System.getProperties().put("javax.net.ssl.trustStorePassword", KEYSTOREPW);
 
 		try {
-			Service service = JiraEndpointService.create(new URL("http://localhost:8889/JiraEndpointService?wsdl"), new QName("pubflow.de", "JiraEndpointService"));
+			Service service = JiraEndpointService.create(new URL("http://localhost:8889/JiraEndpointService?wsdl"), new QName("http://webservice.jira.pubflow.de/", "JiraEndpointService"));
 			jiraEndpointService = service.getPort(JiraEndpointService.class);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
