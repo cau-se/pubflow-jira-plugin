@@ -1,24 +1,9 @@
 package de.pubflow.components.jiraConnector;
 
-import java.io.FileInputStream;
-import java.net.InetSocketAddress;
-import java.security.KeyStore;
-
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.TrustManagerFactory;
 import javax.xml.ws.Endpoint;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpsConfigurator;
-import com.sun.net.httpserver.HttpsParameters;
-import com.sun.net.httpserver.HttpsServer;
-
-import de.pubflow.common.properties.PropLoader;
 
 public class JiraPlugin {
 

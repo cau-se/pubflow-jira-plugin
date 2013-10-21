@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pubflow.assistance.Consumer;
 import de.pubflow.common.properties.PropLoader;
+import de.pubflow.components.jiraConnector.JiraPluginMsgConsumer;
 import de.pubflow.components.jiraConnector.JiraToPubFlowConnector;
 import de.pubflow.components.mailEndpoint.MailProxy;
 import de.pubflow.core.server.AppServer;
@@ -168,7 +169,7 @@ public class PubFlowSystem {
 				.bean(Consumer.getInstance());
 				from("t2-jms:jiraendpoint:out.queue").to(
 						"t2-jms:jira:toJira.queue")
-						.bean(Consumer.getInstance());
+						.bean(JiraPluginMsgConsumer.getInstance());
 				from("test-jms:queue:testOut.queue").to(
 						"test-jms:wfbroker:in.queue").bean(
 								WFBroker.getInstance());

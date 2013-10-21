@@ -32,8 +32,19 @@ public class JiraPluginMsgConsumer {
 		}
 	}
 
-	static JiraEndpointService jiraEndpointService;
-
+	private static JiraEndpointService jiraEndpointService;
+	private static JiraPluginMsgConsumer instance; 
+	
+	public static JiraPluginMsgConsumer getInstance(){
+		if(instance == null){
+			instance = new  JiraPluginMsgConsumer();
+		}
+		return instance;
+	}
+	
+	private JiraPluginMsgConsumer(){
+	}
+	
 	private void addIssueComment(HashMap<String, String> map){
 		jiraEndpointService.getJiraEndpointPort().addIssueComment(map.get("issueKey"), map.get("comment"));
 	}
