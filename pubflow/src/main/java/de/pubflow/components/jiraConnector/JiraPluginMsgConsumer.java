@@ -65,9 +65,11 @@ public class JiraPluginMsgConsumer {
 		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 params = 
 				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2();
 
+		
 		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
 			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry newEntry = 
 					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry();
+			
 			newEntry.setKey(entry.getKey());
 			newEntry.setValue(entry.getValue());
 			params.getEntry().add(newEntry);
