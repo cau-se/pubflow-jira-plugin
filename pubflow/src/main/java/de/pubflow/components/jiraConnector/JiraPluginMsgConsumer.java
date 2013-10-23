@@ -12,6 +12,7 @@ import javax.xml.ws.Service;
 
 import org.apache.camel.Consume;
 
+import de.pubflow.components.jiraConnector.wsArtifacts.IJiraEndpoint;
 import de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpointService;
 import de.pubflow.core.communication.message.jira.CamelJiraMessage;
 public class JiraPluginMsgConsumer {
@@ -19,21 +20,22 @@ public class JiraPluginMsgConsumer {
 	private static final String KEYSTOREFILE="pubflow_keystore.ks";
 	private static final String KEYSTOREPW="rainbowdash_1";	
 
+	private static IJiraEndpoint jiraEndpoint;
+	private static JiraPluginMsgConsumer instance; 
+
+	
 	static{
 		System.getProperties().put("javax.net.ssl.trustStore", KEYSTOREFILE);
 		System.getProperties().put("javax.net.ssl.trustStorePassword", KEYSTOREPW);
 
 		try {
-			Service service = JiraEndpointService.create(new URL("http://localhost:8889/JiraEndpointService?wsdl"), new QName("http://webservice.jira.pubflow.de/", "JiraEndpointService"));
-			jiraEndpointService = service.getPort(JiraEndpointService.class);
+			Service service = JiraEndpointService.create(new URL("http://localhost:8889/JiraEndpoint?wsdl"), new QName("http://webservice.jira.pubflow.de/", "JiraEndpointService"));
+			jiraEndpoint = service.getPort(IJiraEndpoint.class);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
-	private static JiraEndpointService jiraEndpointService;
-	private static JiraPluginMsgConsumer instance; 
 	
 	public static JiraPluginMsgConsumer getInstance(){
 		if(instance == null){
@@ -46,17 +48,17 @@ public class JiraPluginMsgConsumer {
 	}
 	
 	private void addIssueComment(HashMap<String, String> map){
-		jiraEndpointService.getJiraEndpointPort().addIssueComment(map.get("issueKey"), map.get("comment"));
+		jiraEndpoint.addIssueComment(map.get("issueKey"), map.get("comment"));
 	}
 
 	private void changeStatus(HashMap<String, String> map){
-		jiraEndpointService.getJiraEndpointPort().changeStatus(map.get("issueKey"), map.get("statusId"));
+		jiraEndpoint.changeStatus(map.get("issueKey"), map.get("statusId"));
 	}
 
 	private void addAttachment(HashMap<String, String> map){
 		byte[] data = Charset.forName(StandardCharsets.UTF_8.name()).encode(map.get("attachmentString")).array();
 
-		jiraEndpointService.getJiraEndpointPort().addAttachment(map.get("issueKey"), data,  map.get("attachmentFileName"), map.get("attachmentFileType"));
+		jiraEndpoint.addAttachment(map.get("issueKey"), data,  map.get("attachmentFileName"), map.get("attachmentFileType"));
 	}
 
 	private void createIssueType(HashMap<String, String> map){
@@ -71,7 +73,7 @@ public class JiraPluginMsgConsumer {
 			params.getEntry().add(newEntry);
 		}
 
-		jiraEndpointService.getJiraEndpointPort().createIssueType("PubFlow", map.get("wfName"), params);
+		jiraEndpoint.createIssueType("PubFlow", map.get("wfName"), params);
 	}
 
 	private void createIssue(HashMap<String, String> map){
@@ -84,7 +86,7 @@ public class JiraPluginMsgConsumer {
 			newEntry.setValue(entry.getValue());
 			params.getEntry().add(newEntry);
 		}
-		jiraEndpointService.getJiraEndpointPort().createIssue("PUB", map.get("wfName"), map.get("comment"), params, "admin");
+		jiraEndpoint.createIssue("PUB", map.get("wfName"), map.get("comment"), params, "admin");
 	}
 
 	@Consume(uri="t2-jms:jira:toJira.queue")
