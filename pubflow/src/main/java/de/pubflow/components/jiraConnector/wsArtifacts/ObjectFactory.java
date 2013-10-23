@@ -66,6 +66,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CreateIssueType.Arg2 .Entry }
+     * 
+     */
+    public CreateIssueType.Arg2 .Entry createCreateIssueTypeArg2Entry() {
+        return new CreateIssueType.Arg2 .Entry();
+    }
+
+    /**
      * Create an instance of {@link AddAttachment }
      * 
      */
@@ -98,14 +106,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CreateIssue.Arg3 }
-     * 
-     */
-    public CreateIssue.Arg3 createCreateIssueArg3() {
-        return new CreateIssue.Arg3();
-    }
-
-    /**
      * Create an instance of {@link CreateIssueResponse }
      * 
      */
@@ -119,6 +119,14 @@ public class ObjectFactory {
      */
     public GetStatusNamesResponse createGetStatusNamesResponse() {
         return new GetStatusNamesResponse();
+    }
+
+    /**
+     * Create an instance of {@link CreateIssue.Arg4 .Entry }
+     * 
+     */
+    public CreateIssue.Arg4 .Entry createCreateIssueArg4Entry() {
+        return new CreateIssue.Arg4 .Entry();
     }
 
     /**
@@ -154,6 +162,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CreateIssueType.Arg2 }
+     * 
+     */
+    public CreateIssueType.Arg2 createCreateIssueTypeArg2() {
+        return new CreateIssueType.Arg2();
+    }
+
+    /**
+     * Create an instance of {@link CreateIssue.Arg4 }
+     * 
+     */
+    public CreateIssue.Arg4 createCreateIssueArg4() {
+        return new CreateIssue.Arg4();
+    }
+
+    /**
      * Create an instance of {@link CreateIssueType }
      * 
      */
@@ -170,35 +194,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CreateIssue.Arg3 .Entry }
-     * 
-     */
-    public CreateIssue.Arg3 .Entry createCreateIssueArg3Entry() {
-        return new CreateIssue.Arg3 .Entry();
-    }
-
-    /**
-     * Create an instance of {@link CreateIssueType.Arg2 .Entry }
-     * 
-     */
-    public CreateIssueType.Arg2 .Entry createCreateIssueTypeArg2Entry() {
-        return new CreateIssueType.Arg2 .Entry();
-    }
-
-    /**
      * Create an instance of {@link CreateIssue }
      * 
      */
     public CreateIssue createCreateIssue() {
         return new CreateIssue();
-    }
-
-    /**
-     * Create an instance of {@link CreateIssueType.Arg2 }
-     * 
-     */
-    public CreateIssueType.Arg2 createCreateIssueTypeArg2() {
-        return new CreateIssueType.Arg2();
     }
 
     /**

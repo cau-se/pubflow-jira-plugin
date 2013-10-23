@@ -77,16 +77,16 @@ public class JiraPluginMsgConsumer {
 	}
 
 	private void createIssue(HashMap<String, String> map){
-		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3 params = 
-				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3();
+		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4 params = 
+				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4();
 		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
-			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3.Entry newEntry = 
-					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg3.Entry();
+			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4.Entry newEntry = 
+					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4.Entry();
 			newEntry.setKey(entry.getKey());
 			newEntry.setValue(entry.getValue());
 			params.getEntry().add(newEntry);
 		}
-		jiraEndpoint.createIssue("PUB", map.get("wfName"), map.get("comment"), params, "admin");
+		jiraEndpoint.createIssue("PUB", map.get("wfName"), map.get("summary"), map.get("description"), params, "admin");
 	}
 
 	@Consume(uri="t2-jms:jira:toJira.queue")
