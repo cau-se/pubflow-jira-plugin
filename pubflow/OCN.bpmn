@@ -51,7 +51,7 @@ try {
 	e.printStackTrace();
 }
 kcontext.setVariable(&quot;tempResult&quot;, result);
-System.out.println(result);</bpmn2:script>
+//System.out.println(result);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="ScriptTask_3"/>
     <bpmn2:scriptTask id="ScriptTask_4" name="Communicate Result" scriptFormat="http://www.java.com/java">
