@@ -1,7 +1,6 @@
 
 package de.pubflow.components.jiraConnector.wsArtifacts;
 
-import java.util.List;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -9,7 +8,6 @@ import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
-
 
 
 /**
@@ -27,156 +25,25 @@ public interface IJiraEndpoint {
 
     /**
      * 
-     * @param arg5
-     * @param arg4
-     * @param arg3
-     * @param arg2
-     * @param arg1
-     * @param arg0
-     * @return
-     *     returns java.lang.String
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "createIssue", targetNamespace = "pubflow.de", className = "de.pubflow.CreateIssue")
-    @ResponseWrapper(localName = "createIssueResponse", targetNamespace = "pubflow.de", className = "de.pubflow.CreateIssueResponse")
-    public String createIssue(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0,
-        @WebParam(name = "arg1", targetNamespace = "")
-        String arg1,
-        @WebParam(name = "arg2", targetNamespace = "")
-        String arg2,
-        @WebParam(name = "arg3", targetNamespace = "")
-        String arg3,
-        @WebParam(name = "arg4", targetNamespace = "")
-        de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4 arg4,
-        @WebParam(name = "arg5", targetNamespace = "")
-        String arg5);
-
-    /**
-     * 
-     * @param arg2
-     * @param arg1
-     * @param arg0
-     * @return
-     *     returns java.lang.String
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "createIssueType", targetNamespace = "pubflow.de", className = "de.pubflow.CreateIssueType")
-    @ResponseWrapper(localName = "createIssueTypeResponse", targetNamespace = "pubflow.de", className = "de.pubflow.CreateIssueTypeResponse")
-    public String createIssueType(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0,
-        @WebParam(name = "arg1", targetNamespace = "")
-        String arg1,
-        @WebParam(name = "arg2", targetNamespace = "")
-        de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 arg2);
-
-    /**
-     * 
-     * @param arg1
-     * @param arg0
+     * @param bArray
+     * @param fileName
+     * @param issueKey
+     * @param type
      * @return
      *     returns boolean
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "changeStatus", targetNamespace = "pubflow.de", className = "de.pubflow.ChangeStatus")
-    @ResponseWrapper(localName = "changeStatusResponse", targetNamespace = "pubflow.de", className = "de.pubflow.ChangeStatusResponse")
-    public boolean changeStatus(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0,
-        @WebParam(name = "arg1", targetNamespace = "")
-        String arg1);
-
-    /**
-     * 
-     * @param arg1
-     * @param arg0
-     * @return
-     *     returns boolean
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "addIssueComment", targetNamespace = "pubflow.de", className = "de.pubflow.AddIssueComment")
-    @ResponseWrapper(localName = "addIssueCommentResponse", targetNamespace = "pubflow.de", className = "de.pubflow.AddIssueCommentResponse")
-    public boolean addIssueComment(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0,
-        @WebParam(name = "arg1", targetNamespace = "")
-        String arg1);
-
-    /**
-     * 
-     * @param arg0
-     * @return
-     *     returns java.util.List<java.lang.String>
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getStatusNames", targetNamespace = "pubflow.de", className = "de.pubflow.GetStatusNames")
-    @ResponseWrapper(localName = "getStatusNamesResponse", targetNamespace = "pubflow.de", className = "de.pubflow.GetStatusNamesResponse")
-    public List<String> getStatusNames(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0);
-
-    /**
-     * 
-     * @param arg3
-     * @param arg2
-     * @param arg1
-     * @param arg0
-     * @return
-     *     returns boolean
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "createProject", targetNamespace = "pubflow.de", className = "de.pubflow.CreateProject")
-    @ResponseWrapper(localName = "createProjectResponse", targetNamespace = "pubflow.de", className = "de.pubflow.CreateProjectResponse")
-    public boolean createProject(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0,
-        @WebParam(name = "arg1", targetNamespace = "")
-        String arg1,
-        @WebParam(name = "arg2", targetNamespace = "")
-        String arg2,
-        @WebParam(name = "arg3", targetNamespace = "")
-        List<String> arg3);
-
-    /**
-     * 
-     * @param arg3
-     * @param arg2
-     * @param arg1
-     * @param arg0
-     * @return
-     *     returns boolean
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "addAttachment", targetNamespace = "pubflow.de", className = "de.pubflow.AddAttachment")
-    @ResponseWrapper(localName = "addAttachmentResponse", targetNamespace = "pubflow.de", className = "de.pubflow.AddAttachmentResponse")
+    @RequestWrapper(localName = "addAttachment", targetNamespace = "pubflow.de", className = "de.pubflow.components.jiraConnector.wsArtifacts.AddAttachment")
+    @ResponseWrapper(localName = "addAttachmentResponse", targetNamespace = "pubflow.de", className = "de.pubflow.components.jiraConnector.wsArtifacts.AddAttachmentResponse")
     public boolean addAttachment(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0,
-        @WebParam(name = "arg1", targetNamespace = "")
-        byte[] arg1,
-        @WebParam(name = "arg2", targetNamespace = "")
-        String arg2,
-        @WebParam(name = "arg3", targetNamespace = "")
-        String arg3);
-
-    /**
-     * 
-     * @param arg0
-     */
-    @WebMethod
-    @RequestWrapper(localName = "removeAttachment", targetNamespace = "pubflow.de", className = "de.pubflow.RemoveAttachment")
-    @ResponseWrapper(localName = "removeAttachmentResponse", targetNamespace = "pubflow.de", className = "de.pubflow.RemoveAttachmentResponse")
-    public void removeAttachment(
-        @WebParam(name = "arg0", targetNamespace = "")
-        long arg0);
+        @WebParam(name = "issueKey", targetNamespace = "")
+        String issueKey,
+        @WebParam(name = "bArray", targetNamespace = "")
+        byte[] bArray,
+        @WebParam(name = "fileName", targetNamespace = "")
+        String fileName,
+        @WebParam(name = "type", targetNamespace = "")
+        String type);
 
 }
