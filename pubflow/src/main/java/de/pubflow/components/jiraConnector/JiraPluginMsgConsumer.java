@@ -14,7 +14,9 @@ import org.apache.camel.Consume;
 
 import de.pubflow.components.jiraConnector.wsArtifacts.IJiraEndpoint;
 import de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpointService;
+import de.pubflow.core.communication.message.MessageToolbox;
 import de.pubflow.core.communication.message.jira.CamelJiraMessage;
+import de.pubflow.core.communication.message.workflow.WorkflowMessage;
 public class JiraPluginMsgConsumer {
 
 	private static final String KEYSTOREFILE="pubflow_keystore.ks";
@@ -92,8 +94,9 @@ public class JiraPluginMsgConsumer {
 	}
 
 	@Consume(uri="t2-jms:jira:toJira.queue")
-	public void onMsg(CamelJiraMessage msg){
+	public void onMsg(String env){
 
+		CamelJiraMessage msg = MessageToolbox.loadFromString(env, CamelJiraMessage.class);
 		switch(msg.getAction()){
 		case "jira.newComment":  addIssueComment(msg.getMessage()) ;break;
 		case "jira.newIssue": createIssue(msg.getMessage()) ;break;
