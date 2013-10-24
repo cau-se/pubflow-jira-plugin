@@ -97,12 +97,7 @@ public class JiraPluginMsgConsumer {
 	@Consume(uri="t2-jms:jira:toJira.queue")
 	public void onMsg(String env){
 
-		System.out.println("MSG RECEIVED------------------------------------------->");
-
 		CamelJiraMessage msg = MessageToolbox.loadFromString(env, CamelJiraMessage.class);
-
-		System.out.println(msg.getAction());
-		System.out.println(msg.getType());
 
 		switch(msg.getAction()){
 		//		case "jira.newComment":  addIssueComment(msg.getMessage()) ;break;
