@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowSystem;
 import de.pubflow.common.entity.User;
+import de.pubflow.common.entity.workflow.ParameterType;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFState;
@@ -84,7 +85,7 @@ public class JiraPluginMsgProducer {
 			case "issueKey":
 				WFParameter param = new WFParameter();
 				param.setKey("issueKey");
-
+				param.setPayloadClazz(ParameterType.STRING);
 				myLogger.info("Set issueKey to "+value);
 				param.setStringValue(value);
 				paramList.add(param);
@@ -104,6 +105,7 @@ public class JiraPluginMsgProducer {
 			case "Leg ID":
 				WFParameter param1 = new WFParameter();
 				param1.setKey("legID");
+				param1.setPayloadClazz(ParameterType.INTEGER);
 				int val = Integer.parseInt(value);
 				myLogger.info("Set Leg_ID to "+val);
 				param1.setIntValue(val);
