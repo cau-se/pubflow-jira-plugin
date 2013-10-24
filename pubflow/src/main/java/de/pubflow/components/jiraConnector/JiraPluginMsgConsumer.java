@@ -47,58 +47,58 @@ public class JiraPluginMsgConsumer {
 	private JiraPluginMsgConsumer(){
 	}
 	
-	private void addIssueComment(HashMap<String, String> map){
-		jiraEndpoint.addIssueComment(map.get("issueKey"), map.get("comment"));
-	}
-
-	private void changeStatus(HashMap<String, String> map){
-		jiraEndpoint.changeStatus(map.get("issueKey"), map.get("statusId"));
-	}
-
+//	private void addIssueComment(HashMap<String, String> map){
+//		jiraEndpoint.addIssueComment(map.get("issueKey"), map.get("comment"));
+//	}
+//
+//	private void changeStatus(HashMap<String, String> map){
+//		jiraEndpoint.changeStatus(map.get("issueKey"), map.get("statusId"));
+//	}
+//
 	private void addAttachment(HashMap<String, String> map){
 		byte[] data = Charset.forName(StandardCharsets.UTF_8.name()).encode(map.get("attachmentString")).array();
 
 		jiraEndpoint.addAttachment(map.get("issueKey"), data,  map.get("attachmentFileName"), map.get("attachmentFileType"));
 	}
-
-	private void createIssueType(HashMap<String, String> map){
-		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 params = 
-				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2();
-
-		
-		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
-			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry newEntry = 
-					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry();
-			
-			newEntry.setKey(entry.getKey());
-			newEntry.setValue(entry.getValue());
-			params.getEntry().add(newEntry);
-		}
-
-		jiraEndpoint.createIssueType("PubFlow", map.get("wfName"), params);
-	}
-
-	private void createIssue(HashMap<String, String> map){
-		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4 params = 
-				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4();
-		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
-			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4.Entry newEntry = 
-					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4.Entry();
-			newEntry.setKey(entry.getKey());
-			newEntry.setValue(entry.getValue());
-			params.getEntry().add(newEntry);
-		}
-		jiraEndpoint.createIssue("PUB", map.get("wfName"), map.get("summary"), map.get("description"), params, "admin");
-	}
+//
+//	private void createIssueType(HashMap<String, String> map){
+//		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters params = 
+//				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters();
+//
+//		
+//		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
+//			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters.Entry newEntry = 
+//					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters.Entry();
+//			
+//			newEntry.setKey(entry.getKey());
+//			newEntry.setValue(entry.getValue());
+//			params.getEntry().add(newEntry);
+//		}
+//
+//		jiraEndpoint.createIssueType("PubFlow", map.get("wfName"), params);
+//	}
+//
+//	private void createIssue(HashMap<String, String> map){
+//		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Parameters params = 
+//				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Parameters();
+//		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
+//			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Parameters.Entry newEntry = 
+//					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Parameters.Entry();
+//			newEntry.setKey(entry.getKey());
+//			newEntry.setValue(entry.getValue());
+//			params.getEntry().add(newEntry);
+//		}
+//		jiraEndpoint.createIssue("PUB", map.get("wfName"), map.get("summary"), map.get("description"), params, "admin");
+//	}
 
 	@Consume(uri="t2-jms:jira:toJira.queue")
 	public void onMsg(CamelJiraMessage msg){
 
 		switch(msg.getAction()){
-		case "jira.newComment":  addIssueComment(msg.getMessage()) ;break;
-		case "jira.newIssue": createIssue(msg.getMessage()) ;break;
-		case "jira.newIssueType": createIssueType(msg.getMessage()) ;break;
-		case "jira.changeStatus": changeStatus(msg.getMessage()) ;break;
+//		case "jira.newComment":  addIssueComment(msg.getMessage()) ;break;
+//		case "jira.newIssue": createIssue(msg.getMessage()) ;break;
+//		case "jira.newIssueType": createIssueType(msg.getMessage()) ;break;
+//		case "jira.changeStatus": changeStatus(msg.getMessage()) ;break;
 		case "jira.addAttachment": addAttachment(msg.getMessage()) ;break;
 		}
 	}

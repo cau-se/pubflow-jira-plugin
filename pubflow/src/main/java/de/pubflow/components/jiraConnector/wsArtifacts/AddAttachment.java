@@ -18,10 +18,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="arg1" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
- *         &lt;element name="arg2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="arg3" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="issueKey" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="bArray" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
+ *         &lt;element name="fileName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,113 +32,113 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "addAttachment", propOrder = {
-    "arg0",
-    "arg1",
-    "arg2",
-    "arg3"
+    "issueKey",
+    "bArray",
+    "fileName",
+    "type"
 })
 public class AddAttachment {
 
-    protected String arg0;
-    @XmlElementRef(name = "arg1", type = JAXBElement.class)
-    protected JAXBElement<byte[]> arg1;
-    protected String arg2;
-    protected String arg3;
+    protected String issueKey;
+    @XmlElementRef(name = "bArray", type = JAXBElement.class)
+    protected JAXBElement<byte[]> bArray;
+    protected String fileName;
+    protected String type;
 
     /**
-     * Gets the value of the arg0 property.
+     * Gets the value of the issueKey property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getArg0() {
-        return arg0;
+    public String getIssueKey() {
+        return issueKey;
     }
 
     /**
-     * Sets the value of the arg0 property.
+     * Sets the value of the issueKey property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setArg0(String value) {
-        this.arg0 = value;
+    public void setIssueKey(String value) {
+        this.issueKey = value;
     }
 
     /**
-     * Gets the value of the arg1 property.
+     * Gets the value of the bArray property.
      * 
      * @return
      *     possible object is
      *     {@link JAXBElement }{@code <}{@link byte[]}{@code >}
      *     
      */
-    public JAXBElement<byte[]> getArg1() {
-        return arg1;
+    public JAXBElement<byte[]> getBArray() {
+        return bArray;
     }
 
     /**
-     * Sets the value of the arg1 property.
+     * Sets the value of the bArray property.
      * 
      * @param value
      *     allowed object is
      *     {@link JAXBElement }{@code <}{@link byte[]}{@code >}
      *     
      */
-    public void setArg1(JAXBElement<byte[]> value) {
-        this.arg1 = ((JAXBElement<byte[]> ) value);
+    public void setBArray(JAXBElement<byte[]> value) {
+        this.bArray = ((JAXBElement<byte[]> ) value);
     }
 
     /**
-     * Gets the value of the arg2 property.
+     * Gets the value of the fileName property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getArg2() {
-        return arg2;
+    public String getFileName() {
+        return fileName;
     }
 
     /**
-     * Sets the value of the arg2 property.
+     * Sets the value of the fileName property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setArg2(String value) {
-        this.arg2 = value;
+    public void setFileName(String value) {
+        this.fileName = value;
     }
 
     /**
-     * Gets the value of the arg3 property.
+     * Gets the value of the type property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getArg3() {
-        return arg3;
+    public String getType() {
+        return type;
     }
 
     /**
-     * Sets the value of the arg3 property.
+     * Sets the value of the type property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setArg3(String value) {
-        this.arg3 = value;
+    public void setType(String value) {
+        this.type = value;
     }
 
 }
