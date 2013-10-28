@@ -5,13 +5,16 @@ import javax.xml.ws.Endpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.pubflow.common.properties.PropLoader;
+
 public class JiraPlugin {
 
 	private static final String KEYSTOREFILE="pubflow_keystore.ks";
 	private static final String KEYSTOREPW="rainbowdash_1";
 
-	public static final String DEFAULT_JIRAENDPOINTURL = "https://localhost:";
-	public static final String DEFAULT_JIRAENDPOINTPORT = "8890";
+	private static final String PUBFLOWWS_PORT = "8890";
+
+
 
 	private static Logger myLogger;
 	private static final String START_WF = "";
@@ -84,7 +87,7 @@ public class JiraPlugin {
 
 
 	static{
-
-		Endpoint.publish("http://localhost:8889/" + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
+		String jiraEndpointURL = PropLoader.getInstance().getProperty("JiraEndpointURL", JiraPlugin.class.toString(), PUBFLOWWS_PORT);
+		Endpoint.publish("http://localhost:"+jiraEndpointURL + "/" + JiraToPubFlowConnector.class.getSimpleName(), new JiraToPubFlowConnector());
 	}
 }
