@@ -9,12 +9,12 @@ import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
 @XmlRootElement
 public class Leg extends PubJect{
 
-	public static final String c_name = "leg_name";
-	public static final String c_expocode = "leg_expocode"; 
-	public static final String c_id = "leg_id";
-	public static final String c_parameterList = "parameterList";
-	public static final String c_bottleList = "bottleList";
-	public static final String c_logString = "logString";
+	public static final String NAME = "leg_name";
+	public static final String EXPOCODE = "leg_expocode"; 
+	public static final String ID = "leg_id";
+	public static final String PARAMETERLIST = "parameterList";
+	public static final String BOTTLELIST = "bottleList";
+	public static final String LOGSTING = "logString";
 
-	public static final String[] c_LEGTABLE = {c_name, c_expocode, c_id};
+	public static final String[] c_LEGTABLE = {NAME, EXPOCODE, ID};
 }

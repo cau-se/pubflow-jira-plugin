@@ -11,14 +11,14 @@ import de.pubflow.core.communication.message.jira.CamelJiraMessage;
 
 public class JiraWFEndpoint {
 
-	public static void RespondToJira(String issue, byte[] file) {
+	public static void RespondToJira(String issue, byte[] file, String fileName, String fileType) {
 		CamelJiraMessage msg = new CamelJiraMessage();
 		msg.setAction("jira.addAttachment");
 		HashMap<String, String> msgBody = new HashMap<String, String>();
 		msgBody.put("issueKey", issue);
 		msgBody.put("attachmentString", new String(file));
-		msgBody.put("attachmentFileName", "data");
-		msgBody.put("attachmentFileType", ".4d");
+		msgBody.put("attachmentFileName", fileName);
+		msgBody.put("attachmentFileType", fileType);
 		msg.setMessage(msgBody);
 		// Sending Msg
 		ProducerTemplate producer;

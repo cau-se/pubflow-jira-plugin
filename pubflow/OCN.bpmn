@@ -61,7 +61,8 @@ kcontext.setVariable(&quot;tempResult&quot;, result);
 try {
 	byte[] tResult = fc4d.toCSV((String)tempResult, &quot;3&quot;, &quot;arl&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;etc/temp.4d&quot;, &quot;0&quot;, &quot;4d.4d&quot;, &quot;0&quot;, 0);
 	String issue = (String)issueKey;
-	JiraWFEndpoint.RespondToJira(issue, tResult);
+	JiraWFEndpoint.RespondToJira(issue, tResult, "result", ".4d");
+	JiraWFEndpoint.RespondToJira(issue, fc4d.getLog(), "log", ".txt");
 } catch (Exception e) {
 	e.printStackTrace();
 }</bpmn2:script>
