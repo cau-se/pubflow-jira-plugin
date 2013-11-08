@@ -52,8 +52,8 @@ public class PropLoader {
 	}
 
 	public String getProperty(String key, String calleeSig, String defaultValue) {
-		myLogger.info("Getting Property - " + key + " : " + calleeSig);
 		String prop = pubflowConf.getProperty(calleeSig + "-" + key);
+
 
 		if ((prop == null) || (prop.equals(""))){
 			myLogger.warn("Property " + key + " : " + calleeSig + " is not set!");
@@ -62,6 +62,8 @@ public class PropLoader {
 			pubflowConf.setProperty(calleeSig + "-" + key, defaultValue);
 			saveProperties();
 			prop = defaultValue;
+		}else{
+			myLogger.info("Getting Property - " + key + " : " + calleeSig + " = " + prop);
 		}
 		return prop;
 	}

@@ -36,6 +36,10 @@ public class FileCreator4D {
 		
 		try{
 
+			if(input == ""){
+				throw new IOException("Building a 4d file failed due to an empty input string. Something went terribly wrong in a prior work step.");				
+			}
+			
 			StringBuilder log = new StringBuilder();
 
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
@@ -228,13 +232,13 @@ public class FileCreator4D {
 
 			e.printStackTrace();
 			
-			return new byte[0];
+			throw e;
 		}
 	}
 	
 	public static void main (String[] args) throws Exception{
 
-		String s = (new OCNDataLoader()).getData(3, 0);
+		String s = (new OCNDataLoader()).getData(4, 0);
 		
 		s = new OCNToPangaeaMapper().replaceArtefacts(s, 0);
 
