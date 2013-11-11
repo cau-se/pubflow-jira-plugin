@@ -14,7 +14,6 @@ public class Leg extends PubJect{
 	public static final String ID = "leg_id";
 	public static final String PARAMETERLIST = "parameterList";
 	public static final String BOTTLELIST = "bottleList";
-	public static final String LOGSTING = "logString";
 
-	public static final String[] c_LEGTABLE = {NAME, EXPOCODE, ID};
+	public static final String[] LEGTABLE = {NAME, EXPOCODE, ID};
 }

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
@@ -57,6 +58,11 @@ public class JiraPluginMsgConsumer {
 		getJiraEndpoint().changeStatus(map.get("issueKey"), map.get("statusId"));
 	}
 
+	private List<String> getStatusNames(HashMap<String, String> map){
+		return getJiraEndpoint().getStatusNames(map.get("projectKey"));
+	}
+
+	
 	private void addAttachment(HashMap<String, String> map){
 		byte[] data = Charset.forName(StandardCharsets.UTF_8.name()).encode(map.get("attachmentString")).array();
 
@@ -67,7 +73,6 @@ public class JiraPluginMsgConsumer {
 	private void createIssueType(HashMap<String, String> map){
 		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters params = 
 				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters();
-
 
 		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
 			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters.Entry newEntry = 
@@ -95,10 +100,9 @@ public class JiraPluginMsgConsumer {
 	}
 
 	@Consume(uri="t2-jms:jira:toJira.queue")
-	public void onMsg(String env){
-
+	public void onMsg(String env){		
 		CamelJiraMessage msg = MessageToolbox.loadFromString(env, CamelJiraMessage.class);
-
+		
 		switch(msg.getAction()){
 		case "jira.newComment":  addIssueComment(msg.getMessage()) ;break;
 		case "jira.newIssue": createIssue(msg.getMessage()) ;break;

@@ -46,34 +46,38 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 	volatile Properties workflowMap;
 	private static final String CONF_FILE = "etc/workflow.list";
 	Logger myLogger;
-	
+
 	{
 		myLogger = LoggerFactory.getLogger(WorkflowProvider.class);
 	}
-	
+
 	private static WorkflowProvider wfp;
 
 	private WorkflowProvider() {
 		super(ERepositoryName.WORKFLOW, new FSStorageAdapter());
 		workflowMap = new Properties();
-		
+
 		FileInputStream fi = null;
+
 		try {
 			fi = new FileInputStream(CONF_FILE);
-		} catch (Exception e) {
+
+			try {
+				workflowMap.loadFromXML(fi);
+
+			} catch (Exception e) {
+				myLogger.error("Could not load Properties File");
+				e.printStackTrace();
+			}
+
+		} catch (FileNotFoundException e) {
 			myLogger.error("Could not find Properties File");
-
-			// e.printStackTrace();
+			workflowMap = new Properties();
+			saveProps();
 		}
 
-		try {
-			workflowMap.loadFromXML(fi);
-		} catch (Exception e) {
-			myLogger.error("Could not load Properties File");
-			e.printStackTrace();
-		}
 		workflowMap.list(System.out);
-		
+
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
 		Runtime.getRuntime().addShutdownHook(t);
@@ -85,7 +89,7 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 		}
 		return wfp;
 	}
-	
+
 	@Override
 	public long setEntry(WorkflowEntity o) {
 		myLogger.info("Registering WF >>"+o.getPubFlowWFID());
@@ -94,7 +98,7 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 		workflowMap.put(o.getPubFlowWFID()+"",intWfRef+"");
 		return intWfRef;
 	}
-	
+
 	public WorkflowEntity getByWFID(long pID)
 	{
 		String temp = workflowMap.getProperty(pID+"");
@@ -102,7 +106,7 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 		long internalID = Long.parseLong(temp);
 		return super.getEntry(internalID);
 	}
-	
+
 	public long getIDByWFName(String pName)
 	{
 		List<WorkflowEntity> entries = getAllEntries();
@@ -112,10 +116,10 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 				return workflowEntity.getPubFlowWFID();
 			}
 		}
-		
+
 		return 0;
 	}
-	
+
 	public void saveProps()
 	{
 		myLogger.info("Persisting Properties");
@@ -132,7 +136,7 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 			e.printStackTrace();
 		}
 	}
-	
+
 	// ----------------------------------------------------------------------------------------
 	// Inner Classes
 	// ----------------------------------------------------------------------------------------

@@ -3,7 +3,6 @@ package de.pubflow.wfCompUntis.ocn;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import de.pubflow.common.properties.PropLoader;
+import de.pubflow.wfCompUntis.ByteRay;
 import de.pubflow.wfCompUntis.ocn.entity.Bottle;
 import de.pubflow.wfCompUntis.ocn.entity.Leg;
 import de.pubflow.wfCompUntis.ocn.entity.Parameter;
@@ -35,13 +35,20 @@ public class OCNToPangaeaMapper {
 	public static Map<String,String> foundMappings = new HashMap<String, String>();
 	private StringBuilder log;
 
-	public String replaceArtefacts(String input, int instanceId) throws Exception {
+	public HashMap<String, byte[]> replaceArtefacts(HashMap<String, byte[]> input, int instanceId) throws Exception {
+		long millis = System.currentTimeMillis();
 
 		try{
+			ByteRay.flushData(input);
 			log = new StringBuilder();
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 			Unmarshaller um = ctx.createUnmarshaller();
-			StringReader sr = new StringReader(input);			
+			
+			if(input.get("return") == null){
+				throw new IOException("Mapping failed due to an empty input string. Something went terribly wrong in a prior work step.");				
+			}
+			
+			StringReader sr = new StringReader(new String(input.get("return")));			
 
 			Leg leg = (Leg) um.unmarshal(sr);
 
@@ -52,29 +59,27 @@ public class OCNToPangaeaMapper {
 			ArrayList<PubJect> bottlesSorted = sort(leg);
 			bottles.clear();
 			bottles.addAll(bottlesSorted);
-
-			leg.add(Leg.LOGSTING, leg.getString(Leg.LOGSTING) + log.toString());
-
+			
+			StringBuilder log = new StringBuilder();
+			
+			if(input.get("log") != null){
+				log.append(new String(input.get("log")));
+			}
+			
 			Marshaller m = ctx.createMarshaller();
 			StringWriter sw = new StringWriter();
 			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			m.marshal(leg, sw);
 			
-			return sw.toString();	
+			HashMap<String, byte[]> files = new HashMap<String, byte[]>();
+			files.put("return", sw.toString().getBytes());
+			files.put("log", log.toString().getBytes());
+			ByteRay.newJiraComment(files, 2, "OCNToPangaeaMapper: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
+
+			return files;
 
 		}catch(Exception e){
-
-			try {
-				PrintStream fw = new PrintStream(PropLoader.getInstance().getProperty("TransformerExceptionFile",  this.getClass().getCanonicalName(), "exceptionTransformer.txt"));
-				fw.append(e.toString());
-				fw.append(e.getMessage());
-				fw.append(e.getLocalizedMessage());
-				fw.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-			return "";
+			throw new Exception("OCNToPangaeaMapper: " + e.getMessage());
 		}
 	}
 

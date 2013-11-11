@@ -11,6 +11,22 @@ import de.pubflow.common.repository.workflow.WorkflowProvider;
 public class WorkflowWriter {
 	
 	public static void main(String[] args) {
+		
+		File wfs = new File("./etc/workflow.list");
+		
+		if(wfs.exists()){
+			wfs.delete();
+		}
+		
+		File storage = new File("./etc/FSStorageAdapter");
+		
+		if(storage.exists()){
+			for (File f : storage.listFiles()){
+				f.delete();
+			}
+		}
+		
+		
 		System.out.println("STARTING");
 		WorkflowEntity wf = new WorkflowEntity();
 		

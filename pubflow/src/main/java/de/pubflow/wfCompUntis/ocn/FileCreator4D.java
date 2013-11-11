@@ -2,13 +2,14 @@ package de.pubflow.wfCompUntis.ocn;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import de.pubflow.common.properties.PropLoader;
+import de.pubflow.wfCompUntis.ByteRay;
 import de.pubflow.wfCompUntis.ocn.entity.Bottle;
 import de.pubflow.wfCompUntis.ocn.entity.Leg;
 import de.pubflow.wfCompUntis.ocn.entity.Parameter;
@@ -23,32 +24,33 @@ import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
 
 public class FileCreator4D {
 
-	private String log = "";
-
-	public byte[] getLog(){
-		return log.getBytes();
-	}
-	
-	public byte[] toCSV(String input, String pid, String login, 
+	public HashMap<String, byte[]> toCSV(HashMap<String, byte[]> input, String pid, String login, 
 			String source, String author, String project, 
 			String topology, String status, String savePath, 
 			String reference, String fileName, String comment, int instanceId) throws Exception{
-		
-		try{
 
-			if(input == ""){
-				throw new IOException("Building a 4d file failed due to an empty input string. Something went terribly wrong in a prior work step.");				
+		long millis = System.currentTimeMillis();
+
+		try{
+			ByteRay.flushData(input);
+
+			if(input.get("return") == null){
+				throw new IOException("4d file creation failed due to an empty input string. Something went terribly wrong in a prior work step.");				
 			}
-			
+
 			StringBuilder log = new StringBuilder();
+
+			if(input.get("log") != null){
+				log.append(new String(input.get("log")));
+			}
 
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 
 			Unmarshaller um = ctx.createUnmarshaller();
-			StringReader sr = new StringReader(input);
+			StringReader sr = new StringReader(new String(input.get("return")));
 
 			Leg leg = (Leg) um.unmarshal(sr);
-			
+
 			String title = "Hydrochemistry during  cruise " + leg.getString("leg_name");
 			String event = leg.getString("leg_name") + "-" + leg.getList(Leg.BOTTLELIST).get(0).getString(Bottle.STATION);
 
@@ -156,7 +158,7 @@ public class FileCreator4D {
 
 			fourDStringBuilder.append("\r");
 
-			
+
 			log.append("\n");
 
 			String tmp_stationName = "";
@@ -206,47 +208,37 @@ public class FileCreator4D {
 
 			log.append("Writing... ");
 			log.append("done!\n");
-			log.append("PubFlow_downloadableFile=" + savePath + "\n");
 			log.append("=================================================== END JOB ===================================================\n\n");
 
-			leg.add(Leg.LOGSTING, leg.getString(Leg.LOGSTING) + log.toString());
-			
-			this.log = leg.getString(Leg.LOGSTING);
-			
-			return fourDStringBuilder.toString().getBytes();
 
-			
+			HashMap<String, byte[]> files = new HashMap<String, byte[]>();
+			ByteRay.newJiraAttachment(files, "result.4d", fourDStringBuilder.toString().getBytes());
+			ByteRay.newJiraAttachment(files, "log.txt", log.toString().getBytes());
+			ByteRay.newJiraComment(files, 1, "FileCreator4D: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
+			ByteRay.newJiraComment(files, 2, log.toString());
+			return files;
+
 		}catch(Exception e){
-			try {
-				PrintStream fw = new PrintStream(PropLoader.getInstance().getProperty("FilePrinterExceptionFile", this.getClass().getCanonicalName(), "exceptionFilePrinter.txt"));
-				e.printStackTrace(fw);
-
-				fw.append(e.toString());
-				fw.append(e.getMessage());
-				fw.append(e.getLocalizedMessage());
-				fw.close();
-
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-
-			e.printStackTrace();
-			
-			throw e;
+			throw new Exception("FileCreator4D: " + e.getMessage());
 		}
 	}
-	
+
 	public static void main (String[] args) throws Exception{
 
-		String s = (new OCNDataLoader()).getData(4, 0);
-		
+
+		HashMap<String, byte[]> s = (new OCNDataLoader()).getData(4, 0);
+
 		s = new OCNToPangaeaMapper().replaceArtefacts(s, 0);
 
-		byte[] output = new FileCreator4D().toCSV(s, "333", "333", "333", "333", "333", "333", "333", "/tmp/" + "3_sortedBottleId.4d", "333", "333", "333", 0);
+		HashMap<String, byte[]> map = new FileCreator4D().toCSV(s, "333", "333", "333", "333", "333", "333", "333", "/tmp/" + "3_sortedBottleId.4d", "333", "333", "333", 0);
 
-		FileWriter fw = new FileWriter("/tmp/lalala.txt");
-		fw.append(new String(output));
-		fw.close();	
+		for(Entry<String, byte[]> e : map.entrySet()){
+			FileWriter fw = new FileWriter("/tmp/" + e.getKey());
+			fw.append(new String(e.getValue()));
+			fw.close();	
+		}
+
+
 	}
 
 }

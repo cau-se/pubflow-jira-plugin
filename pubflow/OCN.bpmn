@@ -8,6 +8,12 @@
       <tns:import name="de.pubflow.wfCompUntis.ocn.OCNToPangaeaMapper"/>
       <tns:import name="de.pubflow.wfCompUntis.ocn.FileCreator4D"/>
       <tns:import name="de.pubflow.components.jira.JiraWFEndpoint"/>
+      <tns:import name="de.pubflow.wfCompUntis.ByteRay"/>
+      <tns:import name="java.util.HashMap"/>
+      <tns:import name="java.util.LinkedList"/>
+      <tns:import name="java.util.Map.Entry"/>
+      
+      
       <tns:global id="issueKey" identifier="issueKey" type="String"/>
     </bpmn2:extensionElements>
     <bpmn2:property id="tempResult" itemSubjectRef="ItemDefinition_22"/>
@@ -28,13 +34,29 @@
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
       <bpmn2:script>OCNDataLoader loader = new OCNDataLoader();
 Integer temp = (Integer)legID;
-String data=&quot;&quot;;
+HashMap &lt;String, byte[]&gt; data = new HashMap &lt;String, byte[]&gt;();
+String issue = (String)issueKey;
+
 try {
+	JiraWFEndpoint.changeStatus(issue, "SendToPubFlow");
+	
 	data = loader.getData(temp, 0);
+	
+	for(String s : (LinkedList&lt;String&gt;)ByteRay.getJiraComments(data)){
+		JiraWFEndpoint.newComment(issue, s);
+	} 
+
+	for(Entry &lt;String, byte[]&gt; e : ((HashMap&lt;String, byte[]&gt;) ByteRay.getJiraAttachments(data)).entrySet()){
+		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), &quot;&quot;);
+	} 
+
 } catch (Exception e) {
 			// TODO Auto-generated catch block
+			JiraWFEndpoint.changeStatus(issue, "User");
 			e.printStackTrace();
-		}
+			JiraWFEndpoint.newComment(issue, e.getMessage());
+}
+
 kcontext.setVariable(&quot;tempResult&quot;, data);
 //System.out.println(data);</bpmn2:script>
     </bpmn2:scriptTask>
@@ -44,11 +66,25 @@ kcontext.setVariable(&quot;tempResult&quot;, data);
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
       <bpmn2:script>System.out.println(&quot;Converting&quot;);
 OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
-String result = &quot;&quot;;
+HashMap&lt;String, byte[]&gt; result = new HashMap&lt;String, byte[]&gt;();
+String issue = (String)issueKey;
+
 try {
-	result = mapper.replaceArtefacts((String)tempResult, 0);
+	result = mapper.replaceArtefacts((HashMap&lt;String, byte[]&gt;)tempResult, 0);
+	
+	for(String s : (LinkedList&lt;String&gt;)ByteRay.getJiraComments(result)){
+		JiraWFEndpoint.newComment(issue, s);
+	} 
+
+	for(Entry &lt;String, byte[]&gt; e : ((HashMap&lt;String, byte[]&gt;)ByteRay.getJiraAttachments(result)).entrySet()){
+		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), &quot;&quot;);
+	} 
+
 } catch (Exception e) {
-	e.printStackTrace();
+			// TODO Auto-generated catch block
+			JiraWFEndpoint.changeStatus(issue, "User");
+			e.printStackTrace();
+			JiraWFEndpoint.newComment(issue, e.getMessage());
 }
 kcontext.setVariable(&quot;tempResult&quot;, result);
 //System.out.println(result);</bpmn2:script>
@@ -58,14 +94,28 @@ kcontext.setVariable(&quot;tempResult&quot;, result);
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
       <bpmn2:script>FileCreator4D fc4d = new FileCreator4D();
-try {
-	byte[] tResult = fc4d.toCSV((String)tempResult, &quot;3&quot;, &quot;arl&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;etc/temp.4d&quot;, &quot;0&quot;, &quot;4d.4d&quot;, &quot;0&quot;, 0);
+
 	String issue = (String)issueKey;
-	JiraWFEndpoint.RespondToJira(issue, tResult, "result", ".4d");
-	JiraWFEndpoint.RespondToJira(issue, fc4d.getLog(), "log", ".txt");
+
+try {
+	HashMap&lt;String, byte[]&gt; tResult = fc4d.toCSV((HashMap&lt;String, byte[]&gt;)tempResult, &quot;3&quot;, &quot;arl&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;etc/temp.4d&quot;, &quot;0&quot;, &quot;4d.4d&quot;, &quot;0&quot;, 0);
+	
+	for(String s : (LinkedList&lt;String&gt;)ByteRay.getJiraComments(tResult)){
+		JiraWFEndpoint.newComment(issue, s);
+	} 
+	
+	for(Entry &lt;String, byte[]&gt; e : ((HashMap&lt;String, byte[]&gt;)ByteRay.getJiraAttachments(tResult)).entrySet()){
+		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), &quot;&quot;);
+	} 
+		
+	JiraWFEndpoint.changeStatus(issue, "Done");
+	
 } catch (Exception e) {
+	JiraWFEndpoint.changeStatus(issue, "User");
 	e.printStackTrace();
-}</bpmn2:script>
+	JiraWFEndpoint.newComment(issue, e.getMessage());
+}
+</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" name="" sourceRef="ScriptTask_3" targetRef="ScriptTask_4"/>
     <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="ScriptTask_4" targetRef="EndEvent_1"/>
