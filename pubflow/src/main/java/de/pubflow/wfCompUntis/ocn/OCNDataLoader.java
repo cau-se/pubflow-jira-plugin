@@ -40,7 +40,7 @@ public class OCNDataLoader {
 		long millis = System.currentTimeMillis();
 
 		try{
-			String connectionURL = props.getProperty("dbUrl", this.getClass().getCanonicalName(), "jdbc:postgresql://192.168.48.70:5432/ocn?schema=ocn");
+			String connectionURL = props.getProperty("dbUrl", this.getClass().getCanonicalName(), "jdbc:postgresql://192.168.48.27:5432/ocn_new?schema=ocn");
 			String user = PropLoader.getInstance().getProperty("user", this.getClass().getCanonicalName(), "arl");
 			String password = PropLoader.getInstance().getProperty("pw", this.getClass().getCanonicalName(), "dWmWidW");
 			
