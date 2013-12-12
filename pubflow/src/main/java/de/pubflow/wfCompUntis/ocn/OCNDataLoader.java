@@ -18,12 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.common.properties.PropLoader;
-import de.pubflow.wfCompUntis.ByteRay;
 import de.pubflow.wfCompUntis.ocn.entity.Bottle;
 import de.pubflow.wfCompUntis.ocn.entity.Leg;
 import de.pubflow.wfCompUntis.ocn.entity.Parameter;
 import de.pubflow.wfCompUntis.ocn.entity.Sample;
 import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
+import de.pubflow.wfCompUtils.ByteRay;
 
 /**
  * @author arl
@@ -35,6 +35,8 @@ public class OCNDataLoader {
 	static Logger myLogger = LoggerFactory.getLogger(OCNDataLoader.class);
 
 	public HashMap<String, byte[]> getData(int id, int instanceId) throws Exception {
+		HashMap<String, byte[]> files = ByteRay.newMap();
+		
 		PropLoader props = PropLoader.getInstance();
 
 		long millis = System.currentTimeMillis();
@@ -203,10 +205,10 @@ public class OCNDataLoader {
 
 			System.out.println(log.toString());
 
-			HashMap<String, byte[]> files = new HashMap<String, byte[]>();
 			files.put("log", log.toString().getBytes());
 			files.put("return", sw.toString().getBytes());
-			ByteRay.newJiraComment(files, 2, "OCNDataLoader: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
+			ByteRay.newJiraAttachment(files, "interimOCNDataLoader.tmp", sw.toString().getBytes());
+			ByteRay.newJiraComment(files, "OCNDataLoader: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
 			return files;
 
 		}catch(Exception e){

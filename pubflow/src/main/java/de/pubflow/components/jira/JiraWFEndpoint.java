@@ -60,5 +60,4 @@ public class JiraWFEndpoint {
 		producer.sendBody("t2-jms:jiraendpoint:out.queue",
 				MessageToolbox.transformToString(msg));
 	}
-	
 }

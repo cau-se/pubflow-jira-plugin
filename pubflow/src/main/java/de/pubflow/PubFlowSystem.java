@@ -108,8 +108,13 @@ public class PubFlowSystem {
 			e.printStackTrace();
 		}
 
-		//myLogger.info("Starting Jira Component Endpoint");
-		JiraPlugin jp = new JiraPlugin();
+		myLogger.info("Starting JiraPlugin Endpoint");
+		try {
+			JiraPlugin.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());

@@ -12,9 +12,10 @@ public class Parameter extends PubJect{
 	public static final String METHODID = "parameter_method_id"; 
 	public static final String PIID = "parameter_pi_id";
 	public static final String ABBREVIATION = "parameter_abbreviation";
+	//= NAME - FIRST TOKEN (ATOMIC) FROM DESCRIPTION 
 	public static final String NAME = "parameter_name";
 	public static final String FORMAT = "parameter_format";
 	public static final String COMMENT = "parameter_comment";
 	
-	public static final String[] c_PARAMETERTABLE = {DESCRIPTION, COMMENT, PANGAEAID, UNIT, UNITID, METHODID, PIID};
+	public static final String[] c_PARAMETERTABLE = {DESCRIPTION, ABBREVIATION, COMMENT, PANGAEAID, UNITID, UNIT, METHODID, PIID};
 }

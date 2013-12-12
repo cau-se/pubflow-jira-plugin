@@ -17,13 +17,13 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import de.pubflow.common.properties.PropLoader;
-import de.pubflow.wfCompUntis.ByteRay;
 import de.pubflow.wfCompUntis.ocn.entity.Bottle;
 import de.pubflow.wfCompUntis.ocn.entity.Leg;
 import de.pubflow.wfCompUntis.ocn.entity.Parameter;
 import de.pubflow.wfCompUntis.ocn.entity.Sample;
 import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
 import de.pubflow.wfCompUntis.ocn.exception.PubJectException;
+import de.pubflow.wfCompUtils.ByteRay;
 
 /**
  * @author arl
@@ -40,6 +40,7 @@ public class OCNToPangaeaMapper {
 
 		try{
 			ByteRay.flushData(input);
+			
 			log = new StringBuilder();
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 			Unmarshaller um = ctx.createUnmarshaller();
@@ -71,15 +72,16 @@ public class OCNToPangaeaMapper {
 			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			m.marshal(leg, sw);
 			
-			HashMap<String, byte[]> files = new HashMap<String, byte[]>();
-			files.put("return", sw.toString().getBytes());
-			files.put("log", log.toString().getBytes());
-			ByteRay.newJiraComment(files, 2, "OCNToPangaeaMapper: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
+			input.put("return", sw.toString().getBytes());
+			input.put("log", log.toString().getBytes());
+			
+			ByteRay.newJiraAttachment(input, "interimOCNToPangaeaMapper.tmp", sw.toString().getBytes());
+			ByteRay.newJiraComment(input, "OCNToPangaeaMapper: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
 
-			return files;
+			return input;
 
 		}catch(Exception e){
-			throw new Exception("OCNToPangaeaMapper: " + e.getMessage());
+			throw new Exception("OCNToPangaeaMapper: " + e.getMessage() + " / " + e.getStackTrace().toString());
 		}
 	}
 

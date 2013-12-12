@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  * 
  */
-@WebServiceClient(name = "JiraEndpointService", targetNamespace = "http://webservice.jira.pubflow.de/", wsdlLocation = "http://localhost:8890/JiraEndpoint?wsdl")
+@WebServiceClient(name = "JiraEndpointService", targetNamespace = "http://webservice.jira.pubflow.de/", wsdlLocation = "https://localhost:8890/JiraEndpoint?wsdl")
 public class JiraEndpointService
     extends Service
 {
@@ -30,9 +30,9 @@ public class JiraEndpointService
         try {
             URL baseUrl;
             baseUrl = de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpointService.class.getResource(".");
-            url = new URL(baseUrl, "http://localhost:8890/JiraEndpoint?wsdl");
+            url = new URL(baseUrl, "JiraEndpoint.xml");
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: 'http://localhost:8890/JiraEndpoint?wsdl', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: 'JiraEndpoint.wsdl', retrying as a local file");
             logger.warning(e.getMessage());
         }
         JIRAENDPOINTSERVICE_WSDL_LOCATION = url;

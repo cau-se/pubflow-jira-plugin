@@ -1,4 +1,4 @@
-package de.pubflow.wfCompUntis;
+package de.pubflow.wfCompUtils;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,11 +11,16 @@ public class ByteRay {
 	private static String ATTACHMENT = "jiraAttachment_";
 	
 	public static HashMap<String, byte[]> newMap(){
-		return new HashMap<String, byte[]>();
+		HashMap<String, byte[]> map =  new HashMap<String, byte[]>();
+		map.put("commentCounter", Integer.toString(0).getBytes());
+		return map;
 	}
+	
 
-	public static HashMap<String, byte[]> newJiraComment(HashMap<String, byte[]> map, int id, String String){
-		map.put(COMMENT + id, String.getBytes());
+	public static HashMap<String, byte[]> newJiraComment(HashMap<String, byte[]> map, String String){
+		int commentsId = Integer.parseInt(new String(map.get("commentCounter")));
+		map.put(COMMENT + commentsId, String.getBytes());
+		map.put("commentCounter", Integer.toString(commentsId + 1).getBytes());
 		return map;
 	}
 
@@ -41,7 +46,7 @@ public class ByteRay {
 		for(Entry<String, byte[]> e : map.entrySet()){
 			String key = e.getKey();
 			if(!key.startsWith(ATTACHMENT) && !key.startsWith(COMMENT)){
-				map.put(key, e.getValue());
+				result.put(key, e.getValue());
 			}
 		}
 		

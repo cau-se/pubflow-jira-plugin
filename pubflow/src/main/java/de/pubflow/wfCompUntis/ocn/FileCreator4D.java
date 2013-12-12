@@ -9,12 +9,12 @@ import java.util.Map.Entry;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import de.pubflow.wfCompUntis.ByteRay;
 import de.pubflow.wfCompUntis.ocn.entity.Bottle;
 import de.pubflow.wfCompUntis.ocn.entity.Leg;
 import de.pubflow.wfCompUntis.ocn.entity.Parameter;
 import de.pubflow.wfCompUntis.ocn.entity.Sample;
 import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
+import de.pubflow.wfCompUtils.ByteRay;
 
 
 /**
@@ -210,13 +210,11 @@ public class FileCreator4D {
 			log.append("done!\n");
 			log.append("=================================================== END JOB ===================================================\n\n");
 
-
-			HashMap<String, byte[]> files = new HashMap<String, byte[]>();
-			ByteRay.newJiraAttachment(files, "result.4d", fourDStringBuilder.toString().getBytes());
-			ByteRay.newJiraAttachment(files, "log.txt", log.toString().getBytes());
-			ByteRay.newJiraComment(files, 1, "FileCreator4D: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
-			ByteRay.newJiraComment(files, 2, log.toString());
-			return files;
+			ByteRay.newJiraAttachment(input, "result.4d", fourDStringBuilder.toString().getBytes());
+			ByteRay.newJiraAttachment(input, "log.txt", log.toString().getBytes());
+			ByteRay.newJiraComment(input, "FileCreator4D: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
+			ByteRay.newJiraComment(input, log.toString());
+			return input;
 
 		}catch(Exception e){
 			throw new Exception("FileCreator4D: " + e.getMessage());
