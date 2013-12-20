@@ -110,7 +110,7 @@ public class JiraPlugin {
 
 						myLogger.info("=====================================  KEYSTORE  ====================================== " + ((HttpsExchange) exch).getSSLSession().getPeerCertificates().length);
 						try {
-							myLogger.info(ks.getCertificate("client").toString());
+							myLogger.info(ts.getCertificate("client").toString());
 						} catch (KeyStoreException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -122,7 +122,7 @@ public class JiraPlugin {
 							myLogger.info(c.toString());
 
 							try {
-								if (ks.getCertificate("client").equals(c)){
+								if (ts.getCertificate("client").equals(c)){
 									authenticated=true;
 								}
 
