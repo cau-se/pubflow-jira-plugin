@@ -1,4 +1,4 @@
-package de.pubflow.wfCompUntis.ocn.exception;
+package de.pubflow.wfCompUnits.ocn.exception;
 
 public class PubJectException extends Exception {
 

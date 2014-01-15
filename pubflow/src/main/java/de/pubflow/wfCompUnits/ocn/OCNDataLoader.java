@@ -1,4 +1,4 @@
-package de.pubflow.wfCompUntis.ocn;
+package de.pubflow.wfCompUnits.ocn;
 
 import java.io.StringWriter;
 import java.sql.Connection;
@@ -18,18 +18,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.common.properties.PropLoader;
-import de.pubflow.wfCompUntis.ocn.entity.Bottle;
-import de.pubflow.wfCompUntis.ocn.entity.Leg;
-import de.pubflow.wfCompUntis.ocn.entity.Parameter;
-import de.pubflow.wfCompUntis.ocn.entity.Sample;
-import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
-import de.pubflow.wfCompUtils.ByteRay;
+import de.pubflow.wfCompUnits.ByteRay;
+import de.pubflow.wfCompUnits.ocn.entity.Bottle;
+import de.pubflow.wfCompUnits.ocn.entity.Leg;
+import de.pubflow.wfCompUnits.ocn.entity.Parameter;
+import de.pubflow.wfCompUnits.ocn.entity.Sample;
+import de.pubflow.wfCompUnits.ocn.entity.abstractClass.PubJect;
 
 /**
  * @author arl
  *
  */
-
 public class OCNDataLoader {
 
 	static Logger myLogger = LoggerFactory.getLogger(OCNDataLoader.class);
@@ -44,7 +43,7 @@ public class OCNDataLoader {
 		try{
 			String connectionURL = props.getProperty("dbUrl", this.getClass().getCanonicalName(), "jdbc:postgresql://192.168.48.27:5432/ocn_new?schema=ocn");
 			String user = PropLoader.getInstance().getProperty("user", this.getClass().getCanonicalName(), "arl");
-			String password = PropLoader.getInstance().getProperty("pw", this.getClass().getCanonicalName(), "dWmWidW");
+			String password = PropLoader.getInstance().getProperty("pw", this.getClass().getCanonicalName(), "dWmWidW2");
 			
 			StringBuilder log = new StringBuilder();
 			

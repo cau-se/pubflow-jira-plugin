@@ -5,4 +5,4 @@
  * @author pcb
  *
  */
-package de.pubflow.wfCompUtils;
+package de.pubflow.wfCompUnits.ocn;

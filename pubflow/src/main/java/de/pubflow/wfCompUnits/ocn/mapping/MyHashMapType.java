@@ -1,4 +1,4 @@
-package de.pubflow.wfCompUntis.ocn.jaxb.adapter;
+package de.pubflow.wfCompUnits.ocn.mapping;
 
 import java.util.List;
 

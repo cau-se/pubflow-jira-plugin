@@ -3,20 +3,21 @@ package de.pubflow.components.jiraConnector.wsArtifacts;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for removeAttachment complex type.
+ * <p>Java class for addWorkflowResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="removeAttachment">
+ * &lt;complexType name="addWorkflowResponse">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="return" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -26,27 +27,28 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "removeAttachment", propOrder = {
-    "arg0"
+@XmlType(name = "addWorkflowResponse", propOrder = {
+    "_return"
 })
-public class RemoveAttachment {
+public class AddWorkflowResponse {
 
-    protected long arg0;
+    @XmlElement(name = "return")
+    protected boolean _return;
 
     /**
-     * Gets the value of the arg0 property.
+     * Gets the value of the return property.
      * 
      */
-    public long getArg0() {
-        return arg0;
+    public boolean isReturn() {
+        return _return;
     }
 
     /**
-     * Sets the value of the arg0 property.
+     * Sets the value of the return property.
      * 
      */
-    public void setArg0(long value) {
-        this.arg0 = value;
+    public void setReturn(boolean value) {
+        this._return = value;
     }
 
 }

@@ -7,12 +7,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for addIssueComment complex type.
+ * <p>Java class for addWorkflow complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="addIssueComment">
+ * &lt;complexType name="addWorkflow">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "addIssueComment", propOrder = {
+@XmlType(name = "addWorkflow", propOrder = {
     "arg0",
     "arg1"
 })
-public class AddIssueComment {
+public class AddWorkflow {
 
     protected String arg0;
     protected String arg1;

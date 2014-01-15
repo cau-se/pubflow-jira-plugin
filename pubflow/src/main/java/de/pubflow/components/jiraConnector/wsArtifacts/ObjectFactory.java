@@ -29,18 +29,20 @@ public class ObjectFactory {
     private final static QName _AddAttachmentResponse_QNAME = new QName("pubflow.de", "addAttachmentResponse");
     private final static QName _CreateIssueType_QNAME = new QName("pubflow.de", "createIssueType");
     private final static QName _CreateProject_QNAME = new QName("pubflow.de", "createProject");
-    private final static QName _CreateProjectResponse_QNAME = new QName("pubflow.de", "createProjectResponse");
     private final static QName _GetStatusNames_QNAME = new QName("pubflow.de", "getStatusNames");
+    private final static QName _CreateProjectResponse_QNAME = new QName("pubflow.de", "createProjectResponse");
     private final static QName _AddAttachment_QNAME = new QName("pubflow.de", "addAttachment");
     private final static QName _CreateIssue_QNAME = new QName("pubflow.de", "createIssue");
     private final static QName _GetStatusNamesResponse_QNAME = new QName("pubflow.de", "getStatusNamesResponse");
+    private final static QName _AddWorkflow_QNAME = new QName("pubflow.de", "addWorkflow");
     private final static QName _ChangeStatus_QNAME = new QName("pubflow.de", "changeStatus");
-    private final static QName _RemoveAttachment_QNAME = new QName("pubflow.de", "removeAttachment");
     private final static QName _ChangeStatusResponse_QNAME = new QName("pubflow.de", "changeStatusResponse");
+    private final static QName _RemoveAttachment_QNAME = new QName("pubflow.de", "removeAttachment");
     private final static QName _AddIssueCommentResponse_QNAME = new QName("pubflow.de", "addIssueCommentResponse");
+    private final static QName _AddWorkflowResponse_QNAME = new QName("pubflow.de", "addWorkflowResponse");
     private final static QName _RemoveAttachmentResponse_QNAME = new QName("pubflow.de", "removeAttachmentResponse");
     private final static QName _CreateIssueTypeResponse_QNAME = new QName("pubflow.de", "createIssueTypeResponse");
-    private final static QName _AddAttachmentBArray_QNAME = new QName("", "bArray");
+    private final static QName _AddAttachmentArg1_QNAME = new QName("", "arg1");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: de.pubflow
@@ -50,27 +52,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AddAttachmentResponse }
+     * Create an instance of {@link AddWorkflow }
      * 
      */
-    public AddAttachmentResponse createAddAttachmentResponse() {
-        return new AddAttachmentResponse();
-    }
-
-    /**
-     * Create an instance of {@link AddIssueComment }
-     * 
-     */
-    public AddIssueComment createAddIssueComment() {
-        return new AddIssueComment();
-    }
-
-    /**
-     * Create an instance of {@link CreateIssueType.Parameters.Entry }
-     * 
-     */
-    public CreateIssueType.Parameters.Entry createCreateIssueTypeParametersEntry() {
-        return new CreateIssueType.Parameters.Entry();
+    public AddWorkflow createAddWorkflow() {
+        return new AddWorkflow();
     }
 
     /**
@@ -82,67 +68,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CreateIssueTypeResponse }
-     * 
-     */
-    public CreateIssueTypeResponse createCreateIssueTypeResponse() {
-        return new CreateIssueTypeResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateProject }
-     * 
-     */
-    public CreateProject createCreateProject() {
-        return new CreateProject();
-    }
-
-    /**
-     * Create an instance of {@link RemoveAttachmentResponse }
-     * 
-     */
-    public RemoveAttachmentResponse createRemoveAttachmentResponse() {
-        return new RemoveAttachmentResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateIssueResponse }
-     * 
-     */
-    public CreateIssueResponse createCreateIssueResponse() {
-        return new CreateIssueResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetStatusNamesResponse }
-     * 
-     */
-    public GetStatusNamesResponse createGetStatusNamesResponse() {
-        return new GetStatusNamesResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateIssue.Parameters.Entry }
-     * 
-     */
-    public CreateIssue.Parameters.Entry createCreateIssueParametersEntry() {
-        return new CreateIssue.Parameters.Entry();
-    }
-
-    /**
      * Create an instance of {@link GetStatusNames }
      * 
      */
     public GetStatusNames createGetStatusNames() {
         return new GetStatusNames();
-    }
-
-    /**
-     * Create an instance of {@link ChangeStatus }
-     * 
-     */
-    public ChangeStatus createChangeStatus() {
-        return new ChangeStatus();
     }
 
     /**
@@ -154,27 +84,99 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RemoveAttachmentResponse }
+     * 
+     */
+    public RemoveAttachmentResponse createRemoveAttachmentResponse() {
+        return new RemoveAttachmentResponse();
+    }
+
+    /**
+     * Create an instance of {@link ChangeStatusResponse }
+     * 
+     */
+    public ChangeStatusResponse createChangeStatusResponse() {
+        return new ChangeStatusResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetStatusNamesResponse }
+     * 
+     */
+    public GetStatusNamesResponse createGetStatusNamesResponse() {
+        return new GetStatusNamesResponse();
+    }
+
+    /**
+     * Create an instance of {@link CreateIssueType.Arg2 }
+     * 
+     */
+    public CreateIssueType.Arg2 createCreateIssueTypeArg2() {
+        return new CreateIssueType.Arg2();
+    }
+
+    /**
+     * Create an instance of {@link ChangeStatus }
+     * 
+     */
+    public ChangeStatus createChangeStatus() {
+        return new ChangeStatus();
+    }
+
+    /**
+     * Create an instance of {@link CreateIssueType.Arg2 .Entry }
+     * 
+     */
+    public CreateIssueType.Arg2 .Entry createCreateIssueTypeArg2Entry() {
+        return new CreateIssueType.Arg2 .Entry();
+    }
+
+    /**
+     * Create an instance of {@link CreateIssue }
+     * 
+     */
+    public CreateIssue createCreateIssue() {
+        return new CreateIssue();
+    }
+
+    /**
+     * Create an instance of {@link CreateProject }
+     * 
+     */
+    public CreateProject createCreateProject() {
+        return new CreateProject();
+    }
+
+    /**
+     * Create an instance of {@link CreateIssueResponse }
+     * 
+     */
+    public CreateIssueResponse createCreateIssueResponse() {
+        return new CreateIssueResponse();
+    }
+
+    /**
+     * Create an instance of {@link AddWorkflowResponse }
+     * 
+     */
+    public AddWorkflowResponse createAddWorkflowResponse() {
+        return new AddWorkflowResponse();
+    }
+
+    /**
+     * Create an instance of {@link AddAttachmentResponse }
+     * 
+     */
+    public AddAttachmentResponse createAddAttachmentResponse() {
+        return new AddAttachmentResponse();
+    }
+
+    /**
      * Create an instance of {@link CreateProjectResponse }
      * 
      */
     public CreateProjectResponse createCreateProjectResponse() {
         return new CreateProjectResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateIssue.Parameters }
-     * 
-     */
-    public CreateIssue.Parameters createCreateIssueParameters() {
-        return new CreateIssue.Parameters();
-    }
-
-    /**
-     * Create an instance of {@link CreateIssueType.Parameters }
-     * 
-     */
-    public CreateIssueType.Parameters createCreateIssueTypeParameters() {
-        return new CreateIssueType.Parameters();
     }
 
     /**
@@ -194,19 +196,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CreateIssue }
+     * Create an instance of {@link CreateIssue.Arg4 .Entry }
      * 
      */
-    public CreateIssue createCreateIssue() {
-        return new CreateIssue();
+    public CreateIssue.Arg4 .Entry createCreateIssueArg4Entry() {
+        return new CreateIssue.Arg4 .Entry();
     }
 
     /**
-     * Create an instance of {@link ChangeStatusResponse }
+     * Create an instance of {@link AddIssueComment }
      * 
      */
-    public ChangeStatusResponse createChangeStatusResponse() {
-        return new ChangeStatusResponse();
+    public AddIssueComment createAddIssueComment() {
+        return new AddIssueComment();
+    }
+
+    /**
+     * Create an instance of {@link CreateIssue.Arg4 }
+     * 
+     */
+    public CreateIssue.Arg4 createCreateIssueArg4() {
+        return new CreateIssue.Arg4();
+    }
+
+    /**
+     * Create an instance of {@link CreateIssueTypeResponse }
+     * 
+     */
+    public CreateIssueTypeResponse createCreateIssueTypeResponse() {
+        return new CreateIssueTypeResponse();
     }
 
     /**
@@ -255,21 +273,21 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link CreateProjectResponse }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "pubflow.de", name = "createProjectResponse")
-    public JAXBElement<CreateProjectResponse> createCreateProjectResponse(CreateProjectResponse value) {
-        return new JAXBElement<CreateProjectResponse>(_CreateProjectResponse_QNAME, CreateProjectResponse.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetStatusNames }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "pubflow.de", name = "getStatusNames")
     public JAXBElement<GetStatusNames> createGetStatusNames(GetStatusNames value) {
         return new JAXBElement<GetStatusNames>(_GetStatusNames_QNAME, GetStatusNames.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link CreateProjectResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "pubflow.de", name = "createProjectResponse")
+    public JAXBElement<CreateProjectResponse> createCreateProjectResponse(CreateProjectResponse value) {
+        return new JAXBElement<CreateProjectResponse>(_CreateProjectResponse_QNAME, CreateProjectResponse.class, null, value);
     }
 
     /**
@@ -300,21 +318,21 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AddWorkflow }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "pubflow.de", name = "addWorkflow")
+    public JAXBElement<AddWorkflow> createAddWorkflow(AddWorkflow value) {
+        return new JAXBElement<AddWorkflow>(_AddWorkflow_QNAME, AddWorkflow.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ChangeStatus }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "pubflow.de", name = "changeStatus")
     public JAXBElement<ChangeStatus> createChangeStatus(ChangeStatus value) {
         return new JAXBElement<ChangeStatus>(_ChangeStatus_QNAME, ChangeStatus.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link RemoveAttachment }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "pubflow.de", name = "removeAttachment")
-    public JAXBElement<RemoveAttachment> createRemoveAttachment(RemoveAttachment value) {
-        return new JAXBElement<RemoveAttachment>(_RemoveAttachment_QNAME, RemoveAttachment.class, null, value);
     }
 
     /**
@@ -327,12 +345,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link RemoveAttachment }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "pubflow.de", name = "removeAttachment")
+    public JAXBElement<RemoveAttachment> createRemoveAttachment(RemoveAttachment value) {
+        return new JAXBElement<RemoveAttachment>(_RemoveAttachment_QNAME, RemoveAttachment.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link AddIssueCommentResponse }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "pubflow.de", name = "addIssueCommentResponse")
     public JAXBElement<AddIssueCommentResponse> createAddIssueCommentResponse(AddIssueCommentResponse value) {
         return new JAXBElement<AddIssueCommentResponse>(_AddIssueCommentResponse_QNAME, AddIssueCommentResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AddWorkflowResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "pubflow.de", name = "addWorkflowResponse")
+    public JAXBElement<AddWorkflowResponse> createAddWorkflowResponse(AddWorkflowResponse value) {
+        return new JAXBElement<AddWorkflowResponse>(_AddWorkflowResponse_QNAME, AddWorkflowResponse.class, null, value);
     }
 
     /**
@@ -357,9 +393,9 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link byte[]}{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "", name = "bArray", scope = AddAttachment.class)
-    public JAXBElement<byte[]> createAddAttachmentBArray(byte[] value) {
-        return new JAXBElement<byte[]>(_AddAttachmentBArray_QNAME, byte[].class, AddAttachment.class, ((byte[]) value));
+    @XmlElementDecl(namespace = "", name = "arg1", scope = AddAttachment.class)
+    public JAXBElement<byte[]> createAddAttachmentArg1(byte[] value) {
+        return new JAXBElement<byte[]>(_AddAttachmentArg1_QNAME, byte[].class, AddAttachment.class, ((byte[]) value));
     }
 
 }

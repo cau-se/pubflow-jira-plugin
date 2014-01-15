@@ -19,9 +19,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="projectKey" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="issueTypeName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="parameters">
+ *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg2">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -53,87 +53,87 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "createIssueType", propOrder = {
-    "projectKey",
-    "issueTypeName",
-    "parameters"
+    "arg0",
+    "arg1",
+    "arg2"
 })
 public class CreateIssueType {
 
-    protected String projectKey;
-    protected String issueTypeName;
+    protected String arg0;
+    protected String arg1;
     @XmlElement(required = true)
-    protected CreateIssueType.Parameters parameters;
+    protected CreateIssueType.Arg2 arg2;
 
     /**
-     * Gets the value of the projectKey property.
+     * Gets the value of the arg0 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getProjectKey() {
-        return projectKey;
+    public String getArg0() {
+        return arg0;
     }
 
     /**
-     * Sets the value of the projectKey property.
+     * Sets the value of the arg0 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setProjectKey(String value) {
-        this.projectKey = value;
+    public void setArg0(String value) {
+        this.arg0 = value;
     }
 
     /**
-     * Gets the value of the issueTypeName property.
+     * Gets the value of the arg1 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getIssueTypeName() {
-        return issueTypeName;
+    public String getArg1() {
+        return arg1;
     }
 
     /**
-     * Sets the value of the issueTypeName property.
+     * Sets the value of the arg1 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setIssueTypeName(String value) {
-        this.issueTypeName = value;
+    public void setArg1(String value) {
+        this.arg1 = value;
     }
 
     /**
-     * Gets the value of the parameters property.
+     * Gets the value of the arg2 property.
      * 
      * @return
      *     possible object is
-     *     {@link CreateIssueType.Parameters }
+     *     {@link CreateIssueType.Arg2 }
      *     
      */
-    public CreateIssueType.Parameters getParameters() {
-        return parameters;
+    public CreateIssueType.Arg2 getArg2() {
+        return arg2;
     }
 
     /**
-     * Sets the value of the parameters property.
+     * Sets the value of the arg2 property.
      * 
      * @param value
      *     allowed object is
-     *     {@link CreateIssueType.Parameters }
+     *     {@link CreateIssueType.Arg2 }
      *     
      */
-    public void setParameters(CreateIssueType.Parameters value) {
-        this.parameters = value;
+    public void setArg2(CreateIssueType.Arg2 value) {
+        this.arg2 = value;
     }
 
 
@@ -171,9 +171,9 @@ public class CreateIssueType {
     @XmlType(name = "", propOrder = {
         "entry"
     })
-    public static class Parameters {
+    public static class Arg2 {
 
-        protected List<CreateIssueType.Parameters.Entry> entry;
+        protected List<CreateIssueType.Arg2 .Entry> entry;
 
         /**
          * Gets the value of the entry property.
@@ -193,13 +193,13 @@ public class CreateIssueType {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link CreateIssueType.Parameters.Entry }
+         * {@link CreateIssueType.Arg2 .Entry }
          * 
          * 
          */
-        public List<CreateIssueType.Parameters.Entry> getEntry() {
+        public List<CreateIssueType.Arg2 .Entry> getEntry() {
             if (entry == null) {
-                entry = new ArrayList<CreateIssueType.Parameters.Entry>();
+                entry = new ArrayList<CreateIssueType.Arg2 .Entry>();
             }
             return this.entry;
         }

@@ -1,4 +1,4 @@
-package de.pubflow.wfCompUntis.ocn.entity.abstractClass;
+package de.pubflow.wfCompUnits.ocn.entity.abstractClass;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,12 +8,12 @@ import java.util.HashMap;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import de.pubflow.wfCompUntis.ocn.entity.Bottle;
-import de.pubflow.wfCompUntis.ocn.entity.Leg;
-import de.pubflow.wfCompUntis.ocn.entity.Parameter;
-import de.pubflow.wfCompUntis.ocn.entity.Sample;
-import de.pubflow.wfCompUntis.ocn.exception.PubJectException;
-import de.pubflow.wfCompUntis.ocn.jaxb.adapter.MyHashMapListAdapter;
+import de.pubflow.wfCompUnits.ocn.entity.Bottle;
+import de.pubflow.wfCompUnits.ocn.entity.Leg;
+import de.pubflow.wfCompUnits.ocn.entity.Parameter;
+import de.pubflow.wfCompUnits.ocn.entity.Sample;
+import de.pubflow.wfCompUnits.ocn.exception.PubJectException;
+import de.pubflow.wfCompUnits.ocn.mapping.MyHashMapListAdapter;
 
 
 

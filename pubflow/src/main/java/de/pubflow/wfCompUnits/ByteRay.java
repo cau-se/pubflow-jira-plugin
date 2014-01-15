@@ -1,4 +1,4 @@
-package de.pubflow.wfCompUtils;
+package de.pubflow.wfCompUnits;
 
 import java.util.HashMap;
 import java.util.LinkedList;

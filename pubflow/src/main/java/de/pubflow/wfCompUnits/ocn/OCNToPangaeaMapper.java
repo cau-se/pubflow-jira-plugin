@@ -1,4 +1,4 @@
-package de.pubflow.wfCompUntis.ocn;
+package de.pubflow.wfCompUnits.ocn;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -17,13 +17,13 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import de.pubflow.common.properties.PropLoader;
-import de.pubflow.wfCompUntis.ocn.entity.Bottle;
-import de.pubflow.wfCompUntis.ocn.entity.Leg;
-import de.pubflow.wfCompUntis.ocn.entity.Parameter;
-import de.pubflow.wfCompUntis.ocn.entity.Sample;
-import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
-import de.pubflow.wfCompUntis.ocn.exception.PubJectException;
-import de.pubflow.wfCompUtils.ByteRay;
+import de.pubflow.wfCompUnits.ByteRay;
+import de.pubflow.wfCompUnits.ocn.entity.Bottle;
+import de.pubflow.wfCompUnits.ocn.entity.Leg;
+import de.pubflow.wfCompUnits.ocn.entity.Parameter;
+import de.pubflow.wfCompUnits.ocn.entity.Sample;
+import de.pubflow.wfCompUnits.ocn.entity.abstractClass.PubJect;
+import de.pubflow.wfCompUnits.ocn.exception.PubJectException;
 
 /**
  * @author arl

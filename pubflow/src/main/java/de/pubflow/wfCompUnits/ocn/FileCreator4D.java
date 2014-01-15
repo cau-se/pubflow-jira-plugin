@@ -1,4 +1,4 @@
-package de.pubflow.wfCompUntis.ocn;
+package de.pubflow.wfCompUnits.ocn;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,12 +9,12 @@ import java.util.Map.Entry;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import de.pubflow.wfCompUntis.ocn.entity.Bottle;
-import de.pubflow.wfCompUntis.ocn.entity.Leg;
-import de.pubflow.wfCompUntis.ocn.entity.Parameter;
-import de.pubflow.wfCompUntis.ocn.entity.Sample;
-import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
-import de.pubflow.wfCompUtils.ByteRay;
+import de.pubflow.wfCompUnits.ByteRay;
+import de.pubflow.wfCompUnits.ocn.entity.Bottle;
+import de.pubflow.wfCompUnits.ocn.entity.Leg;
+import de.pubflow.wfCompUnits.ocn.entity.Parameter;
+import de.pubflow.wfCompUnits.ocn.entity.Sample;
+import de.pubflow.wfCompUnits.ocn.entity.abstractClass.PubJect;
 
 
 /**

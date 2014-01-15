@@ -1,10 +1,10 @@
-package de.pubflow.wfCompUntis.ocn.jaxb.adapter;
+package de.pubflow.wfCompUnits.ocn.mapping;
 
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
+import de.pubflow.wfCompUnits.ocn.entity.abstractClass.PubJect;
 
 
 

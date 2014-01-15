@@ -18,13 +18,13 @@ import javax.xml.ws.Service;
 
 import org.apache.camel.Consume;
 
-import de.pubflow.components.jiraConnector.wsArtifacts.IJiraEndpoint;
+import de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpoint;
 import de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpointService;
 import de.pubflow.core.communication.message.MessageToolbox;
 import de.pubflow.core.communication.message.jira.CamelJiraMessage;
 
 public class JiraPluginMsgConsumer {
-	private static IJiraEndpoint jiraEndpoint;
+	private static JiraEndpoint jiraEndpoint;
 	private static JiraPluginMsgConsumer instance; 
 	private static final String JIRAWS_PORT = "8890";
 	private static final String KEYSTOREFILE="keystore_pubflow.ks";
@@ -43,10 +43,7 @@ public class JiraPluginMsgConsumer {
 		return instance;
 	}
 
-	public static IJiraEndpoint getJiraEndpoint() throws Exception{
-		//System.setProperty("javax.net.debug", "ssl,handshake,record"); 
-		System.setProperty("https.cipherSuites","TLS_DHE_RSA_WITH_AES_128_CBC_SHA");
-		
+	public static JiraEndpoint getJiraEndpoint() throws Exception{		
 		SSLContext sc = SSLContext.getInstance("SSLv3");
 
 		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
@@ -62,8 +59,8 @@ public class JiraPluginMsgConsumer {
 		sc.init( kmf.getKeyManagers(), tmf.getTrustManagers(), null );
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 		
-		Service service = JiraEndpointService.create(new URL("https://localhost:" + JIRAWS_PORT + "/JiraEndpoint?wsdl"), new QName("http://webservice.jira.pubflow.de/", "JiraEndpointService"));
-		jiraEndpoint = service.getPort(IJiraEndpoint.class);
+		Service service = JiraEndpointService.create(new URL("https://localhost:" + JIRAWS_PORT + "/JiraEndpoint?wsdl"), new QName("pubflow.de", "JiraEndpointService"));
+		jiraEndpoint = service.getPort(JiraEndpoint.class);
 		
 		return jiraEndpoint;
 	}
@@ -91,12 +88,12 @@ public class JiraPluginMsgConsumer {
 	}
 
 	private void createIssueType(HashMap<String, String> map) throws Exception{
-		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters params = 
-				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters();
+		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2 params = 
+				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2();
 
 		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
-			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters.Entry newEntry = 
-					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Parameters.Entry();
+			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry newEntry = 
+					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssueType.Arg2.Entry();
 
 			newEntry.setKey(entry.getKey());
 			newEntry.setValue(entry.getValue());
@@ -107,11 +104,11 @@ public class JiraPluginMsgConsumer {
 	}
 
 	private void createIssue(HashMap<String, String> map) throws Exception{
-		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Parameters params = 
-				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Parameters();
+		de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4 params = 
+				new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4();
 		for(Entry<String, String> entry : CamelJiraMessage.getMap("parameters", map).entrySet()){
-			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Parameters.Entry newEntry = 
-					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Parameters.Entry();
+			de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4.Entry newEntry = 
+					new de.pubflow.components.jiraConnector.wsArtifacts.CreateIssue.Arg4.Entry();
 			newEntry.setKey(entry.getKey());
 			newEntry.setValue(entry.getValue());
 			params.getEntry().add(newEntry);

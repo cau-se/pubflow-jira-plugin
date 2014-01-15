@@ -32,7 +32,7 @@ import de.pubflow.common.properties.PropLoader;
 
 public class JiraPlugin {
 	private static final String KEYSTOREFILE="keystore_pubflow.ks";
-	private static final String TRUSTTOREFILE="truststore_pubflow.ks";
+	private static final String TRUSTSTOREFILE="truststore_pubflow.ks";
 	private static final String KEYSTOREPW="changeit";
 	private static final String TRUSTSTOREPW="changeit";
 	private static final String PUBFLOWWS_PORT = "8889";
@@ -40,30 +40,33 @@ public class JiraPlugin {
 
 	@SuppressWarnings("restriction")
 	public static void start() throws Exception {
+		System.setProperty("https.cipherSuites","TLS_DHE_RSA_WITH_AES_128_CBC_SHA");
 		//System.setProperty("javax.net.debug", "ssl,handshake,record"); 
-		
+
 		final KeyStore ks = KeyStore.getInstance("JKS");
 		ks.load(new FileInputStream(JiraPlugin.class.getClassLoader().getResource(KEYSTOREFILE).getFile()), KEYSTOREPW.toCharArray());
 		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 		kmf.init(ks, KEYSTOREPW.toCharArray());
-		
+
 		final KeyStore ts = KeyStore.getInstance("JKS");
-		ts.load(new FileInputStream(JiraPlugin.class.getClassLoader().getResource(TRUSTTOREFILE).getFile()), TRUSTSTOREPW.toCharArray());
+		ts.load(new FileInputStream(JiraPlugin.class.getClassLoader().getResource(TRUSTSTOREFILE).getFile()), TRUSTSTOREPW.toCharArray());
 		TrustManagerFactory tmf = TrustManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 		tmf.init(ts);
 
 		SSLContext sslCtx = SSLContext.getInstance("SSLv3");
 		sslCtx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);		
-		
+
 		HttpsConfigurator cfg = new HttpsConfigurator(sslCtx){
 			public void configure(HttpsParameters params) {
 				SSLParameters sslparams = getSSLContext().getDefaultSSLParameters();				
 				// Modify the default params: Will require client certificates
-				sslparams.setProtocols(new String[]{"SSLv3"});
 				sslparams.setNeedClientAuth(true);
 				sslparams.setWantClientAuth(true);
+				sslparams.setProtocols(new String[]{"SSLv3"});
+				sslparams.setCipherSuites(new String[]{"TLS_DHE_RSA_WITH_AES_128_CBC_SHA"});
 				params.setSSLParameters(sslparams);
 				params.setProtocols(new String[]{"SSLv3"});
+				params.setCipherSuites(new String[]{"TLS_DHE_RSA_WITH_AES_128_CBC_SHA"});
 			}
 		};
 
@@ -75,35 +78,29 @@ public class JiraPlugin {
 		https.setExecutor(httpThreadPool);
 		https.start();
 
-		HttpContext ctx = https.createContext("/" + JiraToPubFlowConnector.class.getSimpleName());
+		HttpContext ctx = https.createContext("/JiraToPubFlowConnector");
 
 		ctx.setAuthenticator(new Authenticator(){
 
 			@Override
 			public Result authenticate(HttpExchange exch) {
-
-				FileWriter fw = null;
-
-
 				try {
-
-					fw = new FileWriter("/tmp/debug.txt");
-
+					
 					if(exch instanceof HttpsExchange) {
 						boolean authenticated = false;
 
 						HttpsExchange httpsExch = (HttpsExchange)exch;
-
-						fw.append("authen: " + httpsExch.getSSLSession().getPeerPrincipal().getName());
-						fw.append("test");
+						
+						/*
 						myLogger.info("authen: " + httpsExch.getSSLSession().getPeerPrincipal().getName());
-
 						myLogger.info(exch.getRemoteAddress().toString());
 						myLogger.info(exch.getLocalAddress().toString());
 						myLogger.info(((HttpsExchange) exch).getSSLSession().getCipherSuite());
 						myLogger.info(exch.getProtocol());
 
 						myLogger.info("===================================== LOCAL CERTS ===================================== " + ((HttpsExchange) exch).getSSLSession().getLocalCertificates().length);
+
+
 						for(Certificate c : ((HttpsExchange) exch).getSSLSession().getLocalCertificates()){
 							myLogger.info(c.toString());
 						}
@@ -117,9 +114,10 @@ public class JiraPlugin {
 						}
 
 						myLogger.info("===================================== PEER CERTS ====================================== " + ((HttpsExchange) exch).getSSLSession().getPeerCertificates().length);
-
+						 */
+						
 						for(Certificate c : ((HttpsExchange) exch).getSSLSession().getPeerCertificates()){
-							myLogger.info(c.toString());
+							//myLogger.info(c.toString());
 
 							try {
 								if (ts.getCertificate("client").equals(c)){
@@ -140,22 +138,12 @@ public class JiraPlugin {
 
 						}
 					}
-					fw.close();
 
 				} catch (Exception e) {
-					myLogger.info("===================================== ERROR ====================================== ");
-
 					e.printStackTrace();
 
-				}finally{
-					try {
-						fw.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 				}
-
+				
 				return new Authenticator.Failure(403);
 			}
 		});

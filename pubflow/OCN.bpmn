@@ -4,11 +4,11 @@
     <bpmn2:extensionElements>
       <tns:global id="legID" identifier="legID" type="Integer"/>
       <tns:global id="author" identifier="author" type="String"/>
-      <tns:import name="de.pubflow.wfCompUntis.ocn.OCNDataLoader"/>
-      <tns:import name="de.pubflow.wfCompUntis.ocn.OCNToPangaeaMapper"/>
-      <tns:import name="de.pubflow.wfCompUntis.ocn.FileCreator4D"/>
+      <tns:import name="de.pubflow.wfCompUnits.ocn.OCNDataLoader"/>
+      <tns:import name="de.pubflow.wfCompUnits.ocn.OCNToPangaeaMapper"/>
+      <tns:import name="de.pubflow.wfCompUnits.ocn.FileCreator4D"/>
+      <tns:import name="de.pubflow.wfCompUnits.ByteRay"/>
       <tns:import name="de.pubflow.components.jira.JiraWFEndpoint"/>
-      <tns:import name="de.pubflow.wfCompUntis.ByteRay"/>
       <tns:import name="java.util.HashMap"/>
       <tns:import name="java.util.LinkedList"/>
       <tns:import name="java.util.Map.Entry"/>

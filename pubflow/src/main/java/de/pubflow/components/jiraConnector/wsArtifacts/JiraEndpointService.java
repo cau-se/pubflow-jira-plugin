@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  * 
  */
-@WebServiceClient(name = "JiraEndpointService", targetNamespace = "http://webservice.jira.pubflow.de/", wsdlLocation = "https://localhost:8890/JiraEndpoint?wsdl")
+@WebServiceClient(name = "JiraEndpointService", targetNamespace = "pubflow.de", wsdlLocation = "https://localhost:8890/JiraEndpoint?wsdl")
 public class JiraEndpointService
     extends Service
 {
@@ -30,9 +30,9 @@ public class JiraEndpointService
         try {
             URL baseUrl;
             baseUrl = de.pubflow.components.jiraConnector.wsArtifacts.JiraEndpointService.class.getResource(".");
-            url = new URL(baseUrl, "JiraEndpoint.xml");
+            url = new URL(baseUrl, "https://localhost:8890/JiraEndpoint?wsdl");
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: 'JiraEndpoint.wsdl', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: 'https://localhost:8890/JiraEndpoint?wsdl', retrying as a local file");
             logger.warning(e.getMessage());
         }
         JIRAENDPOINTSERVICE_WSDL_LOCATION = url;
@@ -43,17 +43,17 @@ public class JiraEndpointService
     }
 
     public JiraEndpointService() {
-        super(JIRAENDPOINTSERVICE_WSDL_LOCATION, new QName("http://webservice.jira.pubflow.de/", "JiraEndpointService"));
+        super(JIRAENDPOINTSERVICE_WSDL_LOCATION, new QName("pubflow.de", "JiraEndpointService"));
     }
 
     /**
      * 
      * @return
-     *     returns IJiraEndpoint
+     *     returns JiraEndpoint
      */
     @WebEndpoint(name = "JiraEndpointPort")
-    public IJiraEndpoint getJiraEndpointPort() {
-        return super.getPort(new QName("http://webservice.jira.pubflow.de/", "JiraEndpointPort"), IJiraEndpoint.class);
+    public JiraEndpoint getJiraEndpointPort() {
+        return super.getPort(new QName("pubflow.de", "JiraEndpointPort"), JiraEndpoint.class);
     }
 
     /**
@@ -61,11 +61,11 @@ public class JiraEndpointService
      * @param features
      *     A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
      * @return
-     *     returns IJiraEndpoint
+     *     returns JiraEndpoint
      */
     @WebEndpoint(name = "JiraEndpointPort")
-    public IJiraEndpoint getJiraEndpointPort(WebServiceFeature... features) {
-        return super.getPort(new QName("http://webservice.jira.pubflow.de/", "JiraEndpointPort"), IJiraEndpoint.class, features);
+    public JiraEndpoint getJiraEndpointPort(WebServiceFeature... features) {
+        return super.getPort(new QName("pubflow.de", "JiraEndpointPort"), JiraEndpoint.class, features);
     }
 
 }

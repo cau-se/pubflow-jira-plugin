@@ -19,11 +19,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="projectKey" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="wfName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="summary" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="parameters">
+ *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg3" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg4">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlType;
  *             &lt;/complexContent>
  *           &lt;/complexType>
  *         &lt;/element>
- *         &lt;element name="reporter" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg5" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -56,165 +56,165 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "createIssue", propOrder = {
-    "projectKey",
-    "wfName",
-    "summary",
-    "description",
-    "parameters",
-    "reporter"
+    "arg0",
+    "arg1",
+    "arg2",
+    "arg3",
+    "arg4",
+    "arg5"
 })
 public class CreateIssue {
 
-    protected String projectKey;
-    protected String wfName;
-    protected String summary;
-    protected String description;
+    protected String arg0;
+    protected String arg1;
+    protected String arg2;
+    protected String arg3;
     @XmlElement(required = true)
-    protected CreateIssue.Parameters parameters;
-    protected String reporter;
+    protected CreateIssue.Arg4 arg4;
+    protected String arg5;
 
     /**
-     * Gets the value of the projectKey property.
+     * Gets the value of the arg0 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getProjectKey() {
-        return projectKey;
+    public String getArg0() {
+        return arg0;
     }
 
     /**
-     * Sets the value of the projectKey property.
+     * Sets the value of the arg0 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setProjectKey(String value) {
-        this.projectKey = value;
+    public void setArg0(String value) {
+        this.arg0 = value;
     }
 
     /**
-     * Gets the value of the wfName property.
+     * Gets the value of the arg1 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getWfName() {
-        return wfName;
+    public String getArg1() {
+        return arg1;
     }
 
     /**
-     * Sets the value of the wfName property.
+     * Sets the value of the arg1 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setWfName(String value) {
-        this.wfName = value;
+    public void setArg1(String value) {
+        this.arg1 = value;
     }
 
     /**
-     * Gets the value of the summary property.
+     * Gets the value of the arg2 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getSummary() {
-        return summary;
+    public String getArg2() {
+        return arg2;
     }
 
     /**
-     * Sets the value of the summary property.
+     * Sets the value of the arg2 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setSummary(String value) {
-        this.summary = value;
+    public void setArg2(String value) {
+        this.arg2 = value;
     }
 
     /**
-     * Gets the value of the description property.
+     * Gets the value of the arg3 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDescription() {
-        return description;
+    public String getArg3() {
+        return arg3;
     }
 
     /**
-     * Sets the value of the description property.
+     * Sets the value of the arg3 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDescription(String value) {
-        this.description = value;
+    public void setArg3(String value) {
+        this.arg3 = value;
     }
 
     /**
-     * Gets the value of the parameters property.
+     * Gets the value of the arg4 property.
      * 
      * @return
      *     possible object is
-     *     {@link CreateIssue.Parameters }
+     *     {@link CreateIssue.Arg4 }
      *     
      */
-    public CreateIssue.Parameters getParameters() {
-        return parameters;
+    public CreateIssue.Arg4 getArg4() {
+        return arg4;
     }
 
     /**
-     * Sets the value of the parameters property.
+     * Sets the value of the arg4 property.
      * 
      * @param value
      *     allowed object is
-     *     {@link CreateIssue.Parameters }
+     *     {@link CreateIssue.Arg4 }
      *     
      */
-    public void setParameters(CreateIssue.Parameters value) {
-        this.parameters = value;
+    public void setArg4(CreateIssue.Arg4 value) {
+        this.arg4 = value;
     }
 
     /**
-     * Gets the value of the reporter property.
+     * Gets the value of the arg5 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getReporter() {
-        return reporter;
+    public String getArg5() {
+        return arg5;
     }
 
     /**
-     * Sets the value of the reporter property.
+     * Sets the value of the arg5 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setReporter(String value) {
-        this.reporter = value;
+    public void setArg5(String value) {
+        this.arg5 = value;
     }
 
 
@@ -252,9 +252,9 @@ public class CreateIssue {
     @XmlType(name = "", propOrder = {
         "entry"
     })
-    public static class Parameters {
+    public static class Arg4 {
 
-        protected List<CreateIssue.Parameters.Entry> entry;
+        protected List<CreateIssue.Arg4 .Entry> entry;
 
         /**
          * Gets the value of the entry property.
@@ -274,13 +274,13 @@ public class CreateIssue {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link CreateIssue.Parameters.Entry }
+         * {@link CreateIssue.Arg4 .Entry }
          * 
          * 
          */
-        public List<CreateIssue.Parameters.Entry> getEntry() {
+        public List<CreateIssue.Arg4 .Entry> getEntry() {
             if (entry == null) {
-                entry = new ArrayList<CreateIssue.Parameters.Entry>();
+                entry = new ArrayList<CreateIssue.Arg4 .Entry>();
             }
             return this.entry;
         }

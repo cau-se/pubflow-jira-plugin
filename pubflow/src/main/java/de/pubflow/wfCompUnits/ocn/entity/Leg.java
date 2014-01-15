@@ -1,8 +1,8 @@
-package de.pubflow.wfCompUntis.ocn.entity;
+package de.pubflow.wfCompUnits.ocn.entity;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import de.pubflow.wfCompUntis.ocn.entity.abstractClass.PubJect;
+import de.pubflow.wfCompUnits.ocn.entity.abstractClass.PubJect;
 
 
 

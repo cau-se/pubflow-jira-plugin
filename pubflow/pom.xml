@@ -380,7 +380,6 @@
 	</build>
 
 	<repositories>
-
 		<repository>
 			<id>jboss-public-repository-group</id>
 			<name>JBoss Public Maven Repository Group</name>
@@ -394,8 +393,5 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-
-
 	</repositories>
-
 </project>
