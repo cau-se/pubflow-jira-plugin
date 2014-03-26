@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -25,10 +26,21 @@ public class WorkflowEntity implements Serializable{
 	private byte[] gBpmn;
 	private String workflowName;
 	private long PubFlowWFID;
-
-	private String WFID;
 	private WFType type;
+	private HashMap<String, Class<?>> parameterMap = new HashMap<String, Class<?>>();
+	
+	public void setParameterMap(HashMap<String, Class<?>> parameterMap) {
+		this.parameterMap = parameterMap;
+	}
 
+	public HashMap<String, Class<?>> getParameterMap(){
+		return parameterMap;
+	}
+	
+	public void addEntryToParameterMap(String key, Class<?> value){
+		parameterMap.put(key, value);
+	}
+	
 	public byte[] getgBpmn() {
 		return gBpmn;
 	}
@@ -36,6 +48,8 @@ public class WorkflowEntity implements Serializable{
 	public void setgBpmn(byte[] gBpmn) {
 		this.gBpmn = gBpmn;
 	}
+
+	private String WFID;
 
 	public void setgBpmn(File f) throws IOException{
 		gBpmn = readFile(f);

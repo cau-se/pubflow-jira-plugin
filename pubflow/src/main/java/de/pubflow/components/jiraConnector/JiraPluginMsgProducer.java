@@ -1,10 +1,20 @@
 package de.pubflow.components.jiraConnector;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
+
+import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +25,12 @@ import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFState;
 import de.pubflow.common.repository.workflow.WorkflowProvider;
+import de.pubflow.components.quartz.PubFlowJob;
+import de.pubflow.components.quartz.Scheduler;
 import de.pubflow.core.communication.message.MessageToolbox;
 import de.pubflow.core.communication.message.jira.CamelJiraMessage;
 import de.pubflow.core.communication.message.workflow.WorkflowMessage;
+
 
 public class JiraPluginMsgProducer {
 
@@ -39,8 +52,9 @@ public class JiraPluginMsgProducer {
 	 * : OCN PID_OCN : 6 Leg comment_OCN : 5
 	 * 
 	 * @param msg
+	 * @throws SchedulerException 
 	 */
-	public void onMsg(CamelJiraMessage msg) {
+	public void onMsg(CamelJiraMessage msg) throws SchedulerException {
 		myLogger.info("Received Msg from Jira-Plugin");
 		WorkflowMessage wfMsg = new WorkflowMessage();
 		WFParamList paramList = new WFParamList();
@@ -54,6 +68,8 @@ public class JiraPluginMsgProducer {
 		}
 		myLogger.info(mapDebugString);
 
+		long quartzMillis = 0l;
+
 		for (Entry<String, String> entry : fieldmap) {
 			String key = entry.getKey();
 			String value = entry.getValue();
@@ -63,6 +79,9 @@ public class JiraPluginMsgProducer {
 			switch (key) {
 			case "Author":
 				wfMsg.setUser(User.getUserFromJiraID(value));
+				break;
+			case "quartzMillis":
+				quartzMillis = Long.parseLong(value);
 				break;
 			case "Reference":
 
@@ -124,7 +143,9 @@ public class JiraPluginMsgProducer {
 				myLogger.info("Val: "+key+" > "+value);
 				if(value.equalsIgnoreCase("OCN")){
 					wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
-					myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));}
+					myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
+
+				}
 				break;
 			case "PID":
 
@@ -138,16 +159,37 @@ public class JiraPluginMsgProducer {
 			}
 		}
 		wfMsg.setWfparams(paramList);
-		myLogger.info("Transmitting Msg to pubflow core...");
-		// Sending WFMsg
-		ProducerTemplate producer;
-		CamelContext context = PubFlowSystem.getInstance().getContext();
-		producer = context.createProducerTemplate();
-		producer.sendBody("test-jms:queue:testOut.queue",
-				MessageToolbox.transformToString(wfMsg));
 
-		myLogger.info("Msg sent!");
+		if(quartzMillis > System.currentTimeMillis()){
+			// define the job and tie it to our HelloJob class
+			JobDetail job = newJob(PubFlowJob.class)
+					.withIdentity("job1", "group1")
+					.build();
+
+			job.getJobDataMap().put("msg", wfMsg);
+
+
+			// Trigger the job to run now, and then repeat every 40 seconds
+			Trigger trigger = newTrigger()
+					.withIdentity("trigger1", "group1")
+					.startAt(new Date(quartzMillis))
+					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
+					.build();
+
+			// Tell quartz to schedule the job using our trigger
+			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
+
+		}else{
+			
+			myLogger.info("Transmitting Msg to pubflow core...");
+			// Sending WFMsg
+			ProducerTemplate producer;
+			CamelContext context = PubFlowSystem.getInstance().getContext();
+			producer = context.createProducerTemplate();
+			producer.sendBody("test-jms:queue:testOut.queue",
+					MessageToolbox.transformToString(wfMsg));
+
+			myLogger.info("Msg sent!");
+		}
 	}
-
-
 }

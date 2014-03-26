@@ -3,7 +3,6 @@ package de.pubflow.components.jiraConnector;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(namespace = "http://pubflow.de/message/jira")
@@ -12,25 +11,8 @@ public class JiraMessage{
 	private HashMap<String, String> message = new HashMap<String, String>();
 	private String action = "";
 	private String target = "";
-	public String clazz;
-
+	
 	public JiraMessage(){
-		clazz = this.getClass().getCanonicalName();
-	}
-
-
-
-	@XmlElement(name="clazz")
-	public String getType() {
-		return clazz;
-	}
-
-	public void setType(String c) {
-		this.clazz = c;
-	}
-
-	public void initFromString(String pContent){
-
 	}
 
 	public String getTarget() {

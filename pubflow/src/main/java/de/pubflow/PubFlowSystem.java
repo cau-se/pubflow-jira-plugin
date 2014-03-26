@@ -6,6 +6,9 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +118,8 @@ public class PubFlowSystem {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		
 
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
@@ -277,6 +282,8 @@ public class PubFlowSystem {
 			// Stop internal server
 			shutdownLogger.debug("Stopping internal server");
 			core.stopInternalServer();
+			shutdownLogger.info("Stopping Quartz");
+			
 			// Write props to file
 			shutdownLogger.debug("Saving Properties to file");
 			PropLoader.getInstance().saveProperties();

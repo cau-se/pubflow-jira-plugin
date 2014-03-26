@@ -1,8 +1,6 @@
 package de.pubflow.components.jiraConnector;
 
 import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -29,6 +27,7 @@ import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 
 import de.pubflow.common.properties.PropLoader;
+import de.pubflow.components.jiraConnector.ws.JiraToPubFlowConnector;
 
 public class JiraPlugin {
 	private static final String KEYSTOREFILE="keystore_pubflow.ks";
