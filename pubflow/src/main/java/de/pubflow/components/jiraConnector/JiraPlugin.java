@@ -28,6 +28,7 @@ import com.sun.net.httpserver.HttpsServer;
 
 import de.pubflow.common.properties.PropLoader;
 import de.pubflow.components.jiraConnector.ws.JiraToPubFlowConnector;
+import de.pubflow.components.quartz.Scheduler;
 
 public class JiraPlugin {
 	private static final String KEYSTOREFILE="keystore_pubflow.ks";
@@ -84,12 +85,12 @@ public class JiraPlugin {
 			@Override
 			public Result authenticate(HttpExchange exch) {
 				try {
-					
+
 					if(exch instanceof HttpsExchange) {
 						boolean authenticated = false;
 
 						HttpsExchange httpsExch = (HttpsExchange)exch;
-						
+
 						/*
 						myLogger.info("authen: " + httpsExch.getSSLSession().getPeerPrincipal().getName());
 						myLogger.info(exch.getRemoteAddress().toString());
@@ -114,7 +115,7 @@ public class JiraPlugin {
 
 						myLogger.info("===================================== PEER CERTS ====================================== " + ((HttpsExchange) exch).getSSLSession().getPeerCertificates().length);
 						 */
-						
+
 						for(Certificate c : ((HttpsExchange) exch).getSSLSession().getPeerCertificates()){
 							//myLogger.info(c.toString());
 
@@ -142,12 +143,19 @@ public class JiraPlugin {
 					e.printStackTrace();
 
 				}
-				
+
 				return new Authenticator.Failure(403);
 			}
 		});
 
 		Endpoint endpoint = Endpoint.create(new JiraToPubFlowConnector());
 		endpoint.publish(ctx);
+
+
+		Scheduler.getInstance().start();
+	}
+
+	public static void main (String [] args){
+		Scheduler.getInstance().shutdown();
 	}
 }

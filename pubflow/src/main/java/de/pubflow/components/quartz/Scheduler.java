@@ -24,8 +24,7 @@ public class Scheduler{
 	
 	public void start(){
 		try{
-			quartzScheduler = StdSchedulerFactory.getDefaultScheduler();
-			quartzScheduler.start();
+			getScheduler().start();
 
 		} catch (SchedulerException se) {
 			se.printStackTrace();
@@ -34,7 +33,7 @@ public class Scheduler{
 	
 	public void shutdown(){
 		try{
-			quartzScheduler.shutdown();
+			getScheduler().shutdown();
 
 		} catch (SchedulerException se) {
 			se.printStackTrace();
