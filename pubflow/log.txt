@@ -1,0 +1,18 @@
+================================================== START JOB ==================================================
+Fetching data for leg_id 		4
+LEG...					OK
+SAMPLES/BOTTLES...			OK
+PARAMETER...				OK
+Fetched data in 12966ms.
+
+
+WARNING: "Chlorophyll a" ( - CTD Sonde, id: 80123) in bottle 309109-KDM.MC.309109-1 is negative (-0.001)! Measuring fault?
+WARNING: "Chlorophyll a" ( - CTD Sonde, id: 80123) in bottle 309109-KDM.MC.309109-2 is negative (-0.002)! Measuring fault?
+WARNING: "Chlorophyll a" ( - CTD Sonde, id: 80123) in bottle 309109-KDM.MC.309109-4 is negative (-0.004)! Measuring fault?
+WARNING: "Chlorophyll a" ( - CTD Sonde, id: 80123) in bottle 309157-KDM.MC.309157-4 is negative (-0.004)! Measuring fault?
+WARNING: "Chlorophyll a" ( - CTD Sonde, id: 80123) in bottle 309109-KDM.MC.309109-1 is negative (-0.001)! Measuring fault?
+WARNING: "Chlorophyll a" ( - CTD Sonde, id: 80123) in bottle 309109-KDM.MC.309109-2 is negative (-0.002)! Measuring fault?
+WARNING: "Chlorophyll a" ( - CTD Sonde, id: 80123) in bottle 309109-KDM.MC.309109-4 is negative (-0.004)! Measuring fault?
+Writing... done!
+=================================================== END JOB ===================================================
+

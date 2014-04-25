@@ -8,7 +8,7 @@ import de.pubflow.components.jiraConnector.JiraMessage;
 
 
 @WebService(targetNamespace = "pubflow.de")
-@SOAPBinding(style = Style.DOCUMENT)
+@SOAPBinding(style = Style.RPC)
 public interface IJiraToPubFlowConnector {
 
 	@javax.jws.WebMethod

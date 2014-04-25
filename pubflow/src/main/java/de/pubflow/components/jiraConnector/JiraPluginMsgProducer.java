@@ -168,7 +168,6 @@ public class JiraPluginMsgProducer {
 
 			job.getJobDataMap().put("msg", wfMsg);
 
-
 			// Trigger the job to run now, and then repeat every 40 seconds
 			Trigger trigger = newTrigger()
 					.withIdentity("trigger1", "group1")
@@ -180,7 +179,6 @@ public class JiraPluginMsgProducer {
 			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
 
 		}else{
-			
 			myLogger.info("Transmitting Msg to pubflow core...");
 			// Sending WFMsg
 			ProducerTemplate producer;

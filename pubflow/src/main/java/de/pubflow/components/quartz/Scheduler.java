@@ -15,7 +15,10 @@ public class Scheduler{
 		return scheduler;
 	}
 	
-	public org.quartz.Scheduler getScheduler(){
+	public org.quartz.Scheduler getScheduler() throws SchedulerException{
+		if (quartzScheduler == null){
+			quartzScheduler = StdSchedulerFactory.getDefaultScheduler();
+		}
 		return quartzScheduler;
 	}
 	

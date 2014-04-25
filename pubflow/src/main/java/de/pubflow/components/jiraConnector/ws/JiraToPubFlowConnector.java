@@ -18,20 +18,22 @@ public class JiraToPubFlowConnector implements IJiraToPubFlowConnector{
 
 	@Override
 	public void eventNotification(JiraMessage message) {
-		System.out.println("Starting");
-		JiraPluginMsgProducer msgProducer = new JiraPluginMsgProducer();
+		System.out.println("Received notification");
 
 		CamelJiraMessage camelMsg = new CamelJiraMessage();
+		camelMsg.setAction(message.getAction());
+		System.out.println("action : " + message.getAction());
+		camelMsg.setTarget(message.getTarget());
+		System.out.println("target : " + message.getTarget());
 
-//		camelMsg.setAction(message.getAction());
-//		camelMsg.setTarget(message.getTarget());
-//		camelMsg.setType(message.getType());		
+		System.out.println("message size : " + message.getMessage().size());
 		
 		for(Entry<String, String> e : message.getMessage().entrySet()){
 			camelMsg.getMessage().put(e.getKey(), e.getValue());
 		}
 
 		try {
+			JiraPluginMsgProducer msgProducer = new JiraPluginMsgProducer();
 			msgProducer.onMsg(camelMsg);
 		} catch (SchedulerException e1) {
 			// TODO Auto-generated catch block
