@@ -1,7 +1,6 @@
 package de.pubflow.components.jiraConnector;
 
 import static org.quartz.JobBuilder.newJob;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.Date;
@@ -10,7 +9,6 @@ import java.util.Set;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
-import org.quartz.CronScheduleBuilder;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
@@ -162,24 +160,18 @@ public class JiraPluginMsgProducer {
 
 		myLogger.info("recMillis : " + quartzMillis);
 		myLogger.info("curMillis : " + System.currentTimeMillis());
-		
-		
+			
 		if(quartzMillis > System.currentTimeMillis()){
-			// define the job and tie it to our HelloJob class
 			JobDetail job = newJob(PubFlowJob.class)
-					.withIdentity("job1", "group1")
+					.withIdentity("job_" + quartzMillis, "pubflow")
 					.build();
-
 			job.getJobDataMap().put("msg", wfMsg);
-
-			// Trigger the job to run now, and then repeat every 40 seconds
+			
 			Trigger trigger = newTrigger()
-					.withIdentity("trigger1", "group1")
+					.withIdentity("job_" + quartzMillis + "-trigger", "pubflow")
 					.startAt(new Date(quartzMillis))
 					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
 					.build();
-
-			// Tell quartz to schedule the job using our trigger
 			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
 
 		}else{

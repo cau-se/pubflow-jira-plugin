@@ -141,7 +141,6 @@ public class JiraPlugin {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-
 				}
 
 				return new Authenticator.Failure(403);
