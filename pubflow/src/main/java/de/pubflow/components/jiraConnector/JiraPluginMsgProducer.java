@@ -160,6 +160,10 @@ public class JiraPluginMsgProducer {
 		}
 		wfMsg.setWfparams(paramList);
 
+		myLogger.info("recMillis : " + quartzMillis);
+		myLogger.info("curMillis : " + System.currentTimeMillis());
+		
+		
 		if(quartzMillis > System.currentTimeMillis()){
 			// define the job and tie it to our HelloJob class
 			JobDetail job = newJob(PubFlowJob.class)
