@@ -58,7 +58,7 @@ public class WFBroker {
 
 	
 	@Consume(uri = "test-jms:wfbroker:in.queue")
-	public void reciveWFCall(String msg)
+	public void receiveWFCall(String msg)
 	{
 		//TODO implement rest
 		myLogger.info("recived WF-Msg: " + msg);
