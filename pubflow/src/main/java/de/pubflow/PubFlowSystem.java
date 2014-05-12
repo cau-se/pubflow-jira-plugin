@@ -66,8 +66,9 @@ public class PubFlowSystem {
 		// Create CamelContext
 		context = new DefaultCamelContext();
 		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
-				"vm://localhost?broker.persistent=false");
+				"vm://localhost?broker.persistent=true");
 ((ActiveMQConnectionFactory)connectionFactory).setProducerWindowSize(1024000000);
+
 		// Add the queues to the DefaultContext
 		context.addComponent("test-jms",
 				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
