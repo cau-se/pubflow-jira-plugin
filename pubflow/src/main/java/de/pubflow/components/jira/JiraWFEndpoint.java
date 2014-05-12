@@ -4,14 +4,20 @@ import java.util.HashMap;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowSystem;
+import de.pubflow.components.jiraConnector.JiraPlugin;
 import de.pubflow.core.communication.message.MessageToolbox;
 import de.pubflow.core.communication.message.jira.CamelJiraMessage;
 
 public class JiraWFEndpoint {
 
+	private static Logger myLogger = LoggerFactory.getLogger(JiraWFEndpoint.class.getSimpleName());
+
 	public static void addAttachment(String issueKey, byte[] file, String fileName, String fileType) {
+		myLogger.info("issueKey : " + issueKey + "\nfileName : " + fileName + "\nfileType : " + fileType);
 		CamelJiraMessage msg = new CamelJiraMessage();
 		msg.setAction("jira.addAttachment");
 		HashMap<String, String> msgBody = new HashMap<String, String>();
@@ -30,6 +36,7 @@ public class JiraWFEndpoint {
 	}
 	
 	public static void newComment(String issueKey, String comment) {
+		myLogger.info("issueKey : " + issueKey + "\ncomment : " + comment);
 		CamelJiraMessage msg = new CamelJiraMessage();
 		msg.setAction("jira.newComment");
 		HashMap<String, String> msgBody = new HashMap<String, String>();
@@ -46,6 +53,7 @@ public class JiraWFEndpoint {
 	}
 	
 	public static void changeStatus(String issueKey, String statusId) {
+		myLogger.info("issueKey : " + issueKey + "\nstatusId : " + statusId);
 		CamelJiraMessage msg = new CamelJiraMessage();
 		msg.setAction("jira.changeStatus");
 		HashMap<String, String> msgBody = new HashMap<String, String>();
