@@ -49,7 +49,6 @@ public class ByteRay {
 				result.put(key, e.getValue());
 			}
 		}
-		
 		return result;
 	}
 	
@@ -61,8 +60,6 @@ public class ByteRay {
 				attachments.put(e.getKey().replaceFirst(ATTACHMENT, "") , e.getValue());
 			}
 		}
-		
 		return attachments;
 	}
-	
 }
