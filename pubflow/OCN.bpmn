@@ -92,7 +92,7 @@ try {
 			e.printStackTrace();
 			JiraWFEndpoint.newComment(issue, e.getMessage());
 }finally{
-	data = ByteRay.flushData(data);		
+	result = ByteRay.flushData(result);		
 }
 
 kcontext.setVariable("tempResult", result);
@@ -120,8 +120,6 @@ try {
 	JiraWFEndpoint.changeStatus(issue, "User");
 	e.printStackTrace();
 	JiraWFEndpoint.newComment(issue, e.getMessage());
-}finally{
-	data = ByteRay.flushData(data);		
 }</script>
     </scriptTask>
 
