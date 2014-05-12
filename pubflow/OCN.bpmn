@@ -63,7 +63,7 @@ try {
 			e.printStackTrace();
 			JiraWFEndpoint.newComment(issue, e.getMessage());
 }finally{
-	ByteRay.flushData(data);		
+	data = ByteRay.flushData(data);		
 }
 
 kcontext.setVariable("tempResult", data);
@@ -92,7 +92,7 @@ try {
 			e.printStackTrace();
 			JiraWFEndpoint.newComment(issue, e.getMessage());
 }finally{
-	ByteRay.flushData(data);		
+	data = ByteRay.flushData(data);		
 }
 
 kcontext.setVariable("tempResult", result);
@@ -121,9 +121,8 @@ try {
 	e.printStackTrace();
 	JiraWFEndpoint.newComment(issue, e.getMessage());
 }finally{
-	ByteRay.flushData(data);		
-}
-</script>
+	data = ByteRay.flushData(data);		
+}</script>
     </scriptTask>
 
     <!-- connections -->
