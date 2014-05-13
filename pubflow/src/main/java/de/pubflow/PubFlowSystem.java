@@ -67,7 +67,7 @@ public class PubFlowSystem {
 		context = new DefaultCamelContext();
 		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
 				"vm://localhost?broker.persistent=false");
-((ActiveMQConnectionFactory)connectionFactory).setProducerWindowSize(1024000000);
+		((ActiveMQConnectionFactory)connectionFactory).setProducerWindowSize(1024000000);
 
 		// Add the queues to the DefaultContext
 		context.addComponent("test-jms",
@@ -77,6 +77,8 @@ public class PubFlowSystem {
 		context.addComponent("mail-jms",
 				JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
 		myLogger.info("Creating Routes");
+
+
 		try {
 			initRoutes();
 		} catch (Exception e1) {
@@ -121,7 +123,7 @@ public class PubFlowSystem {
 			e.printStackTrace();
 		}
 
-		
+
 
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
@@ -169,17 +171,25 @@ public class PubFlowSystem {
 	private void initRoutes() throws Exception {
 		context.addRoutes(new RouteBuilder() {
 			public void configure() {
-				from("t2-jms:queue:test.queue").to("test-jms:queue:out.queue")
-				.bean(Consumer.getInstance());
+				//müll?
+				//from("t2-jms:queue:test.queue").to(
+				//		"test-jms:queue:out.queue")
+				//		.bean(Consumer.getInstance());
+
+				//ws ( -> quartz) -> jira
 				from("t2-jms:jiraendpoint:out.queue").to(
 						"t2-jms:jira:toJira.queue")
 						.bean(JiraPluginMsgConsumer.getInstance());
+
+				//quartz/ws-mapper -> jbpm
 				from("test-jms:queue:testOut.queue").to(
 						"test-jms:wfbroker:in.queue").bean(
 								WFBroker.getInstance());
-				from("mail-jms:mailqueue:in.queue").to(
-						"mail-jms:mailproxy:in.queue").bean(
-								MailProxy.getInstance());
+
+				//müll?
+				//from("mail-jms:mailqueue:in.queue").to(
+				//		"mail-jms:mailproxy:in.queue").bean(
+				//		MailProxy.getInstance());
 			}
 		});
 	}
@@ -285,7 +295,7 @@ public class PubFlowSystem {
 			shutdownLogger.debug("Stopping internal server");
 			core.stopInternalServer();
 			shutdownLogger.info("Stopping Quartz");
-			
+
 			// Write props to file
 			shutdownLogger.debug("Saving Properties to file");
 			PropLoader.getInstance().saveProperties();
