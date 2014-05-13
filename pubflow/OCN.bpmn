@@ -12,7 +12,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="ItemDefinition_22" structureRef="String" />
+  <itemDefinition id="ItemDefinition_22" structureRef="" />
 
   <process processType="Private" isExecutable="true" id="de.pubflow.OCN" name="OCN" tns:packageName="de.pubflow" tns:version="1" >
 
@@ -63,7 +63,7 @@ try {
 			e.printStackTrace();
 			JiraWFEndpoint.newComment(issue, e.getMessage());
 }finally{
-	//data = ByteRay.flushData(data);		
+	data = ByteRay.flushData(data);		
 }
 
 kcontext.setVariable("tempResult", data);
@@ -92,7 +92,7 @@ try {
 			e.printStackTrace();
 			JiraWFEndpoint.newComment(issue, e.getMessage());
 }finally{
-	//result = ByteRay.flushData(result);		
+	result = ByteRay.flushData(result);		
 }
 
 kcontext.setVariable("tempResult", result);
