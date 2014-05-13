@@ -3,20 +3,20 @@ package de.pubflow;
 import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.region.policy.PolicyEntry;
+import org.apache.activemq.broker.region.policy.PolicyMap;
+import org.apache.activemq.broker.region.policy.VMPendingQueueMessageStoragePolicy;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.assistance.Consumer;
 import de.pubflow.common.properties.PropLoader;
 import de.pubflow.components.jiraConnector.JiraPlugin;
 import de.pubflow.components.jiraConnector.JiraPluginMsgConsumer;
-import de.pubflow.components.mailEndpoint.MailProxy;
 import de.pubflow.core.server.AppServer;
 import de.pubflow.core.workflow.WFBroker;
 
@@ -65,9 +65,33 @@ public class PubFlowSystem {
 		//
 		// Create CamelContext
 		context = new DefaultCamelContext();
-		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
-				"vm://localhost?broker.persistent=false");
-		((ActiveMQConnectionFactory)connectionFactory).setProducerWindowSize(1024000000);
+
+		try {
+			BrokerService broker = new BrokerService();
+			broker.addConnector("vm://localhost");
+
+			broker.setPersistent(false);
+			broker.getSystemUsage().getMemoryUsage().setLimit(2000000000);
+
+			PolicyMap policyMap = new PolicyMap();
+			PolicyEntry policyEntry = new PolicyEntry();
+			policyEntry.setQueue(">");
+			policyEntry.setProducerFlowControl(false);
+			policyEntry.setPendingQueuePolicy(new VMPendingQueueMessageStoragePolicy());
+			policyEntry.setGcInactiveDestinations(true);
+			policyEntry.setInactiveTimoutBeforeGC(200000);
+			policyEntry.setQueuePrefetch(1);
+			policyMap.put(new ActiveMQQueue(">"), policyEntry);
+			broker.setDestinationPolicy(policyMap);
+			broker.start();
+			
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
+				"vm://localhost");
 
 		// Add the queues to the DefaultContext
 		context.addComponent("test-jms",
