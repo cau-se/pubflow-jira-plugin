@@ -3,6 +3,7 @@ package de.pubflow.components.jiraConnector;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -17,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowSystem;
-import de.pubflow.common.entity.User;
 import de.pubflow.common.entity.workflow.ParameterType;
 import de.pubflow.common.entity.workflow.WFParamList;
 import de.pubflow.common.entity.workflow.WFParameter;
@@ -35,19 +35,28 @@ public class JiraPluginMsgProducer {
 	private static Logger myLogger;
 	private static final String START_WF = "";
 
-	public enum KEYWORDS{ status };
+	//public enum KEYWORDS{ status };
+	
+	final private String[] ocnParams = {
+			"Author_OCN", 
+			"Reference_OCN", 
+			"Status_OCN", 
+			"Login_OCN", 
+			"Leg ID_OCN", 
+			"Leg comment_OCN", 
+			"Topology_OCN", 
+			"PID_OCN", 
+			"File name_OCN", 
+			"Source_OCN", 
+			"Zielpfad_OCN", 
+	"Project_OCN"};
+
 	static {
 		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);
 	}
 
 	/**
-	 * Map the Jira Msg to a Workflow Msg
-	 * 
-	 * Author_OCN : 8 Reference_OCN : 0 status : TaskRecived Login_OCN : 2
-	 * Topology_OCN : 7 Zielpfad_OCN : 12 assignee : admin issueId : 10101
-	 * Source_OCN : 1 eventType : 1 File name_OCN : 4 date : 1376395102681 Leg
-	 * ID_OCN : 9 Project_OCN : 11 reporter : admin Status_OCN : 3 workflowName
-	 * : OCN PID_OCN : 6 Leg comment_OCN : 5
+	 * Maps the Jira Msg to a Workflow Msg
 	 * 
 	 * @param msg
 	 * @throws SchedulerException 
@@ -75,30 +84,21 @@ public class JiraPluginMsgProducer {
 			//TODO: add params?
 
 			switch (key) {
-			case "Author":
-				wfMsg.setUser(User.getUserFromJiraID(value));
-				break;
+			//			case "Author":
+			//				wfMsg.setUser(User.getUserFromJiraID(value));
+			//				break;
+
 			case "quartzMillis":
 				quartzMillis = Long.parseLong(value);
-				break;
-			case "Reference":
+				break;	
 
-				break;
 			case "status":
 				wfMsg.setWfstate(WFState.parseJiraString(value));
 				break;
-			case "Login":
 
-				break;
-			case "Topology":
-
-				break;
-			case "Zielpfad":
-
-				break;
 			case "assignee":
-
 				break;
+
 			case "issueKey":
 				WFParameter param = new WFParameter();
 				param.setKey("issueKey");
@@ -107,33 +107,19 @@ public class JiraPluginMsgProducer {
 				param.setStringValue(value);
 				paramList.add(param);
 				break;
-			case "Source":
 
-				break;
 			case "eventType":
-
 				break;
-			case "File name":
 
-				break;
 			case "date":
+				break;
 
-				break;
-			case "Leg ID":
-				WFParameter param1 = new WFParameter();
-				param1.setKey("legID");
-				param1.setPayloadClazz(ParameterType.INTEGER);
-				int val = Integer.parseInt(value);
-				myLogger.info("Set Leg_ID to "+val);
-				param1.setIntValue(val);
-				paramList.add(param1);
-				break;
 			case "Project":
-
 				break;
+
 			case "reporter":
-
 				break;
+
 			case "Status":
 
 				break;
@@ -146,13 +132,19 @@ public class JiraPluginMsgProducer {
 				}
 				break;
 			case "PID":
-
 				break;
 			case "Leg comment":
-
 				break;
-
 			default:
+				if(Arrays.asList(ocnParams).contains(key)){	
+					WFParameter param1 = new WFParameter();
+					param1.setKey(key);
+					param1.setPayloadClazz(ParameterType.STRING);
+					myLogger.info("Set " + key + " to " + value);
+					param1.setStringValue(value);
+					paramList.add(param1);
+					break;
+				}
 				break;
 			}
 		}
@@ -160,13 +152,13 @@ public class JiraPluginMsgProducer {
 
 		myLogger.info("recMillis : " + quartzMillis);
 		myLogger.info("curMillis : " + System.currentTimeMillis());
-			
+
 		if(quartzMillis > System.currentTimeMillis()){
 			JobDetail job = newJob(PubFlowJob.class)
 					.withIdentity("job_" + quartzMillis, "pubflow")
 					.build();
 			job.getJobDataMap().put("msg", wfMsg);
-			
+
 			Trigger trigger = newTrigger()
 					.withIdentity("job_" + quartzMillis + "-trigger", "pubflow")
 					.startAt(new Date(quartzMillis))

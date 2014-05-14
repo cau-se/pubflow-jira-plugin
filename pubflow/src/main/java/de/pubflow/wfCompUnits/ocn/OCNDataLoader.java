@@ -33,7 +33,7 @@ public class OCNDataLoader {
 
 	static Logger myLogger = LoggerFactory.getLogger(OCNDataLoader.class);
 
-	public HashMap<String, byte[]> getData(int id, int instanceId) throws Exception {
+	public HashMap<String, byte[]> getData(String id, int instanceId) throws Exception {
 		HashMap<String, byte[]> files = ByteRay.newMap();
 		
 		PropLoader props = PropLoader.getInstance();

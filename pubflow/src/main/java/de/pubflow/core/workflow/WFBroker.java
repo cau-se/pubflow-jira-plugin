@@ -21,20 +21,19 @@ import de.pubflow.core.workflow.engine.jbpm.JBPMEngine;
 
 public class WFBroker {
 
-	private static final String WFID = "WFID";
-	private static final String PARAMS = "WFPARAMS";
+	//TODO?
+	//	private static final String WFID = "WFID";
+	//	private static final String PARAMS = "WFPARAMS";
 
 	private static volatile WFBroker instance;
-	private static final String WFCallChannel = "test-jms:WFBroker:out.queue";
-	private static final String WFResponseChannel = "WFBroker:from:msg.queue";
+	//	private static final String WFCallChannel = "test-jms:WFBroker:out.queue";
+	//	private static final String WFResponseChannel = "WFBroker:from:msg.queue";
 
 	private Logger myLogger;
 
 	private Hashtable<WFType, ArrayList<Class<? extends WorkflowEngine> >> registry;
 
-
-	private WFBroker()
-	{
+	private WFBroker(){
 		myLogger = LoggerFactory.getLogger(this.getClass());	
 		myLogger.info("Starting WFBroker");
 		registry = new Hashtable<WFType,ArrayList<Class<? extends WorkflowEngine> >>();
@@ -47,10 +46,8 @@ public class WFBroker {
 	}
 
 
-	public static synchronized WFBroker getInstance()
-	{
-		if(instance == null)
-		{
+	public static synchronized WFBroker getInstance(){
+		if(instance == null){
 			instance = new WFBroker();
 		}
 		return instance;
@@ -58,22 +55,21 @@ public class WFBroker {
 
 
 	@Consume(uri = "test-jms:wfbroker:in.queue")
-	public void receiveWFCall(String msg)
-	{
+	public void receiveWFCall(String msg){
 		//TODO implement rest
 		myLogger.info("recived WF-Msg: " + msg);
 		WorkflowMessage wm = MessageToolbox.loadFromString(msg, WorkflowMessage.class);
-		if(!wm.isValid())
-		{
+		if(!wm.isValid()){
 			myLogger.error("Workflow NOT deployed >> Msg is not valid ");
 			return;
 		}
-		myLogger.info("Loading WF with ID ("+wm.getWorkflowID()+") from WFRepo");
+		myLogger.info("Loading WF with ID (" + wm.getWorkflowID() + ") from WFRepo");
 		WorkflowProvider provider = WorkflowProvider.getInstance();
 		WorkflowEntity wfEntity = provider.getByWFID(wm.getWorkflowID());
 		WFType type = wfEntity.getType();
 
 		PubFlow myWF = null;
+
 		if(type.equals(WFType.BPMN2)){
 			myLogger.info("BPMN2.0 Workflow detected");
 			myWF = new JBPMPubflow();
@@ -81,9 +77,11 @@ public class WFBroker {
 			myWF.setWfDef(wfEntity.getgBpmn());
 			myLogger.info("Set WFDef: "+wfEntity.getgBpmn().toString());
 			//TODO fill var
+
 		}else if (type.equals(WFType.BPEL)) {
 			myLogger.info("BPEL Workflow detected");
 			//TODO
+
 		}else{
 			myLogger.error("Workflow NOT deployed >> Type could not be resolved");
 			return;
@@ -92,15 +90,19 @@ public class WFBroker {
 
 		WorkflowEngine engine = null;
 		if(type!=null){
+
 			ArrayList<Class<? extends WorkflowEngine> > engineList = registry.get(type);
 			Class<? extends WorkflowEngine> clazz = engineList.get(0);
+
 			try {
 				myLogger.info("Creating new "+clazz.getCanonicalName());
 				engine = clazz.newInstance();
 				myLogger.info("Instance created! ");
+
 			} catch (InstantiationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -108,27 +110,30 @@ public class WFBroker {
 		}
 
 		//TODO: dead code??
-		else{
-			myLogger.error("Workflow NOT deployed >> Msg was malformed / No type provided");
-			return;
-		}
+		//		else{
+		//			myLogger.error("Workflow NOT deployed >> Msg was malformed / No type provided");
+		//			return;
+		//		}
 
 		try {
 			myLogger.info("deploying WF");
 			engine.deployWF(myWF);
 			WFParamList params = wm.getWfparams();
+
 			if (params!=null){
 				myLogger.info("Parameter found ...");
 				engine.setParams(wm.getWfparams());
+
 			}else{
 				myLogger.info("No Parameter found!");
 
 			}
-			myLogger.info("Starting wf ...");
+			myLogger.info("Starting WF ...");
 			Thread wfEngineThread = new Thread(engine);
 			wfEngineThread.start();
 			myLogger.info("... engine up and running");
 			sendWFResponse("WF Started");
+
 		} catch (WFException e) {
 			e.printStackTrace();
 		}

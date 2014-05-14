@@ -224,7 +224,7 @@ public class FileCreator4D {
 	public static void main (String[] args) throws Exception{
 
 
-		HashMap<String, byte[]> s = (new OCNDataLoader()).getData(4, 0);
+		HashMap<String, byte[]> s = (new OCNDataLoader()).getData("4", 0);
 
 		s = new OCNToPangaeaMapper().replaceArtefacts(s, 0);
 

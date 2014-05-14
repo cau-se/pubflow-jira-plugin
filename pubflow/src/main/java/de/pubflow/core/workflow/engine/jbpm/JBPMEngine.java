@@ -10,7 +10,6 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +21,6 @@ import de.pubflow.common.entity.workflow.WFParameter;
 import de.pubflow.common.enumerartion.WFType;
 import de.pubflow.common.exception.WFException;
 import de.pubflow.common.exception.WFOperationNotSupported;
-import de.pubflow.core.communication.message.email.Email;
 import de.pubflow.core.workflow.engine.WorkflowEngine;
 
 public class JBPMEngine extends WorkflowEngine {
@@ -33,7 +31,7 @@ public class JBPMEngine extends WorkflowEngine {
 	private ProcessInstance processInstance = null;
 	private KnowledgeBase kbase= null;
 
-	
+
 	/**
 	 * @return the myWF
 	 */
@@ -95,25 +93,25 @@ public class JBPMEngine extends WorkflowEngine {
 	static{
 		myLogger = LoggerFactory.getLogger(JBPMEngine.class);
 	}
-	
-	
-public JBPMEngine() {
-		
-		
+
+
+	public JBPMEngine() {
+
+
 	}
 	public JBPMEngine(JBPMPubflow wf) {
-		
+
 		myWF = wf;
 	}
 
-	
+
 
 	@Override
 	public void deployWF(PubFlow wf) throws WFException {
 		myWF = (JBPMPubflow)wf;
 	}
 
-	
+
 
 	@Override
 	public void undeployWF(long wfID) throws WFException {
@@ -137,13 +135,13 @@ public JBPMEngine() {
 		myLogger.info("Trying to add WF to knowledgebase");
 		KnowledgeBuilder kbuilder = null;
 		try{
-		kbuilder = KnowledgeBuilderFactory
-				.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newByteArrayResource(wf.getWfDef()),
-				ResourceType.BPMN2);
+			kbuilder = KnowledgeBuilderFactory
+					.newKnowledgeBuilder();
+			kbuilder.add(ResourceFactory.newByteArrayResource(wf.getWfDef()),
+					ResourceType.BPMN2);
 			myLogger.info("Knowledgebase created");
 		}
-		
+
 		catch (Exception e)
 		{
 			myLogger.error("Couldn't create knowledgebase");
@@ -151,7 +149,7 @@ public JBPMEngine() {
 		}
 		kbase = kbuilder.newKnowledgeBase();
 	}
-	
+
 	/**
 	 * Starts a given process in its knowledge base env and returns the process instance
 	 * 
@@ -170,9 +168,17 @@ public JBPMEngine() {
 			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 			myLogger.info("Setting process parameter");
 			for(WFParameter wfParam : params.getParameter()){
-				String key = wfParam.getKey();
+
+				//set the parameter name to lower case, remove all spaces and the workflow appendix 
+				String key = wfParam.getKey().replace(" ", "").toLowerCase();
+
+				if(key.contains("_")){
+					key = key.substring(0, (key.indexOf("_")));
+				}
+
+				myLogger.info(key);
 				ParameterType payloadClazz = wfParam.getPayloadClazz();
-				
+
 				switch (payloadClazz) {
 				case INTEGER:
 					int value = wfParam.getIntValue();
@@ -197,13 +203,13 @@ public JBPMEngine() {
 				default:
 					break;
 				}
-				
-				
+
+
 			}
-		
-		instance = ksession.startProcess(myWF.getWFID());
-		
-		myLogger.info("Workflow executed sucessfuly");
+
+			instance = ksession.startProcess(myWF.getWFID());
+
+			myLogger.info("Workflow executed sucessfuly");
 		}
 		catch (Exception ex)
 		{
@@ -236,7 +242,7 @@ public JBPMEngine() {
 	@Override
 	public void setParams(WFParamList params) throws WFException {
 		parameter = params;
-		
+
 	}
 
 

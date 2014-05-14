@@ -12,7 +12,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="ItemDefinition_22" structureRef="" />
+  <itemDefinition id="ItemDefinition_22" />
 
   <process processType="Private" isExecutable="true" id="de.pubflow.OCN" name="OCN" tns:packageName="de.pubflow" tns:version="1" >
 
@@ -25,9 +25,21 @@
      <tns:import name="java.util.HashMap" />
      <tns:import name="java.util.LinkedList" />
      <tns:import name="java.util.Map.Entry" />
+     <tns:global identifier="issuekey" type="String" />
      <tns:global identifier="author" type="String" />
-     <tns:global identifier="legID" type="Integer" />
-     <tns:global identifier="issueKey" type="String" />
+     <tns:global identifier="legid" type="String" />
+     <tns:global identifier="pid" type="String" />
+     <tns:global identifier="login" type="String" />
+     <tns:global identifier="source" type="String" />
+     <tns:global identifier="project" type="String" />
+     <tns:global identifier="topology" type="String" />
+     <tns:global identifier="status" type="String" />
+     <tns:global identifier="zielpfad" type="String" />
+     <tns:global identifier="reference" type="String" />
+     <tns:global identifier="filename" type="String" />
+     <tns:global identifier="legcomment" type="String" />
+     
+     
     </extensionElements>
     <!-- process variables -->
     <property id="tempResult" itemSubjectRef="ItemDefinition_22"/>
@@ -40,14 +52,13 @@
     </scriptTask>
     <scriptTask id="ScriptTask_2" name="Load Data from OCN DB" scriptFormat="http://www.java.com/java" >
       <script>OCNDataLoader loader = new OCNDataLoader();
-Integer temp = (Integer)legID;
 HashMap &lt;String, byte[]&gt; data = new HashMap &lt;String, byte[]&gt;();
-String issue = (String)issueKey;
+String issue = (String)issuekey;
 
 try {
 	JiraWFEndpoint.changeStatus(issue, "SendToPubFlow");
 	
-	data = loader.getData(temp, 0);
+	data = loader.getData((String) legid, 0);
 	
 	for(String s : (LinkedList&lt;String&gt;)ByteRay.getJiraComments(data)){
 		JiraWFEndpoint.newComment(issue, s);
@@ -73,7 +84,7 @@ kcontext.setVariable("tempResult", data);
       <script>System.out.println("Converting");
 OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
 HashMap&lt;String, byte[]&gt; result = new HashMap&lt;String, byte[]&gt;();
-String issue = (String)issueKey;
+String issue = (String)issuekey;
 
 try {
 	result = mapper.replaceArtefacts((HashMap&lt;String, byte[]&gt;)tempResult, 0);
@@ -101,10 +112,10 @@ kcontext.setVariable("tempResult", result);
     <scriptTask id="ScriptTask_4" name="Communicate Result" scriptFormat="http://www.java.com/java" >
       <script>FileCreator4D fc4d = new FileCreator4D();
 
-	String issue = (String)issueKey;
+	String issue = (String)issuekey;
 
 try {
-	HashMap&lt;String, byte[]&gt; tResult = fc4d.toCSV((HashMap&lt;String, byte[]&gt;)tempResult, "3", "arl", "0", "0", "0", "0", "0", "etc/temp.4d", "0", "4d.4d", "0", 0);
+	HashMap&lt;String, byte[]&gt; tResult = fc4d.toCSV((HashMap&lt;String, byte[]&gt;)tempResult, (String) pid, (String) login, (String) source, (String) author, (String) project, (String) topology, (String) status, (String) zielpfad, (String) reference, (String) filename, (String) legcomment, 0);
 	
 	for(String s : (LinkedList&lt;String&gt;)ByteRay.getJiraComments(tResult)){
 		JiraWFEndpoint.newComment(issue, s);
