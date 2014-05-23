@@ -76,7 +76,8 @@ public class JiraPluginMsgProducer {
 		myLogger.info(mapDebugString);
 
 		long quartzMillis = 0l;
-
+		String quartzCron = "";
+		
 		for (Entry<String, String> entry : fieldmap) {
 			String key = entry.getKey();
 			String value = entry.getValue();
@@ -92,6 +93,11 @@ public class JiraPluginMsgProducer {
 				quartzMillis = Long.parseLong(value);
 				break;	
 
+				
+			case "Quartz Cron":
+				quartzCron = value;
+				break;
+				
 			case "status":
 				wfMsg.setWfstate(WFState.parseJiraString(value));
 				break;
@@ -99,24 +105,12 @@ public class JiraPluginMsgProducer {
 			case "assignee":
 				break;
 
-			case "issueKey":
-				WFParameter param = new WFParameter();
-				param.setKey("issueKey");
-				param.setPayloadClazz(ParameterType.STRING);
-				myLogger.info("Set issueKey to "+value);
-				param.setStringValue(value);
-				paramList.add(param);
-				break;
-
 			case "eventType":
 				break;
 
 			case "date":
 				break;
-
-			case "Project":
-				break;
-
+				
 			case "reporter":
 				break;
 
@@ -131,10 +125,7 @@ public class JiraPluginMsgProducer {
 
 				}
 				break;
-			case "PID":
-				break;
-			case "Leg comment":
-				break;
+				
 			default:
 				if(Arrays.asList(ocnParams).contains(key)){	
 					WFParameter param1 = new WFParameter();
@@ -153,7 +144,20 @@ public class JiraPluginMsgProducer {
 		myLogger.info("recMillis : " + quartzMillis);
 		myLogger.info("curMillis : " + System.currentTimeMillis());
 
-		if(quartzMillis > System.currentTimeMillis()){
+		if(!quartzCron.equals("")){
+			JobDetail job = newJob(PubFlowJob.class)
+					.withIdentity("job_" + System.currentTimeMillis(), "pubflow")
+					.build();
+			job.getJobDataMap().put("msg", wfMsg);
+
+			Trigger trigger = newTrigger()
+					.withIdentity("job_" + System.currentTimeMillis() + "-trigger", "pubflow")
+					.startAt(new Date(quartzMillis))
+					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
+					.build();
+			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
+			
+		}else if(quartzMillis > System.currentTimeMillis()){
 			JobDetail job = newJob(PubFlowJob.class)
 					.withIdentity("job_" + quartzMillis, "pubflow")
 					.build();
