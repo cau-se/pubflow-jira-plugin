@@ -151,7 +151,7 @@ public class JiraPluginMsgProducer {
 			job.getJobDataMap().put("msg", wfMsg);
 
 			Trigger trigger = newTrigger()
-					.withIdentity("job_" + System.currentTimeMillis() + "-trigger", "pubflow")
+					.withIdentity("cron_" + System.currentTimeMillis() + "-trigger", "pubflow")
 					.startAt(new Date(quartzMillis))
 					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
 					.build();
