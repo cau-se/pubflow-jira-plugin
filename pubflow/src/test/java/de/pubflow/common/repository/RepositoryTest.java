@@ -30,7 +30,7 @@ public class RepositoryTest {
 				we.setgBpmn(sampleBytes);
 				we.setWFID("wfID");
 				
-				long id = wp.setEntry(we);
+				long id = wp.addEntry(we);
 				
 				WorkflowEntity we1 = wp.getEntry(id);
 				
@@ -79,7 +79,7 @@ public class RepositoryTest {
 				
 				ce.setParameters(parameters);
 								
-				long id = cp.setEntry(ce);
+				long id = cp.addEntry(ce);
 				
 				ContextEntity ce1;
 								

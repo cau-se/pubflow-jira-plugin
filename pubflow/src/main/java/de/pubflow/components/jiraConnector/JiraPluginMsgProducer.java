@@ -37,7 +37,7 @@ public class JiraPluginMsgProducer {
 
 	//public enum KEYWORDS{ status };
 	
-	final private String[] ocnParams = {
+	final private String[] params = {
 			"Author_OCN", 
 			"Reference_OCN", 
 			"Status_OCN", 
@@ -49,7 +49,8 @@ public class JiraPluginMsgProducer {
 			"File name_OCN", 
 			"Source_OCN", 
 			"Zielpfad_OCN", 
-	"Project_OCN"};
+	"Project_OCN",
+	"Count_Pi"};
 
 	static {
 		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);
@@ -127,7 +128,7 @@ public class JiraPluginMsgProducer {
 				break;
 				
 			default:
-				if(Arrays.asList(ocnParams).contains(key)){	
+				if(Arrays.asList(params).contains(key)){	
 					WFParameter param1 = new WFParameter();
 					param1.setKey(key);
 					param1.setPayloadClazz(ParameterType.STRING);

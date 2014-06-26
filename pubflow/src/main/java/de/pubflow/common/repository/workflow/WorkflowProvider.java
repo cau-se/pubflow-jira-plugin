@@ -91,7 +91,7 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 	}
 
 	@Override
-	public long setEntry(WorkflowEntity o) {
+	public long addEntry(WorkflowEntity o) {
 		myLogger.info("Registering WF >>"+o.getPubFlowWFID());
 		long intWfRef = super.br.add(o);
 		myLogger.info(" WF Mapping added: "+o.getPubFlowWFID()+" >> "+intWfRef);

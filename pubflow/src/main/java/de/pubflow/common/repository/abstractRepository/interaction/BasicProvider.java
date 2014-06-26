@@ -49,7 +49,7 @@ public abstract class BasicProvider<T> implements IProvider<T> {
 		// TODO Auto-generated method stub
 	}
 
-	public long setEntry(T o) {
+	public long addEntry(T o) {
 		return br.add(o);
 	}
 

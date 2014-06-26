@@ -27,7 +27,7 @@ package de.pubflow.common.repository.abstractRepository.interaction;
 import java.util.List;
 
 interface IProvider<T> {
-	long setEntry(T o);
+	long addEntry(T o);
 	T getEntry(long id);
 	void clear();
 	List<T> getAllEntries();
