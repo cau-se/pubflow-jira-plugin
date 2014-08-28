@@ -30,7 +30,6 @@ public class JiraWFEndpoint {
 		ProducerTemplate producer;
 		CamelContext context = PubFlowSystem.getInstance().getContext();
 		producer = context.createProducerTemplate();
-		//System.out.println(MessageToolbox.transformToString(msg));
 		producer.sendBody("t2-jms:jiraendpoint:out.queue",
 				MessageToolbox.transformToString(msg));
 	}

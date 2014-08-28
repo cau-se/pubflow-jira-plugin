@@ -49,8 +49,9 @@ public class JiraPluginMsgProducer {
 			"File name_OCN", 
 			"Source_OCN", 
 			"Zielpfad_OCN", 
-	"Project_OCN",
-	"Count_Pi"};
+			"Project_OCN",
+			"tropfenzahl_Pi",
+			"issueKey"};
 
 	static {
 		myLogger = LoggerFactory.getLogger(JiraPluginMsgProducer.class);
@@ -115,15 +116,15 @@ public class JiraPluginMsgProducer {
 			case "reporter":
 				break;
 
-			case "Status":
-
-				break;
 			case "workflowName":
 				myLogger.info("Val: "+key+" > "+value);
 				if(value.equalsIgnoreCase("OCN")){
 					wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
 					myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
 
+				}else if (value.equalsIgnoreCase("Pi")){
+					wfMsg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.Pi"));
+					myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.Pi"));
 				}
 				break;
 				

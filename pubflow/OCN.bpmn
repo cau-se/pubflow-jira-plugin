@@ -25,21 +25,19 @@
      <tns:import name="java.util.HashMap" />
      <tns:import name="java.util.LinkedList" />
      <tns:import name="java.util.Map.Entry" />
-     <tns:global identifier="issuekey" type="String" />
      <tns:global identifier="author" type="String" />
-     <tns:global identifier="legid" type="String" />
-     <tns:global identifier="pid" type="String" />
-     <tns:global identifier="login" type="String" />
-     <tns:global identifier="source" type="String" />
      <tns:global identifier="project" type="String" />
-     <tns:global identifier="topology" type="String" />
+     <tns:global identifier="issuekey" type="String" />
+     <tns:global identifier="legid" type="String" />
+     <tns:global identifier="source" type="String" />
      <tns:global identifier="status" type="String" />
      <tns:global identifier="zielpfad" type="String" />
-     <tns:global identifier="reference" type="String" />
      <tns:global identifier="filename" type="String" />
+     <tns:global identifier="pid" type="String" />
+     <tns:global identifier="login" type="String" />
+     <tns:global identifier="topology" type="String" />
+     <tns:global identifier="reference" type="String" />
      <tns:global identifier="legcomment" type="String" />
-     
-     
     </extensionElements>
     <!-- process variables -->
     <property id="tempResult" itemSubjectRef="ItemDefinition_22"/>
@@ -56,7 +54,7 @@ HashMap &lt;String, byte[]&gt; data = new HashMap &lt;String, byte[]&gt;();
 String issue = (String)issuekey;
 
 try {
-	JiraWFEndpoint.changeStatus(issue, "SendToPubFlow");
+	JiraWFEndpoint.changeStatus(issue, "Ready for Pangaea-Import");
 	
 	data = loader.getData((String) legid, 0);
 	
@@ -70,7 +68,7 @@ try {
 
 } catch (Exception e) {
 			// TODO Auto-generated catch block
-			JiraWFEndpoint.changeStatus(issue, "User");
+			JiraWFEndpoint.changeStatus(issue, "Data Needs Correction");
 			e.printStackTrace();
 			JiraWFEndpoint.newComment(issue, e.getMessage());
 }finally{
@@ -99,7 +97,7 @@ try {
 
 } catch (Exception e) {
 			// TODO Auto-generated catch block
-			JiraWFEndpoint.changeStatus(issue, "User");
+			JiraWFEndpoint.changeStatus(issue, "Data Needs Correction");
 			e.printStackTrace();
 			JiraWFEndpoint.newComment(issue, e.getMessage());
 }finally{
@@ -125,10 +123,10 @@ try {
 		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
 	} 
 		
-	JiraWFEndpoint.changeStatus(issue, "Done");
+	JiraWFEndpoint.changeStatus(issue, "Waiting For DOI");
 	
 } catch (Exception e) {
-	JiraWFEndpoint.changeStatus(issue, "User");
+	JiraWFEndpoint.changeStatus(issue, "Data Needs Correction");
 	e.printStackTrace();
 	JiraWFEndpoint.newComment(issue, e.getMessage());
 }</script>
