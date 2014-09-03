@@ -122,6 +122,13 @@ try {
 	for(Entry &lt;String, byte[]&gt; e : ((HashMap&lt;String, byte[]&gt;)ByteRay.getJiraAttachments(tResult)).entrySet()){
 		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
 	} 
+	
+	try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 	JiraWFEndpoint.changeStatus(issue, "Waiting For DOI");
 	

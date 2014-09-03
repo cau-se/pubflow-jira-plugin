@@ -27,7 +27,6 @@ public class WorkflowWriterPi4d {
 			}
 		}
 
-
 		System.out.println("STARTING");
 		WorkflowEntity wfOCN = new WorkflowEntity();
 		wfOCN.addEntryToParameterMap("issueKey", String.class);
