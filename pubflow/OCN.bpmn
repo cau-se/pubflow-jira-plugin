@@ -25,17 +25,17 @@
      <tns:import name="java.util.HashMap" />
      <tns:import name="java.util.LinkedList" />
      <tns:import name="java.util.Map.Entry" />
-     <tns:global identifier="author" type="String" />
      <tns:global identifier="project" type="String" />
-     <tns:global identifier="issuekey" type="String" />
+     <tns:global identifier="author" type="String" />
      <tns:global identifier="legid" type="String" />
+     <tns:global identifier="issuekey" type="String" />
      <tns:global identifier="source" type="String" />
-     <tns:global identifier="status" type="String" />
      <tns:global identifier="zielpfad" type="String" />
+     <tns:global identifier="status" type="String" />
      <tns:global identifier="filename" type="String" />
-     <tns:global identifier="pid" type="String" />
-     <tns:global identifier="login" type="String" />
      <tns:global identifier="topology" type="String" />
+     <tns:global identifier="login" type="String" />
+     <tns:global identifier="pid" type="String" />
      <tns:global identifier="reference" type="String" />
      <tns:global identifier="legcomment" type="String" />
     </extensionElements>
@@ -120,7 +120,7 @@ try {
 	} 
 	
 	for(Entry &lt;String, byte[]&gt; e : ((HashMap&lt;String, byte[]&gt;)ByteRay.getJiraAttachments(tResult)).entrySet()){
-		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
+		boolean wait = JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
 	} 
 		
 	JiraWFEndpoint.changeStatus(issue, "Waiting For DOI");

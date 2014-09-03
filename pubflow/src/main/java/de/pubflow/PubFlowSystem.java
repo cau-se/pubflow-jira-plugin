@@ -128,7 +128,7 @@ public class PubFlowSystem {
 		}
 		// start the internal Server
 		myLogger.info("Starting the internal PubFlow Server");
-		server = new AppServer();
+		//server = new AppServer();
 		try {
 			server.startup();
 			myLogger.info("PubFlow Server up and running");

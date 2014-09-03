@@ -22,7 +22,6 @@ public class SimpleWFRunner {
 	{
 		logger = LoggerFactory.getLogger(SimpleWFRunner.class);
 		knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		//knowledgeBuilder.add(ResourceFactory.newClassPathResource("processes/MonteCarlo.bpmn"), ResourceType.BPMN2);
 		knowledgeBuilder.add(ResourceFactory.newClassPathResource("OCN.bpmn"), ResourceType.BPMN2);
 		knowledgeBase = knowledgeBuilder.newKnowledgeBase();
 	}
@@ -51,7 +50,5 @@ public class SimpleWFRunner {
 		StatefulKnowledgeSession session = SimpleWFRunner.getInstance().initWFSession();
 		session.setGlobal("legID", 3);
 		ProcessInstance instance = SimpleWFRunner.getInstance().startWF("de.pubflow.OCN", session);
-		//float result = (Float) ((WorkflowProcessInstance) instance).getVariable("pi");
-		//System.out.println("Approximation for PI: "+result);
 	}
 }
