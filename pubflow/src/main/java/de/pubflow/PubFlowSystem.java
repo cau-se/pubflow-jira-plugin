@@ -82,7 +82,7 @@ public class PubFlowSystem {
 			policyMap.put(new ActiveMQQueue(">"), policyEntry);
 			broker.setDestinationPolicy(policyMap);
 			broker.start();
-			
+
 		} catch (Exception e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -126,16 +126,17 @@ public class PubFlowSystem {
 			myLogger.warn("Configuration GUI is disabled");
 			// e.printStackTrace();
 		}
-		// start the internal Server
-		myLogger.info("Starting the internal PubFlow Server");
-		//server = new AppServer();
-		try {
-			server.startup();
-			myLogger.info("PubFlow Server up and running");
-		} catch (Exception e) {
-			myLogger.error("Failed to start the internal PubFlow Server");
-			e.printStackTrace();
-		}
+
+		// 		start the internal Server
+		//		myLogger.info("Starting the internal PubFlow Server");
+		//		server = new AppServer();
+		//		try {
+		//		server.startup();
+		//			myLogger.info("PubFlow Server up and running");
+		//		} catch (Exception e) {
+		//			myLogger.error("Failed to start the internal PubFlow Server");
+		//			e.printStackTrace();
+		//		}
 
 		myLogger.info("Starting JiraPlugin Endpoint");
 		try {
