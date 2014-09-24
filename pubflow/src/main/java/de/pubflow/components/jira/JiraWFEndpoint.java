@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowSystem;
-import de.pubflow.components.jiraConnector.JiraPlugin;
 import de.pubflow.core.communication.message.MessageToolbox;
 import de.pubflow.core.communication.message.jira.CamelJiraMessage;
 

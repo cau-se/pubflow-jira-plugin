@@ -50,30 +50,11 @@ public class PersistenceProvider {
 	public static void initDB() {
 		if(hsqlServer == null){
 			try {
-
 				hsqlServer = new Server();
-
-				// HSQLDB prints out a lot of informations when
-				// starting and closing, which we don't need now.
-				// Normally you should point the setLogWriter
-				// to some Writer object that could store the logs.
 				hsqlServer.setLogWriter(null);
 				hsqlServer.setSilent(false);
-
-				// The actual database will be named 'xdb' and its
-				// settings and data will be stored in files
-				// testdb.properties and testdb.script
 				hsqlServer.setDatabaseName(0, "pubflow");
-
-
-				//				try{
-				//					hsqlServer.setDatabasePath(0, "file:" + PubFlowCore.getInstance().getProperty("path", PersistenceProvider.class.toString()) + "/DB/pubflow");
-				//				}catch(PropNotSetException e){
 				hsqlServer.setDatabasePath(0, "file:" + "etc/DB/pubflow");
-
-				//				}
-
-				// Start the database!
 				hsqlServer.start();
 
 			}catch(Exception e){

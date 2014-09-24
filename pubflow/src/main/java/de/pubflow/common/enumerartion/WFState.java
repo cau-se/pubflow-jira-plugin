@@ -8,10 +8,4 @@ public enum WFState {
 	CANCELED,
 	STOPPED,
 	DELETED;
-	
-	public static WFState parseJiraString(String val)
-	{
-		//TODO
-		return null;
-	}
 }

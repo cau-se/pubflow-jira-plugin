@@ -33,9 +33,6 @@ import de.pubflow.core.communication.message.workflow.WorkflowMessage;
 public class JiraPluginMsgProducer {
 
 	private static Logger myLogger;
-	private static final String START_WF = "";
-
-	//public enum KEYWORDS{ status };
 	
 	final private String[] params = {
 			"Author_OCN", 
@@ -101,7 +98,7 @@ public class JiraPluginMsgProducer {
 				break;
 				
 			case "status":
-				wfMsg.setWfstate(WFState.parseJiraString(value));
+				wfMsg.setWfstate(null);
 				break;
 
 			case "assignee":

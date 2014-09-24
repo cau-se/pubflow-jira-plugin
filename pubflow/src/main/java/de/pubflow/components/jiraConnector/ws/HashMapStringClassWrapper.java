@@ -9,7 +9,7 @@ public class HashMapStringClassWrapper {
 
 	public HashMapStringClassWrapper(HashMap<String, Class<?>> basketMap) {
 		for(Entry<String, Class<?>> e : basketMap.entrySet()){
-			this.basketMap.put((String) e.getKey(), ((Class) e.getValue()).getSimpleName());
+			this.basketMap.put((String) e.getKey(), ((Class<?>) e.getValue()).getSimpleName());
 		}
 	}
 
