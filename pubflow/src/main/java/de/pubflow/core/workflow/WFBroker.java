@@ -7,27 +7,20 @@ import org.apache.camel.Consume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.common.entity.repository.WorkflowEntity;
+import de.pubflow.common.entity.WorkflowEntity;
 import de.pubflow.common.entity.workflow.JBPMPubflow;
 import de.pubflow.common.entity.workflow.PubFlow;
-import de.pubflow.common.entity.workflow.WFParamList;
-import de.pubflow.common.enumerartion.WFType;
-import de.pubflow.common.exception.WFException;
-import de.pubflow.common.repository.workflow.WorkflowProvider;
-import de.pubflow.core.communication.message.MessageToolbox;
-import de.pubflow.core.communication.message.workflow.WorkflowMessage;
-import de.pubflow.core.workflow.engine.WorkflowEngine;
-import de.pubflow.core.workflow.engine.jbpm.JBPMEngine;
+import de.pubflow.common.entity.workflow.WFParameterList;
+import de.pubflow.common.enumeration.WFType;
+import de.pubflow.common.exceptions.WFException;
+import de.pubflow.common.repository.WorkflowProvider;
+import de.pubflow.core.communication.MessageToolbox;
+import de.pubflow.core.communication.workflow.WorkflowMessage;
+import de.pubflow.core.workflow.engines.JBPMEngine;
 
 public class WFBroker {
-
-	//TODO?
-	//	private static final String WFID = "WFID";
-	//	private static final String PARAMS = "WFPARAMS";
-
+	
 	private static volatile WFBroker instance;
-	//	private static final String WFCallChannel = "test-jms:WFBroker:out.queue";
-	//	private static final String WFResponseChannel = "WFBroker:from:msg.queue";
 
 	private Logger myLogger;
 
@@ -109,16 +102,10 @@ public class WFBroker {
 			}
 		}
 
-		//TODO: dead code??
-		//		else{
-		//			myLogger.error("Workflow NOT deployed >> Msg was malformed / No type provided");
-		//			return;
-		//		}
-
 		try {
 			myLogger.info("deploying WF");
 			engine.deployWF(myWF);
-			WFParamList params = wm.getWfparams();
+			WFParameterList params = wm.getWfparams();
 
 			if (params!=null){
 				myLogger.info("Parameter found ...");

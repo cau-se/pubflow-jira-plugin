@@ -3,13 +3,10 @@ package de.pubflow.common.entity.workflow;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import de.pubflow.common.enumerartion.WFType;
+import de.pubflow.common.enumeration.WFType;
 
-
-@Entity
 public class PubFlow {
 
-	@Id
 	private long PubFlowWFID;
 	
 	private String WFID;
@@ -64,7 +61,6 @@ public class PubFlow {
 
 	@Override
 	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
 		return super.equals(obj);
 	}
 

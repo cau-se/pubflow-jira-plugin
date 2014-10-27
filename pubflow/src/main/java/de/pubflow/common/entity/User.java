@@ -1,6 +1,6 @@
 package de.pubflow.common.entity;
 
-import de.pubflow.common.enumerartion.UserRole;
+import de.pubflow.common.enumeration.UserRole;
 
 public class User implements StringSerializable{
 

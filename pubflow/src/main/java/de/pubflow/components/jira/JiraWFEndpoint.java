@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.PubFlowSystem;
-import de.pubflow.core.communication.message.MessageToolbox;
-import de.pubflow.core.communication.message.jira.CamelJiraMessage;
+import de.pubflow.core.communication.MessageToolbox;
+import de.pubflow.core.communication.jira.CamelJiraMessage;
 
 public class JiraWFEndpoint {
 

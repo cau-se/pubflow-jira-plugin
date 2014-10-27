@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.common.exception.PropNotSetException;
+import de.pubflow.common.exceptions.PropertyNotSetException;
 import de.pubflow.common.properties.PropLoader;
 
 public class QuartzIDPool {

@@ -25,15 +25,13 @@
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
-
 			<groupId>org.jbpm</groupId>
-
 			<artifactId>jbpm-bpmn2</artifactId>
-
 			<version>5.4.0.Final</version>
-
 		</dependency>
+		
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>

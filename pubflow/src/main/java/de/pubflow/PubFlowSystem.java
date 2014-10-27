@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.common.properties.PropLoader;
-import de.pubflow.components.jiraConnector.JiraPlugin;
-import de.pubflow.components.jiraConnector.JiraPluginMsgConsumer;
+import de.pubflow.components.jira.JiraPlugin;
+import de.pubflow.components.jira.JiraPluginMsgConsumer;
 import de.pubflow.core.workflow.WFBroker;
 
 /**

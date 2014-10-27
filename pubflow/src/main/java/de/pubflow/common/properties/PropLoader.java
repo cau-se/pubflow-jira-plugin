@@ -10,7 +10,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.common.exception.PropNotSetException;
+import de.pubflow.common.exceptions.PropertyNotSetException;
 
 public class PropLoader {
 
@@ -78,12 +78,12 @@ public class PropLoader {
 	//		pubflowConf.setProperty(calleeSig + "-" + key, prop);
 	//	}
 
-	public void updateProperty(String key, String calleeSig, String prop) throws PropNotSetException {
+	public void updateProperty(String key, String calleeSig, String prop) throws PropertyNotSetException {
 		myLogger.info("Updating Property - " + key + " : " + calleeSig);
 		String temp = pubflowConf.getProperty(calleeSig + "-" + key);
 		if ((temp == null) || (temp.equals(""))){
 			myLogger.warn("Property " + key + " : " + calleeSig + " is empty!");
-			throw new PropNotSetException();
+			throw new PropertyNotSetException();
 		}
 		pubflowConf.setProperty(calleeSig + "-" + key, prop);
 		saveProperties();

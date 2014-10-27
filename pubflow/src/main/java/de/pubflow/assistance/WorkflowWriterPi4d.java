@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import de.pubflow.common.entity.repository.WorkflowEntity;
-import de.pubflow.common.enumerartion.WFType;
-import de.pubflow.common.repository.workflow.WorkflowProvider;
+import de.pubflow.common.entity.WorkflowEntity;
+import de.pubflow.common.enumeration.WFType;
+import de.pubflow.common.repository.WorkflowProvider;
 
 public class WorkflowWriterPi4d {
 

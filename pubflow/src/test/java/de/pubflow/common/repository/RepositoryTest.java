@@ -8,11 +8,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import de.pubflow.common.entity.repository.ContextEntity;
-import de.pubflow.common.entity.repository.WorkflowEntity;
-import de.pubflow.common.enumerartion.WFType;
-import de.pubflow.common.repository.context.ContextProvider;
-import de.pubflow.common.repository.workflow.WorkflowProvider;
+import de.pubflow.common.entity.WorkflowEntity;
+import de.pubflow.common.enumeration.WFType;
+import de.pubflow.common.persistence.entities.ObjectEntity;;
 public class RepositoryTest {
 
 	@Test
@@ -64,32 +62,32 @@ public class RepositoryTest {
 //		assertTrue(se1.getId());
 		
 
-				ContextProvider cp = ContextProvider.getInstance();
-				
-				assertTrue(cp!=null);
-				
-				ContextEntity ce = new ContextEntity();	
-				ce.setServiceUrl("test");
-				
-				Map<String, String> parameters = new HashMap<String, String>();
-				
-				parameters.put("1", "2");
-				parameters.put("3", "4");
-				parameters.put("5", "6");
-				
-				ce.setParameters(parameters);
-								
-				long id = cp.addEntry(ce);
-				
-				ContextEntity ce1;
-								
-				ce1 = cp.getEntry(id);
-				
-				assertTrue(ce!=null);
-				
-				assertTrue(ce1.getServiceUrl().equals("test"));
-				assertTrue(ce1.getParameters().equals(parameters));
-				
+//				ContextProvider cp = ContextProvider.getInstance();
+//				
+//				assertTrue(cp!=null);
+//				
+//				ContextEntity ce = new ContextEntity();	
+//				ce.setServiceUrl("test");
+//				
+//				Map<String, String> parameters = new HashMap<String, String>();
+//				
+//				parameters.put("1", "2");
+//				parameters.put("3", "4");
+//				parameters.put("5", "6");
+//				
+//				ce.setParameters(parameters);
+//								
+//				long id = cp.addEntry(ce);
+//				
+//				ContextEntity ce1;
+//								
+//				ce1 = cp.getEntry(id);
+//				
+//				assertTrue(ce!=null);
+//				
+//				assertTrue(ce1.getServiceUrl().equals("test"));
+//				assertTrue(ce1.getParameters().equals(parameters));
+//				
 
 	}
 }
