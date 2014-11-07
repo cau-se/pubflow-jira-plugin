@@ -10,13 +10,14 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.exceptions.PropertyNotSetException;
 
 public class PropLoader {
 
 
 	private static PropLoader propLoader;
-	private static final String CONF_FILE = "Pubflow.conf";
+	private static final String CONF_FILE = PubFlowSystem.getInstance().pubflowHome + "Pubflow.conf";
 	private Logger myLogger = LoggerFactory.getLogger(this.getClass());
 	private Properties pubflowConf = new Properties();
 
@@ -37,7 +38,6 @@ public class PropLoader {
 			fi = new FileInputStream(CONF_FILE);
 		} catch (Exception e) {
 			myLogger.error("Could not find Properties File");
-
 			// e.printStackTrace();
 		}
 
@@ -48,22 +48,21 @@ public class PropLoader {
 			//e.printStackTrace();
 		}
 		pubflowConf.list(System.out);
-
 	}
 
-	public String getProperty(String key, String calleeSig, String defaultValue) {
-		String prop = pubflowConf.getProperty(calleeSig + "-" + key);
+	public String getProperty(String key, Class clazz, String defaultValue) {
+		String prop = pubflowConf.getProperty(clazz.getCanonicalName() + "-" + key);
 
 
 		if ((prop == null) || (prop.equals(""))){
-			myLogger.warn("Property " + key + " : " + calleeSig + " is not set!");
-			myLogger.info("Property " + key + " : " + calleeSig + " has been set to: " + defaultValue);
+			myLogger.warn("Property " + key + " : " + clazz.getCanonicalName()  + " is not set!");
+			myLogger.info("Property " + key + " : " + clazz.getCanonicalName()  + " has been set to: " + defaultValue);
 
-			pubflowConf.setProperty(calleeSig + "-" + key, defaultValue);
+			pubflowConf.setProperty(clazz.getCanonicalName()  + "-" + key, defaultValue);
 			saveProperties();
 			prop = defaultValue;
 		}else{
-			myLogger.info("Getting Property - " + key + " : " + calleeSig + " = " + prop);
+			myLogger.info("Getting Property - " + key + " : " + clazz.getCanonicalName()  + " = " + prop);
 		}
 		return prop;
 	}
@@ -92,6 +91,7 @@ public class PropLoader {
 	public void saveProperties() {
 		myLogger.info("Persisting Properties");
 		FileOutputStream fs = null;
+		
 		try {
 			fs = new FileOutputStream(CONF_FILE);
 		} catch (FileNotFoundException e1) {

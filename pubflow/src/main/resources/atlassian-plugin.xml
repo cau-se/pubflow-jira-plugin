@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	name="${project.name}" plugins-version="2">
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>1.0.0.0</version>
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
+	</plugin-info>
+
+	<component key="EventListener" class="de.pubflow.jira.JiraManagerPlugin">
+		<description>Class that processes the incoming JIRA issue events.
+		</description>
+	</component>
+
+	<workflow-condition key="issueAttachment-condition">
+		<condition-class>
+			de.pubflow.jira.misc.IssueAttachmentCondition
+		</condition-class>
+	</workflow-condition>
+	
+</atlassian-plugin>

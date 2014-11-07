@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.server.common.exceptions.PropertyNotSetException;
 import de.pubflow.server.common.properties.PropLoader;
 
 public class QuartzIDPool {
@@ -14,7 +13,7 @@ public class QuartzIDPool {
 
 	static{
 		myLogger = LoggerFactory.getLogger(QuartzIDPool.class);	
-		l = Long.parseLong(PropLoader.getInstance().getProperty("QuartzID", QuartzIDPool.class.toString(), l + ""));
+		l = Long.parseLong(PropLoader.getInstance().getProperty("QuartzID", QuartzIDPool.class, l + ""));
 		myLogger.debug("Setting QuartzID to IDPool value " + l);
 	}
 

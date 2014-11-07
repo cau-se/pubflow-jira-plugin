@@ -14,7 +14,7 @@ public class IDPool {
 
 	static{
 		myLogger = LoggerFactory.getLogger(IDPool.class);	
-		l = Long.parseLong(PropLoader.getInstance().getProperty("ID", IDPool.class.toString(), l + ""));
+		l = Long.parseLong(PropLoader.getInstance().getProperty("ID", IDPool.class, l + ""));
 		myLogger.debug("Setting ID to IDPool value " + l);
 	}
 

@@ -2,9 +2,6 @@ package de.pubflow.server.core.workflow;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pubflow.server.common.entity.workflow.PubFlow;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
@@ -12,11 +9,6 @@ import de.pubflow.server.common.exceptions.WFException;
 
 public abstract class WorkflowEngine implements Runnable{
 	
-	private static Logger myLogger;
-	static
-	{
-		myLogger = LoggerFactory.getLogger(WorkflowEngine.class);
-	}
 	
 	/**
 	 * Method to deploy a new Publication Workflow in a Workflow Engine

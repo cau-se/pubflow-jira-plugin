@@ -24,13 +24,7 @@
 
 package de.pubflow.server.common.repository;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +37,6 @@ import de.pubflow.server.common.repository.abstractRepository.misc.ERepositoryNa
 
 public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 
-	volatile Properties workflowMap;
-	private static final String CONF_FILE = "etc/workflow.list";
 	Logger myLogger;
 
 	{
@@ -55,28 +47,6 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 
 	private WorkflowProvider() {
 		super(ERepositoryName.WORKFLOW, new FSStorageAdapter());
-		workflowMap = new Properties();
-
-		FileInputStream fi = null;
-
-		try {
-			fi = new FileInputStream(CONF_FILE);
-
-			try {
-				workflowMap.loadFromXML(fi);
-
-			} catch (Exception e) {
-				myLogger.error("Could not load Properties File");
-				e.printStackTrace();
-			}
-
-		} catch (FileNotFoundException e) {
-			myLogger.error("Could not find Properties File");
-			workflowMap = new Properties();
-			saveProps();
-		}
-
-		workflowMap.list(System.out);
 
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
@@ -95,16 +65,17 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 		myLogger.info("Registering WF >>"+o.getPubFlowWFID());
 		long intWfRef = super.br.add(o);
 		myLogger.info(" WF Mapping added: "+o.getPubFlowWFID()+" >> "+intWfRef);
-		workflowMap.put(o.getPubFlowWFID()+"",intWfRef+"");
 		return intWfRef;
 	}
 
 	public WorkflowEntity getByWFID(long pID)
 	{
-		String temp = workflowMap.getProperty(pID+"");
-		myLogger.info("Parsing id: "+pID+" > "+temp);
-		long internalID = Long.parseLong(temp);
-		return super.getEntry(internalID);
+		for(WorkflowEntity we : super.getAllEntries()){
+			if(we.getPubFlowWFID() == pID){
+				return we;
+			}
+		}
+		return null;
 	}
 
 	public long getIDByWFName(String pName)
@@ -120,22 +91,6 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 		return 0;
 	}
 
-	public void saveProps()
-	{
-		myLogger.info("Persisting Properties");
-		FileOutputStream fs = null;
-		try {
-			fs = new FileOutputStream(CONF_FILE);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			workflowMap.storeToXML(fs, "Workflow list (last updated "
-					+ Calendar.getInstance().getTime().toLocaleString() + ")");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	// ----------------------------------------------------------------------------------------
 	// Inner Classes
@@ -154,7 +109,6 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 			Thread.currentThread().setName("WFRepo Shutdownhook");
 			Logger shutdownLogger = LoggerFactory.getLogger(this.getClass());
 			shutdownLogger.info("<< Shutting down Repo >>");
-			WorkflowProvider.getInstance().saveProps();
 			shutdownLogger.info("<< BYE >>");
 		}
 

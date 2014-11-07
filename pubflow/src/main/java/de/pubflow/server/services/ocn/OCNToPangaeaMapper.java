@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.properties.PropLoader;
 import de.pubflow.server.core.jira.ByteRay;
 import de.pubflow.server.services.ocn.entity.Bottle;
@@ -250,7 +251,7 @@ public class OCNToPangaeaMapper {
 
 	private void resolveDependency(PubJect leg) throws PubJectException, IOException {
 
-		FileReader input = new FileReader(PropLoader.getInstance().getProperty("MappingFile", this.getClass().getCanonicalName(), "etc/PANGAEAParameterComplete.tab"));		
+		FileReader input = new FileReader(PubFlowSystem.getInstance().pubflowHome + PropLoader.getInstance().getProperty("MappingFile", this.getClass(), "etc/PANGAEAParameterComplete.tab"));		
 
 		BufferedReader bufRead = new BufferedReader(input);
 

@@ -6,8 +6,8 @@
 
 	<persistence-unit name="pubflow" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<class>de.pubflow.common.entity.BPELProcess</class>
-		<class>de.pubflow.common.entity.ObjectEntity</class>
+<!-- 		<class>de.pubflow.common.entity.BPELProcess</class> -->
+		<class>de.pubflow.server.common.persistence.entities.ObjectEntity</class>
 		
 
 		<properties>

@@ -3,18 +3,15 @@ package de.pubflow.common.repository;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Test;
 
 import de.pubflow.server.common.entity.WorkflowEntity;
 import de.pubflow.server.common.enumeration.WFType;
-import de.pubflow.server.common.persistence.entities.ObjectEntity;
 import de.pubflow.server.common.repository.WorkflowProvider;
 public class RepositoryTest {
 
-	@Test
+//	@Test
 	public void fsRepo() {
 				
 				byte [] sampleBytes = {3,4,5,6,3,2,1};
@@ -45,7 +42,7 @@ public class RepositoryTest {
 				
 	}
 
-	@Test
+//	@Test
 	public void dbRepo() {	
 //		ServiceProvider sp = ServiceProvider.getInstance();
 //		

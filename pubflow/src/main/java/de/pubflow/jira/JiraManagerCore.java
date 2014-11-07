@@ -98,6 +98,7 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
  *	Jira objects are updated automatically when setXy(...) is used
  *
  */
+
 public class JiraManagerCore {
 
 	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
@@ -942,7 +943,6 @@ public class JiraManagerCore {
 				customFields.add(new CustomFieldDefinition("Author name", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Title", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
-
 				customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"141", "111"}));
 
 				newIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), statuses, customFields, conditionMap);

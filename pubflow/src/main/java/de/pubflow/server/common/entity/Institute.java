@@ -1,5 +1,6 @@
 package de.pubflow.server.common.entity;
 
+
 public class Institute {
 
 	private String name;

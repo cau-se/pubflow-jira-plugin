@@ -7,18 +7,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.persistence.entities.ObjectEntity;
 import de.pubflow.server.common.properties.PropLoader;
 
 public class FSStorageAdapter extends StorageAdapter {
 
 	/** DEFAULT PROPERTIES **/
-	public static final String DEFAULT_FS_STORAGE_PATH = "./etc/";
+	public static final String DEFAULT_FS_STORAGE_PATH = "etc/";
 
 	private String FS_STORAGE_PATH;
 
 	public FSStorageAdapter(){
-		FS_STORAGE_PATH = PropLoader.getInstance().getProperty("path", FSStorageAdapter.class.toString(), DEFAULT_FS_STORAGE_PATH);
+		FS_STORAGE_PATH = PubFlowSystem.getInstance().pubflowHome + PropLoader.getInstance().getProperty("path", this.getClass(), DEFAULT_FS_STORAGE_PATH);
 	}
 
 	protected Object onRestore(long id) throws IOException {

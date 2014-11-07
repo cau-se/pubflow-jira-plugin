@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.server.core.communication.WorkflowMessage;
+import de.pubflow.server.core.workflow.WFBroker;
 
 public class PubFlowJob implements Job {
 	private static Logger myLogger;
@@ -25,7 +26,7 @@ public class PubFlowJob implements Job {
 		myLogger.info("Transmitting Msg to pubflow core...");
 		
 		// Sending WFMsg
-		//TODO
+		WFBroker.getInstance().receiveWFCall(workflowMessage);
 
 		myLogger.info("Msg sent!");
 	}

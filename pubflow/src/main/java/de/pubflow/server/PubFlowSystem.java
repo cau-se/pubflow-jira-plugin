@@ -10,9 +10,10 @@ public class PubFlowSystem {
 
 	private static PubFlowSystem instance = null;
 	private Logger myLogger;
-
+	public final String pubflowHome = System.getProperty("pubflow_home", "/home/arl/pubflow_home/");
+ 
+	
 	private PubFlowSystem() {
-
 		String art = " _____       _     ______ _" + "\n"
 				+ "|  __ \\     | |   |  ____| |" + "\n"
 				+ "| |__) |   _| |__ | |__  | | _____      __" + "\n"
@@ -28,12 +29,12 @@ public class PubFlowSystem {
 		myLogger.info("Starting JiraPlugin Endpoint");
 		
 		try {
-			JiraConnector.start();
+			JiraConnector.getInstance().start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		// Register shutdownhook
 		Thread t = new Thread(new ShutdownActions());
 		Runtime.getRuntime().addShutdownHook(t);
@@ -46,10 +47,6 @@ public class PubFlowSystem {
 			instance = new PubFlowSystem();
 		}
 		return instance;
-	}
-
-	public static void main(String[] args) {
-		PubFlowSystem c = PubFlowSystem.getInstance();
 	}
 	
 

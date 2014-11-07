@@ -80,7 +80,7 @@ public class WorkflowEntity implements Serializable{
 
 		String pathProb = "";
 
-		pathProb = PropLoader.getInstance().getProperty("path", WorkflowEntity.class.toString(), FSStorageAdapter.DEFAULT_FS_STORAGE_PATH);
+		pathProb = PropLoader.getInstance().getProperty("path", this.getClass(), FSStorageAdapter.DEFAULT_FS_STORAGE_PATH);
 
 		String path = pathProb + "/Temp/" + workflowName;
 

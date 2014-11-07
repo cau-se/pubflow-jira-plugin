@@ -13,19 +13,6 @@ import de.pubflow.server.common.repository.WorkflowProvider;
 public class WorkflowWriterPi4d {
 
 	public static void main(String[] args) {		
-		File wfs = new File("./etc/workflow.list");
-
-		if(wfs.exists()){
-			wfs.delete();
-		}
-
-		File storage = new File("./etc/FSStorageAdapter");
-
-		if(storage.exists()){
-			for (File f : storage.listFiles()){
-				f.delete();
-			}
-		}
 
 		System.out.println("STARTING");
 		WorkflowEntity wfOCN = new WorkflowEntity();
@@ -57,23 +44,6 @@ public class WorkflowWriterPi4d {
 
 		WorkflowProvider pro = WorkflowProvider.getInstance(); 
 		pro.addEntry(wfOCN);
-
-//		WorkflowEntity wfPi = new WorkflowEntity();
-//		wfPi.addEntryToParameterMap("tropfenzahl_Pi", String.class);
-//
-//		wfPi.setPubFlowWFID(2l);
-//		wfPi.setType(WFType.BPMN2);
-//		wfPi.setWFID("de.pubflow.Pi");
-//		wfPi.setWorkflowName("Pi");
-//
-//		try {
-//			wfPi.setgBpmn(new File("pi.bpmn"));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		pro.addEntry(wfPi);
 
 		List<WorkflowEntity> wfList = pro.getAllEntries();
 

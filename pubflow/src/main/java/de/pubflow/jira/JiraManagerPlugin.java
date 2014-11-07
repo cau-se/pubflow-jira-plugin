@@ -142,8 +142,8 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 					wfpm.add(wfp);
 				}
 				wm.setParameters(wfpm);
-				
-				JiraConnector jpmp = new JiraConnector();
+				wm.setWorkflowID(1);
+				JiraConnector jpmp = JiraConnector.getInstance();
 				jpmp.compute(wm);
 				
 			} catch (Exception e){
