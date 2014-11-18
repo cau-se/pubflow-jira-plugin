@@ -30,9 +30,8 @@ public class WorkflowWriterPi4d {
 		wfOCN.addEntryToParameterMap("File name_OCN", String.class);
 		wfOCN.addEntryToParameterMap("Leg comment_OCN", String.class);
 		wfOCN.addEntryToParameterMap("Start Time (QUARTZ)_OCN", Date.class);
-		wfOCN.setPubFlowWFID(1l);
 		wfOCN.setType(WFType.BPMN2);
-		wfOCN.setWFID("de.pubflow.OCN");
+		wfOCN.setWorkflowId("de.pubflow.OCN");
 		wfOCN.setWorkflowName("OCN");
 
 		try {
@@ -49,8 +48,12 @@ public class WorkflowWriterPi4d {
 
 		System.out.println("File count : " + wfList.size());
 		for (WorkflowEntity workflowEntity : wfList) {
+			
 			System.out.println("-----------------------------------------------");
-			System.out.println("WFID: " + workflowEntity.getWFID());
+			System.out.println("Workflow Id : " + workflowEntity.getWorkflowId());
+			System.out.println("Workflow Type : " + workflowEntity.getType().toString());
+			System.out.println("Workflow Name : " + workflowEntity.getWorkflowName());
+			System.out.println();
 			for (Entry e : workflowEntity.getParameterMap().entrySet()){
 				System.out.println(e.getKey() + " : " + e.getValue());
 			}

@@ -217,6 +217,7 @@ public class FileCreator4D {
 			return input;
 
 		}catch(Exception e){
+			e.printStackTrace();
 			throw new Exception("FileCreator4D: " + e.getMessage());
 		}
 	}
@@ -224,7 +225,7 @@ public class FileCreator4D {
 	public static void main (String[] args) throws Exception{
 
 
-		HashMap<String, byte[]> s = (new OCNDataLoader()).getData("4", 0);
+		HashMap<String, byte[]> s = (new OCNDataLoader()).getData("12013", 0);
 
 		s = new OCNToPangaeaMapper().replaceArtefacts(s, 0);
 

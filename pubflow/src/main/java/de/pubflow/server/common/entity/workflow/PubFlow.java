@@ -7,8 +7,6 @@ import de.pubflow.server.common.enumeration.WFType;
 
 public class PubFlow {
 
-	private long PubFlowWFID;
-	
 	private String WFID;
 	private WFType type;
 	private byte[] wfDef;
@@ -62,13 +60,5 @@ public class PubFlow {
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
-	}
-
-	public long getPubFlowWFID() {
-		return PubFlowWFID;
-	}
-
-	public void setPubFlowWFID(long pubFlowWFID) {
-		PubFlowWFID = pubFlowWFID;
 	}
 }

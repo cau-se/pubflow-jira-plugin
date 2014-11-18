@@ -21,7 +21,7 @@ public class QuartzIDPool {
 
 		l++;
 		try {
-			PropLoader.getInstance().updateProperty("QuartzID", QuartzIDPool.class.toString(), l + "");
+			PropLoader.getInstance().updateProperty("QuartzID", QuartzIDPool.class, l + "");
 			myLogger.debug("QuartzID increased to " + l);
 
 		} catch (Exception e) {

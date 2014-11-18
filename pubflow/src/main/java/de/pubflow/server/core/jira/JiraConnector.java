@@ -4,9 +4,10 @@ import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
-import de.pubflow.server.common.repository.WorkflowProvider;
+import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.core.communication.WorkflowMessage;
 import de.pubflow.server.core.workflow.WFBroker;
 
@@ -38,8 +39,23 @@ public class JiraConnector {
 	}
 
 
+	public static void main (String[] args) throws Exception{
+		WorkflowMessage wm = new WorkflowMessage();
+		wm.setWorkflowID("de.pubflow.OCN");
+		WFParameterList wpl = new WFParameterList();
+		WFParameter wp1 = new WFParameter("issueKey", "PUB-3");
+		WFParameter wp2 = new WFParameter("workflowName", "OCN");		
+		WFParameter wp3 = new WFParameter("Leg ID_OCN", "s");
+		wpl.add(wp1);
+		wpl.add(wp2);
+		wpl.add(wp3);
+		wm.setParameters(wpl);
+		wm.setType(WFType.BPMN2);
+
+		new JiraConnector().compute(wm);
+	}
+
 	/**
-	 * Maps the Jira Msg to a Workflow Msg
 	 * 
 	 * @param msg
 	 * @throws SchedulerException 
@@ -47,104 +63,96 @@ public class JiraConnector {
 	public void compute(WorkflowMessage msg) {
 		myLogger.info("Received Msg from Jira-Plugin");
 
-		WFParameterList paramList = new WFParameterList();
 		// Mapping PubFlowMsg to WorkflowMessage
 		myLogger.info("Transforming msg to wfMessage");
-		WFParameterList params = msg.getParameters();
-
-		String mapDebugString = "";
-		for(WFParameter parameter : params.getParameterList()){ 
-			mapDebugString += parameter.getKey() + " : " + parameter.getStringValue() + "\n";
-		}
-		myLogger.info(mapDebugString);
+		WFParameterList parameters = msg.getParameters();
 
 		long quartzMillis = 0l;
 		String quartzCron = "";
 
-		for(WFParameter parameter : params.getParameterList()){ 
+		WFParameterList filteredParameters = new WFParameterList();
+
+		for(WFParameter parameter : parameters.getParameterList()){ 
+			myLogger.info(parameter.getKey() + " : " + parameter.getValue());
 			String key = parameter.getKey();
-			String value = parameter.getStringValue();
 
-			//TODO: add params?
+			if(parameter.getPayloadClazz().equals(ParameterType.STRING)){
+				String value = (String) parameter.getValue();
 
-			switch (key) {
-			//			case "Author":
-			//				wfMsg.setUser(User.getUserFromJiraID(value));
-			//				break;
+				switch (key) {
 
-			case "quartzMillis":
-				quartzMillis = Long.parseLong(value);
-				break;	
+				case "quartzMillis":
+					quartzMillis = Long.parseLong(value);
+					break;	
 
+				case "Quartz Cron":
+					quartzCron = value;
+					break;
 
-			case "Quartz Cron":
-				quartzCron = value;
-				break;
+				case "status":
+					msg.setState(null);
+					break;
 
-			case "status":
-				msg.setState(null);
-				break;
+				case "assignee":
+					break;
 
-			case "assignee":
-				break;
+				case "eventType":
+					break;
 
-			case "eventType":
-				break;
+				case "date":
+					break;
+				case "issueKey":
+					filteredParameters.add(parameter);
+					break;
+				case "reporter":
+					break;
+				default:
+					try{
+						if(msg.getWorkflowID().substring(msg.getWorkflowID().lastIndexOf(".") + 1).equals(key.substring(key.lastIndexOf("_") + 1))){
+							parameter.setKey(key.substring(0, key.lastIndexOf("_")));
+							filteredParameters.add(parameter);
+						}
+					}catch(Exception e){
+						myLogger.error(e.getCause().toString() + " : " + e.getMessage());
+					}
 
-			case "date":
-				break;
-
-			case "reporter":
-				break;
-
-			case "workflowName":
-				myLogger.info("Val: "+key+" > "+value);
-				if(value.equalsIgnoreCase("OCN")){
-					msg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
-					myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.OCN"));
-
-				}else if (value.equalsIgnoreCase("Pi")){
-					msg.setWorkflowID(WorkflowProvider.getInstance().getIDByWFName("de.pubflow.Pi"));
-					myLogger.info("WFID:" + WorkflowProvider.getInstance().getIDByWFName("de.pubflow.Pi"));
 				}
-				break;
 			}
+		}			
 
-			myLogger.info("recMillis : " + quartzMillis);
-			myLogger.info("curMillis : " + System.currentTimeMillis());
+		msg.setParameters(filteredParameters);
 
 
-			//		if(!quartzCron.equals("")){
-			//			JobDetail job = newJob(PubFlowJob.class)
-			//					.withIdentity("job_" + System.currentTimeMillis(), "pubflow")
-			//					.build();
-			//			job.getJobDataMap().put("msg", wfMsg);
-			//
-			//			Trigger trigger = newTrigger()
-			//					.withIdentity("cron_" + System.currentTimeMillis() + "-trigger", "pubflow")
-			//					.startAt(new Date(quartzMillis))
-			//					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
-			//					.build();
-			//			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
-			//			
-			//		}else if(quartzMillis > System.currentTimeMillis()){
-			//			JobDetail job = newJob(PubFlowJob.class)
-			//					.withIdentity("job_" + quartzMillis, "pubflow")
-			//					.build();
-			//			job.getJobDataMap().put("msg", wfMsg);
-			//
-			//			Trigger trigger = newTrigger()
-			//					.withIdentity("job_" + quartzMillis + "-trigger", "pubflow")
-			//					.startAt(new Date(quartzMillis))
-			//					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
-			//					.build();
-			//			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
-			//
-			//		}else{
-			myLogger.info("Transmitting Msg to pubflow core...");			
-			WFBroker.getInstance().receiveWFCall(msg);
+		//		if(!quartzCron.equals("")){
+		//			JobDetail job = newJob(PubFlowJob.class)
+		//					.withIdentity("job_" + System.currentTimeMillis(), "pubflow")
+		//					.build();
+		//			job.getJobDataMap().put("msg", wfMsg);
+		//
+		//			Trigger trigger = newTrigger()
+		//					.withIdentity("cron_" + System.currentTimeMillis() + "-trigger", "pubflow")
+		//					.startAt(new Date(quartzMillis))
+		//					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
+		//					.build();
+		//			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
+		//			
+		//		}else if(quartzMillis > System.currentTimeMillis()){
+		//			JobDetail job = newJob(PubFlowJob.class)
+		//					.withIdentity("job_" + quartzMillis, "pubflow")
+		//					.build();
+		//			job.getJobDataMap().put("msg", wfMsg);
+		//
+		//			Trigger trigger = newTrigger()
+		//					.withIdentity("job_" + quartzMillis + "-trigger", "pubflow")
+		//					.startAt(new Date(quartzMillis))
+		//					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
+		//					.build();
+		//			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
+		//
+		//		}else{
 
-			myLogger.info("Msg sent!");
-		}
+		myLogger.info("Leaving JiraConnector");			
+		WFBroker.getInstance().receiveWFCall(msg);
 	}
 }
+

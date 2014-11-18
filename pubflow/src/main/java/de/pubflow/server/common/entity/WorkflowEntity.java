@@ -25,7 +25,7 @@ public class WorkflowEntity implements Serializable{
 
 	private byte[] gBpmn;
 	private String workflowName;
-	private long PubFlowWFID;
+	private String workflowId;
 	private WFType type;
 	private HashMap<String, Class<?>> parameterMap = new HashMap<String, Class<?>>();
 	
@@ -48,8 +48,6 @@ public class WorkflowEntity implements Serializable{
 	public void setgBpmn(byte[] gBpmn) {
 		this.gBpmn = gBpmn;
 	}
-
-	private String WFID;
 
 	public void setgBpmn(File f) throws IOException{
 		gBpmn = readFile(f);
@@ -193,16 +191,8 @@ public class WorkflowEntity implements Serializable{
 		this.type = type;
 	}
 
-	public String getWFID() {
-		return WFID;
-	}
-
 	public byte[] getWFAsByteArray() {
 		return null;
-	}
-
-	public void setWFID(String wFID) {
-		WFID = wFID;
 	}
 
 	@Override
@@ -211,11 +201,11 @@ public class WorkflowEntity implements Serializable{
 		return super.equals(obj);
 	}
 
-	public long getPubFlowWFID() {
-		return PubFlowWFID;
+	public String getWorkflowId() {
+		return workflowId;
 	}
 
-	public void setPubFlowWFID(long pubFlowWFID) {
-		PubFlowWFID = pubFlowWFID;
+	public void setWorkflowId(String workflowId) {
+		this.workflowId = workflowId;
 	}
 }

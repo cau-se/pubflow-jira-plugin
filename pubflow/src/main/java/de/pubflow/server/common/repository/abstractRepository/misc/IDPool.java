@@ -22,7 +22,7 @@ public class IDPool {
 
 		l++;
 		try {
-			PropLoader.getInstance().updateProperty("ID", IDPool.class.toString(), l + "");
+			PropLoader.getInstance().updateProperty("ID", IDPool.class, l + "");
 			myLogger.debug("ID increased to " + l);
 
 		} catch (PropertyNotSetException e) {

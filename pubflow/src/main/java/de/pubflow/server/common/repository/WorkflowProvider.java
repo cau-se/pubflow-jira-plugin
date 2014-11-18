@@ -24,8 +24,6 @@
 
 package de.pubflow.server.common.repository;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,34 +60,21 @@ public class WorkflowProvider extends BasicProvider<WorkflowEntity>{
 
 	@Override
 	public long addEntry(WorkflowEntity o) {
-		myLogger.info("Registering WF >>"+o.getPubFlowWFID());
+		myLogger.info("Registering WF >>"+o.getWorkflowId());
 		long intWfRef = super.br.add(o);
-		myLogger.info(" WF Mapping added: "+o.getPubFlowWFID()+" >> "+intWfRef);
+		myLogger.info(" WF Mapping added: "+o.getWorkflowId()+" >> "+intWfRef);
 		return intWfRef;
 	}
 
-	public WorkflowEntity getByWFID(long pID)
-	{
-		for(WorkflowEntity we : super.getAllEntries()){
-			if(we.getPubFlowWFID() == pID){
+	public WorkflowEntity getByWFID(String id){
+		for(WorkflowEntity we : super.getAllEntries()){			
+			if(we.getWorkflowId().equals(id)){
 				return we;
 			}
 		}
 		return null;
 	}
 
-	public long getIDByWFName(String pName)
-	{
-		List<WorkflowEntity> entries = getAllEntries();
-		for (WorkflowEntity workflowEntity : entries) {
-			if(workflowEntity.getWFID().equalsIgnoreCase(pName))
-			{
-				return workflowEntity.getPubFlowWFID();
-			}
-		}
-
-		return 0;
-	}
 
 
 	// ----------------------------------------------------------------------------------------

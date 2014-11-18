@@ -10,6 +10,7 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,7 +168,7 @@ public class JBPMEngine extends WorkflowEngine {
 			myLogger.info("Creating Knowledgebase ...");
 			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 			myLogger.info("Setting process parameter");
-			for(WFParameter wfParam : params.getParameter()){
+			for(WFParameter wfParam : params.getParameterList()){
 
 				//set the parameter name to lower case, remove all spaces and the workflow appendix 
 				String key = wfParam.getKey().replace(" ", "").toLowerCase();
@@ -176,43 +177,47 @@ public class JBPMEngine extends WorkflowEngine {
 					key = key.substring(0, (key.indexOf("_")));
 				}
 
-				myLogger.info(key);
 				ParameterType payloadClazz = wfParam.getPayloadClazz();
 
+				try{
+					
 				switch (payloadClazz) {
 				case INTEGER:
-					int value = wfParam.getIntValue();
-					myLogger.info("Setting parameter >>"+key+"<< to >>"+value+"<<");
-					ksession.setGlobal(key, value);
+					int valueI = ((Integer)wfParam.getValue()).intValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueI+"<<");
+					ksession.setGlobal(key, valueI);
 					break;
 				case STRING:
-					String valueString = wfParam.getStringValue();
-					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueString+"<<");
-					ksession.setGlobal(key, valueString);
+					String valueS = (String) wfParam.getValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueS+"<<");
+					ksession.setGlobal(key, valueS);
 					break;
 				case DOUBLE:
-					Double valuedoubel = wfParam.getDoubleValue();
-					myLogger.info("Setting parameter >>"+key+"<< to >>"+valuedoubel+"<<");
-					ksession.setGlobal(key, valuedoubel);
+					double valueD = ((Double)wfParam.getValue()).doubleValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueD+"<<");
+					ksession.setGlobal(key, valueD);
 					break;
 				case LONG:
-					Long valueLong = wfParam.getLongValue();
-					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueLong+"<<");
-					ksession.setGlobal(key, valueLong);
+					long valueL = ((Long)wfParam.getValue()).longValue();
+					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueL+"<<");
+					ksession.setGlobal(key, valueL);
 					break;
 				default:
 					break;
 				}
-
-
+				}catch(RuntimeException e){
+					e.printStackTrace();
+					Log.error(e.getMessage());
+				}
 			}
+			
+			myLogger.info("Starting process : " + myWF.getWFID());
 
 			instance = ksession.startProcess(myWF.getWFID());
 
 			myLogger.info("Workflow executed sucessfuly");
 		}
-		catch (Exception ex)
-		{
+		catch (Exception ex){
 			myLogger.error("Couldn't start workflow");
 			ex.printStackTrace();
 		}

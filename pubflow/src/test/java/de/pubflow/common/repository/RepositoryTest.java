@@ -20,11 +20,10 @@ public class RepositoryTest {
 				
 				WorkflowEntity we = new WorkflowEntity();
 				
-				we.setPubFlowWFID(1);
+				we.setWorkflowId("de.pubflow.OCN");
 				we.setType(WFType.BPMN2);
 				we.setWorkflowName("Test");
 				we.setgBpmn(sampleBytes);
-				we.setWFID("wfID");
 				
 				long id = wp.addEntry(we);
 				
@@ -32,12 +31,10 @@ public class RepositoryTest {
 				
 				assertTrue(we1!=null);
 
-				assertTrue(we1.getPubFlowWFID() == 1l);
+				assertTrue(we1.getWorkflowId().equals(("de.pubflow.OCN")));
 				assertTrue(we1.getType().equals(WFType.BPMN2));
 				assertTrue(we1.getWorkflowName().equals("Test"));
-				assertTrue(Arrays.equals(we1.getgBpmn(), sampleBytes));
-				assertTrue(we1.getWFID().equals("wfID"));
-				
+				assertTrue(Arrays.equals(we1.getgBpmn(), sampleBytes));				
 				
 				
 	}

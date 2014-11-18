@@ -82,6 +82,7 @@ public class OCNToPangaeaMapper {
 			return input;
 
 		}catch(Exception e){
+			e.printStackTrace();
 			throw new Exception("OCNToPangaeaMapper: " + e.getMessage() + " / " + e.getStackTrace().toString());
 		}
 	}

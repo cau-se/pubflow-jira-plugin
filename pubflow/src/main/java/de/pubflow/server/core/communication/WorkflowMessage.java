@@ -13,8 +13,7 @@ import de.pubflow.server.common.enumeration.WFType;
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
 public class WorkflowMessage extends Message {
 
-	//protected long dataset = -1;
-	protected long workflowID = -1;
+	protected String workflowID = "";
 	protected WFType type = null;
 	protected WFState state = null;
 	protected WFParameterList parameters = null;
@@ -35,14 +34,14 @@ public class WorkflowMessage extends Message {
 	 * @return the workflowID
 	 */
 	@XmlElement(name="WorkflowRef")
-	public synchronized long getWorkflowID() {
+	public synchronized String getWorkflowID() {
 		return workflowID;
 	}
 
 	/**
 	 * @param workflowID the workflowID to set
 	 */
-	public synchronized void setWorkflowID(long workflowID) {
+	public synchronized void setWorkflowID(String workflowID) {
 		this.workflowID = workflowID;
 	}
 

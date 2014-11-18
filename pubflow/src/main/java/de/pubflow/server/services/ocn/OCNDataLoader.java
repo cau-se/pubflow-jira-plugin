@@ -41,7 +41,7 @@ public class OCNDataLoader {
 		long millis = System.currentTimeMillis();
 
 		try{
-			String connectionURL = props.getProperty("dbUrl", this.getClass(), "jdbc:postgresql://192.168.48.27:5432/ocn?schema=ocn");
+			String connectionURL = props.getProperty("dbUrl", this.getClass(), "jdbc:postgresql://localhost:5432/ocn?schema=ocn");
 			String user = PropLoader.getInstance().getProperty("user", this.getClass(), "arl");
 			String password = PropLoader.getInstance().getProperty("pw", this.getClass(), "dWmWidW2");
 			
@@ -211,6 +211,7 @@ public class OCNDataLoader {
 			return files;
 
 		}catch(Exception e){
+			e.printStackTrace();
 			throw new Exception("OCNDataLoader: " + e.getMessage());
 		}
 	}

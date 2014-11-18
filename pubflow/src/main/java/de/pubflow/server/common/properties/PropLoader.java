@@ -77,14 +77,14 @@ public class PropLoader {
 	//		pubflowConf.setProperty(calleeSig + "-" + key, prop);
 	//	}
 
-	public void updateProperty(String key, String calleeSig, String prop) throws PropertyNotSetException {
-		myLogger.info("Updating Property - " + key + " : " + calleeSig);
-		String temp = pubflowConf.getProperty(calleeSig + "-" + key);
+	public void updateProperty(String key, Class clazz, String prop) throws PropertyNotSetException {
+		myLogger.info("Updating Property - " + key + " : " + clazz.getCanonicalName());
+		String temp = pubflowConf.getProperty(clazz.getCanonicalName() + "-" + key);
 		if ((temp == null) || (temp.equals(""))){
-			myLogger.warn("Property " + key + " : " + calleeSig + " is empty!");
+			myLogger.warn("Property " + key + " : " + clazz.getCanonicalName() + " is empty!");
 			throw new PropertyNotSetException();
 		}
-		pubflowConf.setProperty(calleeSig + "-" + key, prop);
+		pubflowConf.setProperty(clazz.getCanonicalName() + "-" + key, prop);
 		saveProperties();
 	}
 

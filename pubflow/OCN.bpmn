@@ -17,25 +17,27 @@
   <process processType="Private" isExecutable="true" id="de.pubflow.OCN" name="OCN" tns:packageName="de.pubflow" tns:version="1" >
 
     <extensionElements>
-     <tns:import name="de.pubflow.wfCompUnits.ocn.OCNDataLoader" />
-     <tns:import name="de.pubflow.wfCompUnits.ocn.OCNToPangaeaMapper" />
-     <tns:import name="de.pubflow.wfCompUnits.ocn.FileCreator4D" />
-     <tns:import name="de.pubflow.wfCompUnits.ByteRay" />
-     <tns:import name="de.pubflow.components.jira.JiraWFEndpoint" />
+     <tns:import name="de.pubflow.server.services.ocn.OCNDataLoader" />
+     <tns:import name="de.pubflow.server.services.ocn.OCNToPangaeaMapper" />
+     <tns:import name="de.pubflow.server.services.ocn.FileCreator4D" />
+     <tns:import name="de.pubflow.server.core.jira.ByteRay" />
+     <tns:import name="de.pubflow.jira.JiraEndpoint" />
+     <tns:import name="de.pubflow.jira.IJiraEndpoint" />
+     <tns:import name="de.pubflow.jira.JiraManagerCore" />
      <tns:import name="java.util.HashMap" />
      <tns:import name="java.util.LinkedList" />
      <tns:import name="java.util.Map.Entry" />
-     <tns:global identifier="author" type="String" />
      <tns:global identifier="project" type="String" />
+     <tns:global identifier="author" type="String" />
      <tns:global identifier="issuekey" type="String" />
      <tns:global identifier="legid" type="String" />
      <tns:global identifier="source" type="String" />
-     <tns:global identifier="status" type="String" />
      <tns:global identifier="zielpfad" type="String" />
+     <tns:global identifier="status" type="String" />
      <tns:global identifier="filename" type="String" />
-     <tns:global identifier="pid" type="String" />
-     <tns:global identifier="login" type="String" />
      <tns:global identifier="topology" type="String" />
+     <tns:global identifier="login" type="String" />
+     <tns:global identifier="pid" type="String" />
      <tns:global identifier="reference" type="String" />
      <tns:global identifier="legcomment" type="String" />
     </extensionElements>
@@ -53,33 +55,34 @@
 HashMap &lt;String, byte[]&gt; data = new HashMap &lt;String, byte[]&gt;();
 String issue = (String)issuekey;
 
+System.out.println("1. Load Data");
 try {
-	JiraWFEndpoint.changeStatus(issue, "Ready for Pangaea-Import");
+	JiraEndpoint.changeStatus(issue, "Ready for Pangaea-Import");
 	
 	data = loader.getData((String) legid, 0);
 	
 	for(String s : (LinkedList&lt;String&gt;)ByteRay.getJiraComments(data)){
-		JiraWFEndpoint.newComment(issue, s);
+		JiraEndpoint.addIssueComment(issue, s);
 	} 
 
 	for(Entry &lt;String, byte[]&gt; e : ((HashMap&lt;String, byte[]&gt;) ByteRay.getJiraAttachments(data)).entrySet()){
-		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
+		JiraEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
 	} 
 
 } catch (Exception e) {
 			// TODO Auto-generated catch block
-			JiraWFEndpoint.changeStatus(issue, "Data Needs Correction");
+			JiraEndpoint.changeStatus(issue, "Data Needs Correction");
 			e.printStackTrace();
-			JiraWFEndpoint.newComment(issue, e.getMessage());
+			JiraEndpoint.addIssueComment(issue, e.getMessage());
 }finally{
 	data = ByteRay.flushData(data);		
 }
 
 kcontext.setVariable("tempResult", data);
-//System.out.println(data);</script>
+System.out.println("1. Load Data done");</script>
     </scriptTask>
     <scriptTask id="ScriptTask_3" name="Mapping OCN to Pangaea" scriptFormat="http://www.java.com/java" >
-      <script>System.out.println("Converting");
+      <script>System.out.println("2. Mapping");
 OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
 HashMap&lt;String, byte[]&gt; result = new HashMap&lt;String, byte[]&gt;();
 String issue = (String)issuekey;
@@ -88,39 +91,40 @@ try {
 	result = mapper.replaceArtefacts((HashMap&lt;String, byte[]&gt;)tempResult, 0);
 	
 	for(String s : (LinkedList&lt;String&gt;)ByteRay.getJiraComments(result)){
-		JiraWFEndpoint.newComment(issue, s);
+		JiraEndpoint.addIssueComment(issue, s);
 	} 
 
 	for(Entry &lt;String, byte[]&gt; e : ((HashMap&lt;String, byte[]&gt;)ByteRay.getJiraAttachments(result)).entrySet()){
-		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
+		JiraEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
 	} 
 
 } catch (Exception e) {
 			// TODO Auto-generated catch block
-			JiraWFEndpoint.changeStatus(issue, "Data Needs Correction");
+			JiraEndpoint.changeStatus(issue, "Data Needs Correction");
 			e.printStackTrace();
-			JiraWFEndpoint.newComment(issue, e.getMessage());
+			JiraEndpoint.addIssueComment(issue, e.getMessage());
 }finally{
 	result = ByteRay.flushData(result);		
 }
 
 kcontext.setVariable("tempResult", result);
-//System.out.println(result);</script>
+System.out.println("2. Mapping done");</script>
     </scriptTask>
     <scriptTask id="ScriptTask_4" name="Communicate Result" scriptFormat="http://www.java.com/java" >
       <script>FileCreator4D fc4d = new FileCreator4D();
 
-	String issue = (String)issuekey;
+System.out.println("3. FileWriter");
+String issue = (String)issuekey;
 
 try {
 	HashMap&lt;String, byte[]&gt; tResult = fc4d.toCSV((HashMap&lt;String, byte[]&gt;)tempResult, (String) pid, (String) login, (String) source, (String) author, (String) project, (String) topology, (String) status, (String) zielpfad, (String) reference, (String) filename, (String) legcomment, 0);
 	
 	for(String s : (LinkedList&lt;String&gt;)ByteRay.getJiraComments(tResult)){
-		JiraWFEndpoint.newComment(issue, s);
+		JiraEndpoint.addIssueComment(issue, s);
 	} 
 	
 	for(Entry &lt;String, byte[]&gt; e : ((HashMap&lt;String, byte[]&gt;)ByteRay.getJiraAttachments(tResult)).entrySet()){
-		JiraWFEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
+		JiraEndpoint.addAttachment(issue, e.getValue(), e.getKey(), "");
 	} 
 	
 	try {
@@ -130,13 +134,15 @@ try {
 			e1.printStackTrace();
 		}
 		
-	JiraWFEndpoint.changeStatus(issue, "Waiting For DOI");
+	JiraEndpoint.changeStatus(issue, "Waiting For DOI");
 	
 } catch (Exception e) {
-	JiraWFEndpoint.changeStatus(issue, "Data Needs Correction");
+	JiraEndpoint.changeStatus(issue, "Data Needs Correction");
 	e.printStackTrace();
-	JiraWFEndpoint.newComment(issue, e.getMessage());
-}</script>
+	JiraEndpoint.addIssueComment(issue, e.getMessage());
+}
+
+System.out.println("FileWriter done");</script>
     </scriptTask>
 
     <!-- connections -->

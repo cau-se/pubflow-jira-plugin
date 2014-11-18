@@ -14,19 +14,8 @@ public class PubFlowSystem {
  
 	
 	private PubFlowSystem() {
-		String art = " _____       _     ______ _" + "\n"
-				+ "|  __ \\     | |   |  ____| |" + "\n"
-				+ "| |__) |   _| |__ | |__  | | _____      __" + "\n"
-				+ "|  ___/ | | | '_ \\|  __| | |/ _ \\ \\ /\\ / /" + "\n"
-				+ "| |   | |_| | |_) | |    | | (_) \\ V  V /" + "\n"
-				+ "|_|    \\__,_|_.__/|_|    |_|\\___/ \\_/\\_/ " + "\n"
-				+ "__________________________________________" + "\n"
-				+ "Version lite \n";
-		System.out.println(art);
-
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting PubFlow System");
-		myLogger.info("Starting JiraPlugin Endpoint");
 		
 		try {
 			JiraConnector.getInstance().start();

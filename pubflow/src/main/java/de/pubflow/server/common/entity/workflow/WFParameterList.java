@@ -232,10 +232,4 @@ public class WFParameterList{
 	public List<WFParameter> subList(int fromIndex, int toIndex) {
 		return parameterList.subList(fromIndex, toIndex);
 	}
-
-	public List<WFParameter> getParameter()
-	{
-		return parameterList;
-	}
-
 }

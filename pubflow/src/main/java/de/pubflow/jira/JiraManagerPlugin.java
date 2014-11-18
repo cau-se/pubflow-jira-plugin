@@ -31,6 +31,8 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.event.events.PluginModuleEnabledEvent;
 
 import de.pubflow.jira.misc.InternalConverterMsg;
+import de.pubflow.server.PubFlowSystem;
+import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.core.communication.WorkflowMessage;
@@ -59,6 +61,8 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 	 */
 	public JiraManagerPlugin(EventPublisher eventPublisher, IssueTypeManager issueTypeManager, FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager) {	
 		log.debug("Plugin started");
+		PubFlowSystem.getInstance();
+		
 		JiraManagerPlugin.issueTypeManager = issueTypeManager;
 		JiraManagerPlugin.fieldScreenSchemeManager = fieldScreenSchemeManager;
 		JiraManagerPlugin.statusManager = statusManager;
@@ -134,23 +138,24 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 			try {
 				WorkflowMessage wm = new WorkflowMessage();
 				WFParameterList wfpm = new WFParameterList();				
-				
+
 				for(Entry<String, String> e : msg.getValues().entrySet()) {
-					WFParameter wfp = new WFParameter();
-					wfp.setKey(e.getKey());
-					wfp.setStringValue(e.getValue());
+					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
 					wfpm.add(wfp);
 				}
 				wm.setParameters(wfpm);
-				wm.setWorkflowID(1);
+				wm.setWorkflowID("de.pubflow.OCN");
+
 				JiraConnector jpmp = JiraConnector.getInstance();
 				jpmp.compute(wm);
-				
 			} catch (Exception e){
+				e.printStackTrace();
 				JiraManagerCore.addIssueComment(issueEvent.getIssue().getKey(), e.getClass().getSimpleName() + e.getMessage(), user);
 			}
+			
 		}else if(issueEvent.getEventTypeId().equals( EventType.ISSUE_UPDATED_ID)){
 			//TODO
+			
 		}else if(issueEvent.getIssue().getStatusObject().getName().equals("Open")){
 			if(ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0){
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, "Dear " + issueEvent.getUser().getName() +" (" + issueEvent.getUser().getName() +  "),\n please append your raw data as an file attachment to this issue and provide the following information about your data as a comment:\nTitle, Authors, Cruise\n\nAfter that you can start the processing by pressing the \"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically.\nThank you!", false);
@@ -160,6 +165,5 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				issue.setAssignee(issueEvent.getIssue().getReporter());
 			}
 		}
-
 	}
 }

@@ -61,9 +61,9 @@ public class WFBroker {
 		if(type.equals(WFType.BPMN2)){
 			myLogger.info("BPMN2.0 Workflow detected");
 			myWF = new JBPMPubflow();
-			myWF.setWFID(wfEntity.getWFID());
+			myWF.setWFID(wfEntity.getWorkflowId());
 			myWF.setWfDef(wfEntity.getgBpmn());
-			myLogger.info("Set WFDef: "+wfEntity.getgBpmn().toString());
+			myLogger.info("Name : "+wfEntity.getWorkflowName());
 			//TODO fill var
 
 		}else if (type.equals(WFType.BPEL)) {
@@ -98,7 +98,7 @@ public class WFBroker {
 		}
 
 		try {
-			myLogger.info("deploying WF");
+			myLogger.info("Deploying WF");
 			engine.deployWF(myWF);
 			WFParameterList params = wm.getParameters();
 
@@ -114,17 +114,9 @@ public class WFBroker {
 			Thread wfEngineThread = new Thread(engine);
 			wfEngineThread.start();
 			myLogger.info("... engine up and running");
-			sendWFResponse("WF Started");
 
 		} catch (WFException e) {
 			e.printStackTrace();
 		}
-	}
-
-
-
-	private void sendWFResponse(String msg)
-	{
-		//TODO
 	}
 }
