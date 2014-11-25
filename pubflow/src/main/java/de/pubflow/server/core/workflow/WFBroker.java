@@ -13,7 +13,6 @@ import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.repository.WorkflowProvider;
-import de.pubflow.server.core.communication.WorkflowMessage;
 import de.pubflow.server.core.workflow.engines.JBPMEngine;
 
 public class WFBroker {

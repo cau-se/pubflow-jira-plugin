@@ -8,8 +8,8 @@ import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
-import de.pubflow.server.core.communication.WorkflowMessage;
 import de.pubflow.server.core.workflow.WFBroker;
+import de.pubflow.server.core.workflow.WorkflowMessage;
 
 public class JiraConnector {
 

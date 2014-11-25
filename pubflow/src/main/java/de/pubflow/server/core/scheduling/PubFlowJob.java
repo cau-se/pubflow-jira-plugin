@@ -7,8 +7,8 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.server.core.communication.WorkflowMessage;
 import de.pubflow.server.core.workflow.WFBroker;
+import de.pubflow.server.core.workflow.WorkflowMessage;
 
 public class PubFlowJob implements Job {
 	private static Logger myLogger;

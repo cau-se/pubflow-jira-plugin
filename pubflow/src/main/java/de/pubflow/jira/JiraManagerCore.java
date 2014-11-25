@@ -76,8 +76,8 @@ import com.opensymphony.workflow.loader.RestrictionDescriptor;
 import com.opensymphony.workflow.loader.StepDescriptor;
 
 import de.pubflow.jira.misc.ConditionDefinition;
-import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.ConditionDefinition.ConditionDefinitionType;
+import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 
 /**

@@ -1,4 +1,4 @@
-package de.pubflow.server.core.communication;
+package de.pubflow.server.core.workflow;
 
 import java.sql.Timestamp;
 
@@ -11,7 +11,7 @@ import de.pubflow.server.common.enumeration.WFState;
 import de.pubflow.server.common.enumeration.WFType;
 
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
-public class WorkflowMessage extends Message {
+public class WorkflowMessage{
 
 	protected String workflowID = "";
 	protected WFType type = null;
@@ -241,7 +241,6 @@ public class WorkflowMessage extends Message {
 		this.pubflowVersion = pubflowVersion;
 	}
 
-	@Override
 	public boolean isValid() {
 		// TODO Auto-generated method stub
 		return true;

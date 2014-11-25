@@ -1,4 +1,4 @@
-package de.pubflow.jira;
+package de.pubflow.server.core.jira;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,6 +7,9 @@ import java.util.List;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
+
+import de.pubflow.jira.JiraManagerCore;
+import de.pubflow.jira.JiraManagerPlugin;
 
 @WebService(targetNamespace = "pubflow.de")//(endpointInterface = "de.pubflow.jira.ws.IJiraEndpoint")
 @SOAPBinding(style = Style.DOCUMENT)

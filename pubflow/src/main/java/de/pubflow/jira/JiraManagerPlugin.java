@@ -32,11 +32,10 @@ import com.atlassian.plugin.event.events.PluginModuleEnabledEvent;
 
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.PubFlowSystem;
-import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
-import de.pubflow.server.core.communication.WorkflowMessage;
 import de.pubflow.server.core.jira.JiraConnector;
+import de.pubflow.server.core.workflow.WorkflowMessage;
 
 
 /**

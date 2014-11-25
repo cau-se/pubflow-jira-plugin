@@ -16,7 +16,6 @@ public class ByteRay {
 		return map;
 	}
 	
-
 	public static HashMap<String, byte[]> newJiraComment(HashMap<String, byte[]> map, String String){
 		int commentsId = Integer.parseInt(new String(map.get("commentCounter")));
 		map.put(COMMENT + commentsId, String.getBytes());
