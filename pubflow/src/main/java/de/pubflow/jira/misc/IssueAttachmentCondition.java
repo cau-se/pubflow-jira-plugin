@@ -15,13 +15,6 @@ public class IssueAttachmentCondition extends com.atlassian.jira.workflow.condit
 			if(transientVars.get("issue") instanceof Issue){
 				Issue issue = (Issue) transientVars.get("issue");
 				if(issue != null){
-
-					//getAttachments results in NPE when attachment count is 0
-					//at com.atlassian.jira.issue.managers.DefaultAttachmentManager.getStoredAttachments(DefaultAttachmentManager.java:133)
-					//at com.atlassian.jira.issue.managers.DefaultAttachmentManager.getAttachments(DefaultAttachmentManager.java:125)
-					//at com.atlassian.jira.issue.AbstractIssue.getAttachments(AbstractIssue.java:97)
-					//at de.pubflow.jira.misc.IssueAttachmentCondition.passesCondition(IssueAttachmentCondition.java:25)
-
 					try{
 						if(issue.getAttachments().size() >= 1){
 							return true;

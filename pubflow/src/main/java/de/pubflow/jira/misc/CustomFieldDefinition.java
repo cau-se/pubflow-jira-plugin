@@ -29,8 +29,6 @@ public class CustomFieldDefinition {
 		public void setType(String type) {
 			this.type = type;
 		}
-
-
 	};
 
 	private String name;
@@ -74,7 +72,4 @@ public class CustomFieldDefinition {
 	public void setScreens(String[] screens) {
 		this.screens = screens;
 	}
-
-
-
 }

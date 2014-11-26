@@ -6,8 +6,7 @@
             url: url,
             dataType: "json"
         }).done(function(config) { 
-            $("#name").val(config.name);
-            $("#time").val(config.time);
+            $("#homedir").val(config.homedir);
         });
     });
 
@@ -27,3 +26,5 @@ AJS.$("#admin").submit(function(e) {
         e.preventDefault();
         updateConfig();
     });
+    
+    

@@ -24,26 +24,19 @@ import com.atlassian.sal.api.user.UserManager;
 @Path("/")
 public class ConfigResource{
 
+	private static ConfigResource configResource; 
+
 	@XmlRootElement
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static final class Config{
-		@XmlElement private String name;
-		@XmlElement private int time;
+		@XmlElement private String homedir;
 
-		public String getName(){
-			return name;
+		public String getHomedir(){
+			return homedir;
 		}
 
-		public void setName(String name){
-			this.name = name;
-		}
-
-		public int getTime(){
-			return time;
-		}
-
-		public void setTime(int time){
-			this.time = time;
+		public void setHomedir(String homedir){
+			this.homedir = homedir;
 		}
 	}
 
@@ -65,15 +58,7 @@ public class ConfigResource{
 		if (username == null || !userManager.isSystemAdmin(username)){
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
-
-		transactionTemplate.execute(new TransactionCallback(){
-			public Object doInTransaction(){
-				PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
-				pluginSettings.put(Config.class.getName() + ".name", config.getName());
-				pluginSettings.put(Config.class.getName()  +".time", Integer.toString(config.getTime()));
-				return null;
-			}
-		});
+		writeToSettings(config);
 		return Response.noContent().build();
 	}
 
@@ -81,22 +66,43 @@ public class ConfigResource{
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request){
 		String username = userManager.getRemoteUsername(request);
+
 		if (username == null || !userManager.isSystemAdmin(username)){
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
 
-		return Response.ok(transactionTemplate.execute(new TransactionCallback(){
+		return Response.ok(loadFromSettings()).build();
+	}
+
+	public Config loadFromSettings(){
+		Config config = (Config) transactionTemplate.execute(new TransactionCallback(){
 			public Object doInTransaction(){
 				PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
 				Config config = new Config();
-				config.setName((String) settings.get(Config.class.getName() + ".name"));
+				config.setHomedir((String) settings.get(Config.class.getName() + ".homedir"));
 
-				String time = (String) settings.get(Config.class.getName() + ".time");
-				if (time != null){
-					config.setTime(Integer.parseInt(time));
-				}
 				return config;
 			}
-		})).build();
+		});
+
+		return config;
+	}
+
+	public void writeToSettings(final Config config){
+		transactionTemplate.execute(new TransactionCallback(){
+			public Object doInTransaction(){
+				PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
+				pluginSettings.put(Config.class.getName() + ".homedir", config.getHomedir());
+				return null;
+			}
+		});
+	}
+
+	public static ConfigResource getInstance() throws Exception {
+		if(configResource != null){
+			throw new Exception("ConfigResource hasn't been initialized yet!");
+		}else{
+			return configResource;
+		}
 	}
 }

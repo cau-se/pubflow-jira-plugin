@@ -13,6 +13,7 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 
 public class AdminServlet extends HttpServlet{
 
+	private static final long serialVersionUID = 8901638337581658348L;
 	private final UserManager userManager;
 	private final LoginUriProvider loginUriProvider;
 	private final TemplateRenderer renderer;

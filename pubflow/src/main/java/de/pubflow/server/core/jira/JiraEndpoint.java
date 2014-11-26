@@ -10,6 +10,9 @@ import javax.jws.soap.SOAPBinding.Style;
 
 import de.pubflow.jira.JiraManagerCore;
 import de.pubflow.jira.JiraManagerPlugin;
+import de.pubflow.jira.accessors.JiraObjectCreator;
+import de.pubflow.jira.accessors.JiraObjectGetter;
+import de.pubflow.jira.accessors.JiraObjectManipulator;
 
 @WebService(targetNamespace = "pubflow.de")//(endpointInterface = "de.pubflow.jira.ws.IJiraEndpoint")
 @SOAPBinding(style = Style.DOCUMENT)
@@ -30,7 +33,7 @@ public class JiraEndpoint{
 	public static String createIssue(String projectKey, String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
 		try {
 			
-			return JiraManagerCore.newIssue(projectKey, workflowName, summary, JiraManagerPlugin.user, description, parameters, reporter);
+			return JiraObjectCreator.createIssue(projectKey, workflowName, summary, JiraManagerPlugin.user, description, parameters, reporter);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -71,7 +74,7 @@ public class JiraEndpoint{
 	 */
 	
 	public static boolean changeStatus(String issueKey, String statusName) {
-		return JiraManagerCore.changeStatus(issueKey, statusName);
+		return JiraObjectManipulator.changeStatus(issueKey, statusName);
 	}
 
 	/**
@@ -83,7 +86,7 @@ public class JiraEndpoint{
 	 */
 	
 	public static boolean addIssueComment(String issueKey, String comment){
-		if(JiraManagerCore.addIssueComment(issueKey, comment, JiraManagerPlugin.user) == null){
+		if(JiraObjectManipulator.addIssueComment(issueKey, comment, JiraManagerPlugin.user) == null){
 			return false;
 		}else{
 			return true;
@@ -99,7 +102,7 @@ public class JiraEndpoint{
 	 */
 	
 	public static LinkedList<String> getStatusNames(String projectKey){
-		List<String> statusNames = JiraManagerCore.getStatusNames(projectKey);
+		List<String> statusNames = JiraObjectGetter.getStatusNames(projectKey);
 		LinkedList<String> namesList = new LinkedList<String>();
 
 		namesList.addAll(statusNames);
@@ -147,13 +150,13 @@ public class JiraEndpoint{
 		System.out.println(type);
 
 
-		JiraManagerCore.addAttachment(issueKey, barray, fileName, type, JiraManagerPlugin.user);
+		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, JiraManagerPlugin.user);
 
 		return true;
 	}
 
 	public static boolean addWorkflow(String projectKey, String workflowXML){
-		JiraManagerCore.addWorkflow(projectKey, workflowXML, JiraManagerPlugin.user);
+		JiraObjectManipulator.addWorkflow(projectKey, workflowXML, JiraManagerPlugin.user);
 
 		return true;
 	}

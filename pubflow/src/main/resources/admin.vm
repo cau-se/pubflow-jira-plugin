@@ -1,18 +1,14 @@
 <html>
   	<head>
-    	<title>XProduct Admin</title>
+    	<title>PubFlow Admin</title>
     	<meta name="decorator" content="atl.admin">
 		$webResourceManager.requireResource("de.pubflow:resources")
   	</head>
   	<body>
     	<form id="admin" class="aui">
 	  		<div class="field-group">
-    			<label for="name">Name:</label>
-    			<input type="text" id="name" name="name" class="text">
-   			</div>
-   			<div class="field-group">
-	     		<label for="time">Time:</label>
-    	 		<input type="text" id="time" name="time" class="text">
+    			<label for="name">Home Directory Path:</label>
+    			<input type="text" id="homedir" name="homedir" class="text">
    			</div>
    				<div class="field-group">
 	     		<input type="submit" value="Save" class="button">

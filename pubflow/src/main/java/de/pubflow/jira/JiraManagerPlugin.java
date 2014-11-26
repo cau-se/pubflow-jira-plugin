@@ -30,13 +30,16 @@ import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.event.events.PluginModuleEnabledEvent;
 
+import de.pubflow.jira.accessors.JiraObjectGetter;
+import de.pubflow.jira.accessors.JiraObjectManipulator;
+import de.pubflow.jira.configuration.ConfigResource;
+import de.pubflow.jira.configuration.ConfigResource.Config;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.core.jira.JiraConnector;
 import de.pubflow.server.core.workflow.WorkflowMessage;
-
 
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
@@ -45,13 +48,13 @@ import de.pubflow.server.core.workflow.WorkflowMessage;
 public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 	private static final Logger log = LoggerFactory.getLogger(JiraManagerPlugin.class);
 
-	protected static IssueTypeManager issueTypeManager;
-	protected static EventPublisher eventPublisher;
-	protected static FieldScreenSchemeManager fieldScreenSchemeManager;
-	protected static StatusManager statusManager;
-	public static ApplicationUser user = JiraManagerCore.getUserByName("PubFlow");
+	public static IssueTypeManager issueTypeManager;
+	public static EventPublisher eventPublisher;
+	public static FieldScreenSchemeManager fieldScreenSchemeManager;
+	public static StatusManager statusManager;
+	public static ApplicationUser user = JiraObjectGetter.getUserByName("PubFlow");
 
-	protected static final SecureRandom secureRandom = new SecureRandom();
+	public static final SecureRandom secureRandom = new SecureRandom();
 
 
 	/**
@@ -61,14 +64,37 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 	public JiraManagerPlugin(EventPublisher eventPublisher, IssueTypeManager issueTypeManager, FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager) {	
 		log.debug("Plugin started");
 		PubFlowSystem.getInstance();
-		
+
 		JiraManagerPlugin.issueTypeManager = issueTypeManager;
 		JiraManagerPlugin.fieldScreenSchemeManager = fieldScreenSchemeManager;
 		JiraManagerPlugin.statusManager = statusManager;
-
 		JiraManagerPlugin.eventPublisher = eventPublisher;
+
+		try{
+			ConfigResource configResource = ConfigResource.getInstance();
+			Config config = configResource.loadFromSettings();
+			if(config.getHomedir().equals("")){
+				config.setHomedir("/home/arl/pubflow_home/");
+				configResource.writeToSettings(config);
+			}
+		}catch(Exception e){
+			log.error(e.getMessage());
+		}
 	}
 
+	@EventListener
+	public void init(PluginModuleEnabledEvent e){
+		try {
+			JiraManagerCore.initPubFlowProject();
+		} catch (KeyManagementException | UnrecoverableKeyException
+				| GenericEntityException | NoSuchAlgorithmException
+				| KeyStoreException | CertificateException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		user = JiraObjectGetter.getUserByName("PubFlow");
+	}
+	
 	static String getTextResource(String resourceName){ 
 		StringBuffer content = new StringBuffer();
 
@@ -83,20 +109,6 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 			e.printStackTrace();
 		}
 		return content.toString();
-	}
-
-	@EventListener
-	public void init(PluginModuleEnabledEvent e){
-		try {
-			JiraManagerCore.initPubFlowProject();
-		} catch (KeyManagementException | UnrecoverableKeyException
-				| GenericEntityException | NoSuchAlgorithmException
-				| KeyStoreException | CertificateException | IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		user = JiraManagerCore.getUserByName("PubFlow");
-
 	}
 
 	/**
@@ -118,7 +130,6 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		// unregister ourselves with the EventPublisher
 		eventPublisher.unregister(this);
 	}
-
 
 	/**
 	 * Receives any {@code IssueEvent}s sent by JIRA.
@@ -149,16 +160,23 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				jpmp.compute(wm);
 			} catch (Exception e){
 				e.printStackTrace();
-				JiraManagerCore.addIssueComment(issueEvent.getIssue().getKey(), e.getClass().getSimpleName() + e.getMessage(), user);
+				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), e.getClass().getSimpleName() + e.getMessage(), user);
 			}
-			
+
 		}else if(issueEvent.getEventTypeId().equals( EventType.ISSUE_UPDATED_ID)){
 			//TODO
-			
+
 		}else if(issueEvent.getIssue().getStatusObject().getName().equals("Open")){
 			if(ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0){
-				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, "Dear " + issueEvent.getUser().getName() +" (" + issueEvent.getUser().getName() +  "),\n please append your raw data as an file attachment to this issue and provide the following information about your data as a comment:\nTitle, Authors, Cruise\n\nAfter that you can start the processing by pressing the \"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically.\nThank you!", false);
-				JiraManagerCore.addAttachment(issueEvent.getIssue().getKey(), new byte[]{0}, "rawdata", "txt", user);
+
+				String txtmsg = "Dear " + issueEvent.getUser().getName() +" (" + issueEvent.getUser().getName() +  
+						"),\n please append your raw data as an file attachment to this issue and provide the following information "
+						+ "about your data as a comment:\nTitle, Authors, Cruise\n\nAfter that you can start the processing by pressing the "
+						+ "\"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically."
+						+ "\nThank you!";
+
+				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
+				JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(), new byte[]{0}, "rawdata", "txt", user);
 			}else{
 				MutableIssue issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueEvent.getIssue().getKey());
 				issue.setAssignee(issueEvent.getIssue().getReporter());
