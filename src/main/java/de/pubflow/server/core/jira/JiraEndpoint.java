@@ -124,7 +124,7 @@ public class JiraEndpoint{
 	
 	public static boolean createProject(String projectName, String projectKey, String workflowXML, LinkedList<String> steps) {
 		try {
-			JiraManagerCore.initProject(projectName, projectKey, JiraManagerPlugin.user, false);
+			JiraObjectCreator.createProject(projectName, projectKey, JiraManagerPlugin.user, false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

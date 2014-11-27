@@ -61,55 +61,6 @@ public class JiraManagerCore {
 
 	private static Logger log = Logger.getLogger(JiraManagerCore.class.getName());
 
-	/**
-	 * Creates a new Jira project
-	 * 
-	 * @param projectName : the name of the new project
-	 * @param projectKey : the project's key
-	 * @param workflowXML : the Jira workflow, can be null
-	 * @param statuses : list of statuses (steps) provided by the assigned workflow
-	 * 
-	 * @return returns true if project has been created successfully
-	 * @throws Exception 
-	 */
-
-	public static void initProject(String projectName, String projectKey, ApplicationUser user, boolean kill) throws Exception{
-		log.debug("initProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
-
-		if (user != null){
-			log.debug("initProject - user : " + user.getUsername());
-		}else{
-			log.error("initProject - user null");
-			throw new Exception("User is null");
-		}
-
-		if(projectKey.length() > 4){
-			throw new Exception("error: project key length > 4 ! ");
-		}
-
-		// if kill is set ALL issue types will be deleted
-		if(kill){
-			for(IssueType it :JiraManagerPlugin.issueTypeManager.getIssueTypes()){
-				try{
-					JiraManagerPlugin.issueTypeManager.removeIssueType(it.getId(), null);
-				}catch(Exception e){
-					System.out.println("Unable to delete IssueType " + it.getName());
-				}
-			}	
-		}
-
-		//create a list of project contexts for which the custom field needs to be available
-		List<JiraContextNode> contexts = new ArrayList<JiraContextNode>();
-		contexts.add(GlobalIssueContext.getInstance());
-
-		Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
-
-		if(project == null){
-
-			project = ComponentAccessor.getProjectManager().createProject(projectName, projectKey, "", user.getUsername(), "", 0l);
-			ComponentAccessor.getPermissionSchemeManager().addDefaultSchemeToProject(project);
-		}
-	}
 
 	public static void initPubFlowProject() throws GenericEntityException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException{
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, "PubFlow Jira");
@@ -163,7 +114,7 @@ public class JiraManagerCore {
 				statuses.add("Closed");
 				statuses.add("Done");
 				statuses.add("Rejected");
-				initProject("PubFlow", "PUB", userPubFlow, false);
+				JiraObjectCreator.createProject("PubFlow", "PUB", userPubFlow, false);
 
 
 

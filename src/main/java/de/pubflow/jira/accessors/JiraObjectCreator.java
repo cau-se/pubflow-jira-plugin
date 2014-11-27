@@ -63,6 +63,54 @@ public class JiraObjectCreator {
 
 	private static Logger log = Logger.getLogger(JiraManagerCore.class.getName());
 
+	/**
+	 * Creates a new Jira project
+	 * 
+	 * @param projectName : the name of the new project
+	 * @param projectKey : the project's key
+	 * @param workflowXML : the Jira workflow, can be null
+	 * @param statuses : list of statuses (steps) provided by the assigned workflow
+	 * 
+	 * @return returns true if project has been created successfully
+	 * @throws Exception 
+	 */
+	public static void createProject(String projectName, String projectKey, ApplicationUser user, boolean kill) throws Exception{
+		log.debug("createProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
+
+		if (user != null){
+			log.debug("createProject - user : " + user.getUsername());
+		}else{
+			log.error("createProject - user null");
+			throw new Exception("User is null");
+		}
+
+		if(projectKey.length() > 4){
+			throw new Exception("error: project key length > 4 ! ");
+		}
+
+		// if kill is set ALL issue types will be deleted
+		if(kill){
+			for(IssueType it :JiraManagerPlugin.issueTypeManager.getIssueTypes()){
+				try{
+					JiraManagerPlugin.issueTypeManager.removeIssueType(it.getId(), null);
+				}catch(Exception e){
+					System.out.println("Unable to delete IssueType " + it.getName());
+				}
+			}	
+		}
+
+		//create a list of project contexts for which the custom field needs to be available
+		List<JiraContextNode> contexts = new ArrayList<JiraContextNode>();
+		contexts.add(GlobalIssueContext.getInstance());
+
+		Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
+
+		if(project == null){
+
+			project = ComponentAccessor.getProjectManager().createProject(projectName, projectKey, "", user.getUsername(), "", 0l);
+			ComponentAccessor.getPermissionSchemeManager().addDefaultSchemeToProject(project);
+		}
+	}
 	
 	/**
 	 * Creates a new Issue in Jira
