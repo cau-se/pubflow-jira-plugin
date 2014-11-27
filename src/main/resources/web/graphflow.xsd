@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.pubflow.uni-kiel.de"
+xmlns="http://www.pubflow.uni-kiel.de"
+xmlns:gf="http://www.pubflow.uni-kiel.de"
+elementFormDefault="qualified">
+	<xsd:element name="Graph">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="NodeList" minOccurs="1" maxOccurs="1"/>
+				<xsd:element ref="EdgeList" minOccurs="1" maxOccurs="1"/>
+				<xsd:element ref="LayoutData" minOccurs="0" maxOccurs="1"/>
+			</xsd:sequence>
+		</xsd:complexType>
+		<xsd:key name="NodeKey"> 
+			<xsd:selector xpath="gf:NodeList/Node"/> 
+			<xsd:field xpath="@NodeID"/> 
+		</xsd:key>
+		<xsd:keyref name="SourceNodeKeyRef" refer="gf:NodeKey"> 
+			<xsd:selector xpath="gf:EdgeList/Edge"/> 
+			<xsd:field xpath="@Source"/> 
+		</xsd:keyref>
+		<xsd:keyref name="TargetNodeKeyRef" refer="gf:NodeKey"> 
+			<xsd:selector xpath="gf:EdgeList/Edge"/> 
+			<xsd:field xpath="@Target"/> 
+		</xsd:keyref>
+		<xsd:keyref name="DataNodeKeyRef" refer="gf:NodeKey"> 
+			<xsd:selector xpath="gf:NodeList/DataObject/DataNodeRef"/> 
+			<xsd:field xpath="@Value"/> 
+		</xsd:keyref>
+		
+		<xsd:key name="PortKey"> 
+			<xsd:selector xpath="gf:NodeList/PortNode/Port"/> 
+			<xsd:field xpath="@PortID"/> 
+		</xsd:key>
+		<xsd:keyref name="SourcPortKeyRef" refer="gf:PortKey"> 
+			<xsd:selector xpath="gf:EdgeList/Edge"/> 
+			<xsd:field xpath="@Source"/> 
+		</xsd:keyref>
+		<xsd:keyref name="TargetPortKeyRef" refer="gf:PortKey"> 
+			<xsd:selector xpath="gf:EdgeList/Edge"/> 
+			<xsd:field xpath="@Target"/> 
+		</xsd:keyref>
+	</xsd:element>
+	
+	<xsd:element name="NodeList">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Node" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="EdgeList">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Edge" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="LayoutData">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="NodeStyle" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:attribute name="Type" type="xsd:string" use="optional" default="#all"/>
+						<xsd:attribute name="FillColor" type="xsd:string" use="optional"/>
+						<xsd:attribute name="StrokeColor" type="xsd:string" use="optional"/>
+						<xsd:attribute name="TextColor" type="xsd:string" use="optional"/>
+						<xsd:attribute name="Font" type="xsd:string" use="optional"/>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Icon" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:attribute name="IconID" type="xsd:string" use="required"/>
+						<xsd:attribute name="URL" type="xsd:string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="MarkStrokeColor" type="xsd:string" use="optional"/>
+			<xsd:attribute name="MarkFillColor" type="xsd:string" use="optional"/>
+			<xsd:attribute name="EdgeColor" type="xsd:string" use="optional"/>
+			<xsd:attribute name="HoverStrokeColor" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="Edge">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="DataObject" minOccurs="0" maxOccurs="1"/>
+			</xsd:sequence>
+			<xsd:attribute name="Label" type="xsd:string" use="optional"/>
+			<xsd:attribute name="Type" type="xsd:string" use="optional" default="flowArrow"/>
+			<xsd:attribute name="Source" use="required"/>
+			<xsd:attribute name="Target" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="Node" type="NodeExt" abstract="true"/>
+	<xsd:element name="CustomNode" type="NodeExtCustom" substitutionGroup="Node"/>
+	<xsd:element name="PortNode" type="NodeExtPorts" substitutionGroup="Node"/>
+		
+	
+	<xsd:element name="Port">
+		<xsd:complexType>
+			<xsd:attribute name="PortID" type="xsd:string" use="required"/>
+			<xsd:attribute name="Tooltip" type="xsd:string" use="optional"/>
+			<xsd:attribute name="PortType" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="input"/>
+						<xsd:enumeration value="output"/>
+						<xsd:enumeration value="repository"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="DataBase" type="DataExt" abstract="true"/>
+	<xsd:element name="DataString" type="DataExtString" substitutionGroup="DataBase"/>
+	<xsd:element name="DataNodeRef" type="DataExtString" substitutionGroup="DataBase"/>
+	<xsd:element name="DataNumber" type="DataExtNumber" substitutionGroup="DataBase"/>
+	<xsd:element name="DataBoolean" type="DataExtBoolean" substitutionGroup="DataBase"/>
+	<xsd:element name="DataObject" type="DataExtObject" substitutionGroup="DataBase">
+		<xsd:key name="DataObjectKey"> 
+			<xsd:selector xpath="gf:DataObject"/> 
+			<xsd:field xpath="@Key"/> 
+		</xsd:key>
+	</xsd:element>
+	
+<!-- COMPLEX TYPES -->
+	<xsd:complexType name="NodeExt">
+			<xsd:sequence>
+				<xsd:element ref="DataObject" minOccurs="0" maxOccurs="1"/>
+			</xsd:sequence>
+			<xsd:attribute name="Label" type="xsd:string" use="optional"/>
+			<xsd:attribute name="Tooltip" type="xsd:string" use="optional"/>
+			<xsd:attribute name="NodeID" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="[^#][^\s]*"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:complexType name="NodeExtPorts">
+		<xsd:complexContent> 
+			<xsd:extension base="NodeExt" > 
+				<xsd:sequence> 
+					<xsd:element ref="Port" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence> 
+				<xsd:attribute name="IconID" type="xsd:string" use="optional"/>
+			</xsd:extension> 
+		</xsd:complexContent> 
+	</xsd:complexType>
+	
+	<xsd:complexType name="NodeExtCustom">
+		<xsd:complexContent> 
+			<xsd:extension base="NodeExt"> 
+				<xsd:sequence> 
+					<xsd:element ref="NodeList" minOccurs="0" maxOccurs="1"/>
+				</xsd:sequence> 
+				<xsd:attribute name="Type" type="xsd:string" use="required"/>
+			</xsd:extension> 
+		</xsd:complexContent> 
+	</xsd:complexType>
+	
+	<xsd:complexType name="DataExt">
+		<xsd:attribute name="Key" type="xsd:string" use="required"/>
+		<xsd:attribute name="Value" use="required"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="DataExtString">
+		<xsd:complexContent>
+			<xsd:restriction base="DataExt">
+				<xsd:attribute name="Key" type="xsd:string" use="required"/>
+				<xsd:attribute name="Value" type="xsd:string" use="required"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="DataExtNodeRef">
+		<xsd:complexContent>
+			<xsd:restriction base="DataExt">
+				<xsd:attribute name="Key" type="xsd:string" use="required"/>
+				<xsd:attribute name="Value" type="xsd:string" use="required"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="DataExtNumber">
+		<xsd:complexContent>
+			<xsd:restriction base="DataExt">
+				<xsd:attribute name="Key" type="xsd:string" use="required"/>
+				<xsd:attribute name="Value" type="xsd:double" use="required"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="DataExtBoolean">
+		<xsd:complexContent>
+			<xsd:restriction base="DataExt">
+				<xsd:attribute name="Key" type="xsd:string" use="required"/>
+				<xsd:attribute name="Value" type="xsd:boolean" use="required"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="DataExtObject">
+		<xsd:complexContent>
+			<xsd:extension base="DataExt">
+				<xsd:sequence>
+					<xsd:element ref="DataBase" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+				<xsd:attribute name="Value" use="prohibited"/>
+				<xsd:attribute name="IsArray" type="xsd:boolean" use="optional" default="false"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>
