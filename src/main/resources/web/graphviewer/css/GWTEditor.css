@@ -1,0 +1,247 @@
+.graphPanel{
+	border-style : none;
+}
+
+.sidePanel{
+	padding : 0px;
+	border-bottom: 0px;
+	margin: 0px;
+	height : 100%;
+}
+
+.notificationBox{
+	background : #e8e8e8;
+	color : #666666;
+	padding : 1EM;
+	white-space: pre;
+}
+
+.nodePropertyTable{
+	border-collapse: collapse;
+	padding: 0;
+	margin: 0;
+	color : #cccccc;
+	width : 100%;
+}
+
+.nodePropertyTableTitleKey{
+	height: 1.5EM;
+	padding-right: 0.7EM;
+	padding-left: 0px;
+	color : #aaaaaa;
+	background-color : white;
+	float : right;
+	font-weight : bold;
+	border-style : none;
+}
+
+.nodePropertyTableTitleValue{
+	padding-left: 0.4EM;
+	height: 1.5EM;
+	color : #aaaaaa;
+	font-weight : bold;
+}
+
+.nodePropertyTableKey{
+	height: 1.5EM;
+	padding-right: 0.4EM;
+	padding-left: 0px;
+	color : black;
+	background-color : white;
+	width: 100%;
+	float : right;
+	border-style : none;
+}
+
+.nodePropertyTableValue{
+	padding: 0px;
+	padding-left: 0.4EM;
+	height: 1.5EM;
+	color : #0066cc;
+	font-family : serif;
+	border-style : none;
+}
+
+.textAreaBox {
+  padding: 2px 2px;
+  border: 1px solid #ccc;
+  border-top: 1px solid #999;
+  font-size: small;
+  font-family: Arial Unicode MS, Arial, sans-serif;
+  width: 100%;
+  height: 2EM;
+}
+
+.graphStyleClean {
+	color :	#333333;
+	background : #d3def6;
+	border: #8E8E8E;
+}
+.graphStyleCleanFocus {
+	color : #cccccc;
+	background : #EBEFF9;
+	border: #0066cc;
+}
+.graphStyleStandard {
+	color :	#333333;
+	background : #d3def6;
+	border: #8E8E8E;
+}
+.graphStyleStandardFocus {
+	color : #92C1F0;
+	background : #FFFFFF;
+	border: #0066cc;
+}
+.graphStyleChrome {
+	color :	#333333;
+	background : #dedede;
+	border: #8E8E8E;
+}
+.graphStyleChromeFocus {
+	color : #cccccc;
+	background : #F5F5F5;
+	border: #0066cc;
+}
+.graphStyleDark {
+	color :	#BEC7CC;
+	background : #666666;
+	border: #BEC7CC;
+}
+.graphStyleDarkFocus {
+	color : #444444;
+	background : #222222;
+	border: #00CCFF;
+}
+
+.unselectable {
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+    -webkit-user-select: none; 
+    -o-user-select: none; 
+	cursor: default;
+}
+
+.imageScrollPanel {
+	padding: 0;
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	margin-bottom: 0.5EM;	
+}
+
+.noPadding{
+	border-right-style: none;
+}
+
+.noBorder{
+	padding: 0;
+}
+
+.smallPadding{
+	padding: 0.5EM;
+}
+
+.textField{
+	width: 100%;
+	height: 2EM;
+}
+
+.iconHolder{
+	background-color : #EBEFF9;
+	width: 75px;
+	height: 75px;
+	text-align: center;
+	padding: 0;
+	max-height: 75px;
+ 	max-width: 75px;
+}
+
+.imageGrid{
+	border-collapse: collapse;
+	padding: 0;
+	margin: 0;
+}
+
+.imageGridLabel{
+	text-align: center;
+	margin-top: 5%;
+}
+
+.imageGridCell{
+	padding: 10%;
+	margin: 0px;
+}
+
+.imageGridCellSelected{
+	padding: 10%;
+	margin: 0px;
+	background-color: #3333DD;
+}
+
+.popupTitle{
+	padding: 0;
+	padding-left: 5%;
+	width: 95%;
+	height: 1.5EM;
+	background-color: #330000;
+	color: #FFFFFF;
+}
+
+.popupCaption{
+	padding-left: 0;
+	padding-top: 0;
+	border-width: 0;
+}
+
+.popupPanel{
+	padding: 0;
+	width: 100%;
+}
+
+.popupPanelInner{
+	width: 50%;
+}
+
+.popupPanelHalf{
+	margin: 0.5EM;
+	padding: 0;
+	float: right;
+	width: 100%;
+}
+
+.popupButtonPanel{
+	float: right;
+}
+
+.topButtonBarInner{
+	height: 2.2EM;
+	border-right-style: none;
+	border-width: 1px;
+	padding-top: 2px;
+	padding-left: 1EM;
+	padding-right: 1EM;
+}
+
+.topButtonBarButton{
+	height: 1.8EM;
+	margin-left: 0.1EM;
+	margin-right: 0.1EM;
+}
+
+.topButtonBarToggleButton{
+	height: 1.15EM;
+	margin-left: 0.2EM;
+	margin-right: 0.2EM;
+}
+.topButtonBarToggleButton-up-hovering{
+	height: 1.15EM;
+	margin-left: 0.2EM;
+	margin-right: 0.2EM;
+}
+.topButtonBarToggleButton-down, .topButtonBarToggleButton-down-hovering{
+	height: 1.15EM;
+	margin-left: 0.2EM;
+	margin-right: 0.2EM;
+}
