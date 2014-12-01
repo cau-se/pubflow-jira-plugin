@@ -8,7 +8,6 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
-import de.pubflow.jira.JiraManagerCore;
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
@@ -29,10 +28,10 @@ public class JiraEndpoint{
 	 * @return returns the issue id 
 	 * 
 	 **/
-	
+
 	public static String createIssue(String projectKey, String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
 		try {
-			
+
 			return JiraObjectCreator.createIssue(projectKey, workflowName, summary, JiraManagerPlugin.user, description, parameters, reporter);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -49,30 +48,23 @@ public class JiraEndpoint{
 	 * @param parameters : list of custom fields (name : default value)
 	 * @return returns the issue type id
 	 */
-	
+
 	public static String createIssueType(String projectKey, String issueTypeName, HashMap<String, String> parameters) {
 
-//TODO
-//		String id = null; 
-//
-//		try {
-//			id = JiraManagerPlugin.jiraManaCore.newIssueType(projectKey, issueTypeName, parameters);
-//
-//		} catch (GenericEntityException e) {
-//			e.printStackTrace();
-//		}		
-//		return id;
-		return null;
+		String id = null; 
+		//id = JiraObjectCreator.createIssueType(projectKey, issueTypeName, parameters);
+
+		return id;
 	}
 
 	/**
 	 * Changes the status of an issue
 	 * 
 	 * @param issueKey  : issue key
-	 * @param statusName : has to be a preexisiting status name, eg. provided by getStatusNames(..) 
+	 * @param statusName : has to be a already exisiting status name, eg. provided by getStatusNames(..) 
 	 * @return returns true if the change has been processed successfully
 	 */
-	
+
 	public static boolean changeStatus(String issueKey, String statusName) {
 		return JiraObjectManipulator.changeStatus(issueKey, statusName);
 	}
@@ -84,7 +76,7 @@ public class JiraEndpoint{
 	 * @param comment 
 	 * @return returns if the new comment has been added successful
 	 */
-	
+
 	public static boolean addIssueComment(String issueKey, String comment){
 		if(JiraObjectManipulator.addIssueComment(issueKey, comment, JiraManagerPlugin.user) == null){
 			return false;
@@ -100,7 +92,7 @@ public class JiraEndpoint{
 	 * @param projectKey : the projects key
 	 * @return returns a string array of all available status names
 	 */
-	
+
 	public static LinkedList<String> getStatusNames(String projectKey){
 		List<String> statusNames = JiraObjectGetter.getStatusNames(projectKey);
 		LinkedList<String> namesList = new LinkedList<String>();
@@ -121,7 +113,7 @@ public class JiraEndpoint{
 	 * 
 	 * @return returns true if project has been created successfully
 	 */
-	
+
 	public static boolean createProject(String projectName, String projectKey, String workflowXML, LinkedList<String> steps) {
 		try {
 			JiraObjectCreator.createProject(projectName, projectKey, JiraManagerPlugin.user, false);
@@ -140,7 +132,7 @@ public class JiraEndpoint{
 	 * @param fileName
 	 * @param type
 	 */
-	
+
 	public static boolean addAttachment(String issueKey, byte[]barray, String fileName, String type){
 
 		System.out.println("RECEIVED ATTACHMENT ------------------------------------------------>");

@@ -34,9 +34,14 @@
 		<description>Provides REST resources for the admin UI.</description>
 	</rest>
 
-	<web-resource name="Admin Web Resources" key="resources">
+	<web-resource name="Settings Resource" key="resources">
 		<dependency>com.atlassian.auiplugin:ajs</dependency>
-		<resource type="download" name="admin.js" location="admin.js" />
+		<resource type="download" name="admin.js" location="/web/admin/admin.js" />
+	</web-resource>
+
+	<web-resource name="Graphviewer Resource" key="resources">
+		<dependency>com.atlassian.auiplugin:ajs</dependency>
+		<resource type="download" name="flowEditorExample.js" location="/web/graphviewer/flowEditorExample.js" />
 	</web-resource>
 
 	<web-item key="jira-menu-item" name="PubFlow Admin"
