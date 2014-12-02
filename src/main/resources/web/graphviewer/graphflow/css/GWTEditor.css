@@ -17,22 +17,19 @@
 }
 
 .nodePropertyTable{
-	border-collapse: collapse;
-	padding: 0;
-	margin: 0;
+	border-style : solid;
+	border-width : 1px;
 	color : #cccccc;
 	width : 100%;
 }
 
 .nodePropertyTableTitleKey{
 	height: 1.5EM;
-	padding-right: 0.7EM;
+	padding-right: 0.4EM;
 	padding-left: 0px;
 	color : #aaaaaa;
-	background-color : white;
 	float : right;
 	font-weight : bold;
-	border-style : none;
 }
 
 .nodePropertyTableTitleValue{
@@ -48,7 +45,7 @@
 	padding-left: 0px;
 	color : black;
 	background-color : white;
-	width: 100%;
+	width: 60%;
 	float : right;
 	border-style : none;
 }
@@ -146,6 +143,13 @@
 .textField{
 	width: 100%;
 	height: 2EM;
+	background-color : #FFFFFF;
+}
+
+.textFieldInvalid{
+	width: 100%;
+	height: 2EM;
+	background-color : #FF5555;
 }
 
 .iconHolder{
@@ -202,13 +206,6 @@
 
 .popupPanelInner{
 	width: 50%;
-}
-
-.popupPanelHalf{
-	margin: 0.5EM;
-	padding: 0;
-	float: right;
-	width: 100%;
 }
 
 .popupButtonPanel{

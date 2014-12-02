@@ -20,7 +20,6 @@
 	<component-import key="transactionTemplate"
 		interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
 
-
 	<component key="EventListener" class="de.pubflow.jira.JiraManagerPlugin">
 		<description>Class that processes the incoming JIRA issue events.
 		</description>
@@ -41,8 +40,11 @@
 
 	<web-resource name="Graphviewer Resource" key="resources">
 		<dependency>com.atlassian.auiplugin:ajs</dependency>
-		<resource type="download" name="flowEditorExample.js" location="/web/graphviewer/flowEditorExample.js" />
+		<resource type="download" name="gwt/" location="gwt/" />
 	</web-resource>
+
+	<gadget key="gwt-gadget" name="GWT Gadget"
+		location="gwt/de.pubflow.jira.graph.PubFlow_GraphViewer.gadget.xml" />
 
 	<web-item key="jira-menu-item" name="PubFlow Admin"
 		section="system.admin/globalsettings" weight="10" application="jira">
