@@ -1,4 +1,4 @@
-package de.cau.tf.ifi.se.pubflow;
+package de.pubflow;
 
 
 import junit.framework.Test;

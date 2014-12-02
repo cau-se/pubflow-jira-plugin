@@ -38,13 +38,15 @@
 		<resource type="download" name="admin.js" location="/web/admin/admin.js" />
 	</web-resource>
 
-	<web-resource name="Graphviewer Resource" key="resources">
-		<dependency>com.atlassian.auiplugin:ajs</dependency>
-		<resource type="download" name="gwt/" location="gwt/" />
-	</web-resource>
+	<!-- <web-resource name="Graphviewer Resource" key="resources"> -->
+	<!-- <dependency>com.atlassian.auiplugin:ajs</dependency> -->
+	<!-- </web-resource> -->
+
+	<resource type="download" name="gwt/" location="gwt/" />
+
 
 	<gadget key="gwt-gadget" name="GWT Gadget"
-		location="gwt/de.pubflow.jira.graph.PubFlow_GraphViewer.gadget.xml" />
+		location="gwt/de.pubflow.jira.graph.client.PubFlow_GraphViewer.gadget.xml" />
 
 	<web-item key="jira-menu-item" name="PubFlow Admin"
 		section="system.admin/globalsettings" weight="10" application="jira">
