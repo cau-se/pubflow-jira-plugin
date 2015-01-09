@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mainfest>
+	<package>de.pubflow.services.ocn</package>
+	<description>This plugin offers methods to get data from OCN, check and
+		transform them and save them to a 4d-file.</description>
+	<signatures>
+		<signature name="de.pubflow.services.ocn.OCNDataLoader.getData">
+			<description>Loads legs from the OCN database.</description>
+			<requires>
+				<plugin name="testplugin" />
+				<parameter name="de.pubflow.services.ocn.OCNDataLoader.getData.legid" />
+			</requires>
+			<returns>
+				<parameter name="de.pubflow.services.ocn.OCNDataLoader.getData.leg" type="java.util.Map"/>
+				<parameter name="de.pubflow.services.ocn.OCNDataLoader.getData.log" />
+			</returns>
+		</signature>
+		<signature name="de.pubflow.services.ocn.OCNToPangaeaMapper.replaceArtifacts">
+			<description></description>
+			<requires>
+				<parameter name="de.pubflow.services.ocn.OCNDataLoader.getData.leg" type="java.util.Map"/>
+				<parameter name="de.pubflow.services.ocn.OCNDataLoader.getData.log" />
+			</requires>
+			<returns>
+				<parameter name="de.pubflow.services.ocn.OCNToPangaeaMapper.replaceArtifacts.leg" type="java.util.Map"/>
+				<parameter name="de.pubflow.services.ocn.OCNToPangaeaMapper.replaceArtifacts.log" />
+			</returns>
+		</signature>
+		<signature name="de.pubflow.services.ocn.FileCreator4D.toCSV">
+			<description></description>
+			<requires>
+				<parameter name="de.pubflow.services.ocn.OCNToPangaeaMapper.replaceArtifacts.leg" type="java.util.Map"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.pid"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.login"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.source"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.author"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.project"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.topology"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.status"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.savePath"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.reference"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.fileName"/>
+				<parameter name="de.pubflow.services.ocn.FileCreator4D.toCSV.comment"/>
+			</requires>
+			<returns>
+			</returns>
+		</signature>
+	</signatures>
+</mainfest>

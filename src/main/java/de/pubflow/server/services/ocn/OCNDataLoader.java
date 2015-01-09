@@ -34,7 +34,7 @@ public class OCNDataLoader {
 	static Logger myLogger = LoggerFactory.getLogger(OCNDataLoader.class);
 
 	public HashMap<String, byte[]> getData(String id, int instanceId) throws Exception {
-		HashMap<String, byte[]> files = ByteRay.newMap();
+		HashMap<String, byte[]> containerMap = ByteRay.newMap();
 		
 		PropLoader props = PropLoader.getInstance();
 
@@ -204,11 +204,11 @@ public class OCNDataLoader {
 
 			System.out.println(log.toString());
 
-			files.put("log", log.toString().getBytes());
-			files.put("return", sw.toString().getBytes());
-			ByteRay.newJiraAttachment(files, "interimOCNDataLoader.tmp", sw.toString().getBytes());
-			ByteRay.newJiraComment(files, "OCNDataLoader: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
-			return files;
+			containerMap.put("de.pubflow.services.ocn.OCNDataLoader.getData.log", log.toString().getBytes());
+			containerMap.put("de.pubflow.services.ocn.OCNDataLoader.getData.leg", sw.toString().getBytes());
+			ByteRay.newJiraAttachment(containerMap, "interimOCNDataLoader.tmp", sw.toString().getBytes());
+			ByteRay.newJiraComment(containerMap, "OCNDataLoader: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
+			return containerMap;
 
 		}catch(Exception e){
 			e.printStackTrace();

@@ -51,6 +51,9 @@
       <script>System.out.println("Starting OCN Workflow");</script>
     </scriptTask>
     <scriptTask id="ScriptTask_2" name="Load Data from OCN DB" scriptFormat="http://www.java.com/java" >
+    <metadata>
+    	<internalname>test</internalname>
+    </metadata>
       <script>OCNDataLoader loader = new OCNDataLoader();
 HashMap &lt;String, byte[]&gt; data = new HashMap &lt;String, byte[]&gt;();
 String issue = (String)issuekey;

@@ -36,21 +36,21 @@ public class OCNToPangaeaMapper {
 	public static Map<String,String> foundMappings = new HashMap<String, String>();
 	private StringBuilder log;
 
-	public HashMap<String, byte[]> replaceArtefacts(HashMap<String, byte[]> input, int instanceId) throws Exception {
+	public HashMap<String, byte[]> replaceArtefacts(HashMap<String, byte[]> containerMap, int instanceId) throws Exception {
 		long millis = System.currentTimeMillis();
 
 		try{
-			ByteRay.flushData(input);
+			ByteRay.flushData(containerMap);
 			
 			log = new StringBuilder();
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 			Unmarshaller um = ctx.createUnmarshaller();
 			
-			if(input.get("return") == null){
+			if(containerMap.get("de.pubflow.services.ocn.OCNDataLoader.getData.leg") == null){
 				throw new IOException("Mapping failed due to an empty input string. Something went terribly wrong in a prior work step.");				
 			}
 			
-			StringReader sr = new StringReader(new String(input.get("return")));			
+			StringReader sr = new StringReader(new String(containerMap.get("de.pubflow.services.ocn.OCNDataLoader.getData.leg")));			
 
 			Leg leg = (Leg) um.unmarshal(sr);
 
@@ -64,8 +64,8 @@ public class OCNToPangaeaMapper {
 			
 			StringBuilder log = new StringBuilder();
 			
-			if(input.get("log") != null){
-				log.append(new String(input.get("log")));
+			if(containerMap.get("de.pubflow.services.ocn.OCNDataLoader.getData.log") != null){
+				log.append(new String(containerMap.get("de.pubflow.services.ocn.OCNDataLoader.getData.log")));
 			}
 			
 			Marshaller m = ctx.createMarshaller();
@@ -73,13 +73,13 @@ public class OCNToPangaeaMapper {
 			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			m.marshal(leg, sw);
 			
-			input.put("return", sw.toString().getBytes());
-			input.put("log", log.toString().getBytes());
+			containerMap.put("de.pubflow.services.ocn.OCNToPangaeaMapper.replaceArtifacts.leg", sw.toString().getBytes());
+			containerMap.put("de.pubflow.services.ocn.OCNToPangaeaMapper.replaceArtifacts.log", log.toString().getBytes());
 			
-			ByteRay.newJiraAttachment(input, "interimOCNToPangaeaMapper.tmp", sw.toString().getBytes());
-			ByteRay.newJiraComment(input, "OCNToPangaeaMapper: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
+			ByteRay.newJiraAttachment(containerMap, "interimOCNToPangaeaMapper.tmp", sw.toString().getBytes());
+			ByteRay.newJiraComment(containerMap, "OCNToPangaeaMapper: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
 
-			return input;
+			return containerMap;
 
 		}catch(Exception e){
 			e.printStackTrace();
