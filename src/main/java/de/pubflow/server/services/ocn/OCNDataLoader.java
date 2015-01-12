@@ -35,18 +35,18 @@ public class OCNDataLoader {
 
 	public HashMap<String, byte[]> getData(String id, int instanceId) throws Exception {
 		HashMap<String, byte[]> containerMap = ByteRay.newMap();
-		
+
 		PropLoader props = PropLoader.getInstance();
 
 		long millis = System.currentTimeMillis();
 
 		try{
-			String connectionURL = props.getProperty("dbUrl", this.getClass(), "jdbc:postgresql://localhost:5432/ocn?schema=ocn");
-			String user = PropLoader.getInstance().getProperty("user", this.getClass(), "arl");
-			String password = PropLoader.getInstance().getProperty("pw", this.getClass(), "dWmWidW2");
-			
+			String connectionURL = props.getProperty("dbUrl", this.getClass(), "jdbc:postgresql://localhost:5432/ocn?schema=ocn");  //$NON-NLS-2$
+			String user = PropLoader.getInstance().getProperty("user", this.getClass(), Messages.getString("OCNDataLoader.3"));  //$NON-NLS-2$
+			String password = PropLoader.getInstance().getProperty("pw", this.getClass(), Messages.getString("OCNDataLoader.5"));  //$NON-NLS-2$
+
 			StringBuilder log = new StringBuilder();
-			
+
 			String queryString;
 			Connection connection;
 			Statement statement;
@@ -57,59 +57,59 @@ public class OCNDataLoader {
 			long time_start = System.currentTimeMillis();
 			Set<String> parameters = new HashSet<String>();
 			boolean verbose = false;
-			
+
 			//Datenbankzeugs...
-			Class.forName("org.postgresql.Driver").newInstance();
+			Class.forName("org.postgresql.Driver").newInstance(); 
 			connection = DriverManager.getConnection(connectionURL, user, password);
 			statement = connection.createStatement();
 
-			log.append("================================================== START JOB ==================================================\n");
-			log.append("Fetching data for leg_id \t\t" + id + "\n");
-			log.append("LEG...\t\t\t\t\t");
+			log.append(String.format("=================================================== START JOB ==================================================\n" +  
+					"Fetching data for leg_id \t\t %s \n" + 
+					"LEG...\t\t\t\t\t", id));
 
 			// Query für die leg-Daten
 			// ONLY POSTGRES VESION 9.0 ==>
 
 			queryString = 
-					"WITH part as (SELECT * from ocn.leg)" +
-							"SELECT " +
-							"name AS leg_name, expocode AS leg_expocode, id AS leg_id " +
-							"FROM part WHERE id = " + id;
+					"WITH part as (SELECT * from ocn.leg)" + 
+							"SELECT " + 
+							"name AS leg_name, expocode AS leg_expocode, id AS leg_id " + 
+							"FROM part WHERE id = " + id; 
 
 			// queryString = "select name as leg_name, expocode as leg_expocode, id as mleg_id from ocn.leg where id = " + id;
 
 			rs = statement.executeQuery(queryString);
 			rs.next();
-					
+
 			try{
 				// Generiere leg-Objekt aus Tabellendaten
 				leg = Leg.createFromResultSet(Leg.class, Leg.LEGTABLE, rs);
-				
+
 			}catch(SQLException e){
-				throw new Exception("There is no data for legid " + id + " in the ocn database or the view 'leg' has been changed. \n");
+				throw new Exception(String.format(Messages.getString("OCNDataLoader.0"), id)); 
 			}
 
-			log.append("OK\n");
-			log.append("SAMPLES/BOTTLES...\t\t\t");
+			log.append("OK\n"); 
+			log.append("SAMPLES/BOTTLES...\t\t\t"); 
 
 			// Query für bottle- und sample-Daten
 			// ONLY POSTGRES VESION 9.0 ==>
 
 			queryString = 
-					"WITH part AS " +
-							"(WITH part AS " +
-							"(SELECT latitude AS bottle_latitude, longitude AS bottle_longitude, leg_id, " +
-							"waterdepth AS bottle_waterdepth, time AS bottle_time, station AS bottle_station, " +
-							"label AS bottle_label, id AS bottle_id " +
-							"FROM ocn.bottle) " +
-							"SELECT * " +
-							"FROM part " +
-							"WHERE leg_id = " + id + ") " +
-							"SELECT part.*, sample.id AS sample_id, sample.val AS sample_val, " +
-							"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " +
-							"FROM part, ocn.sample " +
-							"WHERE part.bottle_id = sample.bottle_id " +
-							"ORDER BY sample.bottle_id";
+					"WITH part AS " + 
+							"(WITH part AS " + 
+							"(SELECT latitude AS bottle_latitude, longitude AS bottle_longitude, leg_id, " + 
+							"waterdepth AS bottle_waterdepth, time AS bottle_time, station AS bottle_station, " + 
+							"label AS bottle_label, id AS bottle_id " + 
+							"FROM ocn.bottle) " + 
+							"SELECT * " + 
+							"FROM part " + 
+							"WHERE leg_id = " + id + ") " +  //$NON-NLS-2$
+							"SELECT part.*, sample.id AS sample_id, sample.val AS sample_val, " + 
+							"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " + 
+							"FROM part, ocn.sample " + 
+							"WHERE part.bottle_id = sample.bottle_id " + 
+							"ORDER BY sample.bottle_id"; 
 
 			//	queryString = "SELECT bottle.latitude AS bottle_latitude, bottle.longitude AS bottle_longitude, bottle.leg_id, " +
 			//					"bottle.waterdepth AS bottle_waterdepth, bottle.time AS bottle_time, bottle.station AS bottle_station, " +
@@ -123,14 +123,14 @@ public class OCNDataLoader {
 
 			PubJect bottle = null;
 			PubJect sample = null;
-			String before = "";
+			String before = ""; 
 
 			//Erstelle bottle- und sample-Objekte
 			while(rs.next()){
 				//Prüfe ob Datensatz zu einer neuen bottle gehört
 				if(!before.equals(rs.getString(Bottle.ID))){
 					if(bottle != null){
-						if (verbose) log.append("Collected " + bottle.getList(Bottle.SAMPLELIST).size() + " samples of bottle no. " + bottle.getString(Bottle.LABEL) + "/" + bottle.getString(Bottle.STATION) + "\n");
+						if (verbose) log.append(String.format("Collected %d samples of bottle no. %s / %s \n", bottle.getList(Bottle.SAMPLELIST).size(), bottle.getString(Bottle.LABEL), bottle.getString(Bottle.STATION))); 
 						leg.addToList(Leg.BOTTLELIST, bottle);
 					}
 					//Generiere bottle-Objekt aus Tabellendaten
@@ -147,19 +147,18 @@ public class OCNDataLoader {
 				before = rs.getString(Bottle.ID);
 			}
 
-			log.append("OK\n");
-
-			log.append("PARAMETER...\t\t\t\t");
+			log.append("OK\n"); 
+			log.append("PARAMETER...\t\t\t\t"); 
 
 			//Hole Parameterinformationen
 			for(String s : parameters) {
 				queryString = 
-						"SELECT p.parameter_description, p.parameter_abbreviation, p.parameter_comment, " +
-								"pu.parameter_unit_pangaea_id, pu.parameter_unit_id, " +
-								"u.unit_mathematical as parameter_unit_mathematical, '' as parameter_method_id, '' as parameter_pi_id " +
-								"FROM ocn.parameter p, ocn.parameter_unit pu, ocn.unit u " +
-								"WHERE " +
-								"p.parameter_id = pu.parameter_id AND pu.unit_id = u.unit_id AND pu.parameter_unit_id = " + s;
+						"SELECT p.parameter_description, p.parameter_abbreviation, p.parameter_comment, " + 
+								"pu.parameter_unit_pangaea_id, pu.parameter_unit_id, " + 
+								"u.unit_mathematical as parameter_unit_mathematical, '' as parameter_method_id, '' as parameter_pi_id " + 
+								"FROM ocn.parameter p, ocn.parameter_unit pu, ocn.unit u " + 
+								"WHERE " + 
+								"p.parameter_id = pu.parameter_id AND pu.unit_id = u.unit_id AND pu.parameter_unit_id = " + s; 
 
 				rs = statement.executeQuery(queryString);
 
@@ -168,7 +167,7 @@ public class OCNDataLoader {
 
 					//Generiere parameter-Objekt aus Tabellendaten
 					parameter = PubJect.createFromResultSet(Parameter.class, Parameter.c_PARAMETERTABLE, rs);
-					StringTokenizer st1 = new StringTokenizer(parameter.getString(Parameter.DESCRIPTION), "-");
+					StringTokenizer st1 = new StringTokenizer(parameter.getString(Parameter.DESCRIPTION), "-"); 
 
 					String parameterName = st1.nextToken();
 					String parameterAbbr;
@@ -183,20 +182,19 @@ public class OCNDataLoader {
 					}
 
 					parameter.add(Parameter.NAME, parameterName);
-
 					leg.addToList(Leg.PARAMETERLIST, parameter);
 
 				}
 			}
 
-			log.append("OK\n");
+			log.append("OK\n"); 
 
 			long time_samples = System.currentTimeMillis();
 
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 			Marshaller m = ctx.createMarshaller();
 			StringWriter sw = new StringWriter();
-			log.append("Fetched data in " + (time_samples - time_start) + "ms.\n\n");
+			log.append(String.format("Fetched data in %d ms.\n\n", time_samples - time_start));  //$NON-NLS-2$
 
 			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			//m.marshal(leg, new File("/home/arl/dto.txt"));
@@ -204,15 +202,15 @@ public class OCNDataLoader {
 
 			System.out.println(log.toString());
 
-			containerMap.put("de.pubflow.services.ocn.OCNDataLoader.getData.log", log.toString().getBytes());
-			containerMap.put("de.pubflow.services.ocn.OCNDataLoader.getData.leg", sw.toString().getBytes());
-			ByteRay.newJiraAttachment(containerMap, "interimOCNDataLoader.tmp", sw.toString().getBytes());
-			ByteRay.newJiraComment(containerMap, "OCNDataLoader: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
+			containerMap.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString().getBytes()); 
+			containerMap.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", sw.toString().getBytes()); 
+			ByteRay.newJiraAttachment(containerMap, "interimOCNDataLoader.tmp", sw.toString().getBytes()); 
+			ByteRay.newJiraComment(containerMap, String.format(Messages.getString("OCNDataLoader.49"), (System.currentTimeMillis() - millis)/1000.0)); 
 			return containerMap;
 
 		}catch(Exception e){
 			e.printStackTrace();
-			throw new Exception("OCNDataLoader: " + e.getMessage());
+			throw new Exception("OCNDataLoader: " + e.getMessage()); 
 		}
 	}
 }

@@ -40,14 +40,14 @@ public class FileCreator4D {
 
 			StringBuilder log = new StringBuilder();
 
-			if(input.get("log") != null){
-				log.append(new String(input.get("log")));
+			if(input.get("de.pubflow.services.ocn.PluginAllocator.convert.log") != null){
+				log.append(new String(input.get("de.pubflow.services.ocn.PluginAllocator.convert.log")));
 			}
 
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 
 			Unmarshaller um = ctx.createUnmarshaller();
-			StringReader sr = new StringReader(new String(input.get("return")));
+			StringReader sr = new StringReader(new String(input.get("de.pubflow.services.ocn.PluginAllocator.convert.leg")));
 
 			Leg leg = (Leg) um.unmarshal(sr);
 
@@ -227,7 +227,7 @@ public class FileCreator4D {
 
 		HashMap<String, byte[]> s = (new OCNDataLoader()).getData("12013", 0);
 
-		s = new OCNToPangaeaMapper().replaceArtefacts(s, 0);
+		s = new OCNToPangaeaMapper().mapValues(s, 0);
 
 		HashMap<String, byte[]> map = new FileCreator4D().toCSV(s, "333", "333", "333", "333", "333", "333", "333", "/tmp/" + "3_sortedBottleId.4d", "333", "333", "333", 0);
 
