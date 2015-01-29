@@ -7,7 +7,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,11 +19,7 @@ import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
-import com.atlassian.jira.issue.context.GlobalIssueContext;
-import com.atlassian.jira.issue.context.JiraContextNode;
 import com.atlassian.jira.issue.fields.CustomField;
-import com.atlassian.jira.issue.issuetype.IssueType;
-import com.atlassian.jira.project.Project;
 import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.accessors.JiraObjectCreator;
@@ -144,7 +139,7 @@ public class JiraManagerCore {
 				customFields.add(new CustomFieldDefinition("Project", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("Topology", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("Status", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Zielpfad", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
+				customFields.add(new CustomFieldDefinition("Target path", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("Reference", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("File name", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("Leg comment", CustomFieldType.TEXT, false, new String[]{"141", "111"}));

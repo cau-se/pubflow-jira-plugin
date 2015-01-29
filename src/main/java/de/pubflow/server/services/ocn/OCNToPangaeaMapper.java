@@ -18,7 +18,7 @@ import javax.xml.bind.Unmarshaller;
 
 import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.properties.PropLoader;
-import de.pubflow.server.core.jira.ByteRay;
+import de.pubflow.server.core.jira.ComMap;
 import de.pubflow.server.services.ocn.entity.Bottle;
 import de.pubflow.server.services.ocn.entity.Leg;
 import de.pubflow.server.services.ocn.entity.Parameter;
@@ -36,21 +36,21 @@ public class OCNToPangaeaMapper {
 	public static Map<String,String> foundMappings = new HashMap<String, String>();
 	private StringBuilder log;
 
-	public HashMap<String, byte[]> mapValues(HashMap<String, byte[]> containerMap, int instanceId) throws Exception {
+	public ComMap mapValues(ComMap data, int instanceId) throws Exception {
 		long millis = System.currentTimeMillis();
 
 		try{
-			ByteRay.flushData(containerMap);
+			data.flushData();
 			
 			log = new StringBuilder();
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 			Unmarshaller um = ctx.createUnmarshaller();
 			
-			if(containerMap.get("de.pubflow.services.ocn.PluginAllocator.getData.leg") == null){
+			if(data.get("de.pubflow.services.ocn.PluginAllocator.getData.leg") == null){
 				throw new IOException("Mapping failed due to an empty input string. Something went terribly wrong in a prior work step.");				
 			}
 			
-			StringReader sr = new StringReader(new String(containerMap.get("de.pubflow.services.ocn.PluginAllocator.getData.leg")));			
+			StringReader sr = new StringReader(data.get("de.pubflow.services.ocn.PluginAllocator.getData.leg"));			
 
 			Leg leg = (Leg) um.unmarshal(sr);
 
@@ -64,8 +64,8 @@ public class OCNToPangaeaMapper {
 			
 			StringBuilder log = new StringBuilder();
 			
-			if(containerMap.get("de.pubflow.services.ocn.PluginAllocator.getData.log") != null){
-				log.append(new String(containerMap.get("de.pubflow.services.ocn.PluginAllocator.getData.log")));
+			if(data.get("de.pubflow.services.ocn.PluginAllocator.getData.log") != null){
+				log.append(data.get("de.pubflow.services.ocn.PluginAllocator.getData.log"));
 			}
 			
 			Marshaller m = ctx.createMarshaller();
@@ -73,13 +73,13 @@ public class OCNToPangaeaMapper {
 			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			m.marshal(leg, sw);
 			
-			containerMap.put("de.pubflow.services.ocn.PluginAllocator.convert.leg", sw.toString().getBytes());
-			containerMap.put("de.pubflow.services.ocn.PluginAllocator.convert.log", log.toString().getBytes());
+			data.put("de.pubflow.services.ocn.PluginAllocator.convert.leg", sw.toString());
+			data.put("de.pubflow.services.ocn.PluginAllocator.convert.log", log.toString());
 			
-			ByteRay.newJiraAttachment(containerMap, "interimOCNToPangaeaMapper.tmp", sw.toString().getBytes());
-			ByteRay.newJiraComment(containerMap, String.format("OCNToPangaeaMapper: exited normally after %d s.", (System.currentTimeMillis() - millis)/1000.0));
+			data.newJiraAttachment("interimOCNToPangaeaMapper.tmp", sw.toString().getBytes());
+			data.newJiraComment(String.format("OCNToPangaeaMapper: exited normally after %d s.", (System.currentTimeMillis() - millis)/1000.0));
 
-			return containerMap;
+			return data;
 
 		}catch(Exception e){
 			e.printStackTrace();

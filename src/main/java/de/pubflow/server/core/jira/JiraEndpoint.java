@@ -12,6 +12,8 @@ import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
+import de.pubflow.server.core.jira.Entity.JiraAttachment;
+import de.pubflow.server.core.jira.Entity.JiraComment;
 
 @WebService(targetNamespace = "pubflow.de")//(endpointInterface = "de.pubflow.jira.ws.IJiraEndpoint")
 @SOAPBinding(style = Style.DOCUMENT)
@@ -74,18 +76,17 @@ public class JiraEndpoint{
 	 * 
 	 * @param issueKey
 	 * @param comment 
-	 * @return returns if the new comment has been added successful
+	 * @return returns true if the new comment has been added successfully
 	 */
 
-	public static boolean addIssueComment(String issueKey, String comment){
-		if(JiraObjectManipulator.addIssueComment(issueKey, comment, JiraManagerPlugin.user) == null){
+	public static boolean addIssueComment(JiraComment comment){
+		if(JiraObjectManipulator.addIssueComment(comment.getIssueKey(), comment.getText(), JiraManagerPlugin.user) == null){
 			return false;
 		}else{
 			return true;
 		}
 	}
-
-
+	
 	/**
 	 * Get available status names
 	 * 
@@ -133,16 +134,8 @@ public class JiraEndpoint{
 	 * @param type
 	 */
 
-	public static boolean addAttachment(String issueKey, byte[]barray, String fileName, String type){
-
-		System.out.println("RECEIVED ATTACHMENT ------------------------------------------------>");
-		System.out.println(issueKey);
-		System.out.println(barray.length);
-		System.out.println(fileName);
-		System.out.println(type);
-
-
-		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, JiraManagerPlugin.user);
+	public static boolean addAttachment(JiraAttachment attachment){
+		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(), "", JiraManagerPlugin.user);
 
 		return true;
 	}

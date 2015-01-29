@@ -1,7 +1,5 @@
 package de.pubflow.jira.misc;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.event.issue.IssueEvent;

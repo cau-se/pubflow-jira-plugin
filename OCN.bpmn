@@ -27,17 +27,17 @@
      <tns:import name="java.util.HashMap" />
      <tns:import name="java.util.LinkedList" />
      <tns:import name="java.util.Map.Entry" />
-     <tns:global identifier="project" type="String" />
      <tns:global identifier="author" type="String" />
-     <tns:global identifier="issuekey" type="String" />
+     <tns:global identifier="project" type="String" />
      <tns:global identifier="legid" type="String" />
+     <tns:global identifier="issuekey" type="String" />
      <tns:global identifier="source" type="String" />
-     <tns:global identifier="zielpfad" type="String" />
      <tns:global identifier="status" type="String" />
+     <tns:global identifier="zielpfad" type="String" />
      <tns:global identifier="filename" type="String" />
-     <tns:global identifier="topology" type="String" />
-     <tns:global identifier="login" type="String" />
      <tns:global identifier="pid" type="String" />
+     <tns:global identifier="login" type="String" />
+     <tns:global identifier="topology" type="String" />
      <tns:global identifier="reference" type="String" />
      <tns:global identifier="legcomment" type="String" />
     </extensionElements>
@@ -51,8 +51,10 @@
       <script>System.out.println("Starting OCN Workflow");</script>
     </scriptTask>
     <scriptTask id="ScriptTask_2" name="Load Data from OCN DB" scriptFormat="http://www.java.com/java" >
-      <script>HashMap &lt;String, byte[]&gt; data = new HashMap &lt;String, byte[]&gt;();
-data = de.pubflow.server.services.ocn.PluginDelegator.getData((String) legid, (String)issuekey);
+      <script>HashMap &lt;String, Object&gt; data = new HashMap &lt;String, Object&gt;();
+data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", legid);
+
+data = de.pubflow.server.services.ocn.PluginDelegator.getData((String)issuekey, data);
 
 kcontext.setVariable("tempResult", data);</script>
     </scriptTask>
@@ -65,7 +67,21 @@ data = de.pubflow.server.services.ocn.PluginDelegator.convert((String)issuekey, 
 kcontext.setVariable("tempResult", data);</script>
     </scriptTask>
     <scriptTask id="ScriptTask_4" name="Communicate Result" scriptFormat="http://www.java.com/java" >
-      <script>de.pubflow.server.services.ocn.PluginDelegator.toCSV((String) issuekey, (HashMap&lt;String, byte[]&gt;)tempResult, (String) pid, (String) login, (String) source, (String) author, (String) project, (String) topology, (String) status, (String) zielpfad, (String) reference, (String) filename, (String) legcomment);</script>
+      <script>HashMap&lt;String, Object&gt; data = (HashMap&lt;String, Object&gt;) tempResult;
+
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.author", (String) author);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.source", (String) source);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.reference", (String) reference);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.fileName", (String) filename);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.pid", (String) pid);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.comment", (String) legcomment);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.project", (String) project);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.topology", (String) topology);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.status", (String) status);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.login", (String) login);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.targetPath", (String) targetPath);
+
+new de.pubflow.server.services.ocn.PluginDelegator.toCSV((String) issuekey,  data);</script>
     </scriptTask>
 
     <!-- connections -->

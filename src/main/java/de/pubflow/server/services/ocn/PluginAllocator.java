@@ -1,97 +1,90 @@
 package de.pubflow.server.services.ocn;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
-import de.pubflow.server.core.jira.ByteRay;
+import de.pubflow.server.core.jira.ComMap;
 import de.pubflow.server.core.jira.JiraEndpoint;
+import de.pubflow.server.core.jira.Entity.JiraAttachment;
+import de.pubflow.server.core.jira.Entity.JiraComment;
 
 public class PluginAllocator {
 
-	public static HashMap<String, byte[]> getData(String legid, String issue){
+	public static ComMap getData(String issueKey, ComMap data){
 		OCNDataLoader loader = new OCNDataLoader();
-		HashMap <String, byte[]> data = new HashMap <String, byte[]>();
 
 		try {
-			JiraEndpoint.changeStatus(issue, Messages.getString("PluginAllocator.0")); //$NON-NLS-1$
+			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.0"));
 
-			data = loader.getData(legid, 0);
+			data = loader.getData(data, 0);
 
-			for(String s : (LinkedList<String>)ByteRay.getJiraComments(data)){
-				JiraEndpoint.addIssueComment(issue, s);
+			for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
+				JiraEndpoint.addIssueComment(comment);
 			} 
 
-			for(Entry <String, byte[]> e : ((HashMap<String, byte[]>) ByteRay.getJiraAttachments(data)).entrySet()){
-				JiraEndpoint.addAttachment(issue, e.getValue(), e.getKey(), ""); //$NON-NLS-1$
+			for(JiraAttachment attachment : (data.getJiraAttachments())){
+				JiraEndpoint.addAttachment(attachment);
 			} 
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			JiraEndpoint.changeStatus(issue, Messages.getString("PluginAllocator.2")); //$NON-NLS-1$
+			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
 			e.printStackTrace();
-			JiraEndpoint.addIssueComment(issue, e.getMessage());
+			JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
 		}finally{
-			data = ByteRay.flushData(data);		
+			data.flushData();		
 		}
 
 		return data;
 	}
 
-	public static HashMap<String, byte[]> convert(String issuekey, HashMap<String, byte[]> tempResult){
+	public static ComMap convert(String issueKey, ComMap data){
 		OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
-		HashMap<String, byte[]> result = new HashMap<String, byte[]>();
-
+		
 		try {
-			result = mapper.mapValues(tempResult, 0);
+			data = mapper.mapValues(data, 0);
 
-			for(String s : (LinkedList<String>)ByteRay.getJiraComments(result)){
-				JiraEndpoint.addIssueComment(issuekey, s);
+			for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
+				JiraEndpoint.addIssueComment(comment);
 			} 
 
-			for(Entry <String, byte[]> e : ((HashMap<String, byte[]>)ByteRay.getJiraAttachments(result)).entrySet()){
-				JiraEndpoint.addAttachment(issuekey, e.getValue(), e.getKey(), ""); //$NON-NLS-1$
+			for(JiraAttachment attachment : (data.getJiraAttachments())){
+				JiraEndpoint.addAttachment(attachment);
 			} 
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			JiraEndpoint.changeStatus(issuekey, Messages.getString("PluginAllocator.2")); //$NON-NLS-1$
+			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
 			e.printStackTrace();
-			JiraEndpoint.addIssueComment(issuekey, e.getMessage());
+			JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
 		}finally{
-			result = ByteRay.flushData(result);		
+			data.flushData();		
 		}
 
-		return result;
+		return data;
 	}
 
-	public static void toCSV(String issuekey, HashMap<String, byte[]> data, String pid, String login, String source, String author, String project, String topology, String status, String zielpfad, String reference, String filename, String legcomment){
+	public static void toCSV(String issueKey, ComMap data){
 		FileCreator4D fc4d = new FileCreator4D();
+		data.setDefaultIssueKey(issueKey);
+		
+		try {		
+			data = fc4d.toCSV(data, 0);
 
-		try {
-			HashMap<String, byte[]> tResult = fc4d.toCSV((HashMap<String, byte[]>)data, (String) pid, (String) login, (String) source, (String) author, (String) project, (String) topology, (String) status, (String) zielpfad, (String) reference, (String) filename, (String) legcomment, 0);
-
-			for(String s : (LinkedList<String>)ByteRay.getJiraComments(tResult)){
-				JiraEndpoint.addIssueComment(issuekey, s);
+			for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
+				JiraEndpoint.addIssueComment(comment);
 			} 
 
-			for(Entry <String, byte[]> e : ((HashMap<String, byte[]>)ByteRay.getJiraAttachments(tResult)).entrySet()){
-				JiraEndpoint.addAttachment(issuekey, e.getValue(), e.getKey(), ""); //$NON-NLS-1$
-			} 
-
-			try {
-				Thread.sleep(60000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			for(JiraAttachment attachment : data.getJiraAttachments()){
+				JiraEndpoint.addAttachment(attachment); 
 			}
 
-			JiraEndpoint.changeStatus(issuekey, Messages.getString("PluginAllocator.6")); //$NON-NLS-1$
+			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.6"));
 
 		} catch (Exception e) {
-			JiraEndpoint.changeStatus(issuekey, Messages.getString("PluginAllocator.2")); //$NON-NLS-1$
+			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
 			e.printStackTrace();
-			JiraEndpoint.addIssueComment(issuekey, e.getMessage());
+			JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
 		}
 	}
 }

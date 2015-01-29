@@ -12,7 +12,8 @@
 				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.legid" />
 			</requires>
 			<returns>
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.leg" />
+				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.leg"
+					type="java.util.Map" />
 				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.log" />
 			</returns>
 		</signature>
@@ -20,7 +21,8 @@
 			<description>Maps parameter ids from OCN to Pangaea. Checks for data
 				errors.</description>
 			<requires>
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.leg" />
+				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.leg"
+					type="java.util.Map" />
 				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.log" />
 			</requires>
 			<returns>
@@ -46,7 +48,6 @@
 				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.reference" />
 				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.fileName" />
 				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.comment" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.targetPath" />
 			</requires>
 			<returns>
 			</returns>

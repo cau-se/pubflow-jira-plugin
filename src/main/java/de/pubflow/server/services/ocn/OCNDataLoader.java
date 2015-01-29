@@ -6,7 +6,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -18,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.server.common.properties.PropLoader;
-import de.pubflow.server.core.jira.ByteRay;
+import de.pubflow.server.core.jira.ComMap;
 import de.pubflow.server.services.ocn.entity.Bottle;
 import de.pubflow.server.services.ocn.entity.Leg;
 import de.pubflow.server.services.ocn.entity.Parameter;
@@ -33,11 +32,9 @@ public class OCNDataLoader {
 
 	static Logger myLogger = LoggerFactory.getLogger(OCNDataLoader.class);
 
-	public HashMap<String, byte[]> getData(String id, int instanceId) throws Exception {
-		HashMap<String, byte[]> containerMap = ByteRay.newMap();
-
+	public ComMap getData(ComMap data, int instanceId) throws Exception {
+		String legId = data.get("de.pubflow.services.ocn.PluginAllocator.getData.legid");	
 		PropLoader props = PropLoader.getInstance();
-
 		long millis = System.currentTimeMillis();
 
 		try{
@@ -65,7 +62,7 @@ public class OCNDataLoader {
 
 			log.append(String.format("=================================================== START JOB ==================================================\n" +  
 					"Fetching data for leg_id \t\t %s \n" + 
-					"LEG...\t\t\t\t\t", id));
+					"LEG...\t\t\t\t\t", legId));
 
 			// Query für die leg-Daten
 			// ONLY POSTGRES VESION 9.0 ==>
@@ -74,7 +71,7 @@ public class OCNDataLoader {
 					"WITH part as (SELECT * from ocn.leg)" + 
 							"SELECT " + 
 							"name AS leg_name, expocode AS leg_expocode, id AS leg_id " + 
-							"FROM part WHERE id = " + id; 
+							"FROM part WHERE id = " + legId; 
 
 			// queryString = "select name as leg_name, expocode as leg_expocode, id as mleg_id from ocn.leg where id = " + id;
 
@@ -86,7 +83,7 @@ public class OCNDataLoader {
 				leg = Leg.createFromResultSet(Leg.class, Leg.LEGTABLE, rs);
 
 			}catch(SQLException e){
-				throw new Exception(String.format(Messages.getString("OCNDataLoader.0"), id)); 
+				throw new Exception(String.format(Messages.getString("OCNDataLoader.0"), legId)); 
 			}
 
 			log.append("OK\n"); 
@@ -104,7 +101,7 @@ public class OCNDataLoader {
 							"FROM ocn.bottle) " + 
 							"SELECT * " + 
 							"FROM part " + 
-							"WHERE leg_id = " + id + ") " +  //$NON-NLS-2$
+							"WHERE leg_id = " + legId + ") " +  //$NON-NLS-2$
 							"SELECT part.*, sample.id AS sample_id, sample.val AS sample_val, " + 
 							"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " + 
 							"FROM part, ocn.sample " + 
@@ -193,20 +190,20 @@ public class OCNDataLoader {
 
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 			Marshaller m = ctx.createMarshaller();
-			StringWriter sw = new StringWriter();
+			StringWriter legSw = new StringWriter();
 			log.append(String.format("Fetched data in %d ms.\n\n", time_samples - time_start));  //$NON-NLS-2$
 
 			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			//m.marshal(leg, new File("/home/arl/dto.txt"));
-			m.marshal(leg, sw);
+			m.marshal(leg, legSw);
 
 			System.out.println(log.toString());
 
-			containerMap.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString().getBytes()); 
-			containerMap.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", sw.toString().getBytes()); 
-			ByteRay.newJiraAttachment(containerMap, "interimOCNDataLoader.tmp", sw.toString().getBytes()); 
-			ByteRay.newJiraComment(containerMap, String.format(Messages.getString("OCNDataLoader.49"), (System.currentTimeMillis() - millis)/1000.0)); 
-			return containerMap;
+			data.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString()); 
+			data.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString()); 
+			data.newJiraAttachment("interimOCNDataLoader.tmp", legSw.toString().getBytes()); 
+			data.newJiraComment(String.format(Messages.getString("OCNDataLoader.49"), (System.currentTimeMillis() - millis)/1000.0)); 
+			return data;
 
 		}catch(Exception e){
 			e.printStackTrace();
