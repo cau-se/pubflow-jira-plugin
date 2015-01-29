@@ -51,7 +51,7 @@
       <script>System.out.println("Starting OCN Workflow");</script>
     </scriptTask>
     <scriptTask id="ScriptTask_2" name="Load Data from OCN DB" scriptFormat="http://www.java.com/java" >
-      <script>HashMap &lt;String, Object&gt; data = new HashMap &lt;String, Object&gt;();
+      <script>ComMap data = new ComMap();
 data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", legid);
 
 data = de.pubflow.server.services.ocn.PluginDelegator.getData((String)issuekey, data);
@@ -59,15 +59,14 @@ data = de.pubflow.server.services.ocn.PluginDelegator.getData((String)issuekey, 
 kcontext.setVariable("tempResult", data);</script>
     </scriptTask>
     <scriptTask id="ScriptTask_3" name="Mapping OCN to Pangaea" scriptFormat="http://www.java.com/java" >
-      <script>HashMap&lt;String, byte[]&gt; data = new HashMap&lt;String, byte[]&gt;();
+      <script>ComMap data = (ComMap) tempResult;
 
-data = de.pubflow.server.services.ocn.PluginDelegator.convert((String)issuekey, (HashMap&lt;String, byte[]&gt;)tempResult);
-
+data = de.pubflow.server.services.ocn.PluginDelegator.convert((String)issuekey, tempResult);
 
 kcontext.setVariable("tempResult", data);</script>
     </scriptTask>
     <scriptTask id="ScriptTask_4" name="Communicate Result" scriptFormat="http://www.java.com/java" >
-      <script>HashMap&lt;String, Object&gt; data = (HashMap&lt;String, Object&gt;) tempResult;
+      <script>ComMap data = (ComMap) tempResult;
 
 data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.author", (String) author);
 data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.source", (String) source);
