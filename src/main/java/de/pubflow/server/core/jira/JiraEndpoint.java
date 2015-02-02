@@ -31,10 +31,9 @@ public class JiraEndpoint{
 	 * 
 	 **/
 
-	public static String createIssue(String projectKey, String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
+	public static String createIssue(String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
 		try {
-
-			return JiraObjectCreator.createIssue(projectKey, workflowName, summary, JiraManagerPlugin.user, description, parameters, reporter);
+			return JiraObjectCreator.createIssue("PUB", workflowName, summary, JiraManagerPlugin.user, description, parameters, reporter);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

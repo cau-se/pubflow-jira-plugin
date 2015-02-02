@@ -182,6 +182,7 @@ public class HTMLReader {
 
 					boolean dataOk = HTMLReader.checkForValidDOI(HTMLReader.readMeta(msg.getLink()));
 					if(!dataOk){
+						data.newJiraIssue("eprintspangaeasupplement", "Missing pangaea supplement for " + msg.getLink(), msg.getDescription(), new HashMap<String, String>(), "");
 						msgList.add(msg);
 					}
 
@@ -193,7 +194,7 @@ public class HTMLReader {
 			e.printStackTrace();
 		}
 
-		data.put("de.pubflow.server.services.eprints.HTMLReader.checkRSSFeed", msgList);
+		//data.put("de.pubflow.server.services.eprints.HTMLReader.checkedRSSFeed", msgList);
 		return data;
 	}
 }

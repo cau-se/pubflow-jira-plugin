@@ -1,6 +1,5 @@
 package de.pubflow.server.core.jira;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -8,14 +7,16 @@ import java.util.Set;
 
 import de.pubflow.server.core.jira.Entity.JiraAttachment;
 import de.pubflow.server.core.jira.Entity.JiraComment;
+import de.pubflow.server.core.jira.Entity.JiraIssue;
 
 
 public class ComMap{	
 	private HashMap<String, Object> map;
 	private LinkedList<JiraAttachment> attachments;
 	private LinkedList<JiraComment> comments;
+	private LinkedList<JiraIssue> issues;
 	private String defaultIssueKey;
-
+	
 	public ComMap(String defaultIssueKey){
 		this.defaultIssueKey = defaultIssueKey;
 
@@ -36,6 +37,10 @@ public class ComMap{
 		return map.entrySet();
 	}
 
+	public void newJiraIssue(String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter){
+		issues.add(new JiraIssue(workflowName, summary, description, parameters, reporter));
+	}
+	
 	public void newJiraComment(String text){
 		comments.add(new JiraComment(defaultIssueKey, text));
 	}
@@ -47,7 +52,11 @@ public class ComMap{
 	public LinkedList<JiraComment> getJiraComments(){
 		return comments;
 	}
-
+	
+	public LinkedList<JiraIssue> getJiraIssues(){
+		return issues;
+	}
+	
 	public void flushData(){
 		attachments = new LinkedList<JiraAttachment>();
 		comments = new LinkedList<JiraComment>();

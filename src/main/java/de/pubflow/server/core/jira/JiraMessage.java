@@ -11,7 +11,7 @@ public class JiraMessage{
 	private HashMap<String, String> message = new HashMap<String, String>();
 	private String action = "";
 	private String target = "";
-	
+
 	public JiraMessage(){
 	}
 
@@ -35,6 +35,7 @@ public class JiraMessage{
 	public String getAction() {
 		return action;
 	}
+
 	public void setAction(String action) {
 		this.action = action;
 	}

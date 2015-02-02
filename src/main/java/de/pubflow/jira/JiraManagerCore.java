@@ -151,6 +151,8 @@ public class JiraManagerCore {
 				customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"141", "111"}));
 
 				JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), statuses, customFields, conditionMap);
+				
+				JiraObjectCreator.createIssue("PUB", "OCN", "test issue", userPubFlow, "sample description", new HashMap<String, String>(), "");
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

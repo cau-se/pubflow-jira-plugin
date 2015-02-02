@@ -3,7 +3,6 @@ package de.pubflow.server.core.jira.Entity;
 import java.util.HashMap;
 
 public class JiraIssue {
-	private String projectKey; 
 	private String workflowName; 
 	private String summary; 
 	private String description; 
@@ -11,9 +10,8 @@ public class JiraIssue {
 	private String reporter;
 
 
-	public JiraIssue(String projectKey, String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
+	public JiraIssue(String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
 		super();
-		this.projectKey = projectKey;
 		this.workflowName = workflowName;
 		this.summary = summary;
 		this.description = description;
@@ -21,13 +19,6 @@ public class JiraIssue {
 		this.reporter = reporter;
 	}
 
-	public String getProjectKey() {
-		return projectKey;
-	}
-
-	public void setProjectKey(String projectKey) {
-		this.projectKey = projectKey;
-	}
 
 	public String getWorkflowName() {
 		return workflowName;
