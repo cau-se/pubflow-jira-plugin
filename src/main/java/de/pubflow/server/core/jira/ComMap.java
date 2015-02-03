@@ -78,4 +78,7 @@ public class ComMap{
 		map.put(key, value);
 	}
 
+	public boolean containsKey(String key){
+		return map.containsKey(key);
+	}
 }

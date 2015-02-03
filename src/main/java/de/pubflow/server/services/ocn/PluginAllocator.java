@@ -11,80 +11,90 @@ import de.pubflow.server.core.jira.Entity.JiraComment;
 public class PluginAllocator {
 
 	public static ComMap getData(String issueKey, ComMap data){
-		OCNDataLoader loader = new OCNDataLoader();
 
-		try {
-			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.0"));
+		if(PluginManfestValidator.check("de.pubflow.server.services.ocn.getData", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
 
-			data = loader.getData(data, 0);
+			OCNDataLoader loader = new OCNDataLoader();
 
-			for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
-				JiraEndpoint.addIssueComment(comment);
-			} 
+			try {
+				JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.0"));
 
-			for(JiraAttachment attachment : (data.getJiraAttachments())){
-				JiraEndpoint.addAttachment(attachment);
-			} 
+				data = loader.getData(data, 0);
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
-			e.printStackTrace();
-			JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
-		}finally{
-			data.flushData();		
+				for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
+					JiraEndpoint.addIssueComment(comment);
+				} 
+
+				for(JiraAttachment attachment : (data.getJiraAttachments())){
+					JiraEndpoint.addAttachment(attachment);
+				} 
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
+				e.printStackTrace();
+				JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
+			}finally{
+				data.flushData();		
+			}
+
+			return data;
 		}
-
-		return data;
 	}
 
 	public static ComMap convert(String issueKey, ComMap data){
-		OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
-		
-		try {
-			data = mapper.mapValues(data, 0);
 
-			for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
-				JiraEndpoint.addIssueComment(comment);
-			} 
+		if(PluginManfestValidator.check("de.pubflow.server.services.ocn.convert", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
 
-			for(JiraAttachment attachment : (data.getJiraAttachments())){
-				JiraEndpoint.addAttachment(attachment);
-			} 
+			OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
-			e.printStackTrace();
-			JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
-		}finally{
-			data.flushData();		
+			try {
+				data = mapper.mapValues(data, 0);
+
+				for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
+					JiraEndpoint.addIssueComment(comment);
+				} 
+
+				for(JiraAttachment attachment : (data.getJiraAttachments())){
+					JiraEndpoint.addAttachment(attachment);
+				} 
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
+				e.printStackTrace();
+				JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
+			}finally{
+				data.flushData();		
+			}
+			return data;
 		}
-
-		return data;
 	}
 
 	public static void toCSV(String issueKey, ComMap data){
-		FileCreator4D fc4d = new FileCreator4D();
-		data.setDefaultIssueKey(issueKey);
-		
-		try {		
-			data = fc4d.toCSV(data, 0);
+		if(PluginManfestValidator.check("de.pubflow.server.services.ocn.toCSV", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
 
-			for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
-				JiraEndpoint.addIssueComment(comment);
-			} 
+			FileCreator4D fc4d = new FileCreator4D();
+			data.setDefaultIssueKey(issueKey);
 
-			for(JiraAttachment attachment : data.getJiraAttachments()){
-				JiraEndpoint.addAttachment(attachment); 
+			try {		
+				data = fc4d.toCSV(data, 0);
+
+				for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraComments()){
+					JiraEndpoint.addIssueComment(comment);
+				} 
+
+				for(JiraAttachment attachment : data.getJiraAttachments()){
+					JiraEndpoint.addAttachment(attachment); 
+				}
+
+				JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.6"));
+
+			} catch (Exception e) {
+				JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
+				e.printStackTrace();
+				JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
 			}
-
-			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.6"));
-
-		} catch (Exception e) {
-			JiraEndpoint.changeStatus(issueKey, Messages.getString("PluginAllocator.2"));
-			e.printStackTrace();
-			JiraEndpoint.addIssueComment(new JiraComment(issueKey, e.getMessage()));
 		}
 	}
 }

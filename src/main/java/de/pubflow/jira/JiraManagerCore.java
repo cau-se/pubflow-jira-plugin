@@ -139,13 +139,13 @@ public class JiraManagerCore {
 				customFields.add(new CustomFieldDefinition("Project", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("Topology", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("Status", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Target path", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
+				customFields.add(new CustomFieldDefinition("Target Path", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("Reference", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("File name", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Leg comment", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
+				customFields.add(new CustomFieldDefinition("File Name", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
+				customFields.add(new CustomFieldDefinition("Leg Comment", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("Quartz Cron", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
 				customFields.add(new CustomFieldDefinition("DOI", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Author name", CustomFieldType.TEXT, false, new String[]{"11"}));
+				customFields.add(new CustomFieldDefinition("Author Name", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Title", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"141", "111"}));

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <mainfest>
 	<package>de.pubflow.services.ocn</package>
 	<description>This plugin offers methods to get data from OCN, check and

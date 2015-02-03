@@ -46,11 +46,10 @@ public class PubFlowSystem {
 			Logger shutdownLogger = LoggerFactory.getLogger(this.getClass());
 			shutdownLogger.info("<< Shutting down PubFlow >>");
 			PubFlowSystem core = PubFlowSystem.getInstance();
-			// Shutdown Camel & free ports	
 			shutdownLogger.info("Stopping Quartz");
-			
+			//TODO
 			// Write props to file
-			shutdownLogger.debug("Saving Properties to file");
+			shutdownLogger.debug("Saving Properties to File");
 			PropLoader.getInstance().saveProperties();
 			shutdownLogger.info("<< BYE >>");
 		}
