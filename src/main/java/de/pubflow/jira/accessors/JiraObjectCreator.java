@@ -122,8 +122,8 @@ public class JiraObjectCreator {
 	 * @return returns the issue id 
 	 * 
 	 **/
-	public static String createIssue(String projectKey, String workflowName, String summary, ApplicationUser user, String description, Map<String, String> parameters, String reporter) throws Exception{
-		log.debug("newIssue - projectKey : " + projectKey + " / workflowName : " + workflowName + " / summary : " + summary + " / description : " + description + " / reporter : " + reporter);
+	public static String createIssue(String projectKey, String issueTypeName, String summary, ApplicationUser user, String description, Map<String, String> parameters, String reporter) throws Exception{
+		log.debug("newIssue - projectKey : " + projectKey + " / workflowName : " + issueTypeName + " / summary : " + summary + " / description : " + description + " / reporter : " + reporter);
 	
 		if (user != null){
 			log.debug("newIssue - user : " + user.getUsername());
@@ -132,10 +132,10 @@ public class JiraObjectCreator {
 			throw new Exception("User is null");
 		}
 	
-		MutableIssue mutableIssue = createNewMutableIssue(projectKey, user, workflowName, parameters.get("summary"), reporter);
+		MutableIssue mutableIssue = createNewMutableIssue(projectKey, user, issueTypeName, parameters.get("summary"), reporter);
 	
 		for(Entry<String, String> entry : parameters.entrySet()){
-			CustomField customField = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(entry.getKey() + "_" + workflowName);
+			CustomField customField = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(entry.getKey() + "_" + issueTypeName);
 	
 			if(customField != null){
 				if(entry.getValue() != null){
@@ -152,7 +152,7 @@ public class JiraObjectCreator {
 		//TODO Set assignee
 		//mutableIssue.setAssignee(JiraManaPlugin.userManager.getUserByName(reporter));
 	
-		mutableIssue.setSummary(workflowName + " / " + reporter);
+		mutableIssue.setSummary(issueTypeName + " / " + reporter);
 	
 		if(!description.equals("")){
 			mutableIssue.setDescription(description);
