@@ -1,55 +1,10 @@
 <mainfest>
-	<package>de.pubflow.services.ocn</package>
-	<description>This plugin offers methods to get data from OCN, check and
-		transform them and save them to a 4d-file.
+	<package>de.pubflow.services.eprints</package>
+	<description>
 	</description>
 	<signatures>
-		<signature name="de.pubflow.services.ocn.PluginAllocator.getData">
-			<description>Loads legs from the OCN database.</description>
-			<requires>
-				<plugin name="testplugin" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.legid" />
-			</requires>
-			<returns>
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.leg"
-					type="java.util.Map" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.log" />
-			</returns>
-		</signature>
-		<signature name="de.pubflow.services.ocn.PluginAllocator.convert">
-			<description>Maps parameter ids from OCN to Pangaea. Checks for data
-				errors.</description>
-			<requires>
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.leg"
-					type="java.util.Map" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.getData.log" />
-			</requires>
-			<returns>
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.convert.leg"
-					type="java.util.Map" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.convert.log" />
-			</returns>
-		</signature>
-		<signature name="de.pubflow.services.ocn.PluginAllocator.toCSV">
+		<signature name="de.pubflow.services.eprints.PluginAllocator.checkRSSFeeds">
 			<description></description>
-			<requires>
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.convert.leg"
-					type="java.util.Map" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.convert.log" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.pid" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.login" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.source" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.author" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.project" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.topology" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.status" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.savePath" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.reference" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.fileName" />
-				<parameter name="de.pubflow.services.ocn.PluginAllocator.toCSV.comment" />
-			</requires>
-			<returns>
-			</returns>
 		</signature>
 	</signatures>
 </mainfest>

@@ -169,10 +169,8 @@ public class HTMLReader {
 		throw new Exception("eprints.id_number is empty!");	
 	}
 
-	public static ComMap checkRSSFeed(){
-
-		ComMap data = new ComMap("");
-		
+	
+	public static ComMap checkRSSFeed(ComMap data){
 		LinkedList <RSSMsg> msgList = new LinkedList<RSSMsg>();
 
 		try{

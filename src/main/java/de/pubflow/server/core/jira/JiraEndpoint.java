@@ -14,6 +14,7 @@ import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.server.core.jira.Entity.JiraAttachment;
 import de.pubflow.server.core.jira.Entity.JiraComment;
+import de.pubflow.server.core.jira.Entity.JiraIssue;
 
 @WebService(targetNamespace = "pubflow.de")//(endpointInterface = "de.pubflow.jira.ws.IJiraEndpoint")
 @SOAPBinding(style = Style.DOCUMENT)
@@ -40,6 +41,14 @@ public class JiraEndpoint{
 		return "";
 	}
 
+	public static String createIssue(JiraIssue issue) {
+		try {
+			return JiraObjectCreator.createIssue("PUB", issue.getWorkflowName(), issue.getSummary(), JiraManagerPlugin.user, issue.getDescription(), issue.getParameters(), issue.getReporter());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 
 	/**
 	 * Creates a new IssueType in Jira
@@ -78,6 +87,14 @@ public class JiraEndpoint{
 	 * @return returns true if the new comment has been added successfully
 	 */
 
+	public static boolean addIssueComment(String issueKey, String comment){
+		if(JiraObjectManipulator.addIssueComment(issueKey, comment, JiraManagerPlugin.user) == null){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
 	public static boolean addIssueComment(JiraComment comment){
 		if(JiraObjectManipulator.addIssueComment(comment.getIssueKey(), comment.getText(), JiraManagerPlugin.user) == null){
 			return false;
@@ -85,7 +102,7 @@ public class JiraEndpoint{
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Get available status names
 	 * 
@@ -132,6 +149,13 @@ public class JiraEndpoint{
 	 * @param fileName
 	 * @param type
 	 */
+
+	public static boolean addAttachment(String issueKey, byte[]barray, String fileName, String type){
+		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, JiraManagerPlugin.user);
+
+		return true;
+	}
+
 
 	public static boolean addAttachment(JiraAttachment attachment){
 		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(), "", JiraManagerPlugin.user);

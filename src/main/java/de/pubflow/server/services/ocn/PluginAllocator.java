@@ -1,8 +1,8 @@
 package de.pubflow.server.services.ocn;
 
 import java.util.LinkedList;
-import java.util.Map.Entry;
 
+import de.pubflow.server.common.properties.PluginManifestValidator;
 import de.pubflow.server.core.jira.ComMap;
 import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.jira.Entity.JiraAttachment;
@@ -10,9 +10,9 @@ import de.pubflow.server.core.jira.Entity.JiraComment;
 
 public class PluginAllocator {
 
-	public static ComMap getData(String issueKey, ComMap data){
+	public static ComMap getData(String issueKey, ComMap data) throws Exception{
 
-		if(PluginManfestValidator.check("de.pubflow.server.services.ocn.getData", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
+		if(PluginManifestValidator.check("de.pubflow.server.services.ocn.getData", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
 
 			OCNDataLoader loader = new OCNDataLoader();
 
@@ -37,14 +37,14 @@ public class PluginAllocator {
 			}finally{
 				data.flushData();		
 			}
-
-			return data;
 		}
+		return data;
+
 	}
 
-	public static ComMap convert(String issueKey, ComMap data){
+	public static ComMap convert(String issueKey, ComMap data) throws Exception{
 
-		if(PluginManfestValidator.check("de.pubflow.server.services.ocn.convert", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
+		if(PluginManifestValidator.check("de.pubflow.server.services.ocn.convert", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
 
 			OCNToPangaeaMapper mapper = new OCNToPangaeaMapper();
 
@@ -67,12 +67,12 @@ public class PluginAllocator {
 			}finally{
 				data.flushData();		
 			}
-			return data;
 		}
+		return data;
 	}
 
-	public static void toCSV(String issueKey, ComMap data){
-		if(PluginManfestValidator.check("de.pubflow.server.services.ocn.toCSV", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
+	public static void toCSV(String issueKey, ComMap data) throws Exception{
+		if(PluginManifestValidator.check("de.pubflow.server.services.ocn.toCSV", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
 
 			FileCreator4D fc4d = new FileCreator4D();
 			data.setDefaultIssueKey(issueKey);
