@@ -3,7 +3,7 @@
 	<description>
 	</description>
 	<signatures>
-		<signature name="de.pubflow.services.eprints.PluginAllocator.checkRSSFeeds">
+		<signature name="de.pubflow.services.eprints.checkRSSFeeds">
 			<description></description>
 		</signature>
 	</signatures>

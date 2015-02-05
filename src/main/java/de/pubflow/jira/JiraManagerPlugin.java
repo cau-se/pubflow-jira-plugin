@@ -4,13 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.LinkedList;
 import java.util.Map.Entry;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.events.XMLEvent;
 
 import org.ofbiz.core.entity.GenericEntityException;
 import org.slf4j.Logger;
@@ -94,8 +101,8 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		}
 		user = JiraObjectGetter.getUserByName("PubFlow");
 	}
-	
-	static String getTextResource(String resourceName){ 
+
+	public static String getTextResource(String resourceName){ 
 		StringBuffer content = new StringBuffer();
 
 		try{
@@ -182,5 +189,35 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				issue.setAssignee(issueEvent.getIssue().getReporter());
 			}
 		}
+	}
+
+	public static LinkedList<String> getSteps(String workflowXMLString){
+		StringReader sw = new StringReader(workflowXMLString);
+		
+		LinkedList<String> steps = new LinkedList<String>();
+
+		try {
+			XMLInputFactory xmlif = XMLInputFactory.newInstance();
+			xmlif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+			
+			XMLEventReader xmler = xmlif.createXMLEventReader(sw);
+
+			while (xmler.hasNext()) {
+				XMLEvent e = xmler.nextEvent();
+				if (e.isStartElement()) {
+					String localPart = e.asStartElement().getName().getLocalPart();
+					switch (localPart) {
+					case "step": 
+						try{
+							steps.add(e.asStartElement().getAttributeByName(new QName("name")).getValue());
+						}catch(NullPointerException e1){}
+						break;
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return steps;
 	}
 }

@@ -97,21 +97,7 @@ public class JiraManagerCore {
 				JiraObjectManipulator.addUserToGroup(userScientist, groupScientists);			
 				JiraObjectManipulator.addUserToGroup(userScientist, "jira-users");
 
-				List<String> statuses = new LinkedList<String>();
-				statuses.add("Open");
-				statuses.add("Ready for Convertion by Data Management");
-				statuses.add("Ready for OCN-Import");
-				statuses.add("Prepare for PubFlow");
-				statuses.add("Data Processing by PubFlow");
-				statuses.add("Ready for Pangaea-Import");
-				statuses.add("Data Needs Correction");
-				//statuses.add("Waiting for DOI");
-				statuses.add("Closed");
-				statuses.add("Done");
-				statuses.add("Rejected");
 				JiraObjectCreator.createProject("PubFlow", "PUB", userPubFlow, false);
-
-
 
 				List<ConditionDefinition> conditionMap = new LinkedList<ConditionDefinition>();
 
@@ -128,7 +114,6 @@ public class JiraManagerCore {
 				conditionMap.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{1, 11}));
 
 				conditionMap.add(new ConditionDefinition(ConditionDefinitionType.ATTACHMENT, null, new int[]{11}));
-
 
 				LinkedList<CustomFieldDefinition> customFields = new LinkedList<CustomFieldDefinition>();
 				customFields.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[]{"141", "111"}));
@@ -150,9 +135,8 @@ public class JiraManagerCore {
 				customFields.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"141", "111"}));
 
-				JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), statuses, customFields, conditionMap);
-				
-				JiraObjectCreator.createIssue("PUB", "OCN", "test issue", userPubFlow, "sample description", new HashMap<String, String>(), "");
+				JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditionMap);
+				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>());
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
