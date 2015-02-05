@@ -179,11 +179,11 @@ public class JiraObjectCreator {
 		LinkedList<String> statuses = JiraManagerPlugin.getSteps(workflowXMLString);
 
 		//Add Workflow
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + Appendix.WORKFLOW);
+		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName + Appendix.WORKFLOW);
 
 		if(jiraWorkflow == null){
-			log.debug("newIssueType - jiraWorkflow search : " + projectKey + Appendix.WORKFLOW + " null, creating");
-			jiraWorkflow = JiraObjectManipulator.addWorkflow(projectKey, workflowXMLString, user);
+			log.debug("newIssueType - jiraWorkflow search : " + issueTypeName + Appendix.WORKFLOW + " null, creating");
+			jiraWorkflow = JiraObjectManipulator.addWorkflow(issueTypeName, workflowXMLString, user);
 		}
 
 		log.debug("newIssueType - jiraWorkflow : " + jiraWorkflow.getName());
@@ -437,20 +437,20 @@ public class JiraObjectCreator {
 			ComponentAccessor.getFieldConfigSchemeManager().updateFieldConfigScheme(issueTypeScheme, contexts, ComponentAccessor.getFieldManager().getConfigurableField(IssueFieldConstants.ISSUE_TYPE));
 
 			//add workflow scheme
-			AssignableWorkflowScheme workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowSchemeObj(projectKey + Appendix.WORKFLOWSCHEME);
+			AssignableWorkflowScheme workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowSchemeObj(issueTypeName + Appendix.WORKFLOWSCHEME);
 
 			if(workflowScheme == null){
 				Builder builder = ComponentAccessor.getWorkflowSchemeManager().assignableBuilder();
-				builder.setName(projectKey + Appendix.WORKFLOWSCHEME);
+				builder.setName(issueTypeName + Appendix.WORKFLOWSCHEME);
 				builder.setDescription("");
 				workflowScheme = builder.build();
 				ComponentAccessor.getWorkflowSchemeManager().createScheme(workflowScheme);
 			}
 
 			//TODO Should be fixed when Atlassian offers addWorkflowToScheme for workflow objects (approx. in 1000 years) 
-			GenericValue workflowSchemeGeneric = ComponentAccessor.getWorkflowSchemeManager().getScheme(projectKey + Appendix.WORKFLOWSCHEME);
+			GenericValue workflowSchemeGeneric = ComponentAccessor.getWorkflowSchemeManager().getScheme(issueTypeName + Appendix.WORKFLOWSCHEME);
 
-			ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(workflowSchemeGeneric, projectKey + Appendix.WORKFLOW, issueType.getId());
+			ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(workflowSchemeGeneric, issueTypeName + Appendix.WORKFLOW, issueType.getId());
 			ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(workflowSchemeGeneric, "jira", issueType.getId());
 			ComponentAccessor.getWorkflowSchemeManager().addSchemeToProject(project.getGenericValue(), workflowSchemeGeneric);	
 
@@ -495,7 +495,7 @@ public class JiraObjectCreator {
 		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
 
 		FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager, null);
-		fieldScreenScheme.setName(fieldScreenSchemeName + Appendix.WORKFLOWSCHEME);
+		fieldScreenScheme.setName(fieldScreenSchemeName + Appendix.FIELDSCREENSCHEME);
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemEdit);
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemCreate);
