@@ -36,7 +36,7 @@ public class ConfWriterAssist {
 			String signiture = PubFlowSystem.class.toString();
 
 			pubflowConf.setProperty( signiture+"-CONFSERVER","ON" );
-			pubflowConf.storeToXML( fs, "PubFlow Properties File (last updated "+Calendar.getInstance().getTime().toLocaleString()+")");
+			pubflowConf.storeToXML( fs, "PubFlow Properties File (last updated " + Calendar.getInstance().getTime().toString()+")");
 
 		}catch ( IOException e ){
 			e.printStackTrace();

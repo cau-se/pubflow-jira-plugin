@@ -42,7 +42,6 @@ import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.ApplicationUsers;
-import com.atlassian.jira.web.action.util.workflow.WorkflowEditorTransitionConditionUtil;
 import com.atlassian.jira.workflow.AssignableWorkflowScheme;
 import com.atlassian.jira.workflow.AssignableWorkflowScheme.Builder;
 import com.atlassian.jira.workflow.JiraWorkflow;
@@ -251,9 +250,6 @@ public class JiraObjectCreator {
 			List<JiraContextNode> contexts = new ArrayList<JiraContextNode>();
 			contexts.add(GlobalIssueContext.getInstance());
 
-			int i = 0;
-			String[] parameterCustomFieldIds = new String[customFields.size() + 2];
-
 			//generate custom fields
 			for(CustomFieldDefinition e : customFields){
 
@@ -268,10 +264,6 @@ public class JiraObjectCreator {
 							ComponentAccessor.getCustomFieldManager().getCustomFieldType(e.getType()),
 							null, 
 							contexts, issueTypesGenericValue);
-
-					//add custom field ids to the temporary list of the issue type's custom field ids
-					//customFieldsCache.add(customFieldObject);
-					parameterCustomFieldIds[i++] = customFieldObject.getId();
 				}
 				log.debug("newIssueType - customField : " + e.getName() + "_" + issueTypeName + " / type : " + e.getType());
 			}
@@ -375,9 +367,7 @@ public class JiraObjectCreator {
 							restrictionDescriptor.setConditionsDescriptor(conditionsDescriptor);
 						}
 						conditionsDescriptor.setType("AND");
-						List listLonditions = conditionsDescriptor.getConditions();
-
-						WorkflowEditorTransitionConditionUtil transUtil = new WorkflowEditorTransitionConditionUtil();
+						List<ConditionDescriptor> listLonditions = conditionsDescriptor.getConditions();
 
 						ConditionDescriptor cd = DescriptorFactory.getFactory().createConditionDescriptor();
 						cd.setType("class");
