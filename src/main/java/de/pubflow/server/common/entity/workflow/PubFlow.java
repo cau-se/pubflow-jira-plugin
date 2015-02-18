@@ -1,8 +1,5 @@
 package de.pubflow.server.common.entity.workflow;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import de.pubflow.server.common.enumeration.WFType;
 
 public class PubFlow {
