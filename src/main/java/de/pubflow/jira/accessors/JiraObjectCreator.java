@@ -226,7 +226,7 @@ public class JiraObjectCreator {
 				}
 			}
 
-			//ComponentAccessor.getWorkflowManager().updateWorkflow(projectKey + WORKFLOW_APPENDIX, jiraWorkflow);
+			//ComponentAccessor.getWorkflowManager().updateWorkflow(issueTypeName + WORKFLOW_APPENDIX, jiraWorkflow);
 			log.debug("newIssueType - updating workflow " + jiraWorkflow.getName() + " / user : " + user.getName());
 			ComponentAccessor.getWorkflowManager().updateWorkflow(user, jiraWorkflow);
 
@@ -441,6 +441,7 @@ public class JiraObjectCreator {
 			GenericValue workflowSchemeGeneric = ComponentAccessor.getWorkflowSchemeManager().getScheme(issueTypeName + Appendix.WORKFLOWSCHEME);
 
 			ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(workflowSchemeGeneric, issueTypeName + Appendix.WORKFLOW, issueType.getId());
+
 			ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(workflowSchemeGeneric, "jira", issueType.getId());
 			ComponentAccessor.getWorkflowSchemeManager().addSchemeToProject(project.getGenericValue(), workflowSchemeGeneric);	
 

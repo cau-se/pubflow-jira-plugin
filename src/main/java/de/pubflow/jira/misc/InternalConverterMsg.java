@@ -36,14 +36,13 @@ public class InternalConverterMsg {
 		date = issueEvent.getTime();
 
 		Issue issue = issueEvent.getIssue();
-		IssueType issueType = issue.getIssueTypeObject();
-		issueTypeName = issueType.getName();
+		issueTypeName = issue.getIssueTypeObject().getName();
 
 		List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
 
 		values.put("reporter", issue.getReporterId());
 		values.put("assignee", issue.getAssigneeId());
-		values.put("workflowName", issueTypeName);//.substring(0, issueTypeName.length() - 10));
+		values.put("workflowName", issueTypeName);
 		values.put("issueKey", issue.getKey() + "");
 		values.put("eventType", eventType + "");
 		values.put("date", date.getTime() + "");
@@ -53,9 +52,6 @@ public class InternalConverterMsg {
 			if(customField != null && customField.getName() != null && issue.getCustomFieldValue(customField) != null){
 
 				String customFieldName = customField.getName();
-				if(customField.getName().endsWith(issueTypeName)){
-					customFieldName = customField.getName(); //.substring(0, customField.getName().length() - issueTypeName.length() - 1);			
-				}
 
 				if(customField.getCustomFieldType() instanceof DateTimeCFType){
 					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

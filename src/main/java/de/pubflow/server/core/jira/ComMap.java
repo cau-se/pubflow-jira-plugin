@@ -20,6 +20,7 @@ public class ComMap{
 	public ComMap(String defaultIssueKey){
 		this.defaultIssueKey = defaultIssueKey;
 
+		issues = new LinkedList<JiraIssue>();
 		attachments = new LinkedList<JiraAttachment>();
 		comments = new LinkedList<JiraComment>();
 		map =  new HashMap<String, Object>();

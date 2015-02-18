@@ -1,13 +1,19 @@
 package de.pubflow.server.core.jira;
 
+import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.atlassian.jira.scheduler.JiraSchedulerFactory;
 
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
+import de.pubflow.server.core.scheduling.PubFlowJob;
 import de.pubflow.server.core.workflow.WFBroker;
 import de.pubflow.server.core.workflow.WorkflowMessage;
 
@@ -108,10 +114,11 @@ public class JiraConnector {
 					break;
 				default:
 					try{
-						if(msg.getWorkflowID().substring(msg.getWorkflowID().lastIndexOf(".") + 1).equals(key.substring(key.lastIndexOf("_") + 1))){
-							parameter.setKey(key.substring(0, key.lastIndexOf("_")));
-							filteredParameters.add(parameter);
-						}
+						//if(msg.getWorkflowID().substring(msg.getWorkflowID().lastIndexOf(".") + 1).equals(key.substring(key.lastIndexOf("_") + 1))){
+						//	parameter.setKey(key.substring(0, key.lastIndexOf("_")));
+						parameter.setKey(key);
+						filteredParameters.add(parameter);
+						//}
 					}catch(Exception e){
 						myLogger.error(e.getCause().toString() + " : " + e.getMessage());
 					}
@@ -123,36 +130,38 @@ public class JiraConnector {
 		msg.setParameters(filteredParameters);
 
 
-		//		if(!quartzCron.equals("")){
-		//			JobDetail job = newJob(PubFlowJob.class)
-		//					.withIdentity("job_" + System.currentTimeMillis(), "pubflow")
-		//					.build();
-		//			job.getJobDataMap().put("msg", wfMsg);
-		//
-		//			Trigger trigger = newTrigger()
-		//					.withIdentity("cron_" + System.currentTimeMillis() + "-trigger", "pubflow")
-		//					.startAt(new Date(quartzMillis))
-		//					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
-		//					.build();
-		//			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
-		//			
-		//		}else if(quartzMillis > System.currentTimeMillis()){
-		//			JobDetail job = newJob(PubFlowJob.class)
-		//					.withIdentity("job_" + quartzMillis, "pubflow")
-		//					.build();
-		//			job.getJobDataMap().put("msg", wfMsg);
-		//
-		//			Trigger trigger = newTrigger()
-		//					.withIdentity("job_" + quartzMillis + "-trigger", "pubflow")
-		//					.startAt(new Date(quartzMillis))
-		//					.withSchedule(SimpleScheduleBuilder.simpleSchedule())            
-		//					.build();
-		//			Scheduler.getInstance().getScheduler().scheduleJob(job, trigger);
-		//
-		//		}else{
+		JiraSchedulerFactory fy = new JiraSchedulerFactory(); 
 
-		myLogger.info("Leaving JiraConnector");			
-		WFBroker.getInstance().receiveWFCall(msg);
+		try {
+
+			if(!quartzCron.equals("")){
+				JobDetail job = new JobDetail();
+				job.setJobClass(PubFlowJob.class);
+				job.getJobDataMap().put("msg", msg);
+
+				Trigger trigger = null;
+				if(quartzCron.equals("minutely")){
+					trigger = TriggerUtils.makeMinutelyTrigger();
+				}
+				fy.getScheduler().scheduleJob(job, trigger);
+
+			}else if(quartzMillis > System.currentTimeMillis()){
+				JobDetail job = new JobDetail();
+				job.setJobClass(PubFlowJob.class);
+				job.getJobDataMap().put("msg", msg);
+
+				Trigger trigger = null;
+				//trigger.setStartTime(new Date(quartzMillis));
+				fy.getScheduler().scheduleJob(job, trigger);
+				
+			}else{
+				myLogger.info("Leaving JiraConnector");			
+				WFBroker.getInstance().receiveWFCall(msg);
+			}
+			
+		} catch (SchedulerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
-

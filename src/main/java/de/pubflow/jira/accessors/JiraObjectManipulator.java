@@ -94,16 +94,16 @@ public class JiraObjectManipulator {
 	}
 
 	/**
-	 * @param projectKey
+	 * @param issueTypeName
 	 * @param workflowXML
 	 */
-	public static JiraWorkflow addWorkflow(String projectKey, String workflowXML, ApplicationUser user){
+	public static JiraWorkflow addWorkflow(String issueTypeName, String workflowXML, ApplicationUser user){
 	
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + Appendix.WORKFLOW);
+		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName + Appendix.WORKFLOW);
 	
 		if(jiraWorkflow == null && workflowXML != null){
 			try {
-				jiraWorkflow = new ConfigurableJiraWorkflow(projectKey + Appendix.WORKFLOW, WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), ComponentAccessor.getWorkflowManager());
+				jiraWorkflow = new ConfigurableJiraWorkflow(issueTypeName + Appendix.WORKFLOW, WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), ComponentAccessor.getWorkflowManager());
 				//ComponentAccessor.getWorkflowManager().createWorkflow(projectKey + WORKFLOW_APPENDIX, jiraWorkflow);
 				ComponentAccessor.getWorkflowManager().createWorkflow(user, jiraWorkflow);
 			} catch (FactoryException e) {

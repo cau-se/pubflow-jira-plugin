@@ -1,5 +1,6 @@
 package de.pubflow.jira;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyManagementException;
@@ -20,7 +21,9 @@ import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.workflow.JiraWorkflow;
 
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
@@ -28,6 +31,11 @@ import de.pubflow.jira.misc.ConditionDefinition;
 import de.pubflow.jira.misc.ConditionDefinition.ConditionDefinitionType;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
+import de.pubflow.server.common.entity.workflow.WFParameter;
+import de.pubflow.server.common.entity.workflow.WFParameterList;
+import de.pubflow.server.common.enumeration.WFType;
+import de.pubflow.server.core.jira.JiraConnector;
+import de.pubflow.server.core.workflow.WorkflowMessage;
 
 /**
  * 
@@ -77,6 +85,9 @@ public class JiraManagerCore {
 				JiraObjectManipulator.addUserToGroup(userPubFlow, groupScientists);
 				JiraObjectManipulator.addUserToGroup(userPubFlow, groupDataManager);
 
+				JiraManagerPlugin.user = userPubFlow;
+
+
 				//TODO fix deprecation when admin is application user by default
 				User userAdmin = ComponentAccessor.getUserManager().getUserObject("admin");
 				ApplicationUser userRoot = JiraObjectCreator.createUser("root", "$Boogie3");
@@ -99,21 +110,21 @@ public class JiraManagerCore {
 
 				JiraObjectCreator.createProject("PubFlow", "PUB", userPubFlow, false);
 
-				List<ConditionDefinition> conditionMap = new LinkedList<ConditionDefinition>();
+				List<ConditionDefinition> conditions = new LinkedList<ConditionDefinition>();
 
 				Map <String, String> mapParamsDatamanager = new HashMap<String, String>();
 				mapParamsDatamanager.put("group", "datamanager");
-				conditionMap.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 141, 121, 61, 71, 91, 111, 151, 131, 161}));
+				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 141, 121, 61, 71, 91, 111, 151, 131, 161}));
 
 				Map <String, String> mapParamsPubFlow = new HashMap<String, String>();
 				mapParamsPubFlow.put("group", "jira-administrators");
-				conditionMap.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsPubFlow, new int[]{41,101}));
+				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsPubFlow, new int[]{41,101}));
 
 				Map <String, String> mapParamsScientists = new HashMap<String, String>();
 				mapParamsScientists.put("group", "datamanager");
-				conditionMap.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{1, 11}));
+				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{1, 11}));
 
-				conditionMap.add(new ConditionDefinition(ConditionDefinitionType.ATTACHMENT, null, new int[]{11}));
+				conditions.add(new ConditionDefinition(ConditionDefinitionType.ATTACHMENT, null, new int[]{11}));
 
 				LinkedList<CustomFieldDefinition> customFields = new LinkedList<CustomFieldDefinition>();
 				customFields.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[]{"141", "111"}));
@@ -135,8 +146,35 @@ public class JiraManagerCore {
 				customFields.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"141", "111"}));
 
-				JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditionMap);
+				//JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
 				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>());
+
+
+				WorkflowMessage wm = new WorkflowMessage();
+				wm.setWorkflowID("de.pubflow.EPRINTS");
+				WFParameterList wpl = new WFParameterList();
+				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
+				WFParameter wp2 = new WFParameter("quartzCron", "minutely");		
+				wpl.add(wp1);
+				wpl.add(wp2);
+				wm.setParameters(wpl);
+				wm.setType(WFType.BPMN2);
+				JiraConnector.getInstance().compute(wm);
+				
+				FileWriter fw = new FileWriter("/tmp/lalala.la");
+
+//				fw.append(ComponentAccessor.getWorkflowSchemeManager().getDefaultSchemeObject().getName() + "\n");
+//				fw.append(ComponentAccessor.getWorkflowManager().getDefaultWorkflow().getName() + "\n");
+
+				for(JiraWorkflow j : ComponentAccessor.getWorkflowManager().getWorkflowsIncludingDrafts()){
+					fw.append(j.getName() + "\n");
+					
+				}
+
+				fw.close();
+				//				PluginAllocator.checkRSSFeeds(new ComMap(null));
+
+
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

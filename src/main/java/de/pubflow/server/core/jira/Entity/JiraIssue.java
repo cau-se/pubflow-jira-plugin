@@ -3,7 +3,7 @@ package de.pubflow.server.core.jira.Entity;
 import java.util.HashMap;
 
 public class JiraIssue {
-	private String workflowName; 
+	private String issueTypeName; 
 	private String summary; 
 	private String description; 
 	private HashMap<String, String> parameters; 
@@ -12,7 +12,7 @@ public class JiraIssue {
 
 	public JiraIssue(String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
 		super();
-		this.workflowName = workflowName;
+		this.issueTypeName = workflowName;
 		this.summary = summary;
 		this.description = description;
 		this.parameters = parameters;
@@ -20,12 +20,12 @@ public class JiraIssue {
 	}
 
 
-	public String getWorkflowName() {
-		return workflowName;
+	public String getIssueTypeName() {
+		return issueTypeName;
 	}
 
-	public void setWorkflowName(String workflowName) {
-		this.workflowName = workflowName;
+	public void setIssueTypeName(String issueTypeName) {
+		this.issueTypeName = issueTypeName;
 	}
 
 	public String getSummary() {

@@ -169,7 +169,6 @@ public class HTMLReader {
 		throw new Exception("eprints.id_number is empty!");	
 	}
 
-	
 	public static ComMap checkRSSFeed(ComMap data){
 		LinkedList <RSSMsg> msgList = new LinkedList<RSSMsg>();
 
@@ -180,7 +179,7 @@ public class HTMLReader {
 
 					boolean dataOk = HTMLReader.checkForValidDOI(HTMLReader.readMeta(msg.getLink()));
 					if(!dataOk){
-						data.newJiraIssue("eprintspangaeasupplement", "Missing pangaea supplement for " + msg.getLink(), msg.getDescription(), new HashMap<String, String>(), "");
+						data.newJiraIssue("EPRINTS", "Missing pangaea supplement for " + msg.getLink(), msg.getDescription(), new HashMap<String, String>(), "");
 						msgList.add(msg);
 					}
 

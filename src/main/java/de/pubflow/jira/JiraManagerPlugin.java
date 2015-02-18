@@ -160,11 +160,12 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
 					wfpm.add(wfp);
 				}
+
 				wm.setParameters(wfpm);
 				wm.setWorkflowID("de.pubflow.OCN");
-
 				JiraConnector jpmp = JiraConnector.getInstance();
 				jpmp.compute(wm);
+
 			} catch (Exception e){
 				e.printStackTrace();
 				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), e.getClass().getSimpleName() + e.getMessage(), user);
@@ -193,13 +194,13 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 
 	public static LinkedList<String> getSteps(String workflowXMLString){
 		StringReader sw = new StringReader(workflowXMLString);
-		
+
 		LinkedList<String> steps = new LinkedList<String>();
 
 		try {
 			XMLInputFactory xmlif = XMLInputFactory.newInstance();
 			xmlif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-			
+
 			XMLEventReader xmler = xmlif.createXMLEventReader(sw);
 
 			while (xmler.hasNext()) {

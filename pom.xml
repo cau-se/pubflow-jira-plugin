@@ -118,8 +118,6 @@
 			<version>2.3.0</version>
 		</dependency>
 
-		<!-- QUARTZ -->
-
 		<!-- HIBERNATE -->
 
 		<dependency>

@@ -43,7 +43,7 @@ public class JiraEndpoint{
 
 	public static String createIssue(JiraIssue issue) {
 		try {
-			return JiraObjectCreator.createIssue("PUB", issue.getWorkflowName(), issue.getSummary(), JiraManagerPlugin.user, issue.getDescription(), issue.getParameters(), issue.getReporter());
+			return JiraObjectCreator.createIssue("PUB", issue.getIssueTypeName(), issue.getSummary(), JiraManagerPlugin.user, issue.getDescription(), issue.getParameters(), issue.getReporter());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
