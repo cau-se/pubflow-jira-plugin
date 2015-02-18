@@ -91,7 +91,7 @@ public class JiraConnector {
 					quartzMillis = Long.parseLong(value);
 					break;	
 
-				case "Quartz Cron":
+				case "quartzCron":
 					quartzCron = value;
 					break;
 
@@ -111,6 +111,8 @@ public class JiraConnector {
 					filteredParameters.add(parameter);
 					break;
 				case "reporter":
+					break;
+				case "workflowName":
 					break;
 				default:
 					try{
@@ -138,10 +140,13 @@ public class JiraConnector {
 				JobDetail job = new JobDetail();
 				job.setJobClass(PubFlowJob.class);
 				job.getJobDataMap().put("msg", msg);
-
+				job.setName(msg.getWorkflowID() + System.currentTimeMillis());
+				job.setDurability(true);
+				
 				Trigger trigger = null;
 				if(quartzCron.equals("minutely")){
 					trigger = TriggerUtils.makeMinutelyTrigger();
+					trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
 				}
 				fy.getScheduler().scheduleJob(job, trigger);
 
@@ -149,9 +154,12 @@ public class JiraConnector {
 				JobDetail job = new JobDetail();
 				job.setJobClass(PubFlowJob.class);
 				job.getJobDataMap().put("msg", msg);
-
+				job.setName(msg.getWorkflowID() + System.currentTimeMillis());
+				job.setDurability(true);
+				
 				Trigger trigger = null;
 				//trigger.setStartTime(new Date(quartzMillis));
+				trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
 				fy.getScheduler().scheduleJob(job, trigger);
 				
 			}else{

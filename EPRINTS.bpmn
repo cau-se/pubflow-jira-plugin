@@ -29,7 +29,7 @@
     <endEvent id="EndEvent_1" name="" />
     <scriptTask id="ScriptTask_2" name="Create Issues" scriptFormat="http://www.java.com/java" >
       <script>ComMap data = new ComMap("");
-data = de.pubflow.server.services.eprints.PluginAllocator.checkRSSFeeds(data);
+de.pubflow.server.services.eprints.PluginAllocator.checkRSSFeeds(data);
 kcontext.setVariable("tempResult", data);</script>
     </scriptTask>
 

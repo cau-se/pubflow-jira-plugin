@@ -5,11 +5,14 @@ import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.jira.Entity.JiraIssue;
 
 public class PluginAllocator {
-	public static void checkRSSFeeds(ComMap data){
+	public static ComMap checkRSSFeeds(ComMap data){
 		data = HTMLReader.checkRSSFeed(data);
 		
 		for(JiraIssue issue : data.getJiraIssues()){
 			JiraEndpoint.createIssue(issue);
 		}
+		data.flushData();
+		
+		return data;
 	}
 }
