@@ -134,7 +134,7 @@ public class JiraObjectCreator {
 		MutableIssue mutableIssue = createNewMutableIssue(projectKey, user, issueTypeName, parameters.get("summary"), reporter);
 
 		for(Entry<String, String> entry : parameters.entrySet()){
-			CustomField customField = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(entry.getKey() + "_" + issueTypeName);
+			CustomField customField = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(entry.getKey());
 
 			if(customField != null){
 				if(entry.getValue() != null){
@@ -193,7 +193,7 @@ public class JiraObjectCreator {
 		for(String status : statuses){
 			Status s = JiraObjectGetter.getStatusByName(projectKey, status);
 
-			if(s == null){
+			if(s == null){				
 				log.debug("newIssueType - status search : " + projectKey + " / " + status + " null, creating");
 				s = JiraManagerPlugin.statusManager.createStatus(status , "", "/images/icons/statuses/generic.png");
 			}
@@ -254,18 +254,18 @@ public class JiraObjectCreator {
 			for(CustomFieldDefinition e : customFields){
 
 				//check if custom field already exists
-				CustomField customFieldObject = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(e.getName() + "_" + issueTypeName);
+				CustomField customFieldObject = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(e.getName());
 
 				if(customFieldObject == null){
-					log.debug("newIssueType - customField search : " + e.getName() + "_" + issueTypeName + " null, creating");
+					log.debug("newIssueType - customField search : " + e.getName() + " null, creating");
 
 					//create custom field
-					customFieldObject = ComponentAccessor.getCustomFieldManager().createCustomField(e.getName() + "_" + issueTypeName, e.getName() + "-CustomField for " + issueTypeName, 
+					customFieldObject = ComponentAccessor.getCustomFieldManager().createCustomField(e.getName(), e.getName() + "-CustomField for " + issueTypeName, 
 							ComponentAccessor.getCustomFieldManager().getCustomFieldType(e.getType()),
 							null, 
 							contexts, issueTypesGenericValue);
 				}
-				log.debug("newIssueType - customField : " + e.getName() + "_" + issueTypeName + " / type : " + e.getType());
+				log.debug("newIssueType - customField : " + e.getName() + " / type : " + e.getType());
 			}
 
 
@@ -309,13 +309,13 @@ public class JiraObjectCreator {
 				List<String> customFieldIds = new LinkedList<String>(); 
 
 				for(CustomFieldDefinition c : e.getValue()){
-					log.debug("newIssueType - transition screen id loops / c.getName() : " + c.getName() + "_" + issueTypeName);
-					String l = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(c.getName() + "_" + issueTypeName).getId();
+					log.debug("newIssueType - transition screen id loops / c.getName() : " + c.getName());
+					String l = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(c.getName()).getId();
 
 					if(l != null){
 						customFieldIds.add(l);
 					}else{
-						log.error("newIssueType - custom field is null / c.getName() : " + c.getName() + "_" + issueTypeName);
+						log.error("newIssueType - custom field is null / c.getName() : " + c.getName());
 					}
 				}
 

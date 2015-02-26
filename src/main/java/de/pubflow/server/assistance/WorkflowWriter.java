@@ -9,7 +9,7 @@ import de.pubflow.server.common.entity.WorkflowEntity;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.repository.WorkflowProvider;
 
-public class WorkflowWriterOCNEPRINTS {
+public class WorkflowWriter {
 
 	public static void main(String[] args) {		
 

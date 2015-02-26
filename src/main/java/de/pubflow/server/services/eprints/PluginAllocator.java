@@ -8,10 +8,9 @@ public class PluginAllocator {
 	public static ComMap checkRSSFeeds(ComMap data){
 		data = HTMLReader.checkRSSFeed(data);
 		
-		for(JiraIssue issue : data.getJiraIssues()){
+		for(JiraIssue issue : data.getJiraIssuesAndFlush()){
 			JiraEndpoint.createIssue(issue);
 		}
-		data.flushData();
 		
 		return data;
 	}

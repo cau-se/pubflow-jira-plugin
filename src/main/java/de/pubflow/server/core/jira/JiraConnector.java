@@ -1,19 +1,13 @@
 package de.pubflow.server.core.jira;
 
-import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.atlassian.jira.scheduler.JiraSchedulerFactory;
 
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
-import de.pubflow.server.core.scheduling.PubFlowJob;
 import de.pubflow.server.core.workflow.WFBroker;
 import de.pubflow.server.core.workflow.WorkflowMessage;
 
@@ -132,44 +126,44 @@ public class JiraConnector {
 		msg.setParameters(filteredParameters);
 
 
-		JiraSchedulerFactory fy = new JiraSchedulerFactory(); 
-
-		try {
-
-			if(!quartzCron.equals("")){
-				JobDetail job = new JobDetail();
-				job.setJobClass(PubFlowJob.class);
-				job.getJobDataMap().put("msg", msg);
-				job.setName(msg.getWorkflowID() + System.currentTimeMillis());
-				job.setDurability(true);
-				
-				Trigger trigger = null;
-				if(quartzCron.equals("minutely")){
-					trigger = TriggerUtils.makeMinutelyTrigger();
-					trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
-				}
-				fy.getScheduler().scheduleJob(job, trigger);
-
-			}else if(quartzMillis > System.currentTimeMillis()){
-				JobDetail job = new JobDetail();
-				job.setJobClass(PubFlowJob.class);
-				job.getJobDataMap().put("msg", msg);
-				job.setName(msg.getWorkflowID() + System.currentTimeMillis());
-				job.setDurability(true);
-				
-				Trigger trigger = null;
-				//trigger.setStartTime(new Date(quartzMillis));
-				trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
-				fy.getScheduler().scheduleJob(job, trigger);
-				
-			}else{
+//		JiraSchedulerFactory fy = new JiraSchedulerFactory(); 
+//
+//		try {
+//
+//			if(!quartzCron.equals("")){
+//				JobDetail job = new JobDetail();
+//				job.setJobClass(PubFlowJob.class);
+//				job.getJobDataMap().put("msg", msg);
+//				job.setName(msg.getWorkflowID() + System.currentTimeMillis());
+//				job.setDurability(true);
+//				
+//				Trigger trigger = null;
+//				if(quartzCron.equals("minutely")){
+//					trigger = TriggerUtils.makeMinutelyTrigger();
+//					trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
+//				}
+//				fy.getScheduler().scheduleJob(job, trigger);
+//
+//			}else if(quartzMillis > System.currentTimeMillis()){
+//				JobDetail job = new JobDetail();
+//				job.setJobClass(PubFlowJob.class);
+//				job.getJobDataMap().put("msg", msg);
+//				job.setName(msg.getWorkflowID() + System.currentTimeMillis());
+//				job.setDurability(true);
+//				
+//				Trigger trigger = null;
+//				//trigger.setStartTime(new Date(quartzMillis));
+//				trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
+//				fy.getScheduler().scheduleJob(job, trigger);
+//				
+//			}else{
 				myLogger.info("Leaving JiraConnector");			
 				WFBroker.getInstance().receiveWFCall(msg);
-			}
+//			}
 			
-		} catch (SchedulerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		} catch (SchedulerException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }

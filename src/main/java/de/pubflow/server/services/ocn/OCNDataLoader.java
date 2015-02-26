@@ -39,8 +39,8 @@ public class OCNDataLoader {
 
 		try{
 			String connectionURL = props.getProperty("dbUrl", this.getClass(), "jdbc:postgresql://localhost:5432/ocn?schema=ocn");  //$NON-NLS-2$
-			String user = PropLoader.getInstance().getProperty("user", this.getClass(), Messages.getString("OCNDataLoader.3"));  //$NON-NLS-2$
-			String password = PropLoader.getInstance().getProperty("pw", this.getClass(), Messages.getString("OCNDataLoader.5"));  //$NON-NLS-2$
+			String user = PropLoader.getInstance().getProperty("user", this.getClass(), "arl");  //$NON-NLS-2$
+			String password = PropLoader.getInstance().getProperty("pw", this.getClass(), "dWmWidW2");  //$NON-NLS-2$
 
 			StringBuilder log = new StringBuilder();
 
@@ -83,7 +83,7 @@ public class OCNDataLoader {
 				leg = Leg.createFromResultSet(Leg.class, Leg.LEGTABLE, rs);
 
 			}catch(SQLException e){
-				throw new Exception(String.format(Messages.getString("OCNDataLoader.0"), legId)); 
+				throw new Exception(String.format("There is no data for legid %s in the ocn database or the view 'leg' has been changed. \n", legId)); 
 			}
 
 			log.append("OK\n"); 
@@ -202,7 +202,7 @@ public class OCNDataLoader {
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString()); 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString()); 
 			data.newJiraAttachment("interimOCNDataLoader.tmp", legSw.toString().getBytes()); 
-			data.newJiraComment(String.format(Messages.getString("OCNDataLoader.49"), (System.currentTimeMillis() - millis)/1000.0)); 
+			data.newJiraComment(String.format("OCNDataLoader: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0)); 
 			return data;
 
 		}catch(Exception e){

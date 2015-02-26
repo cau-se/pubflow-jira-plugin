@@ -39,8 +39,6 @@ import com.atlassian.plugin.event.events.PluginModuleEnabledEvent;
 
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
-import de.pubflow.jira.configuration.ConfigResource;
-import de.pubflow.jira.configuration.ConfigResource.Config;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.entity.workflow.WFParameter;
@@ -76,17 +74,6 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		JiraManagerPlugin.fieldScreenSchemeManager = fieldScreenSchemeManager;
 		JiraManagerPlugin.statusManager = statusManager;
 		JiraManagerPlugin.eventPublisher = eventPublisher;
-
-		try{
-			ConfigResource configResource = ConfigResource.getInstance();
-			Config config = configResource.loadFromSettings();
-			if(config.getHomedir().equals("")){
-				config.setHomedir("/home/arl/pubflow_home/");
-				configResource.writeToSettings(config);
-			}
-		}catch(Exception e){
-			log.error(e.getMessage());
-		}
 	}
 
 	@EventListener
@@ -97,6 +84,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				| GenericEntityException | NoSuchAlgorithmException
 				| KeyStoreException | CertificateException | IOException e1) {
 			// TODO Auto-generated catch block
+			log.error(e1.getLocalizedMessage() + " " + e1.getCause());
 			e1.printStackTrace();
 		}
 		user = JiraObjectGetter.getUserByName("PubFlow");
@@ -113,6 +101,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 			in.close();
 
 		}catch(Exception e){
+			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			e.printStackTrace();
 		}
 		return content.toString();
@@ -167,6 +156,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				jpmp.compute(wm);
 
 			} catch (Exception e){
+				log.error(e.getLocalizedMessage() + " " + e.getCause());
 				e.printStackTrace();
 				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), e.getClass().getSimpleName() + e.getMessage(), user);
 			}
@@ -211,12 +201,16 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 					case "step": 
 						try{
 							steps.add(e.asStartElement().getAttributeByName(new QName("name")).getValue());
-						}catch(NullPointerException e1){}
+						}catch(NullPointerException e1){
+							log.error(e1.getLocalizedMessage() + " " + e1.getCause());
+							e1.printStackTrace();
+						}
 						break;
 					}
 				}
 			}
 		}catch(Exception e){
+			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			e.printStackTrace();
 		}
 		return steps;

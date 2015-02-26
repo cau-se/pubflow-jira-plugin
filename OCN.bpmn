@@ -24,8 +24,8 @@
      <tns:global identifier="issuekey" type="String" />
      <tns:global identifier="legid" type="String" />
      <tns:global identifier="source" type="String" />
-     <tns:global identifier="zielpfad" type="String" />
      <tns:global identifier="status" type="String" />
+     <tns:global identifier="targetpath" type="String" />
      <tns:global identifier="filename" type="String" />
      <tns:global identifier="topology" type="String" />
      <tns:global identifier="login" type="String" />
@@ -40,17 +40,17 @@
     <startEvent id="StartEvent_1" name="StartProcess"  isInterrupting="true"/>
     <endEvent id="EndEvent_1" name="" />
     <scriptTask id="ScriptTask_2" name="Load Data from OCN DB" scriptFormat="http://www.java.com/java" >
-      <script>ComMap data = new ComMap();
+      <script>ComMap data = new ComMap((String)issuekey);
 data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", legid);
 
-data = de.pubflow.server.services.ocn.PluginDelegator.getData((String)issuekey, data);
+data = de.pubflow.server.services.ocn.PluginAllocator.getData(data);
 
 kcontext.setVariable("tempResult", data);</script>
     </scriptTask>
     <scriptTask id="ScriptTask_3" name="Map Parameters (OCN to Pangaea)" scriptFormat="http://www.java.com/java" >
       <script>ComMap data = (ComMap) tempResult;
 
-data = de.pubflow.server.services.ocn.PluginDelegator.convert((String)issuekey, tempResult);
+data = de.pubflow.server.services.ocn.PluginAllocator.convert(data);
 
 kcontext.setVariable("tempResult", data);</script>
     </scriptTask>
@@ -67,9 +67,9 @@ data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.project", (String) proje
 data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.topology", (String) topology);
 data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.status", (String) status);
 data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.login", (String) login);
-data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.targetPath", (String) targetPath);
+data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.targetPath", (String) targetpath);
 
-new de.pubflow.server.services.ocn.PluginDelegator.toCSV((String) issuekey,  data);</script>
+de.pubflow.server.services.ocn.PluginAllocator.toCSV(data);</script>
     </scriptTask>
 
     <!-- connections -->

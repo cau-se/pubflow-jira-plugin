@@ -40,7 +40,6 @@ public class OCNToPangaeaMapper {
 		long millis = System.currentTimeMillis();
 
 		try{
-			data.flushData();
 			
 			log = new StringBuilder();
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
@@ -77,7 +76,7 @@ public class OCNToPangaeaMapper {
 			data.put("de.pubflow.services.ocn.PluginAllocator.convert.log", log.toString());
 			
 			data.newJiraAttachment("interimOCNToPangaeaMapper.tmp", sw.toString().getBytes());
-			data.newJiraComment(String.format("OCNToPangaeaMapper: exited normally after %d s.", (System.currentTimeMillis() - millis)/1000.0));
+			data.newJiraComment(String.format("OCNToPangaeaMapper: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0));
 
 			return data;
 

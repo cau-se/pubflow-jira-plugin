@@ -50,20 +50,21 @@ public class ComMap{
 		attachments.add(new JiraAttachment(defaultIssueKey, "", fileName, data));
 	}
 
-	public LinkedList<JiraComment> getJiraComments(){
+	public LinkedList<JiraComment> getJiraCommentsAndFlush(){
 		return comments;
 	}
 	
-	public LinkedList<JiraIssue> getJiraIssues(){
+	public LinkedList<JiraIssue> getJiraIssuesAndFlush(){
 		return issues;
 	}
 	
-	public void flushData(){
-		attachments = new LinkedList<JiraAttachment>();
-		comments = new LinkedList<JiraComment>();
-	}
+//	public void flushData(){
+//		attachments = new LinkedList<JiraAttachment>();
+//		comments = new LinkedList<JiraComment>();
+//		issues = new LinkedList<JiraIssue>();
+//	}
 
-	public LinkedList<JiraAttachment> getJiraAttachments(){
+	public LinkedList<JiraAttachment> getJiraAttachmentsAndFlush(){
 		return attachments;
 	}
 

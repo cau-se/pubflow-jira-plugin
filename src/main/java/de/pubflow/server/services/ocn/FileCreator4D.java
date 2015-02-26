@@ -9,7 +9,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import de.pubflow.server.core.jira.ComMap;
-import de.pubflow.server.core.jira.Entity.JiraAttachment;
 import de.pubflow.server.services.ocn.entity.Bottle;
 import de.pubflow.server.services.ocn.entity.Leg;
 import de.pubflow.server.services.ocn.entity.Parameter;
@@ -29,9 +28,8 @@ public class FileCreator4D {
 		long millis = System.currentTimeMillis();
 
 		try{
-			input.flushData();
 
-			if(input.get("return") == null){
+			if(input.get("de.pubflow.services.ocn.PluginAllocator.convert.leg") == null){
 				throw new IOException("4d file creation failed due to an empty input string. Something went terribly wrong in a prior work step.");				
 			}
 
@@ -56,7 +54,7 @@ public class FileCreator4D {
 
 			StringBuilder result4dBuilder = new StringBuilder();
 			result4dBuilder.append("/* DATA DESCRIPTION:").append("\r");
-			
+
 			String author = input.get("de.pubflow.services.ocn.PluginAllocator.toCSV.author");
 			String source = input.get("de.pubflow.services.ocn.PluginAllocator.toCSV.source");
 			String reference = input.get("de.pubflow.services.ocn.PluginAllocator.toCSV.reference");
@@ -68,35 +66,44 @@ public class FileCreator4D {
 			String status = input.get("de.pubflow.services.ocn.PluginAllocator.toCSV.status");
 			String login = input.get("de.pubflow.services.ocn.PluginAllocator.toCSV.login");
 
-
-			if(!author.equals("")){
-				result4dBuilder.append("Author:\t").append(author).append("\r");
-			}else{
-				log.append("Author was not set, skipping... \n");
+			if(author != null){
+				if(!author.equals("")){
+					result4dBuilder.append("Author:\t").append(author).append("\r");
+				}else{
+					log.append("Author was not set, skipping... \n");
+				}
 			}
 
-			if(!source.equals("")){
-				result4dBuilder.append("Source:\t").append(source).append("\r");
-			}else{
-				log.append("Source was not set, skipping... \n");
+			if(source != null){
+				if(!source.equals("")){
+					result4dBuilder.append("Source:\t").append(source).append("\r");
+				}else{
+					log.append("Source was not set, skipping... \n");
+				}
 			}
 
-			if(!title.equals("")){
-				result4dBuilder.append("Title:\t").append(title).append("\r");
-			}else{
-				log.append("Title was not set, skipping... \n");
+			if(title != null){
+				if(!title.equals("")){
+					result4dBuilder.append("Title:\t").append(title).append("\r");
+				}else{
+					log.append("Title was not set, skipping... \n");
+				}
 			}
 
-			if(!reference.equals("")){
-				result4dBuilder.append("Reference:\t").append(reference).append("\r");
-			}else{
-				log.append("Reference was not set, skipping... \n");
+			if(reference != null){
+				if(!reference.equals("")){
+					result4dBuilder.append("Reference:\t").append(reference).append("\r");
+				}else{
+					log.append("Reference was not set, skipping... \n");
+				}
 			}
 
-			if(!fileName.equals("")){
-				result4dBuilder.append("Export Filename:\t").append(fileName).append("\r");
-			}else{
-				log.append("Export Filename was not set, skipping... \n");
+			if(fileName != null){
+				if(!fileName.equals("")){
+					result4dBuilder.append("Export Filename:\t").append(fileName).append("\r");
+				}else{
+					log.append("Export Filename was not set, skipping... \n");
+				}
 			}
 
 			result4dBuilder.append("Event:\t").append(event.replace(" ", "")).append("\r");
@@ -116,34 +123,44 @@ public class FileCreator4D {
 				.append(" COMMENT: ").append(p.getString(Parameter.ABBREVIATION)).append(" - ").append(p.getString(Parameter.COMMENT)).append("\r");
 			}
 
-			if(!comment.equals("")){
-				result4dBuilder.append("Comment:\t").append(comment).append("\r");
-			}else{
-				log.append("Comment was not set, skipping... \n");
+			if(comment != null){
+				if(!comment.equals("")){
+					result4dBuilder.append("Comment:\t").append(comment).append("\r");
+				}else{
+					log.append("Comment was not set, skipping... \n");
+				}
 			}
 
-			if(!project.equals("")){
-				result4dBuilder.append("Project:\t").append(project).append("\r");
-			}else{
-				log.append("Project was not set, skipping... \n");
+			if(project != null){
+				if(!project.equals("")){
+					result4dBuilder.append("Project:\t").append(project).append("\r");
+				}else{
+					log.append("Project was not set, skipping... \n");
+				}
 			}
 
-			if(!topology.equals("")){
-				result4dBuilder.append("Topologic Type:\t").append(topology).append("\r");
-			}else{
-				log.append("Topologic type was not set, skipping... \n");
+			if(topology != null){
+				if(!topology.equals("")){
+					result4dBuilder.append("Topologic Type:\t").append(topology).append("\r");
+				}else{
+					log.append("Topologic type was not set, skipping... \n");
+				}
 			}
 
-			if(!status.equals("")){
-				result4dBuilder.append("Status:\t").append(status).append("\r");
-			}else{
-				log.append("Status was not set, skipping... \n");
+			if(status != null){
+				if(!status.equals("")){
+					result4dBuilder.append("Status:\t").append(status).append("\r");
+				}else{
+					log.append("Status was not set, skipping... \n");
+				}
 			}
 
-			if(!login.equals("")){
-				result4dBuilder.append("Login:\t").append(login).append("\r");
-			}else{
-				log.append("Login was not set, skipping... \n");
+			if(login != null){
+				if(!login.equals("")){
+					result4dBuilder.append("Login:\t").append(login).append("\r");
+				}else{
+					log.append("Login was not set, skipping... \n");
+				}
 			}
 
 			result4dBuilder.append("*/").append("\r");
@@ -224,6 +241,9 @@ public class FileCreator4D {
 			log.append("done!\n");
 			log.append("=================================================== END JOB ===================================================\n\n");
 
+			input.put("de.pubflow.services.ocn.PluginAllocator.toCSV.leg", result4dBuilder.toString());
+			input.put("de.pubflow.services.ocn.PluginAllocator.toCSV.log", log.toString());
+
 			input.newJiraAttachment("result.4d", result4dBuilder.toString().getBytes());
 			input.newJiraAttachment("log.txt", log.toString().getBytes());
 			input.newJiraComment("FileCreator4D: exited normally after " + (System.currentTimeMillis() - millis)/1000.0 + " s.");
@@ -235,35 +255,4 @@ public class FileCreator4D {
 			throw new Exception("FileCreator4D: " + e.getMessage());
 		}
 	}
-
-	public static void main (String[] args) throws Exception{
-
-		ComMap s = new ComMap("");
-		s.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", "12013");
-		
-		s = (new OCNDataLoader()).getData(s, 0);
-
-		s = new OCNToPangaeaMapper().mapValues(s, 0);
-
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.author", "author");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.source", "source");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.reference", "reference");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.fileName", "/tmp/3_sortedBottleId.4d");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.pid", "pid");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.comment", "comment");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.project", "project");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.topology", "topology");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.status", "status");
-		s.put("de.pubflow.services.ocn.PluginAllocator.toCSV.login", "login");
-
-		ComMap map = new FileCreator4D().toCSV(s, 0);
-
-		for(Entry<String, Object> e : map.entrySet()){
-			FileWriter fw = new FileWriter("/tmp/" + e.getKey());
-			fw.append((String)e.getValue());
-			fw.close();	
-		}
-
-	}
-
 }

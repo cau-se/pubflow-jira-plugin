@@ -21,7 +21,6 @@ import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.issue.fields.CustomField;
-import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.workflow.JiraWorkflow;
 
@@ -31,11 +30,6 @@ import de.pubflow.jira.misc.ConditionDefinition;
 import de.pubflow.jira.misc.ConditionDefinition.ConditionDefinitionType;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
-import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.common.entity.workflow.WFParameterList;
-import de.pubflow.server.common.enumeration.WFType;
-import de.pubflow.server.core.jira.JiraConnector;
-import de.pubflow.server.core.workflow.WorkflowMessage;
 
 /**
  * 
@@ -114,7 +108,7 @@ public class JiraManagerCore {
 
 				Map <String, String> mapParamsDatamanager = new HashMap<String, String>();
 				mapParamsDatamanager.put("group", "datamanager");
-				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 141, 121, 61, 71, 91, 111, 151, 131, 161}));
+				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 141, /*121, 61, */ 71, 91, 111, 151, 131, 161}));
 
 				Map <String, String> mapParamsPubFlow = new HashMap<String, String>();
 				mapParamsPubFlow.put("group", "jira-administrators");
@@ -146,21 +140,21 @@ public class JiraManagerCore {
 				customFields.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"141", "111"}));
 
-				//JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
-				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>());
+				JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
+//				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>());
 
 
-				WorkflowMessage wm = new WorkflowMessage();
-				wm.setWorkflowID("de.pubflow.EPRINTS");
-				WFParameterList wpl = new WFParameterList();
-				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
-				WFParameter wp2 = new WFParameter("quartzCron", "minutely");		
-				wpl.add(wp1);
-				wpl.add(wp2);
-				wm.setParameters(wpl);
-				wm.setType(WFType.BPMN2);
-				JiraConnector.getInstance().compute(wm);
-				
+//				WorkflowMessage wm = new WorkflowMessage();
+//				wm.setWorkflowID("de.pubflow.EPRINTS");
+//				WFParameterList wpl = new WFParameterList();
+//				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
+//				WFParameter wp2 = new WFParameter("quartzCron", "minutely");		
+//				wpl.add(wp1);
+//				wpl.add(wp2);
+//				wm.setParameters(wpl);
+//				wm.setType(WFType.BPMN2);
+//				JiraConnector.getInstance().compute(wm);
+//				
 				FileWriter fw = new FileWriter("/tmp/lalala.la");
 
 //				fw.append(ComponentAccessor.getWorkflowSchemeManager().getDefaultSchemeObject().getName() + "\n");
@@ -177,6 +171,7 @@ public class JiraManagerCore {
 
 			}
 		} catch (Exception e) {
+			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

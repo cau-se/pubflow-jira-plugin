@@ -1,0 +1,10 @@
+<mainfest>
+	<package>de.pubflow.services.eprints</package>
+	<description>
+	</description>
+	<signatures>
+		<signature name="de.pubflow.services.eprints.checkRSSFeeds">
+			<description></description>
+		</signature>
+	</signatures>
+</mainfest>
