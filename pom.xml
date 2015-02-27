@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
 
+	<name>de.pubflow.jira</name>
 	<groupId>de.pubflow</groupId>
 	<artifactId>jira</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>atlassian-plugin</packaging>
-
-	<name>de.pubflow.jira</name>
 	<url>http://maven.apache.org</url>
+	<modelVersion>4.0.0</modelVersion>
 
 	<repositories>
 		<repository>
@@ -98,14 +97,14 @@
 		</dependency>
 
 		<!-- QUARTZ -->
-		
-		<dependency>			
+
+		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>1.8.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- WFS -->
 
 		<dependency>
@@ -163,7 +162,7 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>com.atlassian.maven.plugins</groupId>
 				<artifactId>maven-jira-plugin</artifactId>
@@ -199,6 +198,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<amps.version>5.0.9</amps.version>
 		<jira.version>6.2.7</jira.version>
+		<!-- 6.2.7 -->
 	</properties>
-
 </project>

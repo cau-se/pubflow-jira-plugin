@@ -51,20 +51,20 @@ public class ComMap{
 	}
 
 	public LinkedList<JiraComment> getJiraCommentsAndFlush(){
+		LinkedList<JiraComment> comments =  (LinkedList<JiraComment>) this.comments.clone();
+		this.comments = new LinkedList<JiraComment>();
 		return comments;
 	}
 	
 	public LinkedList<JiraIssue> getJiraIssuesAndFlush(){
+		LinkedList<JiraIssue> issues =  (LinkedList<JiraIssue>) this.issues.clone();
+		this.issues = new LinkedList<JiraIssue>();
 		return issues;
 	}
-	
-//	public void flushData(){
-//		attachments = new LinkedList<JiraAttachment>();
-//		comments = new LinkedList<JiraComment>();
-//		issues = new LinkedList<JiraIssue>();
-//	}
 
 	public LinkedList<JiraAttachment> getJiraAttachmentsAndFlush(){
+		LinkedList<JiraAttachment> attachments =  (LinkedList<JiraAttachment>) this.attachments.clone();
+		this.attachments = new LinkedList<JiraAttachment>();
 		return attachments;
 	}
 

@@ -85,7 +85,7 @@ public class PluginAllocator {
 				JiraEndpoint.addAttachment(attachment); 
 			}
 
-			JiraEndpoint.changeStatus(data.getDefaultIssueKey(), "Waiting For DOI");
+			JiraEndpoint.changeStatus(data.getDefaultIssueKey(), "Ready for Pangaea-Import");
 
 		} catch (Exception e) {
 			JiraEndpoint.changeStatus(data.getDefaultIssueKey(), "Data Needs Correction");
