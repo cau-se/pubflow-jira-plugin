@@ -15,11 +15,8 @@ import com.atlassian.jira.issue.customfields.impl.DateTimeCFType;
 import com.atlassian.jira.issue.fields.CustomField;
 
 /**
- * 
  * @author arl
- *
  *	This class extracts relevant information from an issueEvent
- *
  */
 
 public class InternalConverterMsg {
@@ -29,15 +26,16 @@ public class InternalConverterMsg {
 	private String issueTypeName;
 	private Map<String, String> values = new HashMap<String, String>();
 
-	public InternalConverterMsg(IssueEvent issueEvent){
+	/**
+	 * @param issueEvent
+	 */
+	public InternalConverterMsg(IssueEvent issueEvent) {
 
 		eventType = issueEvent.getEventTypeId();
 		date = issueEvent.getTime();
 
 		Issue issue = issueEvent.getIssue();
 		issueTypeName = issue.getIssueTypeObject().getName();
-
-		List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
 
 		values.put("reporter", issue.getReporterId());
 		values.put("assignee", issue.getAssigneeId());
@@ -47,23 +45,25 @@ public class InternalConverterMsg {
 		values.put("date", date.getTime() + "");
 		values.put("status", issue.getStatusObject().getName());
 
-		for(CustomField customField : customFields){
-			if(customField != null && customField.getName() != null && issue.getCustomFieldValue(customField) != null){
+		List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
+
+		for (CustomField customField : customFields) {
+			if (customField != null && customField.getName() != null && issue.getCustomFieldValue(customField) != null) {
 
 				String customFieldName = customField.getName();
 
-				if(customField.getCustomFieldType() instanceof DateTimeCFType){
+				if (customField.getCustomFieldType() instanceof DateTimeCFType) {
 					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					Date d;
+					Date date;
 					try {
-						d = formatter.parse(issue.getCustomFieldValue(customField).toString());
-						values.put("quartzMillis", d.getTime() + "");
+						date = formatter.parse(issue.getCustomFieldValue(customField).toString());
+						values.put("quartzMillis", date.getTime() + "");
 					} catch (ParseException e) {
 						e.printStackTrace();
 						values.put(customFieldName, null);
 					}
 
-				}else{
+				} else {
 					values.put(customFieldName, issue.getCustomFieldValue(customField).toString());
 				}
 			}

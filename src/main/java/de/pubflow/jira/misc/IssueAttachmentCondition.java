@@ -11,18 +11,18 @@ public class IssueAttachmentCondition extends com.atlassian.jira.workflow.condit
 	@Override
 	public boolean passesCondition(Map transientVars, Map args, PropertySet ps) throws WorkflowException {
 
-		if(transientVars.get("issue") != null){
-			if(transientVars.get("issue") instanceof Issue){
+		if (transientVars.get("issue") != null) {
+			if (transientVars.get("issue") instanceof Issue) {
 				Issue issue = (Issue) transientVars.get("issue");
-				if(issue != null){
-					try{
-						if(issue.getAttachments().size() >= 1){
+				if (issue != null) {
+					try {
+						if (issue.getAttachments().size() >= 1) {
 							return true;
-						}else{
+						} else {
 							return false;
 						}
 
-					}catch(NullPointerException e){
+					} catch (NullPointerException e) {
 						return false;
 					}
 				}

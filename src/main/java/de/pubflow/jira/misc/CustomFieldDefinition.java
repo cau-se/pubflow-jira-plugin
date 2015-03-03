@@ -18,7 +18,7 @@ public class CustomFieldDefinition {
 
 		private String type = "";
 		
-		CustomFieldType(String type){
+		CustomFieldType(String type) {
 			this.setType(type);
 		}
 
@@ -29,14 +29,20 @@ public class CustomFieldDefinition {
 		public void setType(String type) {
 			this.type = type;
 		}
-	};
+	}
 
 	private String name;
 	private CustomFieldType type;
 	private boolean required;
 	private String[] screens;
 
-	public CustomFieldDefinition(String name, CustomFieldType type, boolean required, String[] screens){
+	/**
+	 * @param name
+	 * @param type
+	 * @param required
+	 * @param screens
+	 */
+	public CustomFieldDefinition(String name, CustomFieldType type, boolean required, String[] screens) {
 		this.name = name;
 		this.type = type;
 		this.required = required;
@@ -47,20 +53,23 @@ public class CustomFieldDefinition {
 	public String getName() {
 		return name;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getType(){
+	public String getType() {
 		return type.getType();
 	}
 
 	public void setType(CustomFieldType type) {
 		this.type = type;
 	}
+	
 	public boolean isRequired() {
 		return required;
 	}
+	
 	public void setRequired(boolean required) {
 		this.required = required;
 	}

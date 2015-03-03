@@ -11,7 +11,7 @@ public class ConditionDefinition{
 
 		private String clazz = "";
 
-		ConditionDefinitionType(String clazz){
+		ConditionDefinitionType(String clazz) {
 			this.setClazz(clazz);
 		}
 
@@ -29,7 +29,12 @@ public class ConditionDefinition{
 	private Map<String, String> params;
 	private int[] transitions;
 
-	public ConditionDefinition(ConditionDefinitionType type, Map<String, String> params, int[] transitions){
+	/**
+	 * @param type
+	 * @param params
+	 * @param transitions
+	 */
+	public ConditionDefinition(ConditionDefinitionType type, Map<String, String> params, int[] transitions) {
 		this.type = type;
 		this.params = params;
 		this.transitions = transitions;

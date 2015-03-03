@@ -10,7 +10,7 @@ public enum Appendix{
 
 	private String name = "";
 
-	Appendix(String type){
+	Appendix (String type) {
 		this.getType(type);
 	}
 
