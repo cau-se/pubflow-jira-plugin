@@ -27,7 +27,6 @@ import com.opensymphony.workflow.FactoryException;
 
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.Appendix;
-import de.pubflow.server.PubFlowSystem;
 
 public class JiraObjectManipulator {
 
@@ -40,11 +39,12 @@ public class JiraObjectManipulator {
 	 * @param barray
 	 * @param fileName
 	 * @param type
+	 * @param user
 	 * @return
 	 */
 	public static long addAttachment(String issueKey, byte [] barray, String fileName, String type, ApplicationUser user){
 	
-		try{
+		try {
 			MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 	
 			//TODO : path os?
@@ -54,41 +54,42 @@ public class JiraObjectManipulator {
 			stream.write(barray);	
 			stream.close();
 			File barrayFile = new File(filePath); 
-			ChangeItemBean attachment = ComponentAccessor.getAttachmentManager().createAttachment(new CreateAttachmentParamsBean(barrayFile, fileName+type, "text/plain", user, issue, false, false, null, new Timestamp(System.currentTimeMillis()), true));
+			ChangeItemBean attachment = ComponentAccessor.getAttachmentManager().createAttachment(new CreateAttachmentParamsBean(barrayFile, fileName + type, "text/plain", user, issue, false, false, null, new Timestamp(System.currentTimeMillis()), true));
 	
 			// TODO: no id?
-			return 0l;
+			return 0L;
 	
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-			return 0l;
+			return 0L;
 		}
 	}
 
 	/**
 	 * Adds a new comment to an issue
 	 * 
-	 * @param issueId 
+	 * @param issueKey 
 	 * @param comment 
+	 * @param user
 	 * @return returns if the new comment has been added successful
 	 */
 	
 	public static Comment addIssueComment(String issueKey, String comment, ApplicationUser user){
 		log.info("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
 	
-		if(user != null){
+		if (user != null) {
 			log.info("addIssueComment - user : " + user.getName());
-		}else{
+		} else {
 			log.info("addIssueComment - user : null");
 		}
 	
 		Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 		Comment commentObject = ComponentAccessor.getCommentManager().create(issue, user, comment, false);
 	
-		if(commentObject != null){
+		if (commentObject != null) {
 			log.info("addIssueComment - return commentObject");
 			return commentObject;
-		}else{
+		} else {
 			log.info("addIssueComment - return null");
 			return null;
 		}
@@ -97,12 +98,14 @@ public class JiraObjectManipulator {
 	/**
 	 * @param issueTypeName
 	 * @param workflowXML
+	 * @param user
+	 * @return
 	 */
-	public static JiraWorkflow addWorkflow(String issueTypeName, String workflowXML, ApplicationUser user){
+	public static JiraWorkflow addWorkflow(String issueTypeName, String workflowXML, ApplicationUser user) {
 	
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName + Appendix.WORKFLOW.getName());
 	
-		if(jiraWorkflow == null && workflowXML != null){
+		if (jiraWorkflow == null && workflowXML != null) {
 			try {
 				jiraWorkflow = new ConfigurableJiraWorkflow(issueTypeName + Appendix.WORKFLOW.getName(), WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), ComponentAccessor.getWorkflowManager());
 				//ComponentAccessor.getWorkflowManager().createWorkflow(projectKey + WORKFLOW_APPENDIX, jiraWorkflow);
@@ -115,10 +118,22 @@ public class JiraObjectManipulator {
 		return jiraWorkflow;
 	}
 
+	/**
+	 * @param pubflowUser
+	 * @param group
+	 * @throws PermissionException
+	 * @throws AddException
+	 */
 	public static void addUserToGroup(ApplicationUser pubflowUser, String group) throws PermissionException, AddException{
 		ComponentAccessor.getUserUtil().addUserToGroup(ComponentAccessor.getGroupManager().getGroupObject(group), ApplicationUsers.toDirectoryUser(pubflowUser));
 	}
 
+	/**
+	 * @param pubflowUser
+	 * @param group
+	 * @throws PermissionException
+	 * @throws AddException
+	 */
 	public static void addUserToGroup(ApplicationUser pubflowUser, Group group) throws PermissionException, AddException{
 		ComponentAccessor.getUserUtil().addUserToGroup(group, ApplicationUsers.toDirectoryUser(pubflowUser));
 	}
@@ -126,21 +141,20 @@ public class JiraObjectManipulator {
 	/**
 	 * Changes the status of an issue
 	 * 
-	 * @param projectKey : the projects key
-	 * @param issueId  : issue id
+	 * @param issueKey  : issue key
 	 * @param statusName : has to be a preexisiting status name, eg. provided by getStatusNames(..) 
 	 * @return returns true if the change has been processed successfully
 	 */
 	
-	public static boolean changeStatus(String issueKey, String statusName){
+	public static boolean changeStatus(String issueKey, String statusName) {
 		MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issue);
 	
 		Status nextStatus = JiraObjectGetter.getStatusByName(issue.getProjectObject().getKey(), statusName);
 	
-		if(issue == null || jiraWorkflow == null || nextStatus == null){
+		if (issue == null || jiraWorkflow == null || nextStatus == null) {
 			return false;
-		}else{
+		} else {
 			ComponentAccessor.getWorkflowManager().migrateIssueToWorkflow(issue, jiraWorkflow, nextStatus);
 			return true;
 		}

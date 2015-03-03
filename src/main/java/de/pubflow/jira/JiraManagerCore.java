@@ -59,6 +59,15 @@ public class JiraManagerCore {
 	private static Logger log = Logger.getLogger(JiraManagerCore.class.getName());
 
 
+	/**
+	 * @throws GenericEntityException
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyStoreException
+	 * @throws CertificateException
+	 * @throws IOException
+	 */
 	public static void initPubFlowProject() throws GenericEntityException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException{
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, "Private");
@@ -67,7 +76,7 @@ public class JiraManagerCore {
 		//TODO: Set mail settings automatically
 
 		try {
-			if(ComponentAccessor.getProjectManager().getProjectObjByName("PubFlow") == null){
+			if (ComponentAccessor.getProjectManager().getProjectObjByName("PubFlow") == null) {
 
 				Group groupDataManager = JiraObjectCreator.createGroup("datamanager");
 				Group groupScientists = JiraObjectCreator.createGroup("scientists");
@@ -84,13 +93,14 @@ public class JiraManagerCore {
 
 				//TODO fix deprecation when admin is application user by default
 				User userAdmin = ComponentAccessor.getUserManager().getUserObject("admin");
+				ComponentAccessor.getCrowdService().removeUser(userAdmin);
+
 				ApplicationUser userRoot = JiraObjectCreator.createUser("root", "$Boogie3");
 				JiraObjectManipulator.addUserToGroup(userRoot, groupDataManager);
 				JiraObjectManipulator.addUserToGroup(userRoot, groupScientists);
 				JiraObjectManipulator.addUserToGroup(userRoot, "jira-administrators");
 				JiraObjectManipulator.addUserToGroup(userRoot, "jira-developers");
 				JiraObjectManipulator.addUserToGroup(userRoot, "jira-users");
-				ComponentAccessor.getCrowdService().removeUser(userAdmin);
 
 				ApplicationUser userDataManager = JiraObjectCreator.createUser("SampleDataManager", "ilovedata");
 				JiraObjectManipulator.addUserToGroup(userDataManager, groupDataManager);
@@ -106,15 +116,15 @@ public class JiraManagerCore {
 
 				List<ConditionDefinition> conditions = new LinkedList<ConditionDefinition>();
 
-				Map <String, String> mapParamsDatamanager = new HashMap<String, String>();
+				Map<String, String> mapParamsDatamanager = new HashMap<String, String>();
 				mapParamsDatamanager.put("group", "datamanager");
 				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 141, /*121, 61, */ 71, 91, 111, 151, 131, 161}));
 
-				Map <String, String> mapParamsPubFlow = new HashMap<String, String>();
+				Map<String, String> mapParamsPubFlow = new HashMap<String, String>();
 				mapParamsPubFlow.put("group", "jira-administrators");
 				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsPubFlow, new int[]{41,101}));
 
-				Map <String, String> mapParamsScientists = new HashMap<String, String>();
+				Map<String, String> mapParamsScientists = new HashMap<String, String>();
 				mapParamsScientists.put("group", "datamanager");
 				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{1, 11}));
 
@@ -160,7 +170,7 @@ public class JiraManagerCore {
 //				fw.append(ComponentAccessor.getWorkflowSchemeManager().getDefaultSchemeObject().getName() + "\n");
 //				fw.append(ComponentAccessor.getWorkflowManager().getDefaultWorkflow().getName() + "\n");
 
-				for(JiraWorkflow j : ComponentAccessor.getWorkflowManager().getWorkflowsIncludingDrafts()){
+				for (JiraWorkflow j : ComponentAccessor.getWorkflowManager().getWorkflowsIncludingDrafts()) {
 					fw.append(j.getName() + "\n");
 					
 				}

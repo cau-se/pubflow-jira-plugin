@@ -14,13 +14,16 @@ import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.Appendix;
-import de.pubflow.server.PubFlowSystem;
 
 public class JiraObjectGetter {
 
 	private static Logger log = LoggerFactory.getLogger(JiraObjectGetter.class);
 	
-	public static String getIssueKeyById(long id){	
+	/**
+	 * @param id
+	 * @return
+	 */
+	public static String getIssueKeyById(long id) {	
 		String key = ComponentAccessor.getIssueManager().getIssueObject(id).getKey();
 		log.info("getIssueKeyById - id : " + id);
 		log.info("getIssueKeyById - key : " + key);
@@ -28,7 +31,11 @@ public class JiraObjectGetter {
 		return key;
 	}
 
-	public static long getIssueIdByKey(String key){
+	/**
+	 * @param key
+	 * @return
+	 */
+	public static long getIssueIdByKey(String key) {
 		long id = ComponentAccessor.getIssueManager().getIssueObject(key).getId();
 		log.info("getIssueIdByKey - id : " + id);
 		log.info("getIssueIdByKey - key : " + key);
@@ -36,13 +43,18 @@ public class JiraObjectGetter {
 		return id;
 	}
 
-	public static Status getStatusByName(String projectKey, String statusName){
+	/**
+	 * @param projectKey
+	 * @param statusName
+	 * @return
+	 */
+	public static Status getStatusByName(String projectKey, String statusName) {
 		//List<Status> statuses = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + WORKFLOW_APPENDIX).getLinkedStatusObjects();
 		Collection<Status> statuses = JiraManagerPlugin.statusManager.getStatuses();
 	
-		for(Status statusItem : statuses){
-			if(statusItem != null){
-				if(statusItem.getName().equals(statusName)){
+		for (Status statusItem : statuses) {
+			if (statusItem != null) {
+				if (statusItem.getName().equals(statusName)) {
 					return statusItem;
 				}
 			}
@@ -58,18 +70,18 @@ public class JiraObjectGetter {
 	 * @return returns a string array of all available status names
 	 */
 	
-	public static List<String> getStatusNames(String projectKey){
+	public static List<String> getStatusNames(String projectKey) {
 		List<Status> status = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + Appendix.WORKFLOW.getName()).getLinkedStatusObjects();
 		List<String> result = new ArrayList<String>();
 	
-		for(Status statusItem : status){
+		for (Status statusItem : status) {
 			result.add(statusItem.getName());
 		}
 	
 		return result;
 	}
 
-	public static ApplicationUser getUserByName(String userName){
+	public static ApplicationUser getUserByName(String userName) {
 		return ComponentAccessor.getUserUtil().getUserByName(userName);
 	}
 
@@ -78,30 +90,28 @@ public class JiraObjectGetter {
 	 *	quite expensive
 	 * 
 	 * @param name : the issue type's name
-	 * 
 	 * @return returns the issue type id returns null if no or more than one issue type with the provided name has been found 
-	 * 
 	 */
 	
-	public static IssueType findIssueTypeByName(String name){
-		int i = 0;
+	public static IssueType findIssueTypeByName(String name) {
+		int counter = 0;
 		IssueType result = null;
 	
 		log.info("findIssueTypeByName - name : " + name);
 	
 		//iterate through all available issue types and check for equality of names
-		for(IssueType it : JiraManagerPlugin.issueTypeManager.getIssueTypes()){
-			if(it.getName().equals(name)){
-				i++;
+		for (IssueType it : JiraManagerPlugin.issueTypeManager.getIssueTypes()) {
+			if (it.getName().equals(name)) {
+				counter++;
 				result = it;
 			}
 		}
 	
-		if(i == 1){
+		if (counter == 1) {
 			log.info("findIssueTypeByName - return " + result);
 			return result;
-		}else{
-			log.info("findIssueTypeByName - return null " + i);
+		} else {
+			log.info("findIssueTypeByName - return null " + counter);
 			return null;
 		}
 	}

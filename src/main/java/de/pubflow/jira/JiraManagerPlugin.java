@@ -76,8 +76,11 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		JiraManagerPlugin.eventPublisher = eventPublisher;
 	}
 
+	/**
+	 * @param event
+	 */
 	@EventListener
-	public void init(PluginModuleEnabledEvent e){
+	public void init(PluginModuleEnabledEvent event) {
 		try {
 			JiraManagerCore.initPubFlowProject();
 		} catch (KeyManagementException | UnrecoverableKeyException
@@ -90,17 +93,23 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		user = JiraObjectGetter.getUserByName("PubFlow");
 	}
 
-	public static String getTextResource(String resourceName){ 
+	/**
+	 * @param resourceName
+	 * @return
+	 */
+	public static String getTextResource(String resourceName) { 
 		StringBuffer content = new StringBuffer();
 
-		try{
+		try {
 			String line;
 			InputStream rs = JiraManagerPlugin.class.getResourceAsStream(resourceName);
 			BufferedReader in = new BufferedReader(new InputStreamReader(rs, "UTF-8"));
-			while((line = in.readLine()) != null) content.append(line).append("\n");
+			while ((line = in.readLine()) != null) {
+				content.append(line).append("\n");
+			}
 			in.close();
 
-		}catch(Exception e){
+		} catch (Exception e) {
 			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			e.printStackTrace();
 		}
@@ -137,15 +146,15 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 	public void onIssueEvent(IssueEvent issueEvent) {
 		InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
 
-		if(
+		if (
 				//(issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) && ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName() != "jira") ||
-				issueEvent.getIssue().getStatusObject().getName().equals("Data Processing by PubFlow")){
+				issueEvent.getIssue().getStatusObject().getName().equals("Data Processing by PubFlow")) {
 
 			try {
 				WorkflowMessage wm = new WorkflowMessage();
 				WFParameterList wfpm = new WFParameterList();				
 
-				for(Entry<String, String> e : msg.getValues().entrySet()) {
+				for (Entry<String, String> e : msg.getValues().entrySet()) {
 					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
 					wfpm.add(wfp);
 				}
@@ -155,34 +164,38 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				JiraConnector jpmp = JiraConnector.getInstance();
 				jpmp.compute(wm);
 
-			} catch (Exception e){
+			} catch (Exception e) {
 				log.error(e.getLocalizedMessage() + " " + e.getCause());
 				e.printStackTrace();
 				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), e.getClass().getSimpleName() + e.getMessage(), user);
 			}
 
-		}else if(issueEvent.getEventTypeId().equals( EventType.ISSUE_UPDATED_ID)){
+		} else if (issueEvent.getEventTypeId().equals( EventType.ISSUE_UPDATED_ID)) {
 			//TODO
 
-		}else if(issueEvent.getIssue().getStatusObject().getName().equals("Open")){
-			if(ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0){
+		} else if (issueEvent.getIssue().getStatusObject().getName().equals("Open")) {
+			if (ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0) {
 
-				String txtmsg = "Dear " + issueEvent.getUser().getName() +" (" + issueEvent.getUser().getName() +  
-						"),\n please append your raw data as an file attachment to this issue and provide the following information "
+				String txtmsg = "Dear " + issueEvent.getUser().getName() + " (" + issueEvent.getUser().getName()
+						+ "),\n please append your raw data as an file attachment to this issue and provide the following information "
 						+ "about your data as a comment:\nTitle, Authors, Cruise\n\nAfter that you can start the processing by pressing the "
 						+ "\"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically."
 						+ "\nThank you!";
 
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
 				JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(), new byte[]{0}, "rawdata", "txt", user);
-			}else{
+			} else {
 				MutableIssue issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueEvent.getIssue().getKey());
 				issue.setAssignee(issueEvent.getIssue().getReporter());
 			}
 		}
 	}
 
-	public static LinkedList<String> getSteps(String workflowXMLString){
+	/**
+	 * @param workflowXMLString
+	 * @return
+	 */
+	public static LinkedList<String> getSteps(String workflowXMLString) {
 		StringReader sw = new StringReader(workflowXMLString);
 
 		LinkedList<String> steps = new LinkedList<String>();
@@ -194,22 +207,23 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 			XMLEventReader xmler = xmlif.createXMLEventReader(sw);
 
 			while (xmler.hasNext()) {
-				XMLEvent e = xmler.nextEvent();
-				if (e.isStartElement()) {
-					String localPart = e.asStartElement().getName().getLocalPart();
+				XMLEvent event = xmler.nextEvent();
+				if (event.isStartElement()) {
+					String localPart = event.asStartElement().getName().getLocalPart();
 					switch (localPart) {
 					case "step": 
-						try{
-							steps.add(e.asStartElement().getAttributeByName(new QName("name")).getValue());
-						}catch(NullPointerException e1){
+						try {
+							steps.add(event.asStartElement().getAttributeByName(new QName("name")).getValue());
+						} catch (NullPointerException e1) {
 							log.error(e1.getLocalizedMessage() + " " + e1.getCause());
 							e1.printStackTrace();
 						}
 						break;
+						default: break;
 					}
 				}
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			e.printStackTrace();
 		}
