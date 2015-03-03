@@ -5,7 +5,8 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -24,13 +25,13 @@ import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowUtil;
 import com.opensymphony.workflow.FactoryException;
 
-import de.pubflow.jira.JiraManagerCore;
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.Appendix;
+import de.pubflow.server.PubFlowSystem;
 
 public class JiraObjectManipulator {
 
-	private static Logger log = Logger.getLogger(JiraManagerCore.class.getName());
+	private static Logger log = LoggerFactory.getLogger(JiraObjectManipulator.class);
 
 	/**
 	 * Appends an attachment to an issue
@@ -73,22 +74,22 @@ public class JiraObjectManipulator {
 	 */
 	
 	public static Comment addIssueComment(String issueKey, String comment, ApplicationUser user){
-		log.debug("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
+		log.info("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
 	
 		if(user != null){
-			log.debug("addIssueComment - user : " + user.getName());
+			log.info("addIssueComment - user : " + user.getName());
 		}else{
-			log.debug("addIssueComment - user : null");
+			log.info("addIssueComment - user : null");
 		}
 	
 		Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 		Comment commentObject = ComponentAccessor.getCommentManager().create(issue, user, comment, false);
 	
 		if(commentObject != null){
-			log.debug("addIssueComment - return commentObject");
+			log.info("addIssueComment - return commentObject");
 			return commentObject;
 		}else{
-			log.debug("addIssueComment - return null");
+			log.info("addIssueComment - return null");
 			return null;
 		}
 	}
@@ -99,11 +100,11 @@ public class JiraObjectManipulator {
 	 */
 	public static JiraWorkflow addWorkflow(String issueTypeName, String workflowXML, ApplicationUser user){
 	
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName + Appendix.WORKFLOW);
+		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName + Appendix.WORKFLOW.getName());
 	
 		if(jiraWorkflow == null && workflowXML != null){
 			try {
-				jiraWorkflow = new ConfigurableJiraWorkflow(issueTypeName + Appendix.WORKFLOW, WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), ComponentAccessor.getWorkflowManager());
+				jiraWorkflow = new ConfigurableJiraWorkflow(issueTypeName + Appendix.WORKFLOW.getName(), WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), ComponentAccessor.getWorkflowManager());
 				//ComponentAccessor.getWorkflowManager().createWorkflow(projectKey + WORKFLOW_APPENDIX, jiraWorkflow);
 				ComponentAccessor.getWorkflowManager().createWorkflow(user, jiraWorkflow);
 			} catch (FactoryException e) {

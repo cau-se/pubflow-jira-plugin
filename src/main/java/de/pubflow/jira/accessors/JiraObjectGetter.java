@@ -4,33 +4,34 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.user.ApplicationUser;
 
-import de.pubflow.jira.JiraManagerCore;
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.Appendix;
+import de.pubflow.server.PubFlowSystem;
 
 public class JiraObjectGetter {
 
-	private static Logger log = Logger.getLogger(JiraManagerCore.class.getName());
+	private static Logger log = LoggerFactory.getLogger(JiraObjectGetter.class);
 	
 	public static String getIssueKeyById(long id){	
 		String key = ComponentAccessor.getIssueManager().getIssueObject(id).getKey();
-		log.debug("getIssueKeyById - id : " + id);
-		log.debug("getIssueKeyById - key : " + key);
+		log.info("getIssueKeyById - id : " + id);
+		log.info("getIssueKeyById - key : " + key);
 	
 		return key;
 	}
 
 	public static long getIssueIdByKey(String key){
 		long id = ComponentAccessor.getIssueManager().getIssueObject(key).getId();
-		log.debug("getIssueIdByKey - id : " + id);
-		log.debug("getIssueIdByKey - key : " + key);
+		log.info("getIssueIdByKey - id : " + id);
+		log.info("getIssueIdByKey - key : " + key);
 	
 		return id;
 	}
@@ -58,7 +59,7 @@ public class JiraObjectGetter {
 	 */
 	
 	public static List<String> getStatusNames(String projectKey){
-		List<Status> status = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + Appendix.WORKFLOW).getLinkedStatusObjects();
+		List<Status> status = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + Appendix.WORKFLOW.getName()).getLinkedStatusObjects();
 		List<String> result = new ArrayList<String>();
 	
 		for(Status statusItem : status){
@@ -86,7 +87,7 @@ public class JiraObjectGetter {
 		int i = 0;
 		IssueType result = null;
 	
-		log.debug("findIssueTypeByName - name : " + name);
+		log.info("findIssueTypeByName - name : " + name);
 	
 		//iterate through all available issue types and check for equality of names
 		for(IssueType it : JiraManagerPlugin.issueTypeManager.getIssueTypes()){
@@ -97,10 +98,10 @@ public class JiraObjectGetter {
 		}
 	
 		if(i == 1){
-			log.debug("findIssueTypeByName - return " + result);
+			log.info("findIssueTypeByName - return " + result);
 			return result;
 		}else{
-			log.debug("findIssueTypeByName - return null " + i);
+			log.info("findIssueTypeByName - return null " + i);
 			return null;
 		}
 	}

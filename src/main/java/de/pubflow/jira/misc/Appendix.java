@@ -8,17 +8,17 @@ public enum Appendix{
 	FIELDSCREENSCHEME("_FieldScreenScheme"),
 	ISSUETYPESCHEME("_IssueTypeScheme");
 
-	private String type = "";
+	private String name = "";
 
 	Appendix(String type){
-		this.setType(type);
+		this.getType(type);
 	}
 
-	public String getType() {
-		return type;
+	public String getName() {
+		return name;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void getType(String type) {
+		this.name = type;
 	}
 }

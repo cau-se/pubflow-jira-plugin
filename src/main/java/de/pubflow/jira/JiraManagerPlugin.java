@@ -51,7 +51,7 @@ import de.pubflow.server.core.workflow.WorkflowMessage;
  * plugin lifecycle integration.
  */
 public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
-	private static final Logger log = LoggerFactory.getLogger(JiraManagerPlugin.class);
+	private static final Logger log = LoggerFactory.getLogger(PubFlowSystem.class.getClass());
 
 	public static IssueTypeManager issueTypeManager;
 	public static EventPublisher eventPublisher;
