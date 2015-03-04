@@ -10,9 +10,8 @@ public class JiraIssue {
 	private String reporter;
 
 
-	public JiraIssue(String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
-		super();
-		this.issueTypeName = workflowName;
+	public JiraIssue(String issueTypeName, String summary, String description, HashMap<String, String> parameters, String reporter) {
+		this.issueTypeName = issueTypeName;
 		this.summary = summary;
 		this.description = description;
 		this.parameters = parameters;

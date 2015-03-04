@@ -8,6 +8,8 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
+import org.ofbiz.core.entity.GenericEntityException;
+
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
@@ -20,7 +22,6 @@ import de.pubflow.server.core.jira.Entity.JiraIssue;
 @SOAPBinding(style = Style.DOCUMENT)
 public class JiraEndpoint{
 
-
 	/**
 	 * Creates a new Issue in Jira
 	 * 
@@ -32,18 +33,28 @@ public class JiraEndpoint{
 	 * 
 	 **/
 
-	public static String createIssue(String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter) {
+	public static String createIssue(String issueTypeName, String summary, String description, HashMap<String, String> parameters, String reporter) {
 		try {
-			return JiraObjectCreator.createIssue("PUB", workflowName, summary, JiraManagerPlugin.user, description, parameters, reporter);
+			return JiraObjectCreator.createIssue("PUB", issueTypeName, summary, description, reporter, JiraManagerPlugin.user, parameters);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
 	}
 
+	public static boolean lookupIssue(String name){
+		try {
+			return JiraObjectGetter.lookupIssue(name);
+		} catch (GenericEntityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public static String createIssue(JiraIssue issue) {
 		try {
-			return JiraObjectCreator.createIssue("PUB", issue.getIssueTypeName(), issue.getSummary(), JiraManagerPlugin.user, issue.getDescription(), issue.getParameters(), issue.getReporter());
+			return JiraObjectCreator.createIssue("PUB", issue.getIssueTypeName(), issue.getSummary(), issue.getDescription(), issue.getReporter(), JiraManagerPlugin.user, issue.getParameters());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -155,7 +166,6 @@ public class JiraEndpoint{
 
 		return true;
 	}
-
 
 	public static boolean addAttachment(JiraAttachment attachment){
 		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(), "", JiraManagerPlugin.user);

@@ -120,17 +120,16 @@ public class JiraObjectCreator {
 	 * @return returns the issue id 
 	 **/
 	
-	public static String createIssue(String projectKey, String issueTypeName, String summary, ApplicationUser user, String description, Map<String, String> parameters, String reporter) throws Exception {
-		log.info("newIssue - projectKey : " + projectKey + " / workflowName : " + issueTypeName + " / summary : " + summary + " / description : " + description + " / reporter : " + reporter);
-
-		if (user != null) {
-			log.info("newIssue - user : " + user.getUsername());
-		} else {
+	public static String createIssue(String projectKey, String issueTypeName, String summary, String description, String reporter, ApplicationUser user, Map<String, String> parameters) throws Exception {
+	
+		if (user == null) {
 			log.error("newIssue - user null");
 			throw new Exception("User is null");
 		}
 
-		MutableIssue mutableIssue = createNewMutableIssue(projectKey, user, issueTypeName, parameters.get("summary"), reporter);
+		log.info("newIssue - user : " + user.getUsername() + " / projectKey : " + projectKey + " / workflowName : " + issueTypeName + " / summary : " + summary + " / description : " + description + " / reporter : " + reporter);
+	
+		MutableIssue mutableIssue = createNewMutableIssue(projectKey, summary, description, reporter, user, issueTypeName);
 
 		for (Entry<String, String> entry : parameters.entrySet()) {
 			CustomField customField = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(entry.getKey());
@@ -145,15 +144,6 @@ public class JiraObjectCreator {
 			} else {
 				log.info("newIssue - custom field loop / customField search: entry.key : " + entry.getKey() + " null");
 			}
-		}
-
-		//TODO Set assignee
-		//mutableIssue.setAssignee(JiraManaPlugin.userManager.getUserByName(reporter));
-
-		mutableIssue.setSummary(issueTypeName + " / " + reporter);
-
-		if (!description.equals("")) {
-			mutableIssue.setDescription(description);
 		}
 
 		//TODO should be fixed when there is createIssueObject for ApplicationUser 
@@ -510,26 +500,23 @@ public class JiraObjectCreator {
 		return fieldScreenScheme;
 	}
 
-	private static MutableIssue createNewMutableIssue(String projectKey, ApplicationUser user, String issueTypeName, String summary, String reporter) throws Exception {
-		log.info("generateNewMutableIssue - projectKey : " + projectKey + " / issueTypeName : " + issueTypeName + " / summary : " + summary + " / reporter : " + reporter);
-
-		if (user != null) {
-			log.info("generateNewMutableIssue - user : " + user.getUsername());
-		} else {
+	private static MutableIssue createNewMutableIssue(String projectKey, String summary, String description, String reporter, ApplicationUser user, String issueTypeName) throws Exception {
+		if (user == null) {
 			log.error("generateNewMutableIssue - user null");
 			throw new Exception("User is null");
 		}
+		
+		log.info("generateNewMutableIssue - projectKey : " + projectKey + " / issueTypeName : " + issueTypeName + " / user : " + user.getName() + " / summary : " + summary +  " / description : " + description + " / reporter : " + reporter);
 
 		MutableIssue newIssue = ComponentAccessor.getIssueFactory().getIssue();
-
 		newIssue.setProjectObject(ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
 		newIssue.setIssueTypeObject(JiraObjectGetter.findIssueTypeByName(issueTypeName + Appendix.ISSUETYPE.getName()));
-		newIssue.setSummary(summary);
-
+		newIssue.setSummary(issueTypeName + " / " + summary);
+		newIssue.setDescription(description);
+		
 		//TODO Set reporter
-		//		newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(username));
-		//		newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(reporter));
-
+		//newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(username));
+		//newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(reporter));
 		return newIssue;
 	}
 

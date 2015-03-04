@@ -38,7 +38,7 @@ public class ComMap{
 		return map.entrySet();
 	}
 
-	public void newJiraIssue(String workflowName, String summary, String description, HashMap<String, String> parameters, String reporter){
+	public void newJiraIssue(String workflowName, String summary, String description, String reporter, HashMap<String, String> parameters){
 		issues.add(new JiraIssue(workflowName, summary, description, parameters, reporter));
 	}
 	

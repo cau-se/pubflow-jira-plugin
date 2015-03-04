@@ -30,6 +30,11 @@ import de.pubflow.jira.misc.ConditionDefinition;
 import de.pubflow.jira.misc.ConditionDefinition.ConditionDefinitionType;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
+import de.pubflow.server.common.entity.workflow.WFParameter;
+import de.pubflow.server.common.entity.workflow.WFParameterList;
+import de.pubflow.server.common.enumeration.WFType;
+import de.pubflow.server.core.jira.JiraConnector;
+import de.pubflow.server.core.workflow.WorkflowMessage;
 
 /**
  * 
@@ -154,38 +159,22 @@ public class JiraManagerCore {
 				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>());
 
 
-//				WorkflowMessage wm = new WorkflowMessage();
-//				wm.setWorkflowID("de.pubflow.EPRINTS");
-//				WFParameterList wpl = new WFParameterList();
-//				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
-//				WFParameter wp2 = new WFParameter("quartzCron", "minutely");		
-//				wpl.add(wp1);
-//				wpl.add(wp2);
-//				wm.setParameters(wpl);
-//				wm.setType(WFType.BPMN2);
-//				JiraConnector.getInstance().compute(wm);
-//				
-				FileWriter fw = new FileWriter("/tmp/lalala.la");
-
-//				fw.append(ComponentAccessor.getWorkflowSchemeManager().getDefaultSchemeObject().getName() + "\n");
-//				fw.append(ComponentAccessor.getWorkflowManager().getDefaultWorkflow().getName() + "\n");
-
-				for (JiraWorkflow j : ComponentAccessor.getWorkflowManager().getWorkflowsIncludingDrafts()) {
-					fw.append(j.getName() + "\n");
-					
-				}
-
-				fw.close();
-				//				PluginAllocator.checkRSSFeeds(new ComMap(null));
-
-
+				WorkflowMessage wm = new WorkflowMessage();
+				wm.setWorkflowID("de.pubflow.EPRINTS");
+				WFParameterList wpl = new WFParameterList();
+				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
+				WFParameter wp2 = new WFParameter("quartzCron", "* * * * *");		
+				wpl.add(wp1);
+				wpl.add(wp2);
+				wm.setParameters(wpl);
+				wm.setType(WFType.BPMN2);
+				JiraConnector.getInstance().compute(wm);
 			}
+			
 		} catch (Exception e) {
 			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-
 	}
 }

@@ -15,11 +15,17 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.pubflow.server.core.jira.ComMap;
+import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.services.eprints.entity.MetaMsg;
 import de.pubflow.server.services.eprints.entity.RSSMsg;
 
 public class HTMLReader {
+
+	private static Logger log = LoggerFactory.getLogger(HTMLReader.class);
 
 	public static List<RSSMsg> readFeeds(String url) throws IOException {
 		List<RSSMsg> feeds = new LinkedList<RSSMsg>();
@@ -101,8 +107,8 @@ public class HTMLReader {
 							meta.setName(e.asStartElement().getAttributeByName(new QName("name")).getValue());
 							meta.setContent(e.asStartElement().getAttributeByName(new QName("content")).getValue());
 							metas.add(meta);
-							System.out.print(meta.getName() + " : ");
-							System.out.println(meta.getContent());
+							log.info(meta.getName() + " : ");
+							log.info(meta.getContent());
 
 						}catch(NullPointerException e1){}
 						break;
@@ -161,7 +167,7 @@ public class HTMLReader {
 	public static boolean checkForValidDOI(List<MetaMsg> list) throws Exception{
 		for(MetaMsg msg : list){
 			if(msg.getName().equals("eprints.id_number")){
-				System.out.println(msg.getContent());
+				log.info(msg.getContent());
 				return checkForValidDOI(msg.getContent());
 			}
 		}
@@ -174,12 +180,14 @@ public class HTMLReader {
 
 		try{
 			for(RSSMsg msg : HTMLReader.readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS2.xml?screen=Search&dataset=archive&_action_export=1&output=RSS2&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
-				System.out.println(msg.getLink());
+				log.info(msg.getLink());
 				try{
 
 					boolean dataOk = HTMLReader.checkForValidDOI(HTMLReader.readMeta(msg.getLink()));
 					if(!dataOk){
-						data.newJiraIssue("EPRINTS", "Missing pangaea supplement for " + msg.getLink(), msg.getDescription(), new HashMap<String, String>(), "");
+						if (!JiraEndpoint.lookupIssue("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink())) {
+							data.newJiraIssue("EPRINTS", "Missing pangaea supplement for " + msg.getLink(), msg.getDescription(), "PubFlow", new HashMap<String, String>());
+						}
 						msgList.add(msg);
 					}
 

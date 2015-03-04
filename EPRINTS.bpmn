@@ -14,7 +14,7 @@
 
   <itemDefinition id="ItemDefinition_22" />
 
-  <process processType="Private" isExecutable="true" id="de.pubflow.OCN" name="OCN" tns:packageName="de.pubflow" tns:version="1" >
+  <process processType="Private" isExecutable="true" id="de.pubflow.EPRINTS" name="EPRINTS" tns:packageName="de.pubflow" tns:version="1" >
 
     <extensionElements>
      <tns:import name="de.pubflow.server.services.eprints.PluginAllocator" />

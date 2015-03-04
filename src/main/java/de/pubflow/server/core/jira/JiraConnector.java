@@ -1,5 +1,7 @@
 package de.pubflow.server.core.jira;
 
+import it.sauronsoftware.cron4j.Scheduler;
+
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
+import de.pubflow.server.core.scheduling.PubFlowJob;
 import de.pubflow.server.core.workflow.WFBroker;
 import de.pubflow.server.core.workflow.WorkflowMessage;
 
@@ -61,15 +64,11 @@ public class JiraConnector {
 	 * @throws SchedulerException 
 	 */
 	public void compute(WorkflowMessage msg) {
-		myLogger.info("Received Msg from Jira-Plugin");
-
-		// Mapping PubFlowMsg to WorkflowMessage
-		myLogger.info("Transforming msg to wfMessage");
-		WFParameterList parameters = msg.getParameters();
-
-		long quartzMillis = 0l;
+		myLogger.info("Compute");
+		
 		String quartzCron = "";
 
+		WFParameterList parameters = msg.getParameters();
 		WFParameterList filteredParameters = new WFParameterList();
 
 		for(WFParameter parameter : parameters.getParameterList()){ 
@@ -80,11 +79,6 @@ public class JiraConnector {
 				String value = (String) parameter.getValue();
 
 				switch (key) {
-
-				case "quartzMillis":
-					quartzMillis = Long.parseLong(value);
-					break;	
-
 				case "quartzCron":
 					quartzCron = value;
 					break;
@@ -130,20 +124,19 @@ public class JiraConnector {
 //
 //		try {
 //
-//			if(!quartzCron.equals("")){
-//				JobDetail job = new JobDetail();
-//				job.setJobClass(PubFlowJob.class);
-//				job.getJobDataMap().put("msg", msg);
-//				job.setName(msg.getWorkflowID() + System.currentTimeMillis());
-//				job.setDurability(true);
-//				
-//				Trigger trigger = null;
-//				if(quartzCron.equals("minutely")){
-//					trigger = TriggerUtils.makeMinutelyTrigger();
-//					trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
-//				}
-//				fy.getScheduler().scheduleJob(job, trigger);
-//
+			if(!quartzCron.equals("")){
+				myLogger.info("Scheduling new job");			
+
+				final WorkflowMessage schedulerMsg = msg;
+				Scheduler s = new Scheduler();
+				
+				s.schedule(quartzCron, new Runnable() {					
+					public void run() {
+						PubFlowJob.execute(schedulerMsg);
+					}
+				});
+				
+				s.start();
 //			}else if(quartzMillis > System.currentTimeMillis()){
 //				JobDetail job = new JobDetail();
 //				job.setJobClass(PubFlowJob.class);
@@ -156,14 +149,10 @@ public class JiraConnector {
 //				trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
 //				fy.getScheduler().scheduleJob(job, trigger);
 //				
-//			}else{
+			}else{
 				myLogger.info("Leaving JiraConnector");			
 				WFBroker.getInstance().receiveWFCall(msg);
-//			}
+			}
 			
-//		} catch (SchedulerException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	}
 }
