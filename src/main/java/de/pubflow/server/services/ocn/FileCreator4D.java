@@ -1,9 +1,7 @@
 package de.pubflow.server.services.ocn;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;

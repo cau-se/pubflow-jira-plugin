@@ -1,4 +1,4 @@
-package de.pubflow.server.services.ocn;
+package de.pubflow.server.services.cvoo;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,13 +9,16 @@ import de.pubflow.server.core.jira.ComMap;
 import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.jira.Entity.JiraAttachment;
 import de.pubflow.server.core.jira.Entity.JiraComment;
+import de.pubflow.server.services.ocn.FileCreator4D;
+import de.pubflow.server.services.cvoo.CVOODataLoader;
+import de.pubflow.server.services.ocn.PangaeaMapper;
 
 public class PluginAllocator {
 
 	public static ComMap getData(ComMap data) throws Exception{
 		//		if(PluginManifestValidator.check("de.pubflow.server.services.ocn.getData", data, PluginAllocator.class.getClass().getResourceAsStream("PluginManifest.xml"))){
 
-		OCNDataLoader loader = new OCNDataLoader();
+		CVOODataLoader loader = new CVOODataLoader();
 
 		try {
 			JiraEndpoint.changeStatus(data.getDefaultIssueKey(), "There is no data for legid %s in the ocn database or the view 'leg' has been changed. \n");
@@ -100,7 +103,7 @@ public class PluginAllocator {
 		data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", "12013");
 
 		try {
-			data = new OCNDataLoader().getData(data, 0);
+			data = new CVOODataLoader().getData(data, 0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

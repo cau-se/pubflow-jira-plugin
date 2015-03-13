@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mainfest>
+	<package>de.pubflow.services.ocn</package>
+	<description>This plugin offers methods to get data from OCN, check and
+		transform them and save them to a 4d-file.
+	</description>
+	<signatures>
+		<signature name="de.pubflow.services.cvoo.getData">
+			<description>Loads legs from the CVOO database.</description>
+			<requires>
+				<plugin name="testplugin" />
+				<parameter name="de.pubflow.services.cvoo.getData.legid" simpleName="Leg ID" required="yes" />
+			</requires>
+			<returns>
+				<parameter name="de.pubflow.services.ocn.getData.leg" />
+				<parameter name="de.pubflow.services.ocn.getData.log" />
+			</returns>
+		</signature>
+		<signature name="de.pubflow.services.ocn.convert">
+			<description>Maps parameter ids from OCN to Pangaea. Checks for data
+				errors.</description>
+			<requires>
+				<parameter name="de.pubflow.services.ocn.getData.leg" />
+				<parameter name="de.pubflow.services.ocn.getData.log" />
+			</requires>
+			<returns>
+				<parameter name="de.pubflow.services.ocn.convert.leg" />
+				<parameter name="de.pubflow.services.ocn.convert.log" />
+			</returns>
+		</signature>
+		<signature name="de.pubflow.services.ocn.toCSV">
+			<description></description>
+			<requires>
+				<parameter name="de.pubflow.services.ocn.convert.leg" />
+				<parameter name="de.pubflow.services.ocn.convert.log" />
+				<parameter name="de.pubflow.services.ocn.toCSV.pid" simpleName="PID" />
+				<parameter name="de.pubflow.services.ocn.toCSV.login" simpleName="Login" />
+				<parameter name="de.pubflow.services.ocn.toCSV.source" simpleName="Source" />
+				<parameter name="de.pubflow.services.ocn.toCSV.author" simpleName="Author" />
+				<parameter name="de.pubflow.services.ocn.toCSV.project" simpleName="Project" />
+				<parameter name="de.pubflow.services.ocn.toCSV.topology" simpleName="Topology" />
+				<parameter name="de.pubflow.services.ocn.toCSV.status" simpleName="Status" />
+				<parameter name="de.pubflow.services.ocn.toCSV.savePath" />
+				<parameter name="de.pubflow.services.ocn.toCSV.reference" simpleName="Reference" />
+				<parameter name="de.pubflow.services.ocn.toCSV.fileName" simpleName="File Name" />
+				<parameter name="de.pubflow.services.ocn.toCSV.comment" simpleName="Leg Comment" />
+				<parameter name="de.pubflow.services.ocn.toCSV.targetPath" simpleName="Target Path" />
+			</requires>
+			<returns>
+			</returns>
+		</signature>
+	</signatures>
+</mainfest>

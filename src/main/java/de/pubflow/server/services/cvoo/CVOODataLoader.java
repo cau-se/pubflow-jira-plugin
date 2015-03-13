@@ -1,4 +1,4 @@
-package de.pubflow.server.services.ocn;
+package de.pubflow.server.services.cvoo;
 
 import java.io.FileWriter;
 import java.io.StringWriter;
@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.persistence.Enumerated;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
@@ -31,17 +32,17 @@ import de.pubflow.server.services.ocn.entity.abstractClass.PubJect;
  * @author arl
  *
  */
-public class OCNDataLoader {
+public class CVOODataLoader {
 
-	static Logger myLogger = LoggerFactory.getLogger(OCNDataLoader.class);
+	static Logger myLogger = LoggerFactory.getLogger(CVOODataLoader.class);
 
 	public ComMap getData(ComMap data, int instanceId) throws Exception {
-		String legId = data.get("de.pubflow.services.ocn.PluginAllocator.getData.legid");	
+		String legId = data.get("de.pubflow.services.cvoo.PluginAllocator.getData.legid");	
 		PropLoader props = PropLoader.getInstance();
 		long millis = System.currentTimeMillis();
 
 		try{
-			String connectionURL = props.getProperty("dbUrl", this.getClass(), "jdbc:postgresql://localhost:5432/ocn?schema=ocn");  //$NON-NLS-2$
+			String connectionURL = props.getProperty("dbUrl", this.getClass(), "jdbc:postgresql://localhost:5433/bottleocn?schema=bottleocn");  //$NON-NLS-2$
 			String user = PropLoader.getInstance().getProperty("user", this.getClass(), "secret");  //$NON-NLS-2$
 			String password = PropLoader.getInstance().getProperty("pw", this.getClass(), "secret");  //$NON-NLS-2$
 
@@ -58,6 +59,9 @@ public class OCNDataLoader {
 			Set<String> parameters = new HashSet<String>();
 			boolean verbose = false;
 
+			//Datenbankzeugs...
+			Class.forName("org.postgresql.Driver").newInstance(); 
+			
 			Enumeration<Driver> enu = DriverManager.getDrivers();
 			while(enu.hasMoreElements()){
 				Driver d;
@@ -66,8 +70,7 @@ public class OCNDataLoader {
 				}
 			}
 			
-			//Datenbankzeugs...
-			Class.forName("org.postgresql.Driver").newInstance(); 
+			
 			connection = DriverManager.getConnection(connectionURL, user, password);
 			statement = connection.createStatement();
 
@@ -78,13 +81,13 @@ public class OCNDataLoader {
 			// Query für die leg-Daten
 			// ONLY POSTGRES VESION 9.0 ==>
 
-			queryString = 
-					"WITH part as (SELECT * from ocn.leg)" + 
-							"SELECT " + 
-							"name AS leg_name, expocode AS leg_expocode, id AS leg_id " + 
-							"FROM part WHERE id = " + legId; 
+//			queryString = 
+//					"WITH part as (SELECT * from cvoo.leg)" + 
+//							"SELECT " + 
+//							"name AS leg_name, expocode AS leg_expocode, id AS leg_id " + 
+//							"FROM part WHERE id = " + legId; 
 
-			// queryString = "select name as leg_name, expocode as leg_expocode, id as mleg_id from ocn.leg where id = " + id;
+			 queryString = "select name as leg_name, expocode as leg_expocode, id as leg_id from bottleocn.leg where id = " + legId;
 
 			rs = statement.executeQuery(queryString);
 			rs.next();
@@ -94,7 +97,8 @@ public class OCNDataLoader {
 				leg = Leg.createFromResultSet(Leg.class, Leg.LEGTABLE, rs);
 
 			}catch(SQLException e){
-				throw new Exception(String.format("There is no data for legid %s in the ocn database or the view 'leg' has been changed. \n", legId)); 
+				e.printStackTrace();
+				throw new Exception(String.format("There is no data for legid %s in the cvoo database or the view 'leg' has been changed. \n", legId)); 
 			}
 
 			log.append("OK\n"); 
@@ -103,29 +107,29 @@ public class OCNDataLoader {
 			// Query für bottle- und sample-Daten
 			// ONLY POSTGRES VESION 9.0 ==>
 
-			queryString = 
-					"WITH part AS " + 
-							"(WITH part AS " + 
-							"(SELECT latitude AS bottle_latitude, longitude AS bottle_longitude, leg_id, " + 
-							"waterdepth AS bottle_waterdepth, time AS bottle_time, station AS bottle_station, " + 
-							"label AS bottle_label, id AS bottle_id " + 
-							"FROM ocn.bottle) " + 
-							"SELECT * " + 
-							"FROM part " + 
-							"WHERE leg_id = " + legId + ") " +  //$NON-NLS-2$
-							"SELECT part.*, sample.id AS sample_id, sample.val AS sample_val, " + 
-							"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " + 
-							"FROM part, ocn.sample " + 
-							"WHERE part.bottle_id = sample.bottle_id " + 
-							"ORDER BY sample.bottle_id"; 
+//			queryString = 
+//					"WITH part AS " + 
+//							"(WITH part AS " + 
+//							"(SELECT latitude AS bottle_latitude, longitude AS bottle_longitude, leg_id, " + 
+//							"waterdepth AS bottle_waterdepth, time AS bottle_time, station AS bottle_station, " + 
+//							"label AS bottle_label, id AS bottle_id " + 
+//							"FROM cvoo.bottle) " + 
+//							"SELECT * " + 
+//							"FROM part " + 
+//							"WHERE leg_id = " + legId + ") " +  //$NON-NLS-2$
+//							"SELECT part.*, sample.id AS sample_id, sample.val AS sample_val, " + 
+//							"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " + 
+//							"FROM part, cvoo.sample " + 
+//							"WHERE part.bottle_id = sample.bottle_id " + 
+//							"ORDER BY sample.bottle_id"; 
 
-			//	queryString = "SELECT bottle.latitude AS bottle_latitude, bottle.longitude AS bottle_longitude, bottle.leg_id, " +
-			//					"bottle.waterdepth AS bottle_waterdepth, bottle.time AS bottle_time, bottle.station AS bottle_station, " +
-			//					"bottle.label AS bottle_label, bottle.id AS bottle_id, sample.id AS sample_id, sample.val AS sample_val, " +
-			//					"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " +
-			//					"FROM ocn.bottle, ocn.sample " +
-			//					"WHERE bottle.id = sample.bottle_id " +
-			//					"ORDER BY sample.bottle_id;";
+				queryString = "SELECT bottle.latitude AS bottle_latitude, bottle.longitude AS bottle_longitude, bottle.leg_id, " +
+								"bottle.waterdepth AS bottle_waterdepth, bottle.time AS bottle_time, bottle.station AS bottle_station, " +
+								"bottle.label AS bottle_label, bottle.id AS bottle_id, sample.id AS sample_id, sample.val AS sample_val, " +
+								"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " +
+								"FROM bottleocn.bottle, bottleocn.sample " +
+								"WHERE bottle.id = sample.bottle_id and bottle.leg_id = " + legId +
+								"ORDER BY sample.bottle_id;";
 
 			rs = statement.executeQuery(queryString);
 
@@ -161,12 +165,12 @@ public class OCNDataLoader {
 			//Hole Parameterinformationen
 			for(String s : parameters) {
 				queryString = 
-						"SELECT p.parameter_description, p.parameter_abbreviation, p.parameter_comment, " + 
-								"pu.parameter_unit_pangaea_id, pu.parameter_unit_id, " + 
-								"u.unit_mathematical as parameter_unit_mathematical, '' as parameter_method_id, '' as parameter_pi_id " + 
-								"FROM ocn.parameter p, ocn.parameter_unit pu, ocn.unit u " + 
+						"SELECT p.shortname as parameter_description, p.shortname as parameter_abbreviation, '' as parameter_comment, " + 
+								"p.pangaeaid as parameter_unit_pangaea_id, p.id as parameter_unit_id, " + 
+								"p.unit as parameter_unit_mathematical, '' as parameter_method_id, '' as parameter_pi_id " + 
+								"FROM bottleocn.parameter p " + 
 								"WHERE " + 
-								"p.parameter_id = pu.parameter_id AND pu.unit_id = u.unit_id AND pu.parameter_unit_id = " + s; 
+								" p.id = " + s; 
 
 				rs = statement.executeQuery(queryString);
 
@@ -212,21 +216,21 @@ public class OCNDataLoader {
 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString()); 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString()); 
-			data.newJiraAttachment("interimOCNDataLoader.tmp", legSw.toString().getBytes()); 
-			data.newJiraComment(String.format("OCNDataLoader: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0)); 
+			data.newJiraAttachment("interimCVOODataLoader.tmp", legSw.toString().getBytes()); 
+			data.newJiraComment(String.format("CVOODataLoader: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0)); 
 			return data;
 
 		}catch(Exception e){
 			e.printStackTrace();
-			throw new Exception("OCNDataLoader: " + e.getMessage()); 
+			throw new Exception("CVOODataLoader: " + e.getMessage()); 
 		}
 	}
 	
 	public static void main (String[] args) throws Exception{
 		ComMap data = new ComMap("");
-		data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", "12013");
-		new OCNDataLoader().getData(data, 0);
-		FileWriter fw = new FileWriter("/tmp/ocn.txt");
+		data.put("de.pubflow.services.cvoo.PluginAllocator.getData.legid", "321449");
+		new CVOODataLoader().getData(data, 0);
+		FileWriter fw = new FileWriter("/tmp/cvoo.txt");
 		fw.append(data.get("de.pubflow.services.ocn.PluginAllocator.getData.leg"));
 		fw.close();
 	}

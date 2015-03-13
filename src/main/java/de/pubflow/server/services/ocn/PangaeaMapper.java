@@ -31,7 +31,7 @@ import de.pubflow.server.services.ocn.exceptions.PubJectException;
  *
  */
 
-public class OCNToPangaeaMapper {
+public class PangaeaMapper {
 
 	public static Map<String,String> foundMappings = new HashMap<String, String>();
 	private StringBuilder log;
