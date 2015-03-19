@@ -1,6 +1,6 @@
 package de.pubflow.server.services.cvoo;
 
-import java.io.FileWriter;
+import java.io.File;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.persistence.Enumerated;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
@@ -204,19 +203,20 @@ public class CVOODataLoader {
 			long time_samples = System.currentTimeMillis();
 
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
+			
 			Marshaller m = ctx.createMarshaller();
 			StringWriter legSw = new StringWriter();
 			log.append(String.format("Fetched data in %d ms.\n\n", time_samples - time_start));  //$NON-NLS-2$
 
-			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			//m.marshal(leg, new File("/home/arl/dto.txt"));
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			m.marshal(leg, new File("/home/arl/cvoo.txt"));
+			
 			m.marshal(leg, legSw);
-
-			System.out.println(log.toString());
 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString()); 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString()); 
-			data.newJiraAttachment("interimCVOODataLoader.tmp", legSw.toString().getBytes()); 
+			data.newJiraAttachment("debug_" + "de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString().getBytes());
+
 			data.newJiraComment(String.format("CVOODataLoader: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0)); 
 			return data;
 
@@ -224,14 +224,5 @@ public class CVOODataLoader {
 			e.printStackTrace();
 			throw new Exception("CVOODataLoader: " + e.getMessage()); 
 		}
-	}
-	
-	public static void main (String[] args) throws Exception{
-		ComMap data = new ComMap("");
-		data.put("de.pubflow.services.cvoo.PluginAllocator.getData.legid", "321449");
-		new CVOODataLoader().getData(data, 0);
-		FileWriter fw = new FileWriter("/tmp/cvoo.txt");
-		fw.append(data.get("de.pubflow.services.ocn.PluginAllocator.getData.leg"));
-		fw.close();
 	}
 }

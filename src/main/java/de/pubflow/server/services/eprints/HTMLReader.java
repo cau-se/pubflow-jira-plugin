@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -18,6 +19,8 @@ import javax.xml.stream.events.XMLEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 import de.pubflow.server.core.jira.ComMap;
 import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.services.eprints.entity.MetaMsg;
@@ -25,9 +28,10 @@ import de.pubflow.server.services.eprints.entity.RSSMsg;
 
 public class HTMLReader {
 
-	private static Logger log = LoggerFactory.getLogger(HTMLReader.class);
+	private Logger log = LoggerFactory.getLogger(HTMLReader.class);
+	protected static CopyOnWriteArrayList<String> missingSupplementIssueSummaries = new CopyOnWriteArrayList<String>(JiraEndpoint.getAllIssuesBySummaryContains("Missing pangaea supplement for "));
 
-	public static List<RSSMsg> readFeeds(String url) throws IOException {
+	public List<RSSMsg> readFeeds(String url) throws IOException {
 		List<RSSMsg> feeds = new LinkedList<RSSMsg>();
 
 		try {
@@ -75,10 +79,12 @@ public class HTMLReader {
 			throw new RuntimeException(e);
 		}
 
+		feeds = Lists.reverse(feeds);
+		
 		return feeds;
 	}
 
-	private static String getCharData(XMLEvent e, XMLEventReader xmler) throws XMLStreamException {
+	private String getCharData(XMLEvent e, XMLEventReader xmler) throws XMLStreamException {
 		e = xmler.nextEvent();
 		if (e instanceof Characters) {
 			return e.asCharacters().getData();
@@ -87,7 +93,7 @@ public class HTMLReader {
 		}
 	}
 
-	public static LinkedList<MetaMsg> readMeta(String url){
+	public LinkedList<MetaMsg> readMeta(String url){
 		LinkedList<MetaMsg> metas = new LinkedList<MetaMsg>();
 
 		try {
@@ -107,8 +113,8 @@ public class HTMLReader {
 							meta.setName(e.asStartElement().getAttributeByName(new QName("name")).getValue());
 							meta.setContent(e.asStartElement().getAttributeByName(new QName("content")).getValue());
 							metas.add(meta);
-							log.info(meta.getName() + " : ");
-							log.info(meta.getContent());
+							//							log.info(meta.getName() + " : ");
+							//							log.info(meta.getContent());
 
 						}catch(NullPointerException e1){}
 						break;
@@ -123,21 +129,7 @@ public class HTMLReader {
 		return metas;
 	}
 
-	public static void main (String[] args) throws Exception{
-		for(RSSMsg msg : readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS2.xml?screen=Search&dataset=archive&_action_export=1&output=RSS2&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
-			System.out.println(msg.getLink());
-
-			try{
-				System.out.println(checkForValidDOI(readMeta(msg.getLink())));
-			}catch(Exception e){
-				System.out.println(e.getMessage());
-			}
-			System.out.println();
-		}
-	}
-
-
-	public static boolean checkForValidDOI(String doi) throws Exception{
+	public boolean checkForValidDOI(String doi) throws Exception{
 		URL urlObj = new URL("http://linkinghub.pangaea.de/epic/redirectToSupplement/" + doi);
 		Scanner sc = new Scanner(urlObj.openStream(), "UTF-8");
 		String out = sc.useDelimiter("\\A").next();
@@ -150,7 +142,7 @@ public class HTMLReader {
 		return true;
 	}
 
-	public static boolean checkFor404(String doi) throws Exception{
+	public boolean checkFor404(String doi) throws Exception{
 		if(!doi.equals("")){
 			URL urlObj = new URL("http://doi.pangaea.de/" + doi);
 			HttpURLConnection http = (HttpURLConnection)urlObj.openConnection();
@@ -164,10 +156,11 @@ public class HTMLReader {
 		return false;
 	}
 
-	public static boolean checkForValidDOI(List<MetaMsg> list) throws Exception{
+	public boolean checkForValidDOI(List<MetaMsg> list) throws Exception{
 		for(MetaMsg msg : list){
 			if(msg.getName().equals("eprints.id_number")){
-				log.info(msg.getContent());
+				System.out.println(msg.getContent());
+				//				log.info(msg.getContent());
 				return checkForValidDOI(msg.getContent());
 			}
 		}
@@ -175,31 +168,37 @@ public class HTMLReader {
 		throw new Exception("eprints.id_number is empty!");	
 	}
 
-	public static ComMap checkRSSFeed(ComMap data){
-		LinkedList <RSSMsg> msgList = new LinkedList<RSSMsg>();
-
+	public ComMap checkRSSFeed(ComMap data){
 		try{
-			for(RSSMsg msg : HTMLReader.readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS2.xml?screen=Search&dataset=archive&_action_export=1&output=RSS2&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
-				log.info(msg.getLink());
-				try{
+			// for(RSSMsg msg : readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS2.xml?screen=Search&dataset=archive&_action_export=1&output=RSS2&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
+			for(RSSMsg msg : readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS3.xml?screen=Search&dataset=archive&_action_export=1&output=RSS3&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
+				//				log.info(msg.getLink());
+				int index1 = msg.getDescription().indexOf("DOI ") + 4;
+				int index2 = msg.getDescription().indexOf(" <", index1);
+				
+				if(index1 < index2){
+					String doi = msg.getDescription().substring(index1, index2);
+					boolean pangaeaDataOk = checkForValidDOI(doi);
 
-					boolean dataOk = HTMLReader.checkForValidDOI(HTMLReader.readMeta(msg.getLink()));
-					if(!dataOk){
-						if (!JiraEndpoint.lookupIssue("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink())) {
+					if(!pangaeaDataOk){
+						if (!missingSupplementIssueSummaries.contains("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink())) {
+							log.info("checkRSSFeed - doi without pangaea supplement : " + doi);
 							data.newJiraIssue("EPRINTS", "Missing pangaea supplement for " + msg.getLink(), msg.getDescription(), "PubFlow", new HashMap<String, String>());
+							missingSupplementIssueSummaries.add("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink());
 						}
-						msgList.add(msg);
+					}else{
+						log.info("checkRSSFeed - doi with pangaea supplement : " + doi);
 					}
 
-				}catch(IOException e){
-					e.printStackTrace();
+				}else{
+					data.newJiraIssue("EPRINTS", "No DOI for " + msg.getLink(), msg.getDescription(), "PubFlow", new HashMap<String, String>());
+					log.info("checkRSSFeed - no DOI for " + msg.getTitle());
 				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 
-		//data.put("de.pubflow.server.services.eprints.HTMLReader.checkedRSSFeed", msgList);
 		return data;
 	}
 }

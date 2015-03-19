@@ -34,48 +34,48 @@ import de.pubflow.server.services.ocn.exceptions.PubJectException;
 public class PangaeaMapper {
 
 	public static Map<String,String> foundMappings = new HashMap<String, String>();
-	private StringBuilder log;
+	private StringBuilder log = new StringBuilder();
 
 	public ComMap mapValues(ComMap data, int instanceId) throws Exception {
 		long millis = System.currentTimeMillis();
 
 		try{
-			
+
 			log = new StringBuilder();
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
 			Unmarshaller um = ctx.createUnmarshaller();
-			
+
 			if(data.get("de.pubflow.services.ocn.PluginAllocator.getData.leg") == null){
 				throw new IOException("Mapping failed due to an empty input string. Something went terribly wrong in a prior work step.");				
 			}
-			
+
 			StringReader sr = new StringReader(data.get("de.pubflow.services.ocn.PluginAllocator.getData.leg"));			
 
 			Leg leg = (Leg) um.unmarshal(sr);
 
-			resolveDependency(leg);
-			resolveFormats(leg);
-		
-			ArrayList<PubJect> bottles = leg.getList(Leg.BOTTLELIST);
-			ArrayList<PubJect> bottlesSorted = sort(leg);
-			bottles.clear();
-			bottles.addAll(bottlesSorted);
-			
-			StringBuilder log = new StringBuilder();
-			
 			if(data.get("de.pubflow.services.ocn.PluginAllocator.getData.log") != null){
 				log.append(data.get("de.pubflow.services.ocn.PluginAllocator.getData.log"));
 			}
-			
-			Marshaller m = ctx.createMarshaller();
-			StringWriter sw = new StringWriter();
-			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			m.marshal(leg, sw);
-			
-			data.put("de.pubflow.services.ocn.PluginAllocator.convert.leg", sw.toString());
+
+			//map parameter ids
+			resolveDependency(leg);
+			//resolve min and max values, create mask
+			resolveFormats(leg);
+
+			ArrayList<PubJect> bottleList = leg.getList(Leg.BOTTLELIST);
+			ArrayList<PubJect> bottlesSorted = sort(leg);
+			bottleList.clear();
+			bottleList.addAll(bottlesSorted);
+
+			Marshaller marshaller = ctx.createMarshaller();
+			StringWriter legSw = new StringWriter();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			marshaller.marshal(leg, legSw);
+
+			data.put("de.pubflow.services.ocn.PluginAllocator.convert.leg", legSw.toString());
 			data.put("de.pubflow.services.ocn.PluginAllocator.convert.log", log.toString());
-			
-			data.newJiraAttachment("interimOCNToPangaeaMapper.tmp", sw.toString().getBytes());
+			data.newJiraAttachment("debug_" + "de.pubflow.services.ocn.PluginAllocator.convert.leg", legSw.toString().getBytes());
+
 			data.newJiraComment(String.format("OCNToPangaeaMapper: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0));
 
 			return data;
@@ -88,24 +88,25 @@ public class PangaeaMapper {
 
 	private void resolveFormats(PubJect leg) throws PubJectException{
 
-		List<PubJect> l = (List<PubJect>) leg.getList(Leg.PARAMETERLIST);
+		List<PubJect> parameterList = (List<PubJect>) leg.getList(Leg.PARAMETERLIST);
 		Map<String, Integer> low = new HashMap<String, Integer>();
 		Map<String, Integer> high = new HashMap<String, Integer>();
 
-		for (PubJect p : l){
-			low.put(p.getString(Parameter.UNITID), 0);
-			high.put(p.getString(Parameter.UNITID), 0);
+		for (PubJect parameter : parameterList){
+			low.put(parameter.getString(Parameter.UNITID), 0);
+			high.put(parameter.getString(Parameter.UNITID), 0);
 		}
 
-		List<PubJect> bottles = (ArrayList<PubJect>) leg.getList(Leg.BOTTLELIST);
-		for(PubJect a : bottles){
-			List<PubJect> samples = a.getList(Bottle.SAMPLELIST);
-			for(PubJect b : samples){
-				String id = b.getString(Sample.PARAMETERUNITID);
+		List<PubJect> bottleList = (ArrayList<PubJect>) leg.getList(Leg.BOTTLELIST);
+
+		for(PubJect bottle : bottleList){
+			List<PubJect> samples = bottle.getList(Bottle.SAMPLELIST);
+			for(PubJect sample : samples){
+				String id = sample.getString(Sample.PARAMETERUNITID);
 				int currentValueLow = low.get(id);
 				int currentValueHigh = high.get(id);
 
-				StringTokenizer st = new StringTokenizer(b.getString(Sample.VAL), ".");
+				StringTokenizer st = new StringTokenizer(sample.getString(Sample.VAL), ".");
 
 				int tmp = st.nextToken().length();
 				if(tmp > currentValueHigh)
@@ -135,33 +136,37 @@ public class PangaeaMapper {
 		}
 
 
-		for(PubJect p : l){
-			p.add(Parameter.FORMAT, formats.get(p.getString(Parameter.UNITID)));
+		for(PubJect parameter : parameterList){
+			parameter.add(Parameter.FORMAT, formats.get(parameter.getString(Parameter.UNITID)));
 		}
 	}
 
 	private ArrayList<PubJect> sort(PubJect leg) throws PubJectException{
-
+		boolean neverSorted = true;
 		ArrayList<PubJect> resultList = new ArrayList<PubJect>();
 		ArrayList<PubJect> tempList = new ArrayList<PubJect>();
 		PubJect lastBottle = null;
 
-		List<PubJect> bottles = ((Leg)leg).getList(Leg.BOTTLELIST);
+		List<PubJect> bottleList = ((Leg)leg).getList(Leg.BOTTLELIST);
 
-		for(PubJect bottle : bottles){
+		for(PubJect bottle : bottleList){
 			if(lastBottle == null){	
 				lastBottle = bottle;	
 
 			}else if(!bottle.getString(Bottle.STATION).equals(lastBottle.getString(Bottle.STATION))){
 				//sortieren von klein nach groß
 
+				neverSorted = false;
 				boolean sortByPressure = false;
+				System.out.println(tempList.size());
+
 
 				quicksort(tempList, 0, tempList.size() - 1, sortByPressure);
 
 				if(sortByPressure){
 					Collections.reverse(tempList);
 				}
+
 				resultList.addAll(tempList);
 				tempList = new ArrayList<PubJect>();
 			}
@@ -169,22 +174,27 @@ public class PangaeaMapper {
 			tempList.add(bottle);
 			lastBottle = bottle;
 		}
-		return resultList;
-	}
-
-	private void quicksort(ArrayList<PubJect> bottles, int left, int right, boolean sortByPressure) throws PubJectException{
-
-		if (left < right){
-			int divide = divide(bottles, left, right, sortByPressure);
-			quicksort(bottles, left, divide - 1, sortByPressure);
-			quicksort(bottles, divide + 1, right, sortByPressure);
+		
+		if(neverSorted){
+			return tempList;
+		}else{
+			return resultList;
 		}
 	}
 
-	private int divide(ArrayList<PubJect> bottles, int left, int right, boolean sortByPressure) throws PubJectException{
+	private void quicksort(ArrayList<PubJect> bottleList, int left, int right, boolean sortByPressure) throws PubJectException{
+
+		if (left < right){
+			int divide = divide(bottleList, left, right, sortByPressure);
+			quicksort(bottleList, left, divide - 1, sortByPressure);
+			quicksort(bottleList, divide + 1, right, sortByPressure);
+		}
+	}
+
+	private int divide(ArrayList<PubJect> bottleList, int left, int right, boolean sortByPressure) throws PubJectException{
 		int i = left;
 		int j = right;
-		PubJect pivot = bottles.get(right);
+		PubJect pivot = bottleList.get(right);
 
 		double valueI = 0.0;
 		double valueJ = 0.0;
@@ -192,13 +202,13 @@ public class PangaeaMapper {
 
 		do{	
 			if(sortByPressure){
-				valueI = getPressure(bottles.get(i));
+				valueI = getPressure(bottleList.get(i));
 				valuePivot = getPressure(pivot);
-				valueJ = getPressure(bottles.get(j));
+				valueJ = getPressure(bottleList.get(j));
 
 			}else{
-				valueI = Double.parseDouble(bottles.get(i).getString(Bottle.ID));
-				valueJ = Double.parseDouble(bottles.get(j).getString(Bottle.ID));
+				valueI = Double.parseDouble(bottleList.get(i).getString(Bottle.ID));
+				valueJ = Double.parseDouble(bottleList.get(j).getString(Bottle.ID));
 				valuePivot = Double.parseDouble(pivot.getString(Bottle.ID));
 			}
 
@@ -210,27 +220,27 @@ public class PangaeaMapper {
 			}
 
 			if(i < j){
-				PubJect data_i = bottles.get(i);
-				PubJect data_j = bottles.get(j);
+				PubJect data_i = bottleList.get(i);
+				PubJect data_j = bottleList.get(j);
 
-				int index_i = bottles.indexOf(data_i);
-				int index_j = bottles.indexOf(data_j);
+				int index_i = bottleList.indexOf(data_i);
+				int index_j = bottleList.indexOf(data_j);
 
-				bottles.set(index_i, data_j);
-				bottles.set(index_j, data_i);
+				bottleList.set(index_i, data_j);
+				bottleList.set(index_j, data_i);
 			}
 
 		}while(i < j);
 
 		if(valueI > valuePivot){
-			PubJect data_i = bottles.get(i);
-			PubJect data_right = bottles.get(right);
+			PubJect data_i = bottleList.get(i);
+			PubJect data_right = bottleList.get(right);
 
-			int index_i = bottles.indexOf(data_i);
-			int index_right = bottles.indexOf(data_right);
+			int index_i = bottleList.indexOf(data_i);
+			int index_right = bottleList.indexOf(data_right);
 
-			bottles.set(index_i, data_right);
-			bottles.set(index_right, data_i);
+			bottleList.set(index_i, data_right);
+			bottleList.set(index_right, data_i);
 		}
 
 		return i;
@@ -261,8 +271,9 @@ public class PangaeaMapper {
 
 		//Lege Liste mit allen Parametern an, die keine PangaeaId haben
 		for(PubJect p : leg.getList(Leg.PARAMETERLIST)){
-			if(p.getString(Parameter.PANGAEAID).equals("0"))
+			if(p.getString(Parameter.PANGAEAID).equals("0")){
 				searchList.add(p);
+			}
 		}
 
 		//Prüfe ob eine UnitId bereits gemappt und die zugehörige PangaeaId gespeichert wurde (foundMappings)

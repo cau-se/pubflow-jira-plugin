@@ -2,6 +2,7 @@ package de.pubflow.jira.accessors;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.ofbiz.core.entity.GenericEntityException;
@@ -54,11 +55,26 @@ public class JiraObjectGetter {
 	public static String getIssueKeyById(long id) {	
 		String key = ComponentAccessor.getIssueManager().getIssueObject(id).getKey();
 		log.info("getIssueKeyById - id : " + id);
-		log.info("getIssueKeyById - key : " + key);
+		log.info("getIssueKeyById - return " + key);
 
 		return key;
 	}
 
+	public static List<String> getAllIssueSummariesBySummaryContains(String snippet) throws GenericEntityException{
+		long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
+		Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
+		List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
+		log.info("getAllIssueSummariesBySummaryContains - snippet : " + snippet);
+
+		List<String> resultList = new LinkedList<String>();
+		for(Issue issue : issues){
+			if(issue.getSummary().contains(snippet)){
+				resultList.add(issue.getSummary());
+			}
+		}
+		return resultList;
+	}
+	
 	/**
 	 * @param key
 	 * @return
@@ -66,7 +82,7 @@ public class JiraObjectGetter {
 	public static long getIssueIdByKey(String key) {
 		long id = ComponentAccessor.getIssueManager().getIssueObject(key).getId();
 		log.info("getIssueIdByKey - id : " + id);
-		log.info("getIssueIdByKey - key : " + key);
+		log.info("getIssueIdByKey - return " + key);
 
 		return id;
 	}

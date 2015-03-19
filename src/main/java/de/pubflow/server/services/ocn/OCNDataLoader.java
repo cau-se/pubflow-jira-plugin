@@ -1,5 +1,6 @@
 package de.pubflow.server.services.ocn;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
@@ -204,15 +205,16 @@ public class OCNDataLoader {
 			StringWriter legSw = new StringWriter();
 			log.append(String.format("Fetched data in %d ms.\n\n", time_samples - time_start));  //$NON-NLS-2$
 
-			//m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			//m.marshal(leg, new File("/home/arl/dto.txt"));
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			m.marshal(leg, new File("/home/arl/ocn.txt"));
 			m.marshal(leg, legSw);
 
 			System.out.println(log.toString());
 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString()); 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString()); 
-			data.newJiraAttachment("interimOCNDataLoader.tmp", legSw.toString().getBytes()); 
+			
+			data.newJiraAttachment("debug_" + "de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString().getBytes());
 			data.newJiraComment(String.format("OCNDataLoader: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0)); 
 			return data;
 

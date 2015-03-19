@@ -1,7 +1,6 @@
 package de.pubflow.server.services.cvoo;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
@@ -10,7 +9,6 @@ import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.jira.Entity.JiraAttachment;
 import de.pubflow.server.core.jira.Entity.JiraComment;
 import de.pubflow.server.services.ocn.FileCreator4D;
-import de.pubflow.server.services.cvoo.CVOODataLoader;
 import de.pubflow.server.services.ocn.PangaeaMapper;
 
 public class PluginAllocator {
@@ -21,7 +19,7 @@ public class PluginAllocator {
 		CVOODataLoader loader = new CVOODataLoader();
 
 		try {
-			JiraEndpoint.changeStatus(data.getDefaultIssueKey(), "There is no data for legid %s in the ocn database or the view 'leg' has been changed. \n");
+			JiraEndpoint.changeStatus(data.getDefaultIssueKey(), "There is no data for legid %s in the cvoo database or the view 'leg' has been changed. \n");
 
 			data = loader.getData(data, 0);
 
@@ -98,23 +96,28 @@ public class PluginAllocator {
 	}
 	//	}
 
-	public static void main(String[]a){
+	public static void main(String[]a) throws Exception{
 		ComMap data = new ComMap("");
-		data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", "12013");
+		data.put("de.pubflow.services.cvoo.PluginAllocator.getData.legid", "321449");
 
-		try {
-			data = new CVOODataLoader().getData(data, 0);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for(Entry<String, Object> e : data.entrySet()){
+			FileWriter fw;
+			fw = new FileWriter("/tmp/" + e.getKey());
+			fw.append(e.getValue() + "");
+			fw.close();	
 		}
+		
+		new CVOODataLoader().getData(data, 0);
+		data = new PangaeaMapper().mapValues(data, 0);
 
-		try {
-			data = new PangaeaMapper().mapValues(data, 0);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		for(Entry<String, Object> e : data.entrySet()){
+			FileWriter fw;
+			fw = new FileWriter("/tmp/" + e.getKey());
+			fw.append(e.getValue() + "");
+			fw.close();	
 		}
+		
+//		data.put("de.pubflow.services.ocn.PluginAllocator.convert.leg", data.get("de.pubflow.services.ocn.PluginAllocator.getData.leg"));
 
 		data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.author", null);
 		data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.source", "source");
@@ -128,23 +131,17 @@ public class PluginAllocator {
 		data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.login", "login");
 		data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.targetPath", "targetpath");
 
-		try {
-			new FileCreator4D().toCSV(data, 0);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		new FileCreator4D().toCSV(data, 0);
+
+
+		for(Entry<String, Object> e : data.entrySet()){
+			FileWriter fw;
+			fw = new FileWriter("/tmp/" + e.getKey());
+			fw.append(e.getValue() + "");
+			fw.close();	
 		}
 
-		try {
-			for(Entry<String, Object> e : data.entrySet()){
-				FileWriter fw;
-				fw = new FileWriter("/tmp/" + e.getKey());
-				fw.append(e.getValue() + "");
-				fw.close();	
-			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 	}
+
+
 }

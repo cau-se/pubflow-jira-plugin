@@ -42,6 +42,17 @@ public class JiraEndpoint{
 		return "";
 	}
 
+	
+	public static List<String> getAllIssuesBySummaryContains(String snippet){
+		try {
+			return JiraObjectGetter.getAllIssueSummariesBySummaryContains(snippet);
+		} catch (GenericEntityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static boolean lookupIssue(String name){
 		try {
 			return JiraObjectGetter.lookupIssue(name);

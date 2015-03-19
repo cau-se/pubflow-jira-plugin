@@ -241,6 +241,7 @@ public class FileCreator4D {
 
 			input.put("de.pubflow.services.ocn.PluginAllocator.toCSV.leg", result4dBuilder.toString());
 			input.put("de.pubflow.services.ocn.PluginAllocator.toCSV.log", log.toString());
+			input.put("de.pubflow.services.ocn.PluginAllocator.toCSV.4d", result4dBuilder.toString());
 
 			input.newJiraAttachment("result.4d", result4dBuilder.toString().getBytes());
 			input.newJiraAttachment("log.txt", log.toString().getBytes());

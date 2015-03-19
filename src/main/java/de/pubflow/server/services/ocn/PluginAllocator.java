@@ -95,7 +95,7 @@ public class PluginAllocator {
 	}
 	//	}
 
-	public static void main(String[]a){
+	public static void main(String[]a) throws Exception{
 		ComMap data = new ComMap("");
 		data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", "12013");
 
@@ -106,12 +106,7 @@ public class PluginAllocator {
 			e.printStackTrace();
 		}
 
-		try {
-			data = new PangaeaMapper().mapValues(data, 0);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		data = new PangaeaMapper().mapValues(data, 0);
 
 		data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.author", null);
 		data.put("de.pubflow.services.ocn.PluginAllocator.toCSV.source", "source");

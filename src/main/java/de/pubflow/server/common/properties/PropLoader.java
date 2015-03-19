@@ -15,17 +15,16 @@ import de.pubflow.server.common.exceptions.PropertyNotSetException;
 
 public class PropLoader {
 
-
 	private static PropLoader propLoader;
 	private static final String CONF_FILE = PubFlowSystem.getInstance().pubflowHome + "Pubflow.conf";
 	private Logger myLogger = LoggerFactory.getLogger(this.getClass());
 	private Properties pubflowConf = new Properties();
 
-	private PropLoader(){	
+	private PropLoader() {	
 		initProp();
 	}
 
-	public static PropLoader getInstance(){
+	public static PropLoader getInstance() {
 		if(propLoader == null){
 			propLoader = new PropLoader();
 		}
@@ -53,7 +52,6 @@ public class PropLoader {
 	public String getProperty(String key, Class clazz, String defaultValue) {
 		String prop = pubflowConf.getProperty(clazz.getCanonicalName() + "-" + key);
 
-
 		if ((prop == null) || (prop.equals(""))){
 			myLogger.warn("Property " + key + " : " + clazz.getCanonicalName()  + " is not set!");
 			myLogger.info("Property " + key + " : " + clazz.getCanonicalName()  + " has been set to: " + defaultValue);
@@ -66,16 +64,6 @@ public class PropLoader {
 		}
 		return prop;
 	}
-
-	//	public void setProperty(String key, String calleeSig, String prop) throws PropAlreadySetException {
-	//		myLogger.info("Setting Property - " + key + " : " + calleeSig);
-	//		String temp = pubflowConf.getProperty(calleeSig + "-" + key);
-	//		if (temp != null){
-	//			myLogger.warn("Property " + key + " : " + calleeSig + " was already set!");
-	//			throw new PropAlreadySetException();
-	//		}
-	//		pubflowConf.setProperty(calleeSig + "-" + key, prop);
-	//	}
 
 	public void updateProperty(String key, Class clazz, String prop) throws PropertyNotSetException {
 		myLogger.info("Updating Property - " + key + " : " + clazz.getCanonicalName());
@@ -91,7 +79,7 @@ public class PropLoader {
 	public void saveProperties() {
 		myLogger.info("Persisting Properties");
 		FileOutputStream fs = null;
-		
+
 		try {
 			fs = new FileOutputStream(CONF_FILE);
 		} catch (FileNotFoundException e1) {
@@ -100,10 +88,9 @@ public class PropLoader {
 		try {
 			pubflowConf.storeToXML(fs, "PubFlow Properties File (last updated "
 					+ Calendar.getInstance().getTime().toLocaleString() + ")");
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-
 }
