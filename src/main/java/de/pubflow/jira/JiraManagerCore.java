@@ -75,7 +75,22 @@ public class JiraManagerCore {
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, "Private");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, "http://maui.se.informatik.uni-kiel.de:38080/jira/");
-
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_BGCOLOUR, "#ffffff");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, "#dedede");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, "#03030d");		
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTCOLOUR, "#292929");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR, "#ffffff");		
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_BGCOLOUR, "#00015e");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_SEPARATOR, "#ffffff");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_TEXTCOLOUR, "#ffffff");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_BASEBGCOLOUR, "#00007f");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_TEXTCOLOUR, "#ffffff");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, "#3b73af");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, "#292929");
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, "#3b73af");
+		
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, "http://www.pubflow.uni-kiel.de/en/de/logo-pubflow/@@images/image/mini");
+		
 		//TODO: Set mail settings automatically
 
 		try {
