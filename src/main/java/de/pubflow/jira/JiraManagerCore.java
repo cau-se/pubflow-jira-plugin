@@ -88,7 +88,7 @@ public class JiraManagerCore {
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, "#3b73af");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, "#292929");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, "#3b73af");
-		
+
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, "http://www.pubflow.uni-kiel.de/en/de/logo-pubflow/@@images/image/mini");
 		
 		//TODO: Set mail settings automatically

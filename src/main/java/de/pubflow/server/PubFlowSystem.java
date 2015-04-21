@@ -10,7 +10,7 @@ public class PubFlowSystem {
 
 	private static PubFlowSystem instance = null;
 	private Logger myLogger;
-	public final String pubflowHome = System.getProperty("pubflow_home", "/home/arl/pubflow_home/");
+	public final String pubflowHome = System.getProperty("pubflow_home", "$HOME/pubflow_home/");
  
 	
 	private PubFlowSystem() {
@@ -53,6 +53,5 @@ public class PubFlowSystem {
 			PropLoader.getInstance().saveProperties();
 			shutdownLogger.info("<< BYE >>");
 		}
-
 	}
 }
