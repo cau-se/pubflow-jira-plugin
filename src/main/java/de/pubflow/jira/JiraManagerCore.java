@@ -177,7 +177,7 @@ public class JiraManagerCore {
 				wm.setWorkflowID("de.pubflow.EPRINTS");
 				WFParameterList wpl = new WFParameterList();
 				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
-				WFParameter wp2 = new WFParameter("quartzCron", "* * * * *");		
+				WFParameter wp2 = new WFParameter("quartzCron", "*/30 * * * *");		
 				wpl.add(wp1);
 				wpl.add(wp2);
 				wm.setParameters(wpl);
