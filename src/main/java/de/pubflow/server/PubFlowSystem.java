@@ -10,7 +10,7 @@ public class PubFlowSystem {
 
 	private static PubFlowSystem instance = null;
 	private Logger myLogger;
-	public final String pubflowHome = System.getProperty("pubflow_home", "/export/home/pubflow/pubflow_home/");
+	public final String pubflowHome = System.getProperty("pubflow_home", System.getenv("HOME") + "/pubflow_home/");
  
 	
 	private PubFlowSystem() {

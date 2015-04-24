@@ -69,7 +69,7 @@ public class JiraObjectCreator {
 	 * @param projectKey : the project's key
 	 * @throws Exception 
 	 */
-	
+
 	public static void createProject(String projectName, String projectKey, ApplicationUser user, boolean kill) throws Exception{
 		log.info("createProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
 
@@ -119,16 +119,16 @@ public class JiraObjectCreator {
 	 * @param parameters : map of custom field values (name : value)
 	 * @return returns the issue id 
 	 **/
-	
+
 	public static String createIssue(String projectKey, String issueTypeName, String summary, String description, String reporter, ApplicationUser user, Map<String, String> parameters) throws Exception {
-	
+
 		if (user == null) {
 			log.error("newIssue - user null");
 			throw new Exception("User is null");
 		}
 
 		log.info("newIssue - user : " + user.getUsername() + " / projectKey : " + projectKey + " / workflowName : " + issueTypeName + " / summary : " + summary + " / description : " + description + " / reporter : " + reporter);
-	
+
 		MutableIssue mutableIssue = createNewMutableIssue(projectKey, summary, description, reporter, user, issueTypeName);
 
 		for (Entry<String, String> entry : parameters.entrySet()) {
@@ -242,24 +242,22 @@ public class JiraObjectCreator {
 			List<JiraContextNode> contexts = new ArrayList<JiraContextNode>();
 			contexts.add(GlobalIssueContext.getInstance());
 
+			Map<CustomFieldDefinition, CustomField> fieldRefs = new HashMap<CustomFieldDefinition, CustomField>();
+
 			//generate custom fields
 			for (CustomFieldDefinition e : customFields) {
 
-				//check if custom field already exists
-				CustomField customFieldObject = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(e.getName());
+				log.info("newIssueType - creating customField " + e.getName());
 
-				if (customFieldObject == null) {
-					log.info("newIssueType - creating customField " + e.getName());
+				//create custom field
+				CustomField customFieldObject = ComponentAccessor.getCustomFieldManager().createCustomField(e.getName(), e.getName() + " - CustomField for " + issueTypeName, 
+						ComponentAccessor.getCustomFieldManager().getCustomFieldType(e.getType()),
+						null, 
+						contexts, issueTypesGenericValue);
 
-					//create custom field
-					customFieldObject = ComponentAccessor.getCustomFieldManager().createCustomField(e.getName(), e.getName() + "-CustomField for " + issueTypeName, 
-							ComponentAccessor.getCustomFieldManager().getCustomFieldType(e.getType()),
-							null, 
-							contexts, issueTypesGenericValue);
-				}
+				fieldRefs.put(e, customFieldObject);
 				log.info("newIssueType - found customField : " + e.getName() + " / type : " + e.getType());
 			}
-
 
 			//Map Screens to Transitions
 
@@ -302,8 +300,8 @@ public class JiraObjectCreator {
 
 				for (CustomFieldDefinition c : e.getValue()) {
 					log.info("newIssueType - transition screen id / name : " + c.getName());
-					String customfieldId = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(c.getName()).getId();
-
+					//String customfieldId = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(c.getName()).getId();
+					String customfieldId = fieldRefs.get(c).getId();
 					if (customfieldId != null) {
 						customFieldIds.add(customfieldId);
 					} else {
@@ -369,7 +367,7 @@ public class JiraObjectCreator {
 								cd.getArgs().put(e.getKey(), e.getValue());
 							}
 						}
-						
+
 						List<ConditionDescriptor> listLonditions = conditionsDescriptor.getConditions();
 						listLonditions.add(cd);	
 
@@ -505,7 +503,7 @@ public class JiraObjectCreator {
 			log.error("generateNewMutableIssue - user null");
 			throw new Exception("User is null");
 		}
-		
+
 		log.info("generateNewMutableIssue - projectKey : " + projectKey + " / issueTypeName : " + issueTypeName + " / user : " + user.getName() + " / summary : " + summary +  " / description : " + description + " / reporter : " + reporter);
 
 		MutableIssue newIssue = ComponentAccessor.getIssueFactory().getIssue();
@@ -513,7 +511,7 @@ public class JiraObjectCreator {
 		newIssue.setIssueTypeObject(JiraObjectGetter.findIssueTypeByName(issueTypeName + Appendix.ISSUETYPE.getName()));
 		newIssue.setSummary(issueTypeName + " / " + summary);
 		newIssue.setDescription(description);
-		
+
 		//TODO Set reporter
 		//newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(username));
 		//newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(reporter));

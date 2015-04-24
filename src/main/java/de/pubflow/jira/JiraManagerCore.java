@@ -75,9 +75,10 @@ public class JiraManagerCore {
 	 * @throws IOException
 	 */
 	public static void initPubFlowProject() throws GenericEntityException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException{
+		log.info("Init");
+		
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, "Private");
-
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, 
 				PropLoader.getInstance().getProperty( "JIRABASEURL", JiraManagerCore.class, DEFAULT_JIRABASEURL));
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_BGCOLOUR, "#ffffff");
@@ -112,7 +113,6 @@ public class JiraManagerCore {
 				JiraObjectManipulator.addUserToGroup(userPubFlow, groupDataManager);
 
 				JiraManagerPlugin.user = userPubFlow;
-
 
 				//TODO fix deprecation when admin is application user by default
 				User userAdmin = ComponentAccessor.getUserManager().getUserObject("admin");
