@@ -33,6 +33,8 @@ import de.pubflow.server.services.ocn.exceptions.PubJectException;
 
 public class PangaeaMapper {
 
+	public static final String DEFAULT_PANGAEAMAPPINGFILE = "etc/PANGAEAParameterComplete.tab";
+	
 	public static Map<String,String> foundMappings = new HashMap<String, String>();
 	private StringBuilder log = new StringBuilder();
 
@@ -261,7 +263,7 @@ public class PangaeaMapper {
 
 	private void resolveDependency(PubJect leg) throws PubJectException, IOException {
 
-		FileReader input = new FileReader(PubFlowSystem.getInstance().pubflowHome + PropLoader.getInstance().getProperty("MappingFile", this.getClass(), "etc/PANGAEAParameterComplete.tab"));		
+		FileReader input = new FileReader(PubFlowSystem.getInstance().pubflowHome + PropLoader.getInstance().getProperty("PANGAEAMAPPINGFILE", this.getClass(), DEFAULT_PANGAEAMAPPINGFILE));		
 
 		BufferedReader bufRead = new BufferedReader(input);
 

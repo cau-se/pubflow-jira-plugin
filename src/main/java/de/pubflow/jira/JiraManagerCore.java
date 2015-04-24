@@ -31,6 +31,7 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
+import de.pubflow.server.common.properties.PropLoader;
 import de.pubflow.server.core.jira.JiraConnector;
 import de.pubflow.server.core.workflow.WorkflowMessage;
 
@@ -55,6 +56,8 @@ import de.pubflow.server.core.workflow.WorkflowMessage;
 
 public class JiraManagerCore {
 
+	public static final String DEFAULT_JIRABASEURL = "http://maui.se.informatik.uni-kiel.de:38080/jira/";
+	
 	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
 	//public static List<IssueType> issueTypes = new LinkedList<IssueType>();
 
@@ -74,7 +77,9 @@ public class JiraManagerCore {
 	public static void initPubFlowProject() throws GenericEntityException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException{
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, "Private");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, "http://maui.se.informatik.uni-kiel.de:38080/jira/");
+
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, 
+				PropLoader.getInstance().getProperty( "JIRABASEURL", JiraManagerCore.class, DEFAULT_JIRABASEURL));
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_BGCOLOUR, "#ffffff");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, "#dedede");
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, "#03030d");		
@@ -90,7 +95,7 @@ public class JiraManagerCore {
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, "#3b73af");
 
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, "http://www.pubflow.uni-kiel.de/en/de/logo-pubflow/@@images/image/mini");
-		
+
 		//TODO: Set mail settings automatically
 
 		try {
@@ -184,7 +189,7 @@ public class JiraManagerCore {
 				wm.setType(WFType.BPMN2);
 				JiraConnector.getInstance().compute(wm);
 			}
-			
+
 		} catch (Exception e) {
 			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			// TODO Auto-generated catch block

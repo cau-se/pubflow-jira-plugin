@@ -74,13 +74,9 @@ public class WorkflowEntity implements Serializable{
 	 * @return Map with keys path and bpmn2 
 	 * @throws IOException
 	 */
-	public WorkflowLocationInformation writeToTempFS() throws IOException{
+	public WorkflowLocationInformation writeToTempFS() throws IOException{;
 
-		String pathProb = "";
-
-		pathProb = PropLoader.getInstance().getProperty("path", this.getClass(), FSStorageAdapter.DEFAULT_FS_STORAGE_PATH);
-
-		String path = pathProb + "/Temp/" + workflowName;
+		String path = FSStorageAdapter.getStoragePath() + "/Temp/" + workflowName;
 
 		int i;
 		File f;

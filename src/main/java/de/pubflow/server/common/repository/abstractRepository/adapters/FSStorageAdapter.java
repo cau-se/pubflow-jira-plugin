@@ -14,17 +14,17 @@ import de.pubflow.server.common.properties.PropLoader;
 public class FSStorageAdapter extends StorageAdapter {
 
 	/** DEFAULT PROPERTIES **/
-	public static final String DEFAULT_FS_STORAGE_PATH = "etc/";
+	public static final String DEFAULT_FSSTORAGEPATH = "etc/";
 
-	private String FS_STORAGE_PATH;
+	private static String storagePath = PubFlowSystem.getInstance().pubflowHome + PropLoader.getInstance().getProperty("FSSTORAGEPATH", FSStorageAdapter.class, DEFAULT_FSSTORAGEPATH);
 
-	public FSStorageAdapter(){
-		FS_STORAGE_PATH = PubFlowSystem.getInstance().pubflowHome + PropLoader.getInstance().getProperty("path", this.getClass(), DEFAULT_FS_STORAGE_PATH);
+	public static String getStoragePath() {
+		return storagePath;
 	}
 
 	protected Object onRestore(long id) throws IOException {
 
-		FileInputStream fin = new FileInputStream(FS_STORAGE_PATH + "FSStorageAdapter/" + id + ".pub");
+		FileInputStream fin = new FileInputStream(storagePath + "FSStorageAdapter/" + id + ".pub");
 		ObjectInputStream oos = new ObjectInputStream(fin);
 		ObjectEntity oe;
 
@@ -48,14 +48,14 @@ public class FSStorageAdapter extends StorageAdapter {
 
 	protected void onUpdate(ObjectEntity o) throws IOException {
 
-		FileOutputStream fout = new FileOutputStream(FS_STORAGE_PATH + "FSStorageAdapter/" +  o.getId() + ".pub");
+		FileOutputStream fout = new FileOutputStream(storagePath + "FSStorageAdapter/" +  o.getId() + ".pub");
 		ObjectOutputStream oos = new ObjectOutputStream(fout);
 		oos.writeObject(o);
 		oos.close();	
 	}
 
 	protected void onDelete(long id) throws IOException {
-		File fin = new File(FS_STORAGE_PATH + "FSStorageAdapter/" + id + ".pub");
+		File fin = new File(storagePath + "FSStorageAdapter/" + id + ".pub");
 		fin.delete();
 	}
 
