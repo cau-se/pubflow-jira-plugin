@@ -3,7 +3,7 @@ package de.pubflow.server.core.workflow;
 import java.util.List;
 
 import de.pubflow.server.common.entity.workflow.PubFlow;
-import de.pubflow.server.common.entity.workflow.WFParameterList;
+import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.exceptions.WFException;
 
@@ -24,7 +24,7 @@ public abstract class WorkflowEngine implements Runnable{
 	 * @param params (WFParameter ...) : The list of the parameters needed by the Workflow
 	 * @throws WFException
 	 */
-	public abstract void setParams(WFParameterList params) throws WFException;
+	public abstract void setParams(List<WFParameter> params) throws WFException;
 	
 	/**
 	 * Method to undeploy a deployed pubflow

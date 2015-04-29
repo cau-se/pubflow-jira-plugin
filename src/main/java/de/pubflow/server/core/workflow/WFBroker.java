@@ -2,6 +2,7 @@ package de.pubflow.server.core.workflow;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import de.pubflow.server.common.entity.WorkflowEntity;
 import de.pubflow.server.common.entity.workflow.JBPMPubflow;
 import de.pubflow.server.common.entity.workflow.PubFlow;
-import de.pubflow.server.common.entity.workflow.WFParameterList;
+import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.repository.WorkflowProvider;
@@ -99,7 +100,7 @@ public class WFBroker {
 		try {
 			myLogger.info("Deploying WF");
 			engine.deployWF(myWF);
-			WFParameterList params = wm.getParameters();
+			List<WFParameter> params = wm.getParameters();
 
 			if (params!=null){
 				myLogger.info("Parameter found ...");

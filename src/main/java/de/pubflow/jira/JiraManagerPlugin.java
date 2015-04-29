@@ -1,17 +1,12 @@
 package de.pubflow.jira;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
@@ -19,7 +14,6 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.XMLEvent;
 
-import org.ofbiz.core.entity.GenericEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -35,14 +29,12 @@ import com.atlassian.jira.event.type.EventType;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.plugin.event.events.PluginModuleEnabledEvent;
 
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.core.jira.JiraConnector;
 import de.pubflow.server.core.workflow.WorkflowMessage;
 
@@ -58,9 +50,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
 	public static StatusManager statusManager;
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("PubFlow");
-
 	public static final SecureRandom secureRandom = new SecureRandom();
-
 
 	/**
 	 * Constructor.
@@ -76,22 +66,6 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		JiraManagerPlugin.eventPublisher = eventPublisher;
 	}
 
-	/**
-	 * @param event
-	 */
-	@EventListener
-	public void init(PluginModuleEnabledEvent event) {
-		try {
-			JiraManagerCore.initPubFlowProject();
-		} catch (KeyManagementException | UnrecoverableKeyException
-				| GenericEntityException | NoSuchAlgorithmException
-				| KeyStoreException | CertificateException | IOException e1) {
-			// TODO Auto-generated catch block
-			log.error(e1.getLocalizedMessage() + " " + e1.getCause());
-			e1.printStackTrace();
-		}
-		user = JiraObjectGetter.getUserByName("PubFlow");
-	}
 
 	/**
 	 * @param resourceName
@@ -152,7 +126,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 
 			try {
 				WorkflowMessage wm = new WorkflowMessage();
-				WFParameterList wfpm = new WFParameterList();				
+				List<WFParameter> wfpm = new LinkedList<WFParameter>();				
 
 				for (Entry<String, String> e : msg.getValues().entrySet()) {
 					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
@@ -219,7 +193,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 							e1.printStackTrace();
 						}
 						break;
-						default: break;
+					default: break;
 					}
 				}
 			}

@@ -1,6 +1,8 @@
 package de.pubflow.server.common.enumeration;
 
-public enum WFState {
+import java.io.Serializable;
+
+public enum WFState implements Serializable{
 
 	READY,
 	STARTED,

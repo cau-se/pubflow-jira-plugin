@@ -18,7 +18,6 @@ import de.pubflow.server.common.entity.workflow.JBPMPubflow;
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.PubFlow;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.exceptions.WFOperationNotSupported;
@@ -27,7 +26,7 @@ import de.pubflow.server.core.workflow.WorkflowEngine;
 public class JBPMEngine extends WorkflowEngine {
 
 	private JBPMPubflow myWF;
-	WFParameterList parameter;
+	List<WFParameter> parameter;
 	static Logger myLogger;
 	private ProcessInstance processInstance = null;
 	private KnowledgeBase kbase= null;
@@ -59,7 +58,7 @@ public class JBPMEngine extends WorkflowEngine {
 	/**
 	 * @return the parameter
 	 */
-	public synchronized WFParameterList getParameter() {
+	public synchronized List<WFParameter> getParameter() {
 		return parameter;
 	}
 
@@ -68,7 +67,7 @@ public class JBPMEngine extends WorkflowEngine {
 	/**
 	 * @param parameter the parameter to set
 	 */
-	public synchronized void setParameter(WFParameterList parameter) {
+	public synchronized void setParameter(List<WFParameter> parameter) {
 		this.parameter = parameter;
 	}
 
@@ -162,43 +161,43 @@ public class JBPMEngine extends WorkflowEngine {
 	private void runWF() throws Exception
 	{
 		myLogger.info("Trying to start workflow: "+myWF.getWFID());
-		WFParameterList params = parameter;
+		List<WFParameter> wfParameters = parameter;
 		ProcessInstance instance = null;
 		try{
 			myLogger.info("Creating Knowledgebase ...");
 			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 			myLogger.info("Setting process parameter");
-			for(WFParameter wfParam : params.getParameterList()){
+			for(WFParameter wfParameter : wfParameters){
 
 				//set the parameter name to lower case, remove all spaces and the workflow appendix 
-				String key = wfParam.getKey().replace(" ", "").toLowerCase();
+				String key = wfParameter.getKey().replace(" ", "").toLowerCase();
 
 				if(key.contains("_")){
 					key = key.substring(0, (key.indexOf("_")));
 				}
 
-				ParameterType payloadClazz = wfParam.getPayloadClazz();
+				ParameterType payloadClazz = wfParameter.getPayloadClazz();
 
 				try{
 					
 				switch (payloadClazz) {
 				case INTEGER:
-					int valueI = ((Integer)wfParam.getValue()).intValue();
+					int valueI = ((Integer)wfParameter.getValue()).intValue();
 					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueI+"<<");
 					ksession.setGlobal(key, valueI);
 					break;
 				case STRING:
-					String valueS = (String) wfParam.getValue();
+					String valueS = (String) wfParameter.getValue();
 					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueS+"<<");
 					ksession.setGlobal(key, valueS);
 					break;
 				case DOUBLE:
-					double valueD = ((Double)wfParam.getValue()).doubleValue();
+					double valueD = ((Double)wfParameter.getValue()).doubleValue();
 					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueD+"<<");
 					ksession.setGlobal(key, valueD);
 					break;
 				case LONG:
-					long valueL = ((Long)wfParam.getValue()).longValue();
+					long valueL = ((Long)wfParameter.getValue()).longValue();
 					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueL+"<<");
 					ksession.setGlobal(key, valueL);
 					break;
@@ -245,7 +244,7 @@ public class JBPMEngine extends WorkflowEngine {
 	}
 
 	@Override
-	public void setParams(WFParameterList params) throws WFException {
+	public void setParams(List<WFParameter> params) throws WFException {
 		parameter = params;
 
 	}

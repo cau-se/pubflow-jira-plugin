@@ -2,13 +2,15 @@ package de.pubflow.server.core.jira;
 
 import it.sauronsoftware.cron4j.Scheduler;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.core.scheduling.PubFlowJob;
 import de.pubflow.server.core.workflow.WFBroker;
@@ -45,7 +47,7 @@ public class JiraConnector {
 	public static void main (String[] args) throws Exception{
 		WorkflowMessage wm = new WorkflowMessage();
 		wm.setWorkflowID("de.pubflow.OCN");
-		WFParameterList wpl = new WFParameterList();
+		List<WFParameter> wpl = new LinkedList<WFParameter>();
 		WFParameter wp1 = new WFParameter("issueKey", "PUB-3");
 		WFParameter wp2 = new WFParameter("workflowName", "OCN");		
 		WFParameter wp3 = new WFParameter("Leg ID_OCN", "s");
@@ -65,13 +67,13 @@ public class JiraConnector {
 	 */
 	public void compute(WorkflowMessage msg) {
 		myLogger.info("Compute");
-		
+
 		String quartzCron = "";
 
-		WFParameterList parameters = msg.getParameters();
-		WFParameterList filteredParameters = new WFParameterList();
+		List<WFParameter> parameters = msg.getParameters();
+		List<WFParameter> filteredParameters = new LinkedList<WFParameter>();
 
-		for(WFParameter parameter : parameters.getParameterList()){ 
+		for(WFParameter parameter : parameters){ 
 			myLogger.info(parameter.getKey() + " : " + parameter.getValue());
 			String key = parameter.getKey();
 
@@ -119,40 +121,22 @@ public class JiraConnector {
 
 		msg.setParameters(filteredParameters);
 
+		if(!quartzCron.equals("")){		
+			myLogger.info("Scheduling new job");			
+			final WorkflowMessage schedulerMsg = msg;
+			Scheduler s = new Scheduler();
 
-//		JiraSchedulerFactory fy = new JiraSchedulerFactory(); 
-//
-//		try {
-//
-			if(!quartzCron.equals("")){
-				myLogger.info("Scheduling new job");			
+			s.schedule(quartzCron, new Runnable() {					
+				public void run() {
+					PubFlowJob.execute(schedulerMsg);
+				}
+			});
+			s.start();
 
-				final WorkflowMessage schedulerMsg = msg;
-				Scheduler s = new Scheduler();
-				
-				s.schedule(quartzCron, new Runnable() {					
-					public void run() {
-						PubFlowJob.execute(schedulerMsg);
-					}
-				});
-				
-				s.start();
-//			}else if(quartzMillis > System.currentTimeMillis()){
-//				JobDetail job = new JobDetail();
-//				job.setJobClass(PubFlowJob.class);
-//				job.getJobDataMap().put("msg", msg);
-//				job.setName(msg.getWorkflowID() + System.currentTimeMillis());
-//				job.setDurability(true);
-//				
-//				Trigger trigger = null;
-//				//trigger.setStartTime(new Date(quartzMillis));
-//				trigger.setName(msg.getWorkflowID() + System.currentTimeMillis());
-//				fy.getScheduler().scheduleJob(job, trigger);
-//				
-			}else{
-				myLogger.info("Leaving JiraConnector");			
-				WFBroker.getInstance().receiveWFCall(msg);
-			}
-			
+		}else{
+			myLogger.info("Leaving JiraConnector");			
+			WFBroker.getInstance().receiveWFCall(msg);
+		}
+
 	}
 }

@@ -2,10 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<name>de.pubflow.jira</name>
+	<name>PubFlow Jira Plugin</name>
 	<groupId>de.pubflow</groupId>
 	<artifactId>jira</artifactId>
 	<version>1.0-SNAPSHOT</version>
+	<description></description>
+	<organization>
+	<name>Christian-Albrechts-Universität zu Kiel - Arbeitsgruppe Software Engineering</name>
+	<url>http://www.pubflow.de</url>
+	</organization>
+	
 	<packaging>atlassian-plugin</packaging>
 	<url>http://maven.apache.org</url>
 	<modelVersion>4.0.0</modelVersion>

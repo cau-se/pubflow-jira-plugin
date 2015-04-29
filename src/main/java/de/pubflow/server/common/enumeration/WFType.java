@@ -1,6 +1,8 @@
 package de.pubflow.server.common.enumeration;
 
-public enum WFType {
+import java.io.Serializable;
+
+public enum WFType implements Serializable{
 
 	BPEL,
 	BPMN2;

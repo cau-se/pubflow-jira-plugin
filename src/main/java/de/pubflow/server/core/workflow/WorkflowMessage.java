@@ -1,22 +1,29 @@
 package de.pubflow.server.core.workflow;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import de.pubflow.server.common.entity.User;
-import de.pubflow.server.common.entity.workflow.WFParameterList;
+import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFState;
 import de.pubflow.server.common.enumeration.WFType;
+import de.pubflow.server.common.repository.abstractRepository.misc.IDPool;
 
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
-public class WorkflowMessage{
+public class WorkflowMessage implements Serializable{
 
+	private static final long serialVersionUID = -4931074023209271264L;
+
+	protected long instanceId;
 	protected String workflowID = "";
 	protected WFType type = null;
 	protected WFState state = null;
-	protected WFParameterList parameters = null;
+	protected List<WFParameter> parameters = null;
 	protected User user = null;
 	protected boolean userAuthenticated = false;
 	//protected UserRole userRole = null;
@@ -29,6 +36,19 @@ public class WorkflowMessage{
 	protected String comments = "empty";
 	protected long pubflowVersion = -1;
 	//protected long wfEngine = -1;
+
+
+	public WorkflowMessage() throws IOException {
+		instanceId = IDPool.getUniqueID();
+	}
+
+	public long getInstanceId() {
+		return instanceId;
+	}
+
+	public void setInstanceId(long instanceId) {
+		this.instanceId = instanceId;
+	}
 
 	/**
 	 * @return the workflowID
@@ -79,14 +99,14 @@ public class WorkflowMessage{
 	 * @return the wfparams
 	 */
 	@XmlElement(name="Parameters")
-	public synchronized WFParameterList getParameters() {
+	public synchronized List<WFParameter> getParameters() {
 		return parameters;
 	}
 
 	/**
 	 * @param parameters the wfparams to set
 	 */
-	public synchronized void setParameters(WFParameterList parameters) {
+	public synchronized void setParameters(List<WFParameter> parameters) {
 		this.parameters = parameters;
 	}
 

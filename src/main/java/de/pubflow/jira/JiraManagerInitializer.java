@@ -14,24 +14,30 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericEntityException;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.event.api.EventListener;
+import com.atlassian.event.api.EventPublisher;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.plugin.event.events.PluginEnabledEvent;
 
 import de.pubflow.jira.accessors.JiraObjectCreator;
+import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.ConditionDefinition;
 import de.pubflow.jira.misc.ConditionDefinition.ConditionDefinitionType;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.common.entity.workflow.WFParameterList;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.properties.PropLoader;
+import de.pubflow.server.common.repository.ScheduledWorkflowProvider;
 import de.pubflow.server.core.jira.JiraConnector;
 import de.pubflow.server.core.workflow.WorkflowMessage;
 
@@ -54,17 +60,13 @@ import de.pubflow.server.core.workflow.WorkflowMessage;
  *
  */
 
-public class JiraManagerCore {
+public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 
-	public static final String DEFAULT_JIRABASEURL = "http://maui.se.informatik.uni-kiel.de:38080/jira/";
-	
 	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
-	//public static List<IssueType> issueTypes = new LinkedList<IssueType>();
-
-
-	private static Logger log = Logger.getLogger(JiraManagerCore.class.getName());
-
-
+	private static Logger log = Logger.getLogger(JiraManagerInitializer.class.getName());
+	private static boolean inited = false;
+	private static EventPublisher eventPublisher;
+	
 	/**
 	 * @throws GenericEntityException
 	 * @throws KeyManagementException
@@ -76,26 +78,42 @@ public class JiraManagerCore {
 	 */
 	public static void initPubFlowProject() throws GenericEntityException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException{
 		log.info("Init");
-		
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, "PubFlow Jira");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, "Private");
+	
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, 
-				PropLoader.getInstance().getProperty( "JIRABASEURL", JiraManagerCore.class, DEFAULT_JIRABASEURL));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_BGCOLOUR, "#ffffff");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, "#dedede");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, "#03030d");		
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTCOLOUR, "#292929");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR, "#ffffff");		
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_BGCOLOUR, "#00015e");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_SEPARATOR, "#ffffff");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_TEXTCOLOUR, "#ffffff");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_BASEBGCOLOUR, "#00007f");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_TEXTCOLOUR, "#ffffff");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, "#3b73af");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, "#292929");
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, "#3b73af");
+				PropLoader.getInstance().getProperty( "JIRA_BASEURL", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, 
+				PropLoader.getInstance().getProperty("JIRA_MODE", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, 
+				PropLoader.getInstance().getProperty("JIRA_TITLE", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_BGCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_BGCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_HIGHLIGHTCOLOR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_SEPARATOR_BGCOLOR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_TEXTCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_BGCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_MENU_BGCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_SEPARATOR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_MENU_SEPARATOR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_TEXTCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_MENU_TEXTCOLOUR", JiraManagerInitializer.class));	
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_BASEBGCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_HERO_BUTTON_BASEBGCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_TEXTCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_HERO_BUTTON_TEXTCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_ACTIVE_LINKCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_HEADINGCOLOUR", JiraManagerInitializer.class));		
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_LINKCOLOUR", JiraManagerInitializer.class));		
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, 
+				PropLoader.getInstance().getProperty("JIRA_LF_LOGO_URL", JiraManagerInitializer.class));		
 
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, "http://www.pubflow.uni-kiel.de/en/de/logo-pubflow/@@images/image/mini");
 
 		//TODO: Set mail settings automatically
 
@@ -177,17 +195,17 @@ public class JiraManagerCore {
 				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>());
 				JiraObjectCreator.createIssueType("PUB", "CVOO", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
 
-
-				WorkflowMessage wm = new WorkflowMessage();
-				wm.setWorkflowID("de.pubflow.EPRINTS");
-				WFParameterList wpl = new WFParameterList();
+				WorkflowMessage eprintsWfMsg = new WorkflowMessage();
+				eprintsWfMsg.setWorkflowID("de.pubflow.EPRINTS");
+				List<WFParameter> wpl = new LinkedList<WFParameter>();
 				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
-				WFParameter wp2 = new WFParameter("quartzCron", "*/30 * * * *");		
+				WFParameter wp2 = new WFParameter("quartzCron", "* * * * *");		
 				wpl.add(wp1);
 				wpl.add(wp2);
-				wm.setParameters(wpl);
-				wm.setType(WFType.BPMN2);
-				JiraConnector.getInstance().compute(wm);
+				eprintsWfMsg.setParameters(wpl);
+				eprintsWfMsg.setType(WFType.BPMN2);
+
+				ScheduledWorkflowProvider.getInstance().addEntry(eprintsWfMsg);
 			}
 
 		} catch (Exception e) {
@@ -196,4 +214,51 @@ public class JiraManagerCore {
 			e.printStackTrace();
 		}
 	}
+
+	@EventListener
+	public void init(PluginEnabledEvent event) {
+		if(inited == false){
+			if(event.getPlugin().getKey().equals("de.pubflow.jira")){
+				if(PropLoader.getInstance().getProperty("INITED", this.getClass()).equals("false")){
+					try {
+						JiraManagerInitializer.initPubFlowProject();
+						inited = true;
+					} catch (KeyManagementException | UnrecoverableKeyException
+							| GenericEntityException | NoSuchAlgorithmException
+							| KeyStoreException | CertificateException | IOException e1) {
+						log.error(e1.getLocalizedMessage() + " " + e1.getCause());
+						e1.printStackTrace();
+					}
+					JiraManagerPlugin.user = JiraObjectGetter.getUserByName("PubFlow");
+					PropLoader.getInstance().setProperty("INITED", this.getClass(), "true");
+				}
+
+				List<WorkflowMessage> scheduledWfs = ScheduledWorkflowProvider.getInstance().getAllScheduledWorkflows();
+				for(WorkflowMessage wm : scheduledWfs){
+					JiraConnector.getInstance().compute(wm);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Called when the plugin has been enabled.
+	 * @throws Exception
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// register ourselves with the EventPublisher
+		eventPublisher.register(this);
+	}
+
+	/**
+	 * Called when the plugin is being disabled or removed.
+	 * @throws Exception
+	 */
+	@Override
+	public void destroy() throws Exception {
+		// unregister ourselves with the EventPublisher
+		eventPublisher.unregister(this);
+	}
+
 }

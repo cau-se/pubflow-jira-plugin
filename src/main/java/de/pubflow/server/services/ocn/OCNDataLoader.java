@@ -33,11 +33,6 @@ import de.pubflow.server.services.ocn.entity.abstractClass.PubJect;
  *
  */
 public class OCNDataLoader {
-	
-	public static final String DEFAULT_DBURL = "jdbc:postgresql://localhost:5433/ocn?schema=ocn";
-	public static final String DEFAULT_DBUSER = "secret";
-	public static final String DEFAULT_DBPASSWORD = "secret";
-	
 	static Logger myLogger = LoggerFactory.getLogger(OCNDataLoader.class);
 
 	public ComMap getData(ComMap data, int instanceId) throws Exception {
@@ -46,9 +41,9 @@ public class OCNDataLoader {
 		long millis = System.currentTimeMillis();
 
 		try{
-			String connectionURL = props.getProperty("DBURL", this.getClass(), DEFAULT_DBURL);  //$NON-NLS-2$
-			String user = PropLoader.getInstance().getProperty("DBUSER", this.getClass(), DEFAULT_DBUSER);  //$NON-NLS-2$
-			String password = PropLoader.getInstance().getProperty("DBPASSWORD", this.getClass(), DEFAULT_DBPASSWORD);  //$NON-NLS-2$
+			String connectionURL = props.getProperty("DBURL", this.getClass());  //$NON-NLS-2$
+			String user = PropLoader.getInstance().getProperty("DBUSER", this.getClass());  //$NON-NLS-2$
+			String password = PropLoader.getInstance().getProperty("DBPASSWORD", this.getClass());  //$NON-NLS-2$
 
 			StringBuilder log = new StringBuilder();
 

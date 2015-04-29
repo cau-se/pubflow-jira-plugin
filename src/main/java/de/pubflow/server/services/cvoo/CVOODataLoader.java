@@ -34,10 +34,6 @@ import de.pubflow.server.services.ocn.entity.abstractClass.PubJect;
 public class CVOODataLoader {
 
 	static Logger myLogger = LoggerFactory.getLogger(CVOODataLoader.class);
-
-	public final String DEFAULT_DBURL = "jdbc:postgresql://localhost:5433/bottleocn?schema=bottleocn";
-	public final String DEFAULT_DBUSER = "secret";
-	public final String DEFAULT_DBPASSWORD = "secret";
 	
 	public ComMap getData(ComMap data, int instanceId) throws Exception {
 		String legId = data.get("de.pubflow.services.cvoo.PluginAllocator.getData.legid");	
@@ -45,9 +41,9 @@ public class CVOODataLoader {
 		long millis = System.currentTimeMillis();
 
 		try{
-			String connectionURL = props.getProperty("DBURL", this.getClass(), DEFAULT_DBURL);  //$NON-NLS-2$
-			String user = PropLoader.getInstance().getProperty("DBUSER", this.getClass(), DEFAULT_DBUSER);  //$NON-NLS-2$
-			String password = PropLoader.getInstance().getProperty("DBPASSWORD", this.getClass(), DEFAULT_DBPASSWORD);  //$NON-NLS-2$
+			String connectionURL = props.getProperty("DBURL", this.getClass());  //$NON-NLS-2$
+			String user = PropLoader.getInstance().getProperty("DBUSER", this.getClass());  //$NON-NLS-2$
+			String password = PropLoader.getInstance().getProperty("DBPASSWORD", this.getClass());  //$NON-NLS-2$
 
 			StringBuilder log = new StringBuilder();
 
