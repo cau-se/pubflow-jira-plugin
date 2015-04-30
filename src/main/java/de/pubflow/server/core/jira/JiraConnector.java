@@ -13,7 +13,7 @@ import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.core.scheduling.PubFlowJob;
-import de.pubflow.server.core.workflow.WFBroker;
+import de.pubflow.server.core.workflow.WorkflowBroker;
 import de.pubflow.server.core.workflow.WorkflowMessage;
 
 public class JiraConnector {
@@ -135,7 +135,7 @@ public class JiraConnector {
 
 		}else{
 			myLogger.info("Leaving JiraConnector");			
-			WFBroker.getInstance().receiveWFCall(msg);
+			WorkflowBroker.getInstance().receiveWFCall(msg);
 		}
 
 	}

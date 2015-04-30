@@ -67,6 +67,10 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 	private static boolean inited = false;
 	private static EventPublisher eventPublisher;
 	
+	public JiraManagerInitializer(EventPublisher eventPublisher) {
+		JiraManagerInitializer.eventPublisher = eventPublisher;
+	}
+	
 	/**
 	 * @throws GenericEntityException
 	 * @throws KeyManagementException
@@ -204,7 +208,8 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				wpl.add(wp2);
 				eprintsWfMsg.setParameters(wpl);
 				eprintsWfMsg.setType(WFType.BPMN2);
-
+				
+				ScheduledWorkflowProvider.getInstance().clear();
 				ScheduledWorkflowProvider.getInstance().addEntry(eprintsWfMsg);
 			}
 
@@ -218,6 +223,8 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 	@EventListener
 	public void init(PluginEnabledEvent event) {
 		if(inited == false){
+			JiraManagerPlugin.user = JiraObjectGetter.getUserByName("PubFlow");
+
 			if(event.getPlugin().getKey().equals("de.pubflow.jira")){
 				if(PropLoader.getInstance().getProperty("INITED", this.getClass()).equals("false")){
 					try {
@@ -229,7 +236,6 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 						log.error(e1.getLocalizedMessage() + " " + e1.getCause());
 						e1.printStackTrace();
 					}
-					JiraManagerPlugin.user = JiraObjectGetter.getUserByName("PubFlow");
 					PropLoader.getInstance().setProperty("INITED", this.getClass(), "true");
 				}
 
@@ -240,7 +246,7 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 			}
 		}
 	}
-
+	
 	/**
 	 * Called when the plugin has been enabled.
 	 * @throws Exception
@@ -260,5 +266,6 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 		// unregister ourselves with the EventPublisher
 		eventPublisher.unregister(this);
 	}
+
 
 }

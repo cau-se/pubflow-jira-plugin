@@ -44,8 +44,10 @@ public abstract class BasicProvider<T> implements IProvider<T> {
 		}
 	}
 
+	
+	
 	public void clear() {
-		// TODO Auto-generated method stub
+		br.removeAll();
 	}
 
 	public long addEntry(T o) {
