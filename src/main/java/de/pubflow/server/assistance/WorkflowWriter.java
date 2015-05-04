@@ -13,6 +13,9 @@ public class WorkflowWriter {
 
 	public static void main(String[] args) {		
 
+		WorkflowProvider pro = WorkflowProvider.getInstance(); 
+		pro.clear();
+		
 		System.out.println("STARTING");
 		WorkflowEntity wfOCN = new WorkflowEntity();
 		wfOCN.setType(WFType.BPMN2);
@@ -25,11 +28,8 @@ public class WorkflowWriter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		WorkflowProvider pro = WorkflowProvider.getInstance(); 
 		pro.addEntry(wfOCN);
 
-		System.out.println("STARTING");
 		WorkflowEntity wfEPRINTS = new WorkflowEntity();
 		wfEPRINTS.setType(WFType.BPMN2);
 		wfEPRINTS.setWorkflowId("de.pubflow.EPRINTS");
@@ -41,8 +41,20 @@ public class WorkflowWriter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		pro.addEntry(wfEPRINTS);
+		
+		WorkflowEntity wfCVOO = new WorkflowEntity();
+		wfCVOO.setType(WFType.BPMN2);
+		wfCVOO.setWorkflowId("de.pubflow.CVOO");
+		wfCVOO.setWorkflowName("CVOO");
+
+		try {
+			wfCVOO.setgBpmn(new File("CVOO.bpmn"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		pro.addEntry(wfCVOO);
 		
 		List<WorkflowEntity> wfList = pro.getAllEntries();
 

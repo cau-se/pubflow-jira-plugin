@@ -214,7 +214,7 @@ public class JBPMEngine extends WorkflowEngine {
 
 			instance = ksession.startProcess(myWF.getWFID());
 
-			myLogger.info("Workflow executed sucessfuly");
+			myLogger.info("Workflow executed sucessfully");
 		}
 		catch (Exception ex){
 			myLogger.error("Couldn't start workflow");

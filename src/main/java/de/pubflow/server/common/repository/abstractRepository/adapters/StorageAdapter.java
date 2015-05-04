@@ -31,10 +31,9 @@ public abstract class StorageAdapter {
 					if(entry.getValue().equals(EObjectModification.MODIFIED)){
 						if(oe.getId() == 0){
 							oe.setId(IDPool.getUniqueID());
-							onUpdate(oe);
-						}else{
-							onUpdate(oe);
 						}
+						onUpdate(oe);
+
 
 					}else{
 						throw new IOException("Object is not serializable");

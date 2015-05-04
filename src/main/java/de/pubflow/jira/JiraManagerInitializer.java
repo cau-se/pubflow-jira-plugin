@@ -203,7 +203,7 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				eprintsWfMsg.setWorkflowID("de.pubflow.EPRINTS");
 				List<WFParameter> wpl = new LinkedList<WFParameter>();
 				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
-				WFParameter wp2 = new WFParameter("quartzCron", "* * * * *");		
+				WFParameter wp2 = new WFParameter("quartzCron", "*/60 * * * *");		
 				wpl.add(wp1);
 				wpl.add(wp2);
 				eprintsWfMsg.setParameters(wpl);

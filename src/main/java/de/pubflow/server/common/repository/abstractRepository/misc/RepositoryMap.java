@@ -40,6 +40,7 @@ public class RepositoryMap {
 			if(oe.getId() == id){
 				oe.setObject(o);
 				success = true;
+				break;
 			}
 		}
 		
@@ -51,7 +52,8 @@ public class RepositoryMap {
 	public void remove(long l) throws IOException{		
 		for(ObjectEntity entry : entries){
 			if(entry.getId() == l){
-				entry.setObject(null);
+				entries.remove(entry);
+				break;
 			}
 		}
 	}

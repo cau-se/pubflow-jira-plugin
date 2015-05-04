@@ -55,7 +55,7 @@ public abstract class BasicProvider<T> implements IProvider<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public  T getEntry(long id) {
+	public T getEntry(long id) {
 		return (T)br.get(id);
 
 	}

@@ -78,15 +78,7 @@ public class BasicRepository {
 
 	public void removeAll(){
 		for(long l : getAllIds()){
-			try {
-				repositoryMap.remove(l);
-				modifiedEntries.put(l, EObjectModification.DELETED);
-				persist();
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
+			remove(l);
 		}
 	}
 	

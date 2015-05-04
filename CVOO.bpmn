@@ -14,22 +14,23 @@
 
   <itemDefinition id="ItemDefinition_22" />
 
-  <process processType="Private" isExecutable="true" id="de.pubflow.OCN" name="OCN" tns:packageName="de.pubflow" tns:version="1" >
+  <process processType="Private" isExecutable="true" id="de.pubflow.CVOO" name="CVOO" tns:packageName="de.pubflow" tns:version="1" >
 
     <extensionElements>
+     <tns:import name="de.pubflow.server.services.cvoo.PluginAllocator" />
      <tns:import name="de.pubflow.server.services.ocn.PluginAllocator" />
      <tns:import name="de.pubflow.server.core.jira.ComMap" />
-     <tns:global identifier="author" type="String" />
      <tns:global identifier="project" type="String" />
-     <tns:global identifier="legid" type="String" />
+     <tns:global identifier="author" type="String" />
      <tns:global identifier="issuekey" type="String" />
+     <tns:global identifier="legid" type="String" />
      <tns:global identifier="source" type="String" />
      <tns:global identifier="status" type="String" />
      <tns:global identifier="targetpath" type="String" />
      <tns:global identifier="filename" type="String" />
-     <tns:global identifier="pid" type="String" />
-     <tns:global identifier="login" type="String" />
      <tns:global identifier="topology" type="String" />
+     <tns:global identifier="login" type="String" />
+     <tns:global identifier="pid" type="String" />
      <tns:global identifier="reference" type="String" />
      <tns:global identifier="legcomment" type="String" />
     </extensionElements>
@@ -41,9 +42,9 @@
     <endEvent id="EndEvent_1" name="" />
     <scriptTask id="ScriptTask_2" name="Load Data from CVOO DB" scriptFormat="http://www.java.com/java" >
       <script>ComMap data = new ComMap((String)issuekey);
-data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", legid);
+data.put("de.pubflow.services.cvoo.PluginAllocator.getData.legid", legid);
 
-data = de.pubflow.server.services.ocn.PluginAllocator.getData(data);
+data = de.pubflow.server.services.cvoo.PluginAllocator.getData(data);
 
 kcontext.setVariable("tempResult", data);</script>
     </scriptTask>

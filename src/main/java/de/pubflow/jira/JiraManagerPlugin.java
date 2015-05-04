@@ -26,6 +26,7 @@ import com.atlassian.jira.config.IssueTypeManager;
 import com.atlassian.jira.config.StatusManager;
 import com.atlassian.jira.event.issue.IssueEvent;
 import com.atlassian.jira.event.type.EventType;
+import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
 import com.atlassian.jira.user.ApplicationUser;
@@ -120,9 +121,11 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 	public void onIssueEvent(IssueEvent issueEvent) {
 		InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
 
+		Issue issue = issueEvent.getIssue();
+		
 		if (
 				//(issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) && ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName() != "jira") ||
-				issueEvent.getIssue().getStatusObject().getName().equals("Data Processing by PubFlow")) {
+				issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
 
 			try {
 				WorkflowMessage wm = new WorkflowMessage();
@@ -134,7 +137,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				}
 
 				wm.setParameters(wfpm);
-				wm.setWorkflowID("de.pubflow.OCN");
+				wm.setWorkflowID("de.pubflow." + issue.getIssueTypeObject().getName());
 				JiraConnector jpmp = JiraConnector.getInstance();
 				jpmp.compute(wm);
 
@@ -147,7 +150,8 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		} else if (issueEvent.getEventTypeId().equals( EventType.ISSUE_UPDATED_ID)) {
 			//TODO
 
-		} else if (issueEvent.getIssue().getStatusObject().getName().equals("Open")) {
+		} else if (issueEvent.getIssue().getStatusObject().getName().equals("Open") && 
+				!issueEvent.getEventTypeId().equals(EventType.ISSUE_DELETED_ID)) {
 			if (ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0) {
 
 				String txtmsg = "Dear " + issueEvent.getUser().getName() + " (" + issueEvent.getUser().getName()
@@ -159,8 +163,8 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
 				JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(), new byte[]{0}, "rawdata", "txt", user);
 			} else {
-				MutableIssue issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueEvent.getIssue().getKey());
-				issue.setAssignee(issueEvent.getIssue().getReporter());
+				MutableIssue mutableIssue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueEvent.getIssue().getKey());
+				mutableIssue.setAssignee(issueEvent.getIssue().getReporter());
 			}
 		}
 	}

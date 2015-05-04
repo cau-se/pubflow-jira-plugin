@@ -13,8 +13,6 @@ import de.pubflow.server.common.properties.PropLoader;
 
 public class FSStorageAdapter extends StorageAdapter {
 
-	/** DEFAULT PROPERTIES **/
-
 	private static String storagePath = PubFlowSystem.getInstance().pubflowHome + PropLoader.getInstance().getProperty("FSSTORAGEPATH", FSStorageAdapter.class);
 
 	public static String getStoragePath() {
