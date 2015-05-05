@@ -60,12 +60,6 @@ public class ScheduledWorkflowProvider extends BasicProvider<WorkflowMessage>{
 		return swfp;
 	}
 
-	@Override
-	public long addEntry(WorkflowMessage o) {
-		long intWfRef = super.br.add(o);
-		return intWfRef;
-	}
-
 	public List<WorkflowMessage> getAllScheduledWorkflows(){
 		return super.getAllEntries();			
 	}

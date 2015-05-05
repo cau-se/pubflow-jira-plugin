@@ -11,7 +11,8 @@ import de.pubflow.server.core.workflow.WorkflowMessage;
 public class ScheduledWorkflowWriter {
 
 	public static void main(String[] args) throws Exception {		
-
+		RepoWiper.wipeRepos();
+		
 		WorkflowMessage eprintsWfMsg = new WorkflowMessage();
 		eprintsWfMsg.setWorkflowID("de.pubflow.EPRINTS");
 		List<WFParameter> wpl = new LinkedList<WFParameter>();
@@ -29,15 +30,13 @@ public class ScheduledWorkflowWriter {
 		List<WorkflowMessage> wfList = pro.getAllEntries();
 
 		System.out.println("File count : " + wfList.size());
-		for (WorkflowMessage workflowEntity : wfList) {
-			
+		for (WorkflowMessage workflowEntity : wfList) {	
 			System.out.println("-----------------------------------------------");
 			System.out.println("Instance Id : " + workflowEntity.getInstanceId());
-			System.out.println();
-			for (WFParameter e : workflowEntity.getParameters()){
-				System.out.println(e.getKey() + " : " + e.getValue());
-			}
+			System.out.println("Workflow Id : " + workflowEntity.getWorkflowID());
+			System.out.println("Workflow Parameter : " + workflowEntity.getParameters());
 		}
+		
 		System.out.println("-----------------------------------------------");
 
 	}

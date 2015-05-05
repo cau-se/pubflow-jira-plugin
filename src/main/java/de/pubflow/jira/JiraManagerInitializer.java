@@ -63,7 +63,7 @@ import de.pubflow.server.core.workflow.WorkflowMessage;
 public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 
 	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
-	private static Logger log = Logger.getLogger(JiraManagerInitializer.class.getName());
+	private static Logger log = Logger.getLogger(JiraManagerInitializer.class);
 	private static boolean inited = false;
 	private static EventPublisher eventPublisher;
 	

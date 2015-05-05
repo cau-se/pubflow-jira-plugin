@@ -53,4 +53,10 @@ public class WFParameter implements Serializable{
 	public void setKey(String key) {
 		this.key = key;
 	}
+
+	@Override
+	public String toString() {
+		return "WFParameter [key=" + key + ", payloadClazz=" + payloadClazz
+				+ ", value=" + value + "]";
+	}
 }

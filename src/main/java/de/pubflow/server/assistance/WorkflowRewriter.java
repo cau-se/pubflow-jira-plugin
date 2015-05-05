@@ -9,13 +9,16 @@ import de.pubflow.server.common.entity.WorkflowEntity;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.repository.WorkflowProvider;
 
-public class WorkflowWriter {
+public class WorkflowRewriter {
 
-	public static void main(String[] args) {		
-
+	public static void main (String[]arghs) throws Exception{
+		rewriteWorkflows();
+	}
+	
+	public static void rewriteWorkflows() throws Exception {		
 		WorkflowProvider pro = WorkflowProvider.getInstance(); 
+
 		pro.clear();
-		
 		System.out.println("STARTING");
 		WorkflowEntity wfOCN = new WorkflowEntity();
 		wfOCN.setType(WFType.BPMN2);
@@ -42,7 +45,7 @@ public class WorkflowWriter {
 			e.printStackTrace();
 		}
 		pro.addEntry(wfEPRINTS);
-		
+
 		WorkflowEntity wfCVOO = new WorkflowEntity();
 		wfCVOO.setType(WFType.BPMN2);
 		wfCVOO.setWorkflowId("de.pubflow.CVOO");
@@ -55,12 +58,12 @@ public class WorkflowWriter {
 			e.printStackTrace();
 		}
 		pro.addEntry(wfCVOO);
-		
+
 		List<WorkflowEntity> wfList = pro.getAllEntries();
 
 		System.out.println("File count : " + wfList.size());
 		for (WorkflowEntity workflowEntity : wfList) {
-			
+
 			System.out.println("-----------------------------------------------");
 			System.out.println("Workflow Id : " + workflowEntity.getWorkflowId());
 			System.out.println("Workflow Type : " + workflowEntity.getType().toString());
@@ -73,5 +76,4 @@ public class WorkflowWriter {
 		System.out.println("-----------------------------------------------");
 
 	}
-
 }

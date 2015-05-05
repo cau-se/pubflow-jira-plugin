@@ -214,7 +214,7 @@ public class CVOODataLoader {
 			m.marshal(leg, legSw);
 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString()); 
-			data.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString()); 
+			data.put("de.pubflow.services.cvoo.PluginAllocator.getData.leg", legSw.toString()); 
 			data.newJiraAttachment("debug_" + "de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString().getBytes());
 
 			data.newJiraComment(String.format("CVOODataLoader: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0)); 
