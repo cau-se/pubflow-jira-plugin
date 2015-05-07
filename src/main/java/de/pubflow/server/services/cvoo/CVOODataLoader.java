@@ -208,9 +208,7 @@ public class CVOODataLoader {
 			StringWriter legSw = new StringWriter();
 			log.append(String.format("Fetched data in %d ms.\n\n", time_samples - time_start));  //$NON-NLS-2$
 
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			m.marshal(leg, new File("/home/arl/cvoo.txt"));
-			
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);			
 			m.marshal(leg, legSw);
 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString()); 
