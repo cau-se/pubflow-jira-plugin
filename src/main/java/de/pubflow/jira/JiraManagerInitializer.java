@@ -195,7 +195,7 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				customFields.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
 				customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"141", "111"}));
 
-				JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
+//				JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
 				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>());
 				JiraObjectCreator.createIssueType("PUB", "CVOO", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
 
