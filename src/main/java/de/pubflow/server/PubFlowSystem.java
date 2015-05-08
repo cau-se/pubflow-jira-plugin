@@ -3,7 +3,6 @@ package de.pubflow.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.server.assistance.WorkflowRewriter;
 import de.pubflow.server.common.properties.PropLoader;
 import de.pubflow.server.core.jira.JiraConnector;
 

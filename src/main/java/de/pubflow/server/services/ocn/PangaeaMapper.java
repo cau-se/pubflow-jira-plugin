@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -148,32 +149,37 @@ public class PangaeaMapper {
 
 		List<PubJect> bottleList = ((Leg)leg).getList(Leg.BOTTLELIST);
 
-		for(PubJect bottle : bottleList){
-			if(lastBottle == null){	
-				lastBottle = bottle;	
+		Iterator<PubJect> bottleIterator = bottleList.iterator();
+		while(bottleIterator.hasNext()){
+			PubJect bottle = bottleIterator.next();
 
-			}else if(!bottle.getString(Bottle.STATION).equals(lastBottle.getString(Bottle.STATION))){
-				//sortieren von klein nach groß
-
-				neverSorted = false;
-				boolean sortByPressure = false;
-				System.out.println(tempList.size());
-
-
-				quicksort(tempList, 0, tempList.size() - 1, sortByPressure);
-
-				if(sortByPressure){
-					Collections.reverse(tempList);
+			if(lastBottle != null){	
+				if(!bottleIterator.hasNext()){
+					tempList.add(bottle);
 				}
+				
+				if(!bottle.getString(Bottle.STATION).equals(lastBottle.getString(Bottle.STATION)) || !bottleIterator.hasNext()){
+					//sortieren von klein nach groß
 
-				resultList.addAll(tempList);
-				tempList = new ArrayList<PubJect>();
+					neverSorted = false;
+					boolean sortByPressure = false;
+					quicksort(tempList, 0, tempList.size() - 1, sortByPressure);
+
+					if(sortByPressure){
+						Collections.reverse(tempList);
+					}
+
+					resultList.addAll(tempList);
+					tempList = new ArrayList<PubJect>();
+				}
 			}
 
-			tempList.add(bottle);
-			lastBottle = bottle;
+			if(bottleIterator.hasNext()){
+				tempList.add(bottle);
+				lastBottle = bottle;
+			}			
 		}
-		
+
 		if(neverSorted){
 			return tempList;
 		}else{

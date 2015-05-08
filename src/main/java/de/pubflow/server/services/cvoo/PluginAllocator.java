@@ -98,7 +98,7 @@ public class PluginAllocator {
 
 	public static void main(String[]a) throws Exception{
 		ComMap data = new ComMap("");
-		data.put("de.pubflow.services.cvoo.PluginAllocator.getData.legid", "321449");
+		data.put("de.pubflow.services.cvoo.PluginAllocator.getData.legid", "105");
 
 		for(Entry<String, Object> e : data.entrySet()){
 			FileWriter fw;
