@@ -148,6 +148,7 @@ public class PangaeaMapper {
 		PubJect lastBottle = null;
 
 		List<PubJect> bottleList = ((Leg)leg).getList(Leg.BOTTLELIST);
+		System.out.println(bottleList.size());
 
 		Iterator<PubJect> bottleIterator = bottleList.iterator();
 		while(bottleIterator.hasNext()){
@@ -164,6 +165,8 @@ public class PangaeaMapper {
 					neverSorted = false;
 					boolean sortByPressure = false;
 					quicksort(tempList, 0, tempList.size() - 1, sortByPressure);
+					System.out.println(tempList.size());
+					System.out.println(lastBottle.getString(Bottle.STATION));
 
 					if(sortByPressure){
 						Collections.reverse(tempList);

@@ -138,14 +138,15 @@ public class CVOODataLoader {
 
 			//Erstelle bottle- und sample-Objekte
 			while(rs.next()){
+				//Generiere bottle-Objekt aus Tabellendaten
+				bottle = PubJect.createFromResultSet(Bottle.class, Bottle.c_BOTTLETABLE, rs);
+				
 				//Prüfe ob Datensatz zu einer neuen bottle gehört
 				if(!before.equals(rs.getString(Bottle.ID))){
 					if(bottle != null){
 						if (verbose) log.append(String.format("Collected %d samples of bottle no. %s / %s \n", bottle.getList(Bottle.SAMPLELIST).size(), bottle.getString(Bottle.LABEL), bottle.getString(Bottle.STATION))); 
 						leg.addToList(Leg.BOTTLELIST, bottle);
 					}
-					//Generiere bottle-Objekt aus Tabellendaten
-					bottle = PubJect.createFromResultSet(Bottle.class, Bottle.c_BOTTLETABLE, rs);
 				}
 
 				//Generiere sample-Objekt aus Tabellendaten

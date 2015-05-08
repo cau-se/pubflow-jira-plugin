@@ -179,37 +179,36 @@ public class JBPMEngine extends WorkflowEngine {
 				ParameterType payloadClazz = wfParameter.getPayloadClazz();
 
 				try{
-					
-				switch (payloadClazz) {
-				case INTEGER:
-					int valueI = ((Integer)wfParameter.getValue()).intValue();
-					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueI+"<<");
-					ksession.setGlobal(key, valueI);
-					break;
-				case STRING:
-					String valueS = (String) wfParameter.getValue();
-					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueS+"<<");
-					ksession.setGlobal(key, valueS);
-					break;
-				case DOUBLE:
-					double valueD = ((Double)wfParameter.getValue()).doubleValue();
-					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueD+"<<");
-					ksession.setGlobal(key, valueD);
-					break;
-				case LONG:
-					long valueL = ((Long)wfParameter.getValue()).longValue();
-					myLogger.info("Setting parameter >>"+key+"<< to >>"+valueL+"<<");
-					ksession.setGlobal(key, valueL);
-					break;
-				default:
-					break;
-				}
+					switch (payloadClazz) {
+					case INTEGER:
+						int valueI = ((Integer)wfParameter.getValue()).intValue();
+						myLogger.info("Setting parameter >>"+key+"<< to >>"+valueI+"<<");
+						ksession.setGlobal(key, valueI);
+						break;
+					case STRING:
+						String valueS = (String) wfParameter.getValue();
+						myLogger.info("Setting parameter >>"+key+"<< to >>"+valueS+"<<");
+						ksession.setGlobal(key, valueS);
+						break;
+					case DOUBLE:
+						double valueD = ((Double)wfParameter.getValue()).doubleValue();
+						myLogger.info("Setting parameter >>"+key+"<< to >>"+valueD+"<<");
+						ksession.setGlobal(key, valueD);
+						break;
+					case LONG:
+						long valueL = ((Long)wfParameter.getValue()).longValue();
+						myLogger.info("Setting parameter >>"+key+"<< to >>"+valueL+"<<");
+						ksession.setGlobal(key, valueL);
+						break;
+					default:
+						break;
+					}
 				}catch(RuntimeException e){
 					e.printStackTrace();
 					Log.error(e.getMessage());
 				}
 			}
-			
+
 			myLogger.info("Starting process : " + myWF.getWFID());
 
 			instance = ksession.startProcess(myWF.getWFID());
