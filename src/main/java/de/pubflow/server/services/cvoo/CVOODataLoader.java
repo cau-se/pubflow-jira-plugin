@@ -1,6 +1,5 @@
 package de.pubflow.server.services.cvoo;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -34,7 +33,7 @@ import de.pubflow.server.services.ocn.entity.abstractClass.PubJect;
 public class CVOODataLoader {
 
 	static Logger myLogger = LoggerFactory.getLogger(CVOODataLoader.class);
-	
+
 	public ComMap getData(ComMap data, int instanceId) throws Exception {
 		String legId = data.get("de.pubflow.services.cvoo.PluginAllocator.getData.legid");	
 		PropLoader props = PropLoader.getInstance();
@@ -60,7 +59,7 @@ public class CVOODataLoader {
 
 			//Datenbankzeugs...
 			Class.forName("org.postgresql.Driver").newInstance(); 
-			
+
 			Enumeration<Driver> enu = DriverManager.getDrivers();
 			while(enu.hasMoreElements()){
 				Driver d;
@@ -68,8 +67,8 @@ public class CVOODataLoader {
 					DriverManager.deregisterDriver(d);
 				}
 			}
-			
-			
+
+
 			connection = DriverManager.getConnection(connectionURL, user, password);
 			statement = connection.createStatement();
 
@@ -80,13 +79,13 @@ public class CVOODataLoader {
 			// Query für die leg-Daten
 			// ONLY POSTGRES VESION 9.0 ==>
 
-//			queryString = 
-//					"WITH part as (SELECT * from cvoo.leg)" + 
-//							"SELECT " + 
-//							"name AS leg_name, expocode AS leg_expocode, id AS leg_id " + 
-//							"FROM part WHERE id = " + legId; 
+			//			queryString = 
+			//					"WITH part as (SELECT * from cvoo.leg)" + 
+			//							"SELECT " + 
+			//							"name AS leg_name, expocode AS leg_expocode, id AS leg_id " + 
+			//							"FROM part WHERE id = " + legId; 
 
-			 queryString = "select name as leg_name, expocode as leg_expocode, id as leg_id from bottleocn.leg where id = " + legId;
+			queryString = "select name as leg_name, expocode as leg_expocode, id as leg_id from bottleocn.leg where id = " + legId;
 
 			rs = statement.executeQuery(queryString);
 			rs.next();
@@ -106,29 +105,29 @@ public class CVOODataLoader {
 			// Query für bottle- und sample-Daten
 			// ONLY POSTGRES VESION 9.0 ==>
 
-//			queryString = 
-//					"WITH part AS " + 
-//							"(WITH part AS " + 
-//							"(SELECT latitude AS bottle_latitude, longitude AS bottle_longitude, leg_id, " + 
-//							"waterdepth AS bottle_waterdepth, time AS bottle_time, station AS bottle_station, " + 
-//							"label AS bottle_label, id AS bottle_id " + 
-//							"FROM cvoo.bottle) " + 
-//							"SELECT * " + 
-//							"FROM part " + 
-//							"WHERE leg_id = " + legId + ") " +  //$NON-NLS-2$
-//							"SELECT part.*, sample.id AS sample_id, sample.val AS sample_val, " + 
-//							"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " + 
-//							"FROM part, cvoo.sample " + 
-//							"WHERE part.bottle_id = sample.bottle_id " + 
-//							"ORDER BY sample.bottle_id"; 
+			//			queryString = 
+			//					"WITH part AS " + 
+			//							"(WITH part AS " + 
+			//							"(SELECT latitude AS bottle_latitude, longitude AS bottle_longitude, leg_id, " + 
+			//							"waterdepth AS bottle_waterdepth, time AS bottle_time, station AS bottle_station, " + 
+			//							"label AS bottle_label, id AS bottle_id " + 
+			//							"FROM cvoo.bottle) " + 
+			//							"SELECT * " + 
+			//							"FROM part " + 
+			//							"WHERE leg_id = " + legId + ") " +  //$NON-NLS-2$
+			//							"SELECT part.*, sample.id AS sample_id, sample.val AS sample_val, " + 
+			//							"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " + 
+			//							"FROM part, cvoo.sample " + 
+			//							"WHERE part.bottle_id = sample.bottle_id " + 
+			//							"ORDER BY sample.bottle_id"; 
 
-				queryString = "SELECT bottle.latitude AS bottle_latitude, bottle.longitude AS bottle_longitude, bottle.leg_id, " +
-								"bottle.waterdepth AS bottle_waterdepth, bottle.time AS bottle_time, bottle.station AS bottle_station, " +
-								"bottle.label AS bottle_label, bottle.id AS bottle_id, sample.id AS sample_id, sample.val AS sample_val, " +
-								"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " +
-								"FROM bottleocn.bottle, bottleocn.sample " +
-								"WHERE bottle.id = sample.bottle_id and bottle.leg_id = " + legId +
-								"ORDER BY sample.bottle_id;";
+			queryString = "SELECT bottle.latitude AS bottle_latitude, bottle.longitude AS bottle_longitude, bottle.leg_id, " +
+					"bottle.waterdepth AS bottle_waterdepth, bottle.time AS bottle_time, bottle.station AS bottle_station, " +
+					"bottle.label AS bottle_label, bottle.id AS bottle_id, sample.id AS sample_id, sample.val AS sample_val, " +
+					"parameter_id AS sample_parameter_unit_id, flag AS sample_flag " +
+					"FROM bottleocn.bottle, bottleocn.sample " +
+					"WHERE bottle.id = sample.bottle_id and bottle.leg_id = " + legId +
+					"ORDER BY sample.bottle_id;";
 
 			rs = statement.executeQuery(queryString);
 
@@ -138,15 +137,14 @@ public class CVOODataLoader {
 
 			//Erstelle bottle- und sample-Objekte
 			while(rs.next()){
-				//Generiere bottle-Objekt aus Tabellendaten
-				bottle = PubJect.createFromResultSet(Bottle.class, Bottle.c_BOTTLETABLE, rs);
-				
 				//Prüfe ob Datensatz zu einer neuen bottle gehört
 				if(!before.equals(rs.getString(Bottle.ID))){
 					if(bottle != null){
 						if (verbose) log.append(String.format("Collected %d samples of bottle no. %s / %s \n", bottle.getList(Bottle.SAMPLELIST).size(), bottle.getString(Bottle.LABEL), bottle.getString(Bottle.STATION))); 
 						leg.addToList(Leg.BOTTLELIST, bottle);
 					}
+					//Generiere bottle-Objekt aus Tabellendaten
+					bottle = PubJect.createFromResultSet(Bottle.class, Bottle.c_BOTTLETABLE, rs);
 				}
 
 				//Generiere sample-Objekt aus Tabellendaten
@@ -156,7 +154,11 @@ public class CVOODataLoader {
 				parameters.add(sample.getString(Sample.PARAMETERUNITID));
 				bottle.addToList(Bottle.SAMPLELIST, sample);
 
-				before = rs.getString(Bottle.ID);
+				if(!rs.isLast()){
+					before = rs.getString(Bottle.ID);
+				}else{
+					leg.addToList(Leg.BOTTLELIST, bottle);
+				}
 			}
 
 			log.append("OK\n"); 
@@ -204,7 +206,7 @@ public class CVOODataLoader {
 			long time_samples = System.currentTimeMillis();
 
 			JAXBContext ctx = JAXBContext.newInstance(Leg.class);
-			
+
 			Marshaller m = ctx.createMarshaller();
 			StringWriter legSw = new StringWriter();
 			log.append(String.format("Fetched data in %d ms.\n\n", time_samples - time_start));  //$NON-NLS-2$

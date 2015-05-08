@@ -65,7 +65,7 @@ public class OCNDataLoader {
 					DriverManager.deregisterDriver(d);
 				}
 			}
-			
+
 			//Datenbankzeugs...
 			Class.forName("org.postgresql.Driver").newInstance(); 
 			connection = DriverManager.getConnection(connectionURL, user, password);
@@ -152,7 +152,11 @@ public class OCNDataLoader {
 				parameters.add(sample.getString(Sample.PARAMETERUNITID));
 				bottle.addToList(Bottle.SAMPLELIST, sample);
 
-				before = rs.getString(Bottle.ID);
+				if(!rs.isLast()){
+					before = rs.getString(Bottle.ID);
+				}else{
+					leg.addToList(Leg.BOTTLELIST, bottle);
+				}
 			}
 
 			log.append("OK\n"); 
@@ -212,7 +216,7 @@ public class OCNDataLoader {
 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.log", log.toString()); 
 			data.put("de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString()); 
-			
+
 			data.newJiraAttachment("debug_" + "de.pubflow.services.ocn.PluginAllocator.getData.leg", legSw.toString().getBytes());
 			data.newJiraComment(String.format("OCNDataLoader: exited normally after %f s.", (System.currentTimeMillis() - millis)/1000.0)); 
 			return data;
@@ -222,7 +226,7 @@ public class OCNDataLoader {
 			throw new Exception("OCNDataLoader: " + e.getMessage()); 
 		}
 	}
-	
+
 	public static void main (String[] args) throws Exception{
 		ComMap data = new ComMap("");
 		data.put("de.pubflow.services.ocn.PluginAllocator.getData.legid", "12013");
