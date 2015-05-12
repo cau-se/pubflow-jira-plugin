@@ -124,7 +124,7 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 		try {
 			if (ComponentAccessor.getProjectManager().getProjectObjByName("PubFlow") == null) {
 
-				Group groupDataManager = JiraObjectCreator.createGroup("datamanager");
+				Group groupDataManager = JiraObjectCreator.createGroup("datamanagers");
 				Group groupScientists = JiraObjectCreator.createGroup("scientists");
 
 				ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow", new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
@@ -162,17 +162,16 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				List<ConditionDefinition> conditions = new LinkedList<ConditionDefinition>();
 
 				Map<String, String> mapParamsDatamanager = new HashMap<String, String>();
-				mapParamsDatamanager.put("group", "datamanager");
-				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 141, /*121, 61, */ 71, 91, 111, 151, 131, 161}));
+				mapParamsDatamanager.put("group", "datamanagers");
+				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 141, 71, 91, 111, 151, 131, 161}));
 
 				Map<String, String> mapParamsPubFlow = new HashMap<String, String>();
 				mapParamsPubFlow.put("group", "jira-administrators");
 				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsPubFlow, new int[]{41,101}));
 
 				Map<String, String> mapParamsScientists = new HashMap<String, String>();
-				mapParamsScientists.put("group", "scientist");
-				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{1, 11}));
-
+				mapParamsScientists.put("group", "scientists");
+				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{11}));
 				conditions.add(new ConditionDefinition(ConditionDefinitionType.ATTACHMENT, null, new int[]{11}));
 
 				LinkedList<CustomFieldDefinition> customFields = new LinkedList<CustomFieldDefinition>();

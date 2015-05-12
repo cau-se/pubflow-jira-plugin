@@ -20,15 +20,12 @@
 	</component>
 
 
-	<workflow-condition key="issueAttachment-condition">
+	<workflow-condition key="issueAttachment-condition"  name="Attachment Condition">
+		<description>Condition that checks if an file has been attached to an issue when starting a transition. 
+		</description>
 		<condition-class>
 			de.pubflow.jira.misc.IssueAttachmentCondition
 		</condition-class>
-		<name>
-			Condition "Attachment"
-		</name>
-		<description>Condition that checks if an file has been attached to an issue when starting a transition. 
-		</description>
 	</workflow-condition>
 
 </atlassian-plugin>

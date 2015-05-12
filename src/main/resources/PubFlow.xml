@@ -6,14 +6,6 @@
   <meta name="jira.updated.date">1410874716013</meta>
   <initial-actions>
     <action id="1" name="Create">
-      <restrict-to>
-        <conditions>
-          <condition type="class">
-            <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-            <arg name="group">datamanager</arg>
-          </condition>
-        </conditions>
-      </restrict-to>
       <validators>
         <validator name="" type="class">
           <arg name="class.name">com.atlassian.jira.workflow.validator.PermissionValidator</arg>
@@ -44,17 +36,6 @@
       <actions>
         <action id="11" name="Send to Data Management">
           <meta name="jira.description"></meta>
-          <restrict-to>
-            <conditions type="AND">
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-              <condition type="class">
-                <arg name="class.name">de.pubflow.jira.misc.IssueAttachmentCondition</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="2">
               <post-functions>
@@ -91,14 +72,6 @@
       <actions>
         <action id="21" name="Ready for OCN-Import">
           <meta name="jira.description"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="3">
               <post-functions>
@@ -124,14 +97,6 @@
         </action>
         <action id="81" name="Reject">
           <meta name="jira.description"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="10">
               <post-functions>
@@ -158,14 +123,6 @@
         <action id="161" name="Send Back to Scientist">
           <meta name="jira.description"></meta>
           <meta name="jira.fieldscreen.id"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="null" status="null" step="1">
               <post-functions>
@@ -197,14 +154,6 @@
         <action id="141" name="Prepare for PubFlow" view="OCN_FieldScreenAction141">
           <meta name="jira.description"></meta>
           <meta name="jira.fieldscreen.id">10004</meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="12">
               <post-functions>
@@ -235,14 +184,6 @@
       <actions>
         <action id="41" name="Ready for Pangaea-Import">
           <meta name="jira.description"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="5">
               <post-functions>
@@ -268,14 +209,6 @@
         </action>
         <action id="101" name="Error">
           <meta name="jira.description"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="11">
               <post-functions>
@@ -340,14 +273,6 @@
       <actions>
         <action id="71" name="Close">
           <meta name="jira.description"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="8">
               <post-functions>
@@ -378,14 +303,6 @@
       <actions>
         <action id="91" name="Close">
           <meta name="jira.description"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="8">
               <post-functions>
@@ -417,14 +334,6 @@
         <action id="111" name="Resend to PubFlow" view="OCN_FieldScreenAction111">
           <meta name="jira.description"></meta>
           <meta name="jira.fieldscreen.id">10003</meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="4">
               <post-functions>
@@ -451,14 +360,6 @@
         <action id="151" name="Abort">
           <meta name="jira.description"></meta>
           <meta name="jira.fieldscreen.id"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="null" status="null" step="10">
               <post-functions>
@@ -489,14 +390,6 @@
       <actions>
         <action id="131" name="Send To PubFlow">
           <meta name="jira.description"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanager</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="4">
               <post-functions>
