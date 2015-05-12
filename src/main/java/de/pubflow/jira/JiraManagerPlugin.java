@@ -167,7 +167,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 						+ "\nThank you!";
 
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
-				JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(), new byte[]{0}, "rawdata", "txt", user);
+//				JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(), new byte[]{0}, "rawdata", "txt", user);
 			} else {
 				MutableIssue mutableIssue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueEvent.getIssue().getKey());
 				mutableIssue.setAssignee(issueEvent.getIssue().getReporter());
