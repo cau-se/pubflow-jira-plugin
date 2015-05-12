@@ -6,13 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.ofbiz.core.entity.GenericEntityException;
-import org.ofbiz.core.entity.GenericValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.fields.screen.FieldScreenScheme;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.user.ApplicationUser;

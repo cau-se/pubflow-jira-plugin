@@ -171,7 +171,6 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 
 				Map<String, String> mapParamsScientists = new HashMap<String, String>();
 				mapParamsScientists.put("group", "scientist");
-				mapParamsScientists.put("group", "datamanager");
 				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{1, 11}));
 
 				conditions.add(new ConditionDefinition(ConditionDefinitionType.ATTACHMENT, null, new int[]{11}));

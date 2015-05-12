@@ -371,6 +371,10 @@ public class JiraObjectCreator {
 						List<ConditionDescriptor> listLonditions = conditionsDescriptor.getConditions();
 						listLonditions.add(cd);	
 
+						for(ConditionDescriptor c : listLonditions){
+							log.info("newIssueType - setting conditions / key : " + c.getName() + " / action id : " + id);
+						}
+
 					} catch (Exception e) {
 						log.error("newIssueType - setting conditions / " + e.getClass().toString() + " - can't find action action ID " + id);
 					}
