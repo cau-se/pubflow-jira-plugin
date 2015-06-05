@@ -193,6 +193,8 @@ public class HTMLReader {
 				}else{
 					data.newJiraIssue("EPRINTS", "No DOI for " + msg.getLink(), msg.getDescription(), "PubFlow", new HashMap<String, String>());
 					log.info("checkRSSFeed - no DOI for " + msg.getTitle());
+					missingSupplementIssueSummaries.add("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink());
+
 				}
 			}
 		}catch(Exception e){
