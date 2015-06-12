@@ -143,7 +143,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				}
 
 				wm.setParameters(wfpm);
-				wm.setWorkflowID("de.pubflow." + issue.getIssueTypeObject().getName());
+				wm.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
 				JiraConnector jpmp = JiraConnector.getInstance();
 				jpmp.compute(wm);
 

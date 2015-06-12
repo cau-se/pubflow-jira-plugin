@@ -24,7 +24,13 @@ import com.atlassian.event.api.EventPublisher;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.service.services.mail.MailServersValuesGenerator;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.mail.MailProtocol;
+import com.atlassian.mail.server.MailServer;
+import com.atlassian.mail.server.MailServerManager;
+import com.atlassian.mail.server.impl.SMTPMailServerImpl;
+import com.atlassian.mail.server.managers.XMLMailServerManager;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
 
 import de.pubflow.jira.accessors.JiraObjectCreator;
@@ -124,15 +130,29 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 		try {
 			if (ComponentAccessor.getProjectManager().getProjectObjByName("PubFlow") == null) {
 
-				Group groupDataManager = JiraObjectCreator.createGroup("datamanagers");
+				SMTPMailServerImpl smtp = new SMTPMailServerImpl();
+				smtp.setName("Mail Server");
+				smtp.setDescription("");
+				smtp.setDefaultFrom("pubflow@bough.de");
+				smtp.setPrefix("[pubflow]");
+				smtp.setPort("587");
+				smtp.setMailProtocol(MailProtocol.SMTP);
+				smtp.setHostname("mail.bough.de");
+				smtp.setUsername("wp10598327-null");
+				smtp.setPassword("kidoD3l77");
+				smtp.setTlsRequired(true);
+				ComponentAccessor.getMailServerManager().create(smtp);
+				
+				Group groupDataManagers = JiraObjectCreator.createGroup("datamanagers");
 				Group groupScientists = JiraObjectCreator.createGroup("scientists");
-
-				ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow", new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
+				Group groupSuperUsers = JiraObjectCreator.createGroup("superusers");
+				
+				ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow", "$Boogie3", "", "PubFlow");
 				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-administrators");
 				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-developers");
 				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-users");
 				JiraObjectManipulator.addUserToGroup(userPubFlow, groupScientists);
-				JiraObjectManipulator.addUserToGroup(userPubFlow, groupDataManager);
+				JiraObjectManipulator.addUserToGroup(userPubFlow, groupDataManagers);
 
 				JiraManagerPlugin.user = userPubFlow;
 
@@ -140,63 +160,93 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				User userAdmin = ComponentAccessor.getUserManager().getUserObject("admin");
 				ComponentAccessor.getCrowdService().removeUser(userAdmin);
 
-				ApplicationUser userRoot = JiraObjectCreator.createUser("root", "$Boogie3");
-				JiraObjectManipulator.addUserToGroup(userRoot, groupDataManager);
-				JiraObjectManipulator.addUserToGroup(userRoot, groupScientists);
-				JiraObjectManipulator.addUserToGroup(userRoot, "jira-administrators");
-				JiraObjectManipulator.addUserToGroup(userRoot, "jira-developers");
-				JiraObjectManipulator.addUserToGroup(userRoot, "jira-users");
+				//Admins
+				
+//				ApplicationUser userRoot = JiraObjectCreator.createUser("root", "$Boogie3", "plumhoff@email.uni-kiel.de", "Root");
+//				JiraObjectManipulator.addUserToGroup(userRoot, groupDataManagers);
+//				JiraObjectManipulator.addUserToGroup(userRoot, groupScientists);
+//				JiraObjectManipulator.addUserToGroup(userRoot, groupSuperUsers);
+//				JiraObjectManipulator.addUserToGroup(userRoot, "jira-administrators");
+//				JiraObjectManipulator.addUserToGroup(userRoot, "jira-developers");
+//				JiraObjectManipulator.addUserToGroup(userRoot, "jira-users");
+				
+				//Datamanagers
+				
+				ApplicationUser userDataManager0 = JiraObjectCreator.createUser("SampleDataManager", "test1234", "plumhoff@email.uni-kiel.de", "");
+				JiraObjectManipulator.addUserToGroup(userDataManager0, groupDataManagers);
+				JiraObjectManipulator.addUserToGroup(userDataManager0, groupScientists);
+				JiraObjectManipulator.addUserToGroup(userDataManager0, "jira-developers");
+				JiraObjectManipulator.addUserToGroup(userDataManager0, "jira-users");
 
-				ApplicationUser userDataManager = JiraObjectCreator.createUser("SampleDataManager", "NFwjHo8ie7");
-				JiraObjectManipulator.addUserToGroup(userDataManager, groupDataManager);
-				JiraObjectManipulator.addUserToGroup(userDataManager, groupScientists);
-				JiraObjectManipulator.addUserToGroup(userDataManager, "jira-developers");
-				JiraObjectManipulator.addUserToGroup(userDataManager, "jira-users");
+				ApplicationUser userDataManager1 = JiraObjectCreator.createUser("HMehrtens", "NFwjHo8ie7", "", "Hela Mehrtens");
+				JiraObjectManipulator.addUserToGroup(userDataManager1, groupDataManagers);
+				JiraObjectManipulator.addUserToGroup(userDataManager1, groupScientists);
+				JiraObjectManipulator.addUserToGroup(userDataManager1, "jira-developers");
+				JiraObjectManipulator.addUserToGroup(userDataManager1, "jira-users");
 
-				ApplicationUser userScientist = JiraObjectCreator.createUser("SampleScientist", "jhACbmfUPv");
-				JiraObjectManipulator.addUserToGroup(userScientist, groupScientists);			
-				JiraObjectManipulator.addUserToGroup(userScientist, "jira-users");
+				
+				//Scientists
+				
+				ApplicationUser userScientist0 = JiraObjectCreator.createUser("SampleScientist", "test1234", "plumhoff@email.uni-kiel.de", "Mr. Sample");
+				JiraObjectManipulator.addUserToGroup(userScientist0, groupScientists);			
+				JiraObjectManipulator.addUserToGroup(userScientist0, "jira-users");
 
+//				ApplicationUser userScientist1 = JiraObjectCreator.createUser("BFiedler", "jhACbmfUPv", "", "Björn Fiedler");
+//				JiraObjectManipulator.addUserToGroup(userScientist1, groupScientists);			
+//				JiraObjectManipulator.addUserToGroup(userScientist1, "jira-users");
+				
+				ApplicationUser userScientist2 = JiraObjectCreator.createUser("SMilinski", "jhACbmfUPv", "", "Sebastian Milinski");
+				JiraObjectManipulator.addUserToGroup(userScientist2, groupScientists);			
+				JiraObjectManipulator.addUserToGroup(userScientist2, "jira-users");
+				
 				JiraObjectCreator.createProject("PubFlow", "PUB", userPubFlow, false);
 
-				List<ConditionDefinition> conditions = new LinkedList<ConditionDefinition>();
+				List<ConditionDefinition> conditionsRawToOCN = new LinkedList<ConditionDefinition>();
+				List<ConditionDefinition> conditionsOCNTo4D = new LinkedList<ConditionDefinition>();
 
 				Map<String, String> mapParamsDatamanager = new HashMap<String, String>();
 				mapParamsDatamanager.put("group", "datamanagers");
-				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 141, 71, 91, 111, 151, 131, 161}));
-
+				
 				Map<String, String> mapParamsPubFlow = new HashMap<String, String>();
-				mapParamsPubFlow.put("group", "jira-administrators");
-				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsPubFlow, new int[]{41,101}));
-
+				mapParamsPubFlow.put("group", "superusers");
+			
 				Map<String, String> mapParamsScientists = new HashMap<String, String>();
 				mapParamsScientists.put("group", "scientists");
-				conditions.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{11}));
-				conditions.add(new ConditionDefinition(ConditionDefinitionType.ATTACHMENT, null, new int[]{11}));
+				
+				conditionsRawToOCN.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 161, 171, 71, 91}));	
+				conditionsRawToOCN.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{11}));
+				conditionsRawToOCN.add(new ConditionDefinition(ConditionDefinitionType.ATTACHMENT, null, new int[]{11}));
+				
+				conditionsOCNTo4D.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{171, 71, 91, 111, 151, 131, 191}));
+				conditionsOCNTo4D.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsPubFlow, new int[]{41,101}));
+				
+				LinkedList<CustomFieldDefinition> customFieldsOCNTo4D = new LinkedList<CustomFieldDefinition>();
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("PID", CustomFieldType.TEXT, false, new String[]{ "111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Login", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Source", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Project", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Topology", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Status", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Target Path", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Reference", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("File Name", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Leg Comment", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Quartz Cron", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("DOI", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+				customFieldsOCNTo4D.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"111", "191"}));
 
-				LinkedList<CustomFieldDefinition> customFields = new LinkedList<CustomFieldDefinition>();
-				customFields.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("PID", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Login", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Source", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[]{"11", "141", "111"}));
-				customFields.add(new CustomFieldDefinition("Project", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Topology", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Status", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Target Path", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Reference", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("File Name", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Leg Comment", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Quartz Cron", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("DOI", CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-				customFields.add(new CustomFieldDefinition("Author Name", CustomFieldType.TEXT, false, new String[]{"11"}));
-				customFields.add(new CustomFieldDefinition("Title", CustomFieldType.TEXT, false, new String[]{"11"}));
-				customFields.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
-				customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"141", "111"}));
-
-//				JiraObjectCreator.createIssueType("PUB", "OCN", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
-				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>());
-				JiraObjectCreator.createIssueType("PUB", "CVOO", userPubFlow, JiraManagerPlugin.getTextResource("/PubFlow.xml"), customFields, conditions);
+				LinkedList<CustomFieldDefinition> customFieldsRawToOCN = new LinkedList<CustomFieldDefinition>();
+				customFieldsRawToOCN.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[]{"11"}));
+				customFieldsRawToOCN.add(new CustomFieldDefinition("Author Name", CustomFieldType.TEXT, false, new String[]{"11"}));
+				customFieldsRawToOCN.add(new CustomFieldDefinition("Title", CustomFieldType.TEXT, false, new String[]{"11"}));
+				customFieldsRawToOCN.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
+								
+				JiraObjectCreator.createIssueType("PUB", "EPRINTS", userPubFlow, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), new LinkedList<CustomFieldDefinition>(), new LinkedList<ConditionDefinition>(), "de.pubflow.EPRINTS");
+				JiraObjectCreator.createIssueType("PUB", "Publish Raw Cruise Data", userPubFlow, JiraManagerPlugin.getTextResource("/RAWTOCVOO-WORKFLOW.xml"), customFieldsRawToOCN, conditionsRawToOCN, "");
+				JiraObjectCreator.createIssueType("PUB", "Export Data (CVOO) to PANGAEA", userPubFlow, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), customFieldsOCNTo4D, conditionsOCNTo4D, "de.pubflow.CVOO");
+				JiraObjectCreator.createIssueType("PUB", "Export Data (OCN) to PANGAEA", userPubFlow, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), customFieldsOCNTo4D, conditionsOCNTo4D, "de.pubflow.OCN");
 
 				WorkflowMessage eprintsWfMsg = new WorkflowMessage();
 				eprintsWfMsg.setWorkflowID("de.pubflow.EPRINTS");

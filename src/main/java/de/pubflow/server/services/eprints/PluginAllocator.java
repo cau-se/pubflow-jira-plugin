@@ -3,7 +3,6 @@ package de.pubflow.server.services.eprints;
 import de.pubflow.server.core.jira.ComMap;
 import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.jira.Entity.JiraIssue;
-import de.pubflow.server.services.eprints.entity.RSSMsg;
 
 public class PluginAllocator {
 	

@@ -165,7 +165,7 @@ public class JiraObjectCreator {
 	 */
 
 	@SuppressWarnings("unchecked")
-	public static String createIssueType(String projectKey, String issueTypeName, ApplicationUser user, String workflowXMLString, LinkedList<CustomFieldDefinition> customFields, List<ConditionDefinition> conditions) throws Exception{
+	public static String createIssueType(String projectKey, String issueTypeName, ApplicationUser user, String workflowXMLString, LinkedList<CustomFieldDefinition> customFields, List<ConditionDefinition> conditions, String workflowID) throws Exception{
 		LinkedList<String> statuses = JiraManagerPlugin.getSteps(workflowXMLString);
 
 		//Add Workflow
@@ -290,17 +290,18 @@ public class JiraObjectCreator {
 
 		if (!availableActionFieldScreens.containsKey("Create")) {
 			log.info("newIssueType - transition screen /  create ActionCreate / name : " + issueTypeName + Appendix.FIELDSCREEN.getName());
-			fieldScreenCreate = createHumbleFieldScreen(issueTypeName + Appendix.FIELDSCREEN.getName() + "ActionCreate");
+			fieldScreenCreate = createHumbleFieldScreen(issueTypeName + Appendix.FIELDSCREEN.getName() + " ActionCreate");
+			
 		}
 
 		if (!availableActionFieldScreens.containsKey("View")) {
 			log.info("newIssueType - transition screen / create ActionView / name : " + issueTypeName + Appendix.FIELDSCREEN.getName());
-			fieldScreenView = createHumbleFieldScreen(issueTypeName + Appendix.FIELDSCREEN.getName() + "ActionView");
+			fieldScreenView = createHumbleFieldScreen(issueTypeName + Appendix.FIELDSCREEN.getName() + " ActionView");
 		}
 
 		if (!availableActionFieldScreens.containsKey("Edit")) {
 			log.info("newIssueType - transition screen / create ActionEdit / name : " + issueTypeName + Appendix.FIELDSCREEN.getName());
-			fieldScreenEdit = createHumbleFieldScreen(issueTypeName + Appendix.FIELDSCREEN.getName() + "ActionEdit");
+			fieldScreenEdit = createHumbleFieldScreen(issueTypeName + Appendix.FIELDSCREEN.getName() + " ActionEdit");
 		}
 
 		for (Entry<String, LinkedList<CustomFieldDefinition>> e : availableActionFieldScreens.entrySet()) {
@@ -317,9 +318,9 @@ public class JiraObjectCreator {
 				}
 			}
 
-			log.info("newIssueType - transition screen id loops / fieldscreen.name : " + issueTypeName + Appendix.FIELDSCREEN.getName() + "Action" + e.getKey() + " creating");
+			log.info("newIssueType - transition screen id loops / fieldscreen.name : " + issueTypeName + Appendix.FIELDSCREEN.getName() + " Action " + e.getKey() + " creating");
 			FieldScreen fieldScreen = new FieldScreenImpl(ComponentAccessor.getFieldScreenManager());
-			fieldScreen.setName(issueTypeName + Appendix.FIELDSCREEN.getName() + "Action" + e.getKey());
+			fieldScreen.setName(issueTypeName + Appendix.FIELDSCREEN.getName() + " Action " + e.getKey());
 			FieldScreenTab fieldScreenTab = fieldScreen.addTab("Job");
 			fieldScreenTab.setPosition(0);
 
@@ -461,46 +462,71 @@ public class JiraObjectCreator {
 
 		ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(workflowSchemeGeneric, issueTypeName + Appendix.WORKFLOW.getName(), issueType.getId());
 		ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(workflowSchemeGeneric, "jira", issueType.getId());
-		ComponentAccessor.getWorkflowSchemeManager().addSchemeToProject(project.getGenericValue(), workflowSchemeGeneric);	
+		ComponentAccessor.getWorkflowSchemeManager().addSchemeToProject(
+				project.getGenericValue(), workflowSchemeGeneric);
+
+		issueType.getPropertySet().setString("workflowID", workflowID);
 
 		log.info("newIssueType - return issueType " + issueType.getName());
+
 		return issueType.getId();
 	}
 
 	private static FieldScreen createHumbleFieldScreen(String name) {
 		log.info("generateHumbleFieldScreen - name : " + name);
 
-		FieldScreen fieldScreen = new FieldScreenImpl(ComponentAccessor.getFieldScreenManager());
+		FieldScreen fieldScreen = new FieldScreenImpl(
+				ComponentAccessor.getFieldScreenManager());
 		fieldScreen.setName(name);
 		FieldScreenTab fieldScreenTab = fieldScreen.addTab("Job");
 		fieldScreenTab.setPosition(0);
-		fieldScreenTab.addFieldScreenLayoutItem(ComponentAccessor.getFieldManager().getField(IssueFieldConstants.REPORTER).getId());
-		fieldScreenTab.addFieldScreenLayoutItem(ComponentAccessor.getFieldManager().getField(IssueFieldConstants.SUMMARY).getId());
+		fieldScreenTab.addFieldScreenLayoutItem(ComponentAccessor
+				.getFieldManager().getField(IssueFieldConstants.REPORTER)
+				.getId());
+		fieldScreenTab.addFieldScreenLayoutItem(ComponentAccessor
+				.getFieldManager().getField(IssueFieldConstants.SUMMARY)
+				.getId());
 
 		return fieldScreen;
 	}
 
-	private static FieldScreenScheme createNewFieldScreenScheme(FieldScreen fieldScreenCreate, FieldScreen fieldScreenEdit,FieldScreen fieldScreenView, String fieldScreenSchemeName) throws Exception {
-		log.info("generateNewFieldScreenScheme - fieldScreenSchemeName : " + fieldScreenSchemeName);
+	private static FieldScreenScheme createNewFieldScreenScheme(
+			FieldScreen fieldScreenCreate, FieldScreen fieldScreenEdit,
+			FieldScreen fieldScreenView, String fieldScreenSchemeName)
+			throws Exception {
+		log.info("generateNewFieldScreenScheme - fieldScreenSchemeName : "
+				+ fieldScreenSchemeName);
 
-		if (fieldScreenCreate == null || fieldScreenEdit == null || fieldScreenView == null) {
+		if (fieldScreenCreate == null || fieldScreenEdit == null
+				|| fieldScreenView == null) {
 			throw new Exception("One or more field screens are null");
 		}
 
-		FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemCreate.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
+		FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
+				JiraManagerPlugin.fieldScreenSchemeManager,
+				ComponentAccessor.getFieldScreenManager());
+		fieldScreenSchemeItemCreate
+				.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
 		fieldScreenSchemeItemCreate.setFieldScreen(fieldScreenCreate);
 
-		FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemEdit.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
+		FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
+				JiraManagerPlugin.fieldScreenSchemeManager,
+				ComponentAccessor.getFieldScreenManager());
+		fieldScreenSchemeItemEdit
+				.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
 		fieldScreenSchemeItemEdit.setFieldScreen(fieldScreenEdit);
 
-		FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemView.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
+		FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
+				JiraManagerPlugin.fieldScreenSchemeManager,
+				ComponentAccessor.getFieldScreenManager());
+		fieldScreenSchemeItemView
+				.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
 		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
 
-		FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager, null);
-		fieldScreenScheme.setName(fieldScreenSchemeName + Appendix.FIELDSCREENSCHEME.getName());
+		FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(
+				JiraManagerPlugin.fieldScreenSchemeManager, null);
+		fieldScreenScheme.setName(fieldScreenSchemeName
+				+ Appendix.FIELDSCREENSCHEME.getName());
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemEdit);
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemCreate);
@@ -508,23 +534,32 @@ public class JiraObjectCreator {
 		return fieldScreenScheme;
 	}
 
-	private static MutableIssue createNewMutableIssue(String projectKey, String summary, String description, String reporter, ApplicationUser user, String issueTypeName) throws Exception {
+	private static MutableIssue createNewMutableIssue(String projectKey,
+			String summary, String description, String reporter,
+			ApplicationUser user, String issueTypeName) throws Exception {
 		if (user == null) {
 			log.error("generateNewMutableIssue - user null");
 			throw new Exception("User is null");
 		}
 
-		log.info("generateNewMutableIssue - projectKey : " + projectKey + " / issueTypeName : " + issueTypeName + " / user : " + user.getName() + " / summary : " + summary +  " / description : " + description + " / reporter : " + reporter);
+		log.info("generateNewMutableIssue - projectKey : " + projectKey
+				+ " / issueTypeName : " + issueTypeName + " / user : "
+				+ user.getName() + " / summary : " + summary
+				+ " / description : " + description + " / reporter : "
+				+ reporter);
 
 		MutableIssue newIssue = ComponentAccessor.getIssueFactory().getIssue();
-		newIssue.setProjectObject(ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
-		newIssue.setIssueTypeObject(JiraObjectGetter.findIssueTypeByName(issueTypeName + Appendix.ISSUETYPE.getName()));
+		newIssue.setProjectObject(ComponentAccessor.getProjectManager()
+				.getProjectObjByKey(projectKey));
+		newIssue.setIssueTypeObject(JiraObjectGetter
+				.findIssueTypeByName(issueTypeName
+						+ Appendix.ISSUETYPE.getName()));
 		newIssue.setSummary(issueTypeName + " / " + summary);
 		newIssue.setDescription(description);
 
-		//TODO Set reporter
-		//newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(username));
-		//newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(reporter));
+		// TODO Set reporter
+		// newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(username));
+		// newIssue.setReporter(JiraManaPlugin.userManager.getUserByName(reporter));
 		return newIssue;
 	}
 
@@ -536,10 +571,15 @@ public class JiraObjectCreator {
 	 * @throws CreateException
 	 * @throws AddException
 	 */
-	public static ApplicationUser createUser(String userName, String password) throws PermissionException, CreateException, AddException {
-		ApplicationUser pubflowUser = ComponentAccessor.getUserUtil().getUserByName(userName);
+	public static ApplicationUser createUser(String userName, String password,
+			String email, String displayName) throws PermissionException,
+			CreateException, AddException {
+		ApplicationUser pubflowUser = ComponentAccessor.getUserUtil()
+				.getUserByName(userName);
 		if (pubflowUser == null) {
-			pubflowUser = ApplicationUsers.from(ComponentAccessor.getUserUtil().createUserNoNotification(userName, password, "", ""));	
+			pubflowUser = ApplicationUsers.from(ComponentAccessor.getUserUtil()
+					.createUserNoNotification(userName, password, email,
+							displayName));
 		}
 		return pubflowUser;
 	}
@@ -550,12 +590,13 @@ public class JiraObjectCreator {
 	 * @throws OperationNotPermittedException
 	 * @throws InvalidGroupException
 	 */
-	public static Group createGroup(String name) throws OperationNotPermittedException, InvalidGroupException {
+	public static Group createGroup(String name)
+			throws OperationNotPermittedException, InvalidGroupException {
 		Group group = ComponentAccessor.getGroupManager().getGroup(name);
 		if (group == null) {
 			group = ComponentAccessor.getGroupManager().createGroup(name);
 		}
 
 		return group;
-	} 
+	}
 }
