@@ -147,7 +147,7 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				Group groupScientists = JiraObjectCreator.createGroup("scientists");
 				Group groupSuperUsers = JiraObjectCreator.createGroup("superusers");
 				
-				ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow", "$Boogie3", "", "PubFlow");
+				ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow", "$Boogie3", "plumhoff@email.uni-kiel.de", "PubFlow");
 				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-administrators");
 				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-developers");
 				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-users");
