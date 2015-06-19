@@ -148,7 +148,7 @@ public class CVOOImporter {
 					String querySample = String.format("insert into bottleocn.sample " +
 							"(id, val, parameter_id, flag, bottle_id) " +
 							"values (%s, %s, %s, %s, %s)",
-							"?", "", "", , "");
+							"?", "", "", "", "");
 
 				}
 			}

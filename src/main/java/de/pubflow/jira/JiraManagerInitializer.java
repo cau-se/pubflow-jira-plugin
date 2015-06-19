@@ -1,7 +1,6 @@
 package de.pubflow.jira;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -24,13 +23,9 @@ import com.atlassian.event.api.EventPublisher;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.issue.fields.CustomField;
-import com.atlassian.jira.service.services.mail.MailServersValuesGenerator;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.mail.MailProtocol;
-import com.atlassian.mail.server.MailServer;
-import com.atlassian.mail.server.MailServerManager;
 import com.atlassian.mail.server.impl.SMTPMailServerImpl;
-import com.atlassian.mail.server.managers.XMLMailServerManager;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
 
 import de.pubflow.jira.accessors.JiraObjectCreator;
