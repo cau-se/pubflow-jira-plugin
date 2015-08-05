@@ -80,7 +80,6 @@ public class HTMLReader {
 		}
 
 		feeds = Lists.reverse(feeds);
-		
 		return feeds;
 	}
 
@@ -168,33 +167,43 @@ public class HTMLReader {
 		throw new Exception("eprints.id_number is empty!");	
 	}
 
+	public static void main (String [] args) throws IOException{
+		for(RSSMsg msg : new HTMLReader().readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS3.xml?screen=Search&dataset=archive&_action_export=1&output=RSS3&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
+			//				log.info(msg.getLink());
+			int index1 = msg.getDescription().indexOf("DOI ") + 4;
+			int index2 = msg.getDescription().indexOf(" <", index1);
+			System.out.println(index1 + " " + index2);
+			System.out.println(msg.getDescription());
+		}
+	}
+
 	public ComMap checkRSSFeed(ComMap data){
 		try{
 			// for(RSSMsg msg : readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS2.xml?screen=Search&dataset=archive&_action_export=1&output=RSS2&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
 			for(RSSMsg msg : readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS3.xml?screen=Search&dataset=archive&_action_export=1&output=RSS3&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
-				//				log.info(msg.getLink());
-				int index1 = msg.getDescription().indexOf("DOI ") + 4;
-				int index2 = msg.getDescription().indexOf(" <", index1);
-				
-				if(index1 < index2){
-					String doi = msg.getDescription().substring(index1, index2);
-					boolean pangaeaDataOk = checkForValidDOI(doi);
+				if (!missingSupplementIssueSummaries.contains("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink())) {
 
-					if(!pangaeaDataOk){
-						if (!missingSupplementIssueSummaries.contains("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink())) {
+					//				log.info(msg.getLink());
+					int index1 = msg.getDescription().indexOf("DOI ") + 4;
+					int index2 = msg.getDescription().indexOf(" <", index1);
+
+					if(index1 < index2){
+						String doi = msg.getDescription().substring(index1, index2);
+						boolean pangaeaDataOk = checkForValidDOI(doi);
+
+						if(!pangaeaDataOk){
 							log.info("checkRSSFeed - doi without pangaea supplement : " + doi);
 							data.newJiraIssue("EPRINTS", "Missing pangaea supplement for " + msg.getLink(), msg.getDescription(), "PubFlow", new HashMap<String, String>());
 							missingSupplementIssueSummaries.add("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink());
+						}else{
+							log.info("checkRSSFeed - doi with pangaea supplement : " + doi);
 						}
+
 					}else{
-						log.info("checkRSSFeed - doi with pangaea supplement : " + doi);
+						data.newJiraIssue("EPRINTS", "No DOI for " + msg.getLink(), msg.getDescription(), "PubFlow", new HashMap<String, String>());
+						log.info("checkRSSFeed - no DOI for " + msg.getTitle());
+						missingSupplementIssueSummaries.add("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink());
 					}
-
-				}else{
-					data.newJiraIssue("EPRINTS", "No DOI for " + msg.getLink(), msg.getDescription(), "PubFlow", new HashMap<String, String>());
-					log.info("checkRSSFeed - no DOI for " + msg.getTitle());
-					missingSupplementIssueSummaries.add("EPRINTS / " + "Missing pangaea supplement for " + msg.getLink());
-
 				}
 			}
 		}catch(Exception e){

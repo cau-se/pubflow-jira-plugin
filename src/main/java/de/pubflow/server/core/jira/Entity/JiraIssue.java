@@ -9,7 +9,6 @@ public class JiraIssue {
 	private HashMap<String, String> parameters; 
 	private String reporter;
 
-
 	public JiraIssue(String issueTypeName, String summary, String description, HashMap<String, String> parameters, String reporter) {
 		this.issueTypeName = issueTypeName;
 		this.summary = summary;
@@ -17,7 +16,6 @@ public class JiraIssue {
 		this.parameters = parameters;
 		this.reporter = reporter;
 	}
-
 
 	public String getIssueTypeName() {
 		return issueTypeName;

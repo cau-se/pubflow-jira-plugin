@@ -179,8 +179,7 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				JiraObjectManipulator.addUserToGroup(userDataManager1, "jira-developers");
 				JiraObjectManipulator.addUserToGroup(userDataManager1, "jira-users");
 
-				
-				//Scientists
+				//Scientist
 				
 				ApplicationUser userScientist0 = JiraObjectCreator.createUser("SampleScientist", "test1234", "plumhoff@email.uni-kiel.de", "Mr. Sample");
 				JiraObjectManipulator.addUserToGroup(userScientist0, groupScientists);			
