@@ -133,7 +133,7 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				smtp.setPort("587");
 				smtp.setMailProtocol(MailProtocol.SMTP);
 				smtp.setHostname("mail.bough.de");
-				smtp.setUsername("wp10598327-null");
+				smtp.setUsername("wp10598327-pubflow");
 				smtp.setPassword("kidoD3l77");
 				smtp.setTlsRequired(true);
 				ComponentAccessor.getMailServerManager().create(smtp);
