@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	name="${project.name}" plugins-version="2">
+
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>${project.version}</version>
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
+	</plugin-info>
+
+	<servlet name="Message"
+		class="de.pubflow.rest.eprints.CVOOImporterServlet" key="test">
+		<url-pattern>/test</url-pattern>
+	</servlet>
+	
+	<resource type="i18n" name="i18n"
+		location="de.pubflow.rest.eprints.Message" />
+		
+	<rest name="My Rest Resource" i18n-name-key="my-rest-resource.name"
+		key="my-rest-resource" path="/myrestresource" version="1.0">
+		<description key="my-rest-resource.description">The My Rest Resource Plugin</description>
+	</rest>
+
+</atlassian-plugin>

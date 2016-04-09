@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	name="${project.name}" plugins-version="2">
+
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>${project.version}</version>
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
+	</plugin-info>
+
+	<component key="PubFlow Event Handler" class="de.pubflow.jira.JiraManagerPlugin">
+		<description>Processes the incoming JIRA issue events.
+		</description>
+	</component>
+
+	<component key="PubFlow Environment Initializer" class="de.pubflow.jira.JiraManagerInitializer">
+		<description>Initializes the issues types, screens, etc. for every
+			workflow.
+		</description>
+	</component>
+
+
+	<workflow-condition key="issueAttachment-condition"
+		name="Conditions Package">
+		<description>E.g. condition that checks if an file has been attached
+			to an
+			issue when starting a transition.
+		</description>
+		<condition-class>
+			de.pubflow.jira.misc.IssueAttachmentCondition
+		</condition-class>
+	</workflow-condition>
+
+</atlassian-plugin>
