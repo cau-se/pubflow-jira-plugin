@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.core.scheduling.PubFlowJob;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 import de.pubflow.server.core.workflow.WorkflowMessage;
@@ -25,7 +24,7 @@ public class JiraConnector {
 		myLogger = LoggerFactory.getLogger(JiraConnector.class);
 	}
 
-	private JiraConnector(){
+	public JiraConnector(){
 	}
 
 	public static JiraConnector getInstance(){
@@ -41,23 +40,6 @@ public class JiraConnector {
 
 	public void stop(){
 		//Scheduler.getInstance().shutdown();
-	}
-
-
-	public static void main (String[] args) throws Exception{
-		WorkflowMessage wm = new WorkflowMessage();
-		wm.setWorkflowID("de.pubflow.OCN");
-		List<WFParameter> wpl = new LinkedList<WFParameter>();
-		WFParameter wp1 = new WFParameter("issueKey", "PUB-3");
-		WFParameter wp2 = new WFParameter("workflowName", "OCN");		
-		WFParameter wp3 = new WFParameter("Leg ID_OCN", "s");
-		wpl.add(wp1);
-		wpl.add(wp2);
-		wpl.add(wp3);
-		wm.setParameters(wpl);
-		wm.setType(WFType.BPMN2);
-
-		new JiraConnector().compute(wm);
 	}
 
 	/**

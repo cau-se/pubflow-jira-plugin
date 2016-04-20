@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class WFParameter implements Serializable{
 	
 	private static final long serialVersionUID = -7467369540437772314L;
-	
 	private String key;
 	private ParameterType payloadClazz;
 	private Object value;
