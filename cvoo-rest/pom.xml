@@ -114,7 +114,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>de.pubflow.rest.cvoo.Main</mainClass>
+					<mainClass>de.pubflow.service.cvoo.Main</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

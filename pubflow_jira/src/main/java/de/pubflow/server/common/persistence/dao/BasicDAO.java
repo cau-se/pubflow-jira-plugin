@@ -23,7 +23,7 @@
  *
  */
 
-package de.pubflow.server.common.persistence.daos;
+package de.pubflow.server.common.persistence.dao;
 
 import java.util.List;
 

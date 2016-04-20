@@ -1,4 +1,4 @@
-package de.pubflow.server.common.persistence.daos;
+package de.pubflow.server.common.persistence.dao;
 
 import de.pubflow.server.common.persistence.entities.ObjectEntity;
 

@@ -8,7 +8,6 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import de.pubflow.server.common.entity.User;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFState;
 import de.pubflow.server.common.enumeration.WFType;
@@ -24,10 +23,8 @@ public class WorkflowMessage implements Serializable{
 	protected WFType type = null;
 	protected WFState state = null;
 	protected List<WFParameter> parameters = null;
-	protected User user = null;
 	protected boolean userAuthenticated = false;
 	//protected UserRole userRole = null;
-	protected User datamanager = null;
 	protected boolean datamanagerApproved = false;
 	protected Timestamp msgCreatedTimestamp = null;
 	protected Timestamp startedTimestamp = null;
@@ -111,21 +108,6 @@ public class WorkflowMessage implements Serializable{
 	}
 
 	/**
-	 * @return the user
-	 */
-	@XmlElement(name="User")
-	public synchronized User getUser() {
-		return user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public synchronized void setUser(User user) {
-		this.user = user;
-	}
-
-	/**
 	 * @return the userAuthenticated
 	 */
 	@XmlElement(name="UserAuthenticated")
@@ -139,22 +121,7 @@ public class WorkflowMessage implements Serializable{
 	public synchronized void setUserAuthenticated(boolean userAuthenticated) {
 		this.userAuthenticated = userAuthenticated;
 	}
-
-	/**
-	 * @return the datamanager
-	 */
-	@XmlElement(name="Datamanager")
-	public synchronized User getDatamanager() {
-		return datamanager;
-	}
-
-	/**
-	 * @param datamanager the datamanager to set
-	 */
-	public synchronized void setDatamanager(User datamanager) {
-		this.datamanager = datamanager;
-	}
-
+	
 	/**
 	 * @return the datamanagerApproved
 	 */

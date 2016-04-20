@@ -3,7 +3,7 @@ package de.pubflow.server.common.repository.abstractRepository.adapters;
 import java.io.IOException;
 
 import de.pubflow.server.common.persistence.PersistenceProvider;
-import de.pubflow.server.common.persistence.daos.RepositoryDAO;
+import de.pubflow.server.common.persistence.dao.RepositoryDAO;
 import de.pubflow.server.common.persistence.entities.ObjectEntity;
 
 
