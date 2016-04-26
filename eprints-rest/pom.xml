@@ -40,9 +40,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.pubflow</groupId>
-			<artifactId>jira</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>provided</scope>
+			<artifactId>common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

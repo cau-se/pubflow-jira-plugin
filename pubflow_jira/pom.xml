@@ -229,9 +229,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- <amps.version>6.2.1</amps.version> -->
 		<amps.version>5.0.14</amps.version>
-		<!-- <jira.version>6.4.9</jira.version> -->
 		<jira.version>6.2.7</jira.version>
 	</properties>
 </project>

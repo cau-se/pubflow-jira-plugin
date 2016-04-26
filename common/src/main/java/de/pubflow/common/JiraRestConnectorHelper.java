@@ -11,13 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.core.Response;
 
 import org.json.simple.JSONObject;
 
 public class JiraRestConnectorHelper implements IJiraRestConnector{
 
-private String baseUrl = "";
+	private String baseUrl = "";
 
 	public JiraRestConnectorHelper(String baseUrl){
 		this.baseUrl = baseUrl;
@@ -40,7 +41,7 @@ private String baseUrl = "";
 
 			String input = "";		
 			conn.setDoOutput(true);
-			
+
 			OutputStream os = conn.getOutputStream();
 			os.write(input.getBytes());
 			os.flush();
@@ -83,6 +84,7 @@ private String baseUrl = "";
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("issueKey", issueKey);
 		data.put("statusName", statusName);
+		
 		getDocumentContent(urlString, data);
 		return null;
 	}
@@ -95,6 +97,7 @@ private String baseUrl = "";
 		data.put("barray", barray);
 		data.put("fileName", fileName);
 		data.put("type", type);
+		
 		getDocumentContent(urlString, data);
 		return null;
 	}
@@ -105,6 +108,21 @@ private String baseUrl = "";
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("issueKey", issueKey);
 		data.put("comment", comment);
+		
+		getDocumentContent(urlString, data);
+		return null;
+	}
+
+	public Response createIssue(String issueTypeName, String summary, String description, HashMap<String, String>  parameters, String reporter) {
+		String urlString = "/";
+
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("issueTypeName", issueTypeName);
+		data.put("summary", summary);
+		data.put("description", description);
+		data.put("parameters", parameters);
+		data.put("reporter", reporter);
+
 		getDocumentContent(urlString, data);
 		return null;
 	}

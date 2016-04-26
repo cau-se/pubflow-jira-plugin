@@ -21,14 +21,15 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
-import de.pubflow.server.core.jira.ComMap;
-import de.pubflow.server.core.jira.JiraEndpoint;
+import de.pubflow.common.DataContainer;
 import de.pubflow.service.eprints.entity.MetaMsg;
 import de.pubflow.service.eprints.entity.RSSMsg;
 
 public class HTMLReader {
 
 	private Logger log = LoggerFactory.getLogger(HTMLReader.class);
+	
+	//TODO: needtofix
 	protected static CopyOnWriteArrayList<String> missingSupplementIssueSummaries = new CopyOnWriteArrayList<String>(JiraEndpoint.getAllIssuesBySummaryContains("Missing pangaea supplement for "));
 
 	public List<RSSMsg> readFeeds(String url) throws IOException {
@@ -167,17 +168,8 @@ public class HTMLReader {
 		throw new Exception("eprints.id_number is empty!");	
 	}
 
-	public static void main (String [] args) throws IOException{
-		for(RSSMsg msg : new HTMLReader().readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS3.xml?screen=Search&dataset=archive&_action_export=1&output=RSS3&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
-			//				log.info(msg.getLink());
-			int index1 = msg.getDescription().indexOf("DOI ") + 4;
-			int index2 = msg.getDescription().indexOf(" <", index1);
-			System.out.println(index1 + " " + index2);
-			System.out.println(msg.getDescription());
-		}
-	}
 
-	public ComMap checkRSSFeed(ComMap data){
+	public DataContainer checkRSSFeed(DataContainer data){
 		try{
 			// for(RSSMsg msg : readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS2.xml?screen=Search&dataset=archive&_action_export=1&output=RSS2&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {
 			for(RSSMsg msg : readFeeds("http://oceanrep.geomar.de/cgi/search/archive/advanced/export_geomar_RSS3.xml?screen=Search&dataset=archive&_action_export=1&output=RSS3&exp=0%7C1%7C-date%2Fcreators_name%2Ftitle%7Carchive%7C-%7Ccollection%3Acollection%3AANY%3AEQ%3Apublic%7Cdate%3Adate%3AALL%3AEQ%3A2015%7Cifmgeomar_type%3Aifmgeomar_type%3AANY%3AEQ%3Aarticle_sci_ref%7C-%7Ceprint_status%3Aeprint_status%3AANY%3AEQ%3Aarchive&n=")) {

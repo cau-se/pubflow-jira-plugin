@@ -1,5 +1,7 @@
 package de.pubflow.server.core.jira;
 
+import java.util.HashMap;
+
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -32,10 +34,10 @@ public class JiraRestConnector implements IJiraRestConnector{
 			return Response.status(500).entity(null).build();				
 		}
 	}
-	
+
 	@POST
 	@Path("/{issueKey}/comments")
-	public Response addIssueComment(@PathParam("issueKey") String issueKey, String comment){
+	public Response addIssueComment(@PathParam("issueKey") String issueKey, @FormParam("comment") String comment){
 		JiraEndpoint.addIssueComment(issueKey, comment);
 		try{
 			return Response.status(204).entity(null).build();	
@@ -43,7 +45,16 @@ public class JiraRestConnector implements IJiraRestConnector{
 			return Response.status(500).entity(null).build();				
 		}
 	}
-	
-	
-	
+
+	@POST
+	@Path("/")
+	public Response createIssue( @FormParam("issueTypeName") String issueTypeName,  @FormParam("summary") String summary,  @FormParam("description") String description, @FormParam("parameters") HashMap<String, String>  parameters,  @FormParam("reporter") String reporter){
+		JiraEndpoint.createIssue(issueTypeName, summary, description, parameters, reporter);
+		try{
+			return Response.status(204).entity(null).build();	
+		}catch(Exception e){
+			return Response.status(500).entity(null).build();				
+		}
+	}
+
 }

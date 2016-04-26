@@ -3,6 +3,7 @@ package de.pubflow.service.cvoo;
 import java.util.LinkedList;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -21,6 +22,12 @@ import de.pubflow.service.ocn.PangaeaMapper;
 public class PluginAllocator {
 
 	private static JiraRestConnectorHelper restConnector = new JiraRestConnectorHelper("http://localhost:2990/jira/rest/myrestresource/1.0/pubflow/");
+
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getIt() {
+		return "Got it!";
+	}
 
 	@POST
 	@Produces({MediaType.APPLICATION_XML})
