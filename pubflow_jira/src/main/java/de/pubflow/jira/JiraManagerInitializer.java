@@ -36,8 +36,6 @@ import de.pubflow.jira.misc.ConditionDefinition;
 import de.pubflow.jira.misc.ConditionDefinition.ConditionDefinitionType;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
-import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.repository.ScheduledWorkflowProvider;
 import de.pubflow.server.core.jira.JiraConnector;
 import de.pubflow.server.core.workflow.WorkflowMessage;
@@ -118,8 +116,7 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_LINKCOLOUR", JiraManagerInitializer.class));		
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, 
 				PropLoader.getInstance().getProperty("JIRA_LF_LOGO_URL", JiraManagerInitializer.class));		
-
-
+		
 		//TODO: Set mail settings automatically
 
 		try {
@@ -242,18 +239,18 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 				JiraObjectCreator.createIssueType("PUB", "Export Data (CVOO) to PANGAEA", userPubFlow, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), customFieldsOCNTo4D, conditionsOCNTo4D, "de.pubflow.CVOO");
 				JiraObjectCreator.createIssueType("PUB", "Export Data (OCN) to PANGAEA", userPubFlow, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), customFieldsOCNTo4D, conditionsOCNTo4D, "de.pubflow.OCN");
 
-				WorkflowMessage eprintsWfMsg = new WorkflowMessage();
-				eprintsWfMsg.setWorkflowID("de.pubflow.EPRINTS");
-				List<WFParameter> wpl = new LinkedList<WFParameter>();
-				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");
-				WFParameter wp2 = new WFParameter("quartzCron", "*/2 * * * *");
-				wpl.add(wp1);
-				wpl.add(wp2);
-				eprintsWfMsg.setParameters(wpl);
-				eprintsWfMsg.setType(WFType.BPMN2);
-
-				ScheduledWorkflowProvider.getInstance().clear();
-				ScheduledWorkflowProvider.getInstance().addEntry(eprintsWfMsg);
+//				WorkflowMessage eprintsWfMsg = new WorkflowMessage();
+//				eprintsWfMsg.setWorkflowID("de.pubflow.EPRINTS");
+//				List<WFParameter> wpl = new LinkedList<WFParameter>();
+//				WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");
+//				WFParameter wp2 = new WFParameter("quartzCron", "*/2 * * * *");
+//				wpl.add(wp1);
+//				wpl.add(wp2);
+//				eprintsWfMsg.setParameters(wpl);
+//				eprintsWfMsg.setType(WFType.BPMN2);
+//
+//				ScheduledWorkflowProvider.getInstance().clear();
+//				ScheduledWorkflowProvider.getInstance().addEntry(eprintsWfMsg);
 			}
 
 		} catch (Exception e) {

@@ -17,7 +17,4 @@ public class PubFlowJob {
 		myLogger.info("Starting scheduled job");
 		WorkflowBroker.getInstance().receiveWFCall(data);
 	}
-
-
-
 }

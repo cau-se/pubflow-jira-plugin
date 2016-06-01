@@ -1,5 +1,6 @@
 package de.pubflow.service.cvoo;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.ws.rs.FormParam;
@@ -32,8 +33,13 @@ public class PluginAllocator {
 	@POST
 	@Produces({MediaType.APPLICATION_XML})
 	@Path("{issueKey}/getData")
-	public static Response getData(@PathParam(value = "issueKey") String issueKey, @FormParam(value = "legId") String legId) throws Exception{
-		//	if(PluginManifestValidator.check("de.pubflow.server.services.cvoo.getData", data, PluginAllocator.class.getClass().getResourceAsStream("PluginManifest.xml"))){
+	public static Response getData(@PathParam(value = "issueKey") String issueKey, @FormParam(value = "legId") String legId, @FormParam(value="callbackUrl") String callbackUrl) throws Exception{
+		getData(issueKey, legId, callbackUrl);
+		return Response.status(201).build();
+	}
+
+	public static void getDataCallback(String issueKey, String legId, String callbackUrl) throws Exception{
+		//		if(PluginManifestValidator.check("de.pubflow.server.services.cvoo.getData", data, PluginAllocator.class.getClass().getResourceAsStream("PluginManifest.xml"))){
 
 		CVOODataLoader loader = new CVOODataLoader();
 
@@ -42,7 +48,6 @@ public class PluginAllocator {
 
 		try {
 			restConnector.changeStatus(data.getDefaultIssueKey(), "There is no data for legid %s in the cvoo database or the view 'leg' has been changed. \n");
-
 			data = loader.getData(data, 0);
 
 			for(JiraComment comment : (LinkedList<JiraComment>)data.getJiraCommentsAndFlush()){
@@ -60,13 +65,21 @@ public class PluginAllocator {
 			restConnector.addIssueComment(data.getDefaultIssueKey(), e.getMessage());
 		}
 
-		return Response.status(201).entity(data.get("de.pubflow.services.cvoo.PluginAllocator.getData.leg")).build();
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		result.put("response", data.get("de.pubflow.services.cvoo.PluginAllocator.getData.leg"));
+		JiraRestConnectorHelper jrch= new JiraRestConnectorHelper(callbackUrl);
+		jrch.getDocumentContent("", result);
 	}
 
 	@POST
 	@Produces({MediaType.APPLICATION_XML})
 	@Path("{issueKey}/convert")
-	public static Response convert(@PathParam(value = "issueKey") String issueKey, @FormParam (value = "leg") String leg) throws Exception{
+	public static Response convert(@PathParam(value = "issueKey") String issueKey, @FormParam (value = "leg") String leg, @FormParam(value="callbackUrl") String callbackUrl) throws Exception{
+		convert(issueKey, leg, callbackUrl);
+		return Response.status(201).build();
+	}
+
+	public static void convertCallback(String issueKey, String leg, String callbackUrl) throws Exception{
 
 		//		if(PluginManifestValidator.check("de.pubflow.server.services.cvoo.convert", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
 
@@ -93,7 +106,10 @@ public class PluginAllocator {
 			restConnector.addIssueComment(data.getDefaultIssueKey(), e.getMessage());
 		}
 
-		return Response.status(201).entity(data.get("de.pubflow.services.cvoo.PluginAllocator.getData.leg")).build();
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		result.put("response", data.get("de.pubflow.services.cvoo.PluginAllocator.convert.leg"));
+		JiraRestConnectorHelper jrch= new JiraRestConnectorHelper(callbackUrl);
+		jrch.getDocumentContent("", result);
 	}
 
 	@POST
@@ -105,7 +121,14 @@ public class PluginAllocator {
 			@FormParam(value = "pid") String pid, @FormParam(value = "legcomment") String legcomment, 
 			@FormParam(value = "project") String project, @FormParam(value = "topology") String topology, 
 			@FormParam(value = "status") String status, @FormParam(value = "login") String login, 
-			String targetpath) throws Exception{
+			@FormParam(value="targetPath") String targetpath, @FormParam(value="callbackUrl") String callbackUrl) throws Exception{
+		return Response.status(201).build();
+	}
+
+	public static void toCSVCallback(String issueKey, String leg, 
+			String author, String source, String reference, String filename, 
+			String pid, String legcomment, String project, String topology, 
+			String status, String login, String targetpath, String callbackUrl) throws Exception{
 		//		if(PluginManifestValidator.check("de.pubflow.server.services.cvoo.toCSV", data, PluginAllocator.class.getResourceAsStream("PluginManifest.xml"))){
 
 		FileCreator4D fc4d = new FileCreator4D();
@@ -143,7 +166,11 @@ public class PluginAllocator {
 			e.printStackTrace();
 			restConnector.addIssueComment(data.getDefaultIssueKey(), e.getMessage());
 		}
-		return Response.status(201).entity(data.get("de.pubflow.services.cvoo.PluginAllocator.getData.leg")).build();
+
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		result.put("response", data.get("de.pubflow.services.cvoo.PluginAllocator.toCSV.leg"));
+		JiraRestConnectorHelper jrch= new JiraRestConnectorHelper(callbackUrl);
+		jrch.getDocumentContent("", result);
 	}
 }
 

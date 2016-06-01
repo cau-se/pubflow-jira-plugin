@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ws.rs.FormParam;
 import javax.ws.rs.core.Response;
 
 import org.json.simple.JSONObject;

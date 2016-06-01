@@ -15,7 +15,7 @@ import de.pubflow.common.exceptions.PropertyNotSetException;
 public class PropLoader {
 
 	private static PropLoader propLoader;
-	private static final String CONF_FILE = System.getProperty("pubflow_home", System.getenv("HOME") + "/pubflow_home/PubFlow.conf");
+	private static final String CONF_FILE = System.getProperty("pubflow_home", System.getenv("HOME") + "/pubflow_home/Pubflow.conf");
 	
 	private Logger myLogger = LoggerFactory.getLogger(this.getClass());
 	private Properties properties = new Properties();
@@ -37,14 +37,14 @@ public class PropLoader {
 			fi = new FileInputStream(CONF_FILE);
 		} catch (Exception e) {
 			myLogger.error("Could not find Properties File");
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		try {
 			properties.loadFromXML(fi);
 		} catch (Exception e) {
 			myLogger.error("Could not load Properties File");
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		properties.list(System.out);
 	}

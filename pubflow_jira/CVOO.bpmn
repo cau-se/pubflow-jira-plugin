@@ -17,7 +17,10 @@
   <process processType="Private" isExecutable="true" id="de.pubflow.CVOO" name="CVOO" tns:packageName="de.pubflow" tns:version="1" >
 
     <extensionElements>
-     <tns:import name="de.pubflow.server.core.jira.ComMap" />
+     <tns:import name="de.pubflow.common.DataContainer" />
+     <tns:import name="java.util.HashMap" />
+     <tns:import name="de.pubflow." />
+     
      <tns:global identifier="author" type="String" />
      <tns:global identifier="project" type="String" />
      <tns:global identifier="legid" type="String" />
@@ -32,6 +35,7 @@
      <tns:global identifier="reference" type="String" />
      <tns:global identifier="legcomment" type="String" />
     </extensionElements>
+    
     <!-- process variables -->
     <property id="tempResult" itemSubjectRef="ItemDefinition_22"/>
 
