@@ -37,7 +37,7 @@ import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.core.jira.JiraConnector;
-import de.pubflow.server.core.workflow.WorkflowMessage;
+import de.pubflow.server.core.workflow.ServiceCallData;
 
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
@@ -134,7 +134,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
 
 			try {
-				WorkflowMessage wm = new WorkflowMessage();
+				ServiceCallData wm = new ServiceCallData();
 				List<WFParameter> wfpm = new LinkedList<WFParameter>();				
 
 				for (Entry<String, String> e : msg.getValues().entrySet()) {

@@ -32,10 +32,10 @@ import org.slf4j.LoggerFactory;
 import de.pubflow.server.common.repository.abstractRepository.BasicProvider;
 import de.pubflow.server.common.repository.abstractRepository.adapters.FSStorageAdapter;
 import de.pubflow.server.common.repository.abstractRepository.misc.ERepositoryName;
-import de.pubflow.server.core.workflow.WorkflowMessage;
+import de.pubflow.server.core.workflow.ServiceCallData;
 
 
-public class ScheduledWorkflowProvider extends BasicProvider<WorkflowMessage>{
+public class ScheduledWorkflowProvider extends BasicProvider<ServiceCallData>{
 
 	Logger myLogger;
 
@@ -60,12 +60,12 @@ public class ScheduledWorkflowProvider extends BasicProvider<WorkflowMessage>{
 		return swfp;
 	}
 
-	public List<WorkflowMessage> getAllScheduledWorkflows(){
+	public List<ServiceCallData> getAllScheduledWorkflows(){
 		return super.getAllEntries();			
 	}
 
-	public WorkflowMessage getScheduledWorkflow(long instanceId){
-		for(WorkflowMessage wm : super.getAllEntries()){			
+	public ServiceCallData getScheduledWorkflow(long instanceId){
+		for(ServiceCallData wm : super.getAllEntries()){			
 			if(wm.getInstanceId() == instanceId){
 				return wm;
 			}

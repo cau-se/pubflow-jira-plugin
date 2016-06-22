@@ -14,7 +14,7 @@ import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.repository.abstractRepository.misc.IDPool;
 
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
-public class WorkflowMessage implements Serializable{
+public class ServiceCallData implements Serializable{
 
 	private static final long serialVersionUID = -4931074023209271264L;
 
@@ -35,7 +35,7 @@ public class WorkflowMessage implements Serializable{
 	//protected long wfEngine = -1;
 
 
-	public WorkflowMessage() throws IOException {
+	public ServiceCallData() throws IOException {
 		instanceId = IDPool.getUniqueID();
 	}
 

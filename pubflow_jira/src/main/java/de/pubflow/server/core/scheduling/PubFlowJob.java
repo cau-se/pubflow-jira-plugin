@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.server.core.workflow.WorkflowBroker;
-import de.pubflow.server.core.workflow.WorkflowMessage;
+import de.pubflow.server.core.workflow.ServiceCallData;
 
 public class PubFlowJob {
 	private static Logger myLogger;
@@ -13,7 +13,7 @@ public class PubFlowJob {
 		myLogger = LoggerFactory.getLogger(PubFlowJob.class);
 	}
 
-	public static void execute(WorkflowMessage data) {
+	public static void execute(ServiceCallData data) {
 		myLogger.info("Starting scheduled job");
 		WorkflowBroker.getInstance().receiveWFCall(data);
 	}

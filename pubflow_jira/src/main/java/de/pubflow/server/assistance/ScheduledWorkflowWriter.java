@@ -6,14 +6,14 @@ import java.util.List;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.repository.ScheduledWorkflowProvider;
-import de.pubflow.server.core.workflow.WorkflowMessage;
+import de.pubflow.server.core.workflow.ServiceCallData;
 
 public class ScheduledWorkflowWriter {
 
 	public static void main(String[] args) throws Exception {		
 		RepoWiper.wipeRepos();
 		
-		WorkflowMessage eprintsWfMsg = new WorkflowMessage();
+		ServiceCallData eprintsWfMsg = new ServiceCallData();
 		eprintsWfMsg.setWorkflowID("de.pubflow.EPRINTS");
 		List<WFParameter> wpl = new LinkedList<WFParameter>();
 		WFParameter wp1 = new WFParameter("workflowName", "EPRINTS");		
@@ -27,10 +27,10 @@ public class ScheduledWorkflowWriter {
 		pro.addEntry(eprintsWfMsg);
 
 		
-		List<WorkflowMessage> wfList = pro.getAllEntries();
+		List<ServiceCallData> wfList = pro.getAllEntries();
 
 		System.out.println("File count : " + wfList.size());
-		for (WorkflowMessage workflowEntity : wfList) {	
+		for (ServiceCallData workflowEntity : wfList) {	
 			System.out.println("-----------------------------------------------");
 			System.out.println("Instance Id : " + workflowEntity.getInstanceId());
 			System.out.println("Workflow Id : " + workflowEntity.getWorkflowID());

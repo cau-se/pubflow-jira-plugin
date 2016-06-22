@@ -38,7 +38,7 @@ import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 import de.pubflow.server.common.repository.ScheduledWorkflowProvider;
 import de.pubflow.server.core.jira.JiraConnector;
-import de.pubflow.server.core.workflow.WorkflowMessage;
+import de.pubflow.server.core.workflow.ServiceCallData;
 
 /**
  * 
@@ -279,8 +279,8 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 					PropLoader.getInstance().setProperty("INITED", this.getClass(), "true");
 				}
 
-				List<WorkflowMessage> scheduledWfs = ScheduledWorkflowProvider.getInstance().getAllScheduledWorkflows();
-				for(WorkflowMessage wm : scheduledWfs){
+				List<ServiceCallData> scheduledWfs = ScheduledWorkflowProvider.getInstance().getAllScheduledWorkflows();
+				for(ServiceCallData wm : scheduledWfs){
 					JiraConnector.getInstance().compute(wm);
 				}
 			}

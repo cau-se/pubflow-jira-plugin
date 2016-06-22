@@ -43,7 +43,7 @@ public class WorkflowBroker {
 		return instance;
 	}
 
-	public void receiveWFCall(WorkflowMessage wm){
+	public void receiveWFCall(ServiceCallData wm){
 
 		if(!wm.isValid()){
 			myLogger.error("Workflow NOT deployed >> Msg is not valid ");

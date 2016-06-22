@@ -3,7 +3,7 @@ package de.pubflow.server.common.repository.abstractRepository.misc;
 public enum ERepositoryName {
 	//	CONFIGURATION(1),
 	//	CONTEXT(2), 
-	//	DATA(3),
+	DATA(3),
 	//	SERVICE(4),
 	WORKFLOW(5),
 	SCHEDULEDWF(6);

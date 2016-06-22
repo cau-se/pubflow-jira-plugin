@@ -13,7 +13,7 @@ import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.core.scheduling.PubFlowJob;
 import de.pubflow.server.core.workflow.WorkflowBroker;
-import de.pubflow.server.core.workflow.WorkflowMessage;
+import de.pubflow.server.core.workflow.ServiceCallData;
 
 public class JiraConnector {
 
@@ -47,7 +47,7 @@ public class JiraConnector {
 	 * @param msg
 	 * @throws SchedulerException 
 	 */
-	public void compute(WorkflowMessage msg) {
+	public void compute(ServiceCallData msg) {
 		myLogger.info("Compute");
 
 		String quartzCron = "";
@@ -79,13 +79,17 @@ public class JiraConnector {
 
 				case "date":
 					break;
+					
 				case "issueKey":
 					filteredParameters.add(parameter);
 					break;
+					
 				case "reporter":
 					break;
+					
 				case "workflowName":
 					break;
+					
 				default:
 					try{
 						//if(msg.getWorkflowID().substring(msg.getWorkflowID().lastIndexOf(".") + 1).equals(key.substring(key.lastIndexOf("_") + 1))){
@@ -105,7 +109,7 @@ public class JiraConnector {
 
 		if(!quartzCron.equals("")){		
 			myLogger.info("Scheduling new job");			
-			final WorkflowMessage schedulerMsg = msg;
+			final ServiceCallData schedulerMsg = msg;
 			Scheduler s = new Scheduler();
 
 			s.schedule(quartzCron, new Runnable() {					
