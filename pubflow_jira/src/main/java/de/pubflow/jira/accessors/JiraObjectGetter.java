@@ -11,8 +11,11 @@ import org.slf4j.LoggerFactory;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.fields.screen.FieldScreen;
+import com.atlassian.jira.issue.fields.screen.FieldScreenManager;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
+import com.atlassian.jira.project.Project;
 import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.JiraManagerPlugin;
@@ -21,6 +24,42 @@ import de.pubflow.jira.misc.Appendix;
 public class JiraObjectGetter {
 
 	private static Logger log = LoggerFactory.getLogger(JiraObjectGetter.class);
+
+	/**
+	 * @author abar
+	 * 
+	 */
+	static FieldScreen findFieldScreenByName(String name) {
+		final FieldScreenManager fieldScreenManager = ComponentAccessor.getFieldScreenManager();
+		Collection<FieldScreen> fieldScreens = fieldScreenManager.getFieldScreens();
+
+		for(FieldScreen fieldScreen : fieldScreens) {
+			if(fieldScreen.getName().equals(name)) {
+				return fieldScreen;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * @author abar
+	 * @param issueTypeName: The issue type we want to look up
+	 * @return the issueType we looked for (null if it does not exist)
+	 */
+	public static IssueType getIssueTypeByName(String issueTypeName) {
+		IssueType issueType = null;
+
+		Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
+
+		for(IssueType tempIssueType : issueTypes) {
+			if(tempIssueType.getName().equals(issueTypeName)) {
+				return tempIssueType;
+			}
+		}
+
+		return issueType;
+	}
 
 	/**
 	 * @param id
@@ -72,7 +111,7 @@ public class JiraObjectGetter {
 		}
 		return resultList;
 	}
-	
+
 	/**
 	 * @param key
 	 * @return
@@ -127,6 +166,29 @@ public class JiraObjectGetter {
 		return ComponentAccessor.getUserUtil().getUserByName(userName);
 	}
 
+	/**
+	   * searches for an issue type by its name quite expensive
+	   * 
+	   * @param name
+	   *          : the issue type's name
+	   * 
+	   * @return returns the issue type id returns null if no or more than one issue type with the
+	   *         provided name has been found
+	   * 
+	   */
+
+	  public static IssueType findIssueTypeByName(Project project, String name) {
+	    log.debug("findIssueTypeByName - name : " + name);
+	    Collection<IssueType> issueTypes = project.getIssueTypes();
+
+	    for (IssueType issueType : issueTypes) {
+	      if (issueType.getName().equals(name)) {
+	        return issueType;
+	      }
+	    }
+	    return null;
+	  }
+	
 	/**
 	 *  searches for an issue type by its name 
 	 *	quite expensive

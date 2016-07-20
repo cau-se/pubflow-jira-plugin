@@ -30,6 +30,7 @@ import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.workflow.WorkflowSchemeManager;
 
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
@@ -45,7 +46,8 @@ import de.pubflow.server.core.workflow.ServiceCallData;
  */
 public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 	private static final Logger log = LoggerFactory.getLogger(PubFlowSystem.class);
-
+	
+	public static WorkflowSchemeManager workflowSchemeManager;
 	public static IssueTypeManager issueTypeManager;
 	public static EventPublisher eventPublisher;
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
@@ -66,7 +68,6 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		JiraManagerPlugin.issueTypeManager = issueTypeManager;
 		JiraManagerPlugin.fieldScreenSchemeManager = fieldScreenSchemeManager;
 		JiraManagerPlugin.statusManager = statusManager;
@@ -143,7 +144,8 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				}
 
 				wm.setParameters(wfpm);
-				wm.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
+				//TODO
+				//wm.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
 				JiraConnector jpmp = JiraConnector.getInstance();
 				jpmp.compute(wm);
 
