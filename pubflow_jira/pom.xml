@@ -10,7 +10,7 @@
   	
 	<name>PubFlow Jira Plugin</name>
 	<groupId>de.pubflow</groupId>
-	<artifactId>jira</artifactId>
+	<artifactId>pubflow_jira</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<description></description>
 	<organization>
@@ -327,8 +327,35 @@
 			</plugin>
 			
 			<!-- CHECKSTYLE -->		
-			
-				
+			<plugin>
+			      <groupId>org.apache.maven.plugins</groupId>
+			      <artifactId>maven-checkstyle-plugin</artifactId>
+			      <!-- Lock down plugin version for build reproducibility -->
+			      <version>2.17</version>
+			      <dependencies>
+		          	<dependency>
+		              <groupId>com.puppycrawl.tools</groupId>
+		              <artifactId>checkstyle</artifactId>
+		              <version>7.0</version>
+		            </dependency>
+		          </dependencies>
+				   <executions>
+				     <execution>
+				       <id>validate</id>
+				       <phase>validate</phase>
+				       <configuration>
+				         <encoding>UTF-8</encoding>
+				         <consoleOutput>true</consoleOutput>
+				         <configLocation>config/cs-conf.xml</configLocation>
+				         <failsOnError>false</failsOnError>
+				         <linkXRef>false</linkXRef>
+				       </configuration>
+				       <goals>
+				         <goal>check</goal>
+				       </goals>
+				     </execution>
+				   </executions>
+			</plugin>				
 		</plugins>
 	</build>
 
