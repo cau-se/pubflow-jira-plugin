@@ -1,109 +1,140 @@
 package de.pubflow.server.core.workflow;
 
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.common.exceptions.WFException;
 import de.pubflow.server.common.entity.WorkflowEntity;
-import de.pubflow.server.common.entity.workflow.JBPMPubflow;
-import de.pubflow.server.common.entity.workflow.PubFlow;
+import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
+import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.repository.WorkflowProvider;
+import de.pubflow.server.core.communication.WorkflowCall;
+import de.pubflow.server.core.restConnection.WorkflowReceiver;
+import de.pubflow.server.core.restConnection.WorkflowSender;
 import de.pubflow.server.core.workflow.engines.JBPMEngine;
 
 public class WorkflowBroker {
-	
+
 	private static volatile WorkflowBroker instance;
 
 	private Logger myLogger;
 
-	private Hashtable<WFType, ArrayList<Class<? extends WorkflowEngine> >> registry;
+	private Hashtable<WFType, ArrayList<Class<? extends WorkflowEngine>>> registry;
 
-	private WorkflowBroker(){
-		myLogger = LoggerFactory.getLogger(this.getClass());	
+	private WorkflowBroker() {
+		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting WorkflowBroker");
-		registry = new Hashtable<WFType,ArrayList<Class<? extends WorkflowEngine> >>();
+		registry = new Hashtable<WFType, ArrayList<Class<? extends WorkflowEngine>>>();
 
-		ArrayList<Class<? extends WorkflowEngine> > bpmn2Engines = new ArrayList<Class<? extends WorkflowEngine> >(); 
+		ArrayList<Class<? extends WorkflowEngine>> bpmn2Engines = new ArrayList<Class<? extends WorkflowEngine>>();
 		bpmn2Engines.add(JBPMEngine.class);
 
 		registry.put(WFType.BPMN2, bpmn2Engines);
 	}
 
-
-	public static synchronized WorkflowBroker getInstance(){
-		if(instance == null){
+	public static synchronized WorkflowBroker getInstance() {
+		if (instance == null) {
 			instance = new WorkflowBroker();
 		}
 		return instance;
 	}
 
-	public void receiveWFCall(ServiceCallData wm){
+	public void receiveWFCall(ServiceCallData wm) throws WFException {
 
-		if(!wm.isValid()){
+		// TODO: meaning of the compute()-method in JiraConnector
+//		TODO register started Workflows and react to messages to them
+
+		if (!wm.isValid()) {
 			myLogger.error("Workflow NOT deployed >> Msg is not valid ");
 			return;
 		}
-		myLogger.info("Loading WF with ID (" + wm.getWorkflowID() + ")");
+		myLogger.info("Creating new Instance of the '" + wm.getWorkflowID() + "' Workflow");
+		WorkflowCall wfRestCall = new WorkflowCall();
+		//add id
+		wfRestCall.setId(UUID.randomUUID());
+
 		WorkflowProvider provider = WorkflowProvider.getInstance();
 		WorkflowEntity wfEntity = provider.getByWFID(wm.getWorkflowID());
-		WFType type = wfEntity.getType();
-
-		PubFlow myWF = null;
-
-		if(type.equals(WFType.BPMN2)){
-			myLogger.info("BPMN2.0 workflow detected");
-			myWF = new JBPMPubflow();
-			myWF.setWFID(wfEntity.getWorkflowId());
-			myWF.setWfDef(wfEntity.getgBpmn());
-			myLogger.info("Name : "+wfEntity.getWorkflowName());
-			//TODO fill var
-
-		}else if (type.equals(WFType.BPEL)) {
-			myLogger.info("BPEL workflow detected");
-			//TODO
-
-		}else{
-			myLogger.error("Workflow NOT deployed >> Type could not be resolved");
-			return;
-		}
-
-		WorkflowEngine engine = null;
-		if(type!=null){
-
-			ArrayList<Class<? extends WorkflowEngine> > engineList = registry.get(type);
-			Class<? extends WorkflowEngine> clazz = engineList.get(0);
-
-			try {
-				engine = clazz.newInstance();
-
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
+		//add type
+		wfRestCall.setType(wfEntity.getType().toString());
+		//add Workflow as byte array
+		wfRestCall.setWf(wfEntity.getgBpmn());
+		//add Callback address
 		try {
-			engine.deployWF(myWF);
-			List<WFParameter> params = wm.getParameters();
-
-			if (params!=null){
-				engine.setParams(wm.getParameters());
-			}
-			Thread wfEngineThread = new Thread(engine);
-			wfEngineThread.start();
-
-		} catch (WFException e) {
-			e.printStackTrace();
+			wfRestCall.setCallbackAdress(WorkflowReceiver.getCallbackAddress());
+		} catch (UnknownHostException | URISyntaxException e) {
+			throw new WFException("Couldn't determine current URL") ;
 		}
+		//add the parameters of the Workflow
+		wfRestCall.setWorkflowParameters(computeParameter(wm));
+		
+		new WorkflowSender().initWorkflow(wfRestCall);
+
+
+	}
+	
+	public List<WFParameter> computeParameter(ServiceCallData data){
+
+		List<WFParameter> parameters = data.getParameters();
+		List<WFParameter> filteredParameters = new LinkedList<WFParameter>();
+
+		for(WFParameter parameter : parameters){ 
+			myLogger.info(parameter.getKey() + " : " + parameter.getValue());
+			String key = parameter.getKey();
+
+			if(parameter.getPayloadClazz().equals(ParameterType.STRING)){
+
+				switch (key) {
+				case "quartzCron":
+					break;
+
+				case "status":
+					data.setState(null);
+					break;
+
+				case "assignee":
+					break;
+
+				case "eventType":
+					break;
+
+				case "date":
+					break;
+					
+				case "issueKey":
+					filteredParameters.add(parameter);
+					break;
+					
+				case "reporter":
+					break;
+					
+				case "workflowName":
+					break;
+					
+				default:
+					try{
+						//if(msg.getWorkflowID().substring(msg.getWorkflowID().lastIndexOf(".") + 1).equals(key.substring(key.lastIndexOf("_") + 1))){
+						//	parameter.setKey(key.substring(0, key.lastIndexOf("_")));
+						parameter.setKey(key);
+						filteredParameters.add(parameter);
+						//}
+					}catch(Exception e){
+						myLogger.error(e.getCause().toString() + " : " + e.getMessage());
+					}
+
+				}
+			}
+		}			
+
+		return filteredParameters;
 	}
 }

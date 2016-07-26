@@ -39,6 +39,7 @@ import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.core.jira.JiraConnector;
 import de.pubflow.server.core.workflow.ServiceCallData;
+import de.pubflow.server.core.workflow.WorkflowBroker;
 
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
@@ -135,7 +136,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
 
 			try {
-				ServiceCallData wm = new ServiceCallData();
+				ServiceCallData callData = new ServiceCallData();
 				List<WFParameter> wfpm = new LinkedList<WFParameter>();				
 
 				for (Entry<String, String> e : msg.getValues().entrySet()) {
@@ -143,11 +144,11 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 					wfpm.add(wfp);
 				}
 
-				wm.setParameters(wfpm);
+				callData.setParameters(wfpm);
 				//TODO
 				//wm.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
-				JiraConnector jpmp = JiraConnector.getInstance();
-				jpmp.compute(wm);
+				WorkflowBroker wfBroker= WorkflowBroker.getInstance();
+				wfBroker.receiveWFCall(callData);
 
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage() + " " + e.getCause());
