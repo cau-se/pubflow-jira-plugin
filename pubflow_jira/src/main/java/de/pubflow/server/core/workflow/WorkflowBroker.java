@@ -1,5 +1,6 @@
 package de.pubflow.server.core.workflow;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -69,15 +70,16 @@ public class WorkflowBroker {
 		//add Workflow as byte array
 		wfRestCall.setWf(wfEntity.getgBpmn());
 		//add Callback address
-		try {
-			wfRestCall.setCallbackAdress(WorkflowReceiver.getCallbackAddress());
-		} catch (UnknownHostException | URISyntaxException e) {
-			throw new WFException("Couldn't determine current URL") ;
-		}
+			try {
+				wfRestCall.setCallbackAddress(WorkflowReceiver.getCallbackAddress());
+			} catch (MalformedURLException | UnknownHostException e) {
+				throw new WFException("Couldn't set callback address");
+			}
+		//TODO process Jira specific data in the Jira related classes and convert them to a general entity 
 		//add the parameters of the Workflow
 		wfRestCall.setWorkflowParameters(computeParameter(wm));
 		
-		new WorkflowSender().initWorkflow(wfRestCall);
+		WorkflowSender.getInstance().initWorkflow(wfRestCall);
 
 
 	}
@@ -133,7 +135,23 @@ public class WorkflowBroker {
 
 				}
 			}
-		}			
+		}		
+//		TODO this case is not considered and may be needed in the future
+//		msg.setParameters(filteredParameters);
+//
+//		if(!quartzCron.equals("")){		
+//			myLogger.info("Scheduling new job");			
+//			final ServiceCallData schedulerMsg = msg;
+//			Scheduler s = new Scheduler();
+//
+//			s.schedule(quartzCron, new Runnable() {					
+//				public void run() {
+//					PubFlowJob.execute(schedulerMsg);
+//				}
+//			});
+//			s.start();
+//
+//		}
 
 		return filteredParameters;
 	}

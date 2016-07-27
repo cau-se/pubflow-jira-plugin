@@ -3,7 +3,7 @@
  */
 package de.pubflow.server.core.communication;
 
-import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +36,7 @@ public class WorkflowCall {
 	/**
 	 * Url to response to
 	 */
-	private URI callbackAdress;
+	private URL callbackAddress;
 
 	public WorkflowCall() {
 	}
@@ -78,12 +78,12 @@ public class WorkflowCall {
 		return "WF message: id: " + id + " wf: " + wf;
 	}
 
-	public URI getCallbackAdress() {
-		return callbackAdress;
+	public URL getCallbackAddress() {
+		return callbackAddress;
 	}
 
-	public void setCallbackAdress(URI callbackAdress) {
-		this.callbackAdress = callbackAdress;
+	public void setCallbackAddress(URL callbackAddress) {
+		this.callbackAddress = callbackAddress;
 	}
 
 }

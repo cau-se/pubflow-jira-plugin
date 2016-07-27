@@ -1,12 +1,12 @@
 package de.pubflow.server.core.restConnection;
 
 import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
@@ -21,6 +21,7 @@ public class WorkflowReceiver {
 	 
 	//TODO
 	
+	@PUT
 	@Path(updateAddress)
 	@Consumes("application/json")
 	public Response receiveWorkflowUpdate(){
@@ -29,11 +30,11 @@ public class WorkflowReceiver {
 	
 	/**
 	 * 
-	 * @return the complete URI for callback of the Workflow engine
+	 * @return the complete URL for callback of the Workflow engine
+	 * @throws MalformedURLException 
 	 * @throws UnknownHostException
-	 * @throws URISyntaxException
 	 */
-	public static URI getCallbackAddress() throws UnknownHostException, URISyntaxException{
-		return new URI(InetAddress.getLocalHost().getHostAddress().toString()+updateAddress);
+	public static URL getCallbackAddress() throws MalformedURLException, UnknownHostException {
+		return new URL(InetAddress.getLocalHost().getHostAddress().toString()+updateAddress);
 	}
 }
