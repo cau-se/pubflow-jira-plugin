@@ -208,6 +208,28 @@
 				</configuration>
 				<extensions>true</extensions>
 			</plugin>
+
+			<!-- PMD -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>${pmd.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>de.chw</groupId>
+						<artifactId>pmd.ruleset</artifactId>
+						<version>0.0.1-SNAPSHOT</version>
+						<scope>system</scope>
+						<systemPath>${project.basedir}/../config/pmd/CustomPmdRules_1.0.0.201507080630.jar</systemPath>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<rulesets>
+						<ruleset>${project.basedir}/../config/pmd-ruleset.xml</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>	
+
 		</plugins>
 	</build>
 
