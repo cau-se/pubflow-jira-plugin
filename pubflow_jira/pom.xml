@@ -6,89 +6,27 @@
 		<groupId>de.pubflow</groupId>
 		<artifactId>pubflow</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-  	</parent>	
-  	
+	</parent>
+
 	<name>PubFlow Jira Plugin</name>
-	<groupId>de.pubflow</groupId>
 	<artifactId>pubflow_jira</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<description></description>
-	<organization>
-		<name>Christian-Albrechts-Universität zu Kiel - Arbeitsgruppe Software Engineering</name>
-		<url>http://www.pubflow.de</url>
-	</organization>
-	<inceptionYear>2016</inceptionYear>
-	
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>LICENSE</url>
-		</license>
-	</licenses>
-
+	<version>${pubflow.jira.version}</version>
 	<packaging>atlassian-plugin</packaging>
-	<url>http://maven.apache.org</url>
 	<modelVersion>4.0.0</modelVersion>
-
-	<repositories>
-		<repository>
-			<id>atlassian-public</id>
-			<url>https://m2proxy.atlassian.com/repository/public</url>
-		</repository>
-	</repositories>
-
-	<developers>
-		<developer>
-			<id>mad</id>
-			<name>Marc Adolf</name>
-			<email>mad@informatik.uni-kiel.de</email>
-			<organization>Kiel University</organization>
-			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/team/marc-adolf</organizationUrl>
-			<timezone>Europe/Berlin</timezone>
-			<roles>
-				<role>PMC Member</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>arl</id>
-			<name>Arnd Plumhoff</name>
-			<email>arl@informatik.uni-kiel.de</email>
-			<organization>Kiel University</organization>
-			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/arnd-plumhoff</organizationUrl>
-			<timezone>Europe/Berlin</timezone>
-			<roles>
-				<role>PMC Member</role>
-			</roles>
-		</developer>
-	</developers>
-
-	<contributors>
-		<contributor>
-			<name>Alexander Barbie</name>
-			<email>abar@informatik.uni-kiel.de</email>
-			<timezone>Europe/Berlin</timezone>
-			<roles>
-				<role>Committer</role>
-			</roles>
-		</contributor>
-	</contributors>
 
 	<dependencies>
 		<!-- BASICS -->
 		<dependency>
 			<groupId>de.pubflow</groupId>
 			<artifactId>common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
 		</dependency>
 
 		<!-- JIRA -->
@@ -115,7 +53,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -225,14 +162,13 @@
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- QUARTZ -->
 		<dependency>
-		    <groupId>org.quartz-scheduler</groupId>
-		    <artifactId>quartz</artifactId>
-		    <version>2.2.1</version>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.1</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -240,12 +176,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<showDeprecation>true</showDeprecation>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -256,6 +186,8 @@
 				<configuration>
 					<productVersion>${jira.version}</productVersion>
 					<productDataVersion>${jira.version}</productDataVersion>
+					<enableFastdev>false</enableFastdev>
+					<enableQuickReload>true</enableQuickReload>
 					<systemPropertyVariables>
 						<atlassian.mail.senddisabled>false</atlassian.mail.senddisabled>
 					</systemPropertyVariables>
@@ -265,14 +197,6 @@
 							<value>sun.*,com.sun.*,org.w3c.*,javax.*</value>
 						</property>
 					</systemProperties>
-					<enableFastdev>false</enableFastdev>
-					<pluginArtifacts>
-						<pluginArtifact>
-							<groupId>de.pubflow</groupId>
-							<artifactId>cvoo-rest</artifactId>
-							<version>0.0.1-SNAPSHOT</version>
-						</pluginArtifact>
-					</pluginArtifacts>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -284,89 +208,10 @@
 				</configuration>
 				<extensions>true</extensions>
 			</plugin>
-			
-			<!-- JAVADOC -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${javadoc.version}</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>javadoc</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		    
-			<!--  LICENSE HEADER -->
-			<plugin>
-			    <groupId>com.mycila</groupId>
-			    <artifactId>license-maven-plugin</artifactId>
-			    <version>2.5</version>
-				<configuration>
-					<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-					<properties>
-						<owner>Marc Adolf, Arnd Plumhoff</owner>
-						<email>http://www.pubflow.uni-kiel.de/</email>
-					</properties>
-					<includes>
-						<include>**/*.java</include>
-					</includes>
-				</configuration>
-			    <executions>
-			        <execution>
-			        	<id>license-validate</id>
-				       	<phase>validate</phase>
-			            <goals>
-			                <goal>format</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin>
-			
-			<!-- CHECKSTYLE -->		
-			<plugin>
-			      <groupId>org.apache.maven.plugins</groupId>
-			      <artifactId>maven-checkstyle-plugin</artifactId>
-			      <!-- Lock down plugin version for build reproducibility -->
-			      <version>2.17</version>
-			      <dependencies>
-		          	<dependency>
-		              <groupId>com.puppycrawl.tools</groupId>
-		              <artifactId>checkstyle</artifactId>
-		              <version>7.0</version>
-		            </dependency>
-		          </dependencies>
-				   <executions>
-				     <execution>
-				       <id>validate</id>
-				       <phase>validate</phase>
-				       <configuration>
-				         <encoding>UTF-8</encoding>
-				         <consoleOutput>true</consoleOutput>
-				         <configLocation>config/cs-conf.xml</configLocation>
-				         <failsOnError>false</failsOnError>
-				         <linkXRef>false</linkXRef>
-				       </configuration>
-				       <goals>
-				         <goal>check</goal>
-				       </goals>
-				     </execution>
-				   </executions>
-			</plugin>				
 		</plugins>
 	</build>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<javadocOutputDir>apidocs</javadocOutputDir>
-		<checkstyle.version>2.17</checkstyle.version>
-		<findbugs.version>3.0.3</findbugs.version>
-		<pmd.version>3.6</pmd.version>
-		<javadoc.version>2.10.3</javadoc.version>
-		<java.version>1.8</java.version>
 		<!-- <amps.version>4.2.5</amps.version> -->
 		<amps.version>6.2.4</amps.version>
 		<!-- <jira.version>5.2.1</jira.version> -->
