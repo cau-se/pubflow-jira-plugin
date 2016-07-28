@@ -1,21 +1,28 @@
+/**
+ * Copyright (C) 2016 Marc Adolf, Arnd Plumhoff (http://www.pubflow.uni-kiel.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.pubflow.jira.accessors;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.ofbiz.core.entity.GenericEntityException;
-import org.ofbiz.core.entity.GenericValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.atlassian.jira.user.UserDetails;
 import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.exception.OperationNotPermittedException;
 import com.atlassian.crowd.exception.embedded.InvalidGroupException;
@@ -23,7 +30,6 @@ import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.exception.AddException;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
-import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueFieldConstants;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.context.GlobalIssueContext;
@@ -40,33 +46,18 @@ import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeImpl;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeItem;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeItemImpl;
 import com.atlassian.jira.issue.fields.screen.FieldScreenTab;
-import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenScheme;
-import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeEntity;
-import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeEntityImpl;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.operation.IssueOperations;
-import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.user.ApplicationUsers;
+import com.atlassian.jira.user.UserDetails;
 import com.atlassian.jira.workflow.AssignableWorkflowScheme;
-import com.atlassian.jira.workflow.AssignableWorkflowScheme.Builder;
-import com.atlassian.jira.workflow.ConfigurableJiraWorkflow;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
-import com.atlassian.jira.workflow.WorkflowUtil;
-import com.opensymphony.workflow.FactoryException;
-import com.opensymphony.workflow.loader.ActionDescriptor;
-import com.opensymphony.workflow.loader.ConditionDescriptor;
-import com.opensymphony.workflow.loader.ConditionsDescriptor;
-import com.opensymphony.workflow.loader.DescriptorFactory;
-import com.opensymphony.workflow.loader.RestrictionDescriptor;
-import com.opensymphony.workflow.loader.StepDescriptor;
 
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.Appendix;
-import de.pubflow.jira.misc.ConditionDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 
 public class JiraObjectCreator {
@@ -352,10 +343,8 @@ public class JiraObjectCreator {
 		return fieldScreen;
 	}
 
-	private static FieldScreenScheme createNewFieldScreenScheme(
-			FieldScreen fieldScreenCreate, FieldScreen fieldScreenEdit,
-			FieldScreen fieldScreenView, String fieldScreenSchemeName)
-					throws Exception {
+	private static FieldScreenScheme createNewFieldScreenScheme(FieldScreen fieldScreenCreate,
+			FieldScreen fieldScreenEdit, FieldScreen fieldScreenView, String fieldScreenSchemeName) throws Exception {
 		log.info("generateNewFieldScreenScheme - fieldScreenSchemeName : "
 				+ fieldScreenSchemeName);
 

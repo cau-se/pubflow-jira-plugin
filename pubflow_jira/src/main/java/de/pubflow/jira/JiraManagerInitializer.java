@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2016 Marc Adolf, Arnd Plumhoff (http://www.pubflow.uni-kiel.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.pubflow.jira;
 
 import java.io.IOException;
@@ -21,8 +36,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.atlassian.crowd.embedded.api.Group;
-import com.atlassian.crowd.embedded.api.User;
-import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.jira.bc.project.ProjectCreationData;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -41,24 +54,15 @@ import com.atlassian.jira.project.Project;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
-import com.atlassian.mail.MailProtocol;
-import com.atlassian.mail.server.impl.SMTPMailServerImpl;
-import com.atlassian.plugin.event.events.PluginEnabledEvent;
 import com.opensymphony.workflow.loader.ActionDescriptor;
 
-import de.pubflow.common.PropLoader;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.accessors.JiraObjectRemover;
 import de.pubflow.jira.misc.Appendix;
-import de.pubflow.jira.misc.ConditionDefinition;
-import de.pubflow.jira.misc.ConditionDefinition.ConditionDefinitionType;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
-import de.pubflow.server.common.repository.ScheduledWorkflowProvider;
-import de.pubflow.server.core.jira.JiraConnector;
-import de.pubflow.server.core.workflow.ServiceCallData;
 
 /**
  * 
@@ -83,7 +87,6 @@ public class JiraManagerInitializer implements InitializingBean, DisposableBean{
 
 	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
 	private static Logger log = Logger.getLogger(JiraManagerInitializer.class);
-	private static boolean inited = false;
 	private static EventPublisher eventPublisher;
 
 	public JiraManagerInitializer(EventPublisher eventPublisher) {

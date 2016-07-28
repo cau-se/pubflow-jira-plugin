@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2016 Marc Adolf, Arnd Plumhoff (http://www.pubflow.uni-kiel.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.pubflow.jira.accessors;
 
 import java.io.File;
@@ -41,13 +56,11 @@ import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenScheme;
 import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeEntity;
 import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeEntityImpl;
 import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeManager;
-import com.atlassian.jira.issue.history.ChangeItemBean;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.workflow.ConfigurableJiraWorkflow;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
@@ -59,18 +72,17 @@ import de.pubflow.jira.misc.Appendix;
 
 public class JiraObjectManipulator {
 
-
-
 	/**
 	 * Add a User to a group in Jira
+	 * 
 	 * @author abar
 	 * 
-	 * @param name: the name of the group we want to creat
+	 * @param name:
+	 *            the name of the group we want to creat
 	 * 
 	 * @return returns the created Group object
 	 */
-	public static Group createGroup(String name)
-			throws OperationNotPermittedException, InvalidGroupException {
+	public static Group createGroup(String name) throws OperationNotPermittedException, InvalidGroupException {
 		Group group = ComponentAccessor.getGroupManager().getGroup(name);
 		if (group == null) {
 			group = ComponentAccessor.getGroupManager().createGroup(name);
@@ -80,14 +92,14 @@ public class JiraObjectManipulator {
 	}
 
 	private static Logger log = LoggerFactory.getLogger(JiraObjectManipulator.class);
+
 	/**
 	 * @author abar
-	 * @param issueTypeScheme : the issue type Scheme we map to the project
+	 * @param issueTypeScheme
+	 *            : the issue type Scheme we map to the project
 	 */
-	public static void addIssueTypeSchemeToProject(FieldConfigScheme issueTypeScheme,
-			Project project) {
-		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor
-				.getIssueTypeSchemeManager();
+	public static void addIssueTypeSchemeToProject(FieldConfigScheme issueTypeScheme, Project project) {
+		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final FieldConfigSchemeManager fieldConfigSchemeManager = ComponentAccessor.getFieldConfigSchemeManager();
 		final FieldManager fieldManager = ComponentAccessor.getFieldManager();
 
@@ -100,49 +112,60 @@ public class JiraObjectManipulator {
 			log.debug("projectIds: $projectIds");
 			Long[] ids = new Long[projectIds.size()];
 
-			List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true,
-					projectIds.toArray(ids), ComponentAccessor.getProjectManager());
-			fieldConfigSchemeManager.updateFieldConfigScheme(issueTypeScheme,
-					contexts, fieldManager.getConfigurableField(IssueFieldConstants.ISSUE_TYPE));
+			List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true, projectIds.toArray(ids),
+					ComponentAccessor.getProjectManager());
+			fieldConfigSchemeManager.updateFieldConfigScheme(issueTypeScheme, contexts,
+					fieldManager.getConfigurableField(IssueFieldConstants.ISSUE_TYPE));
 		}
 	}
 
-
-
 	/**
 	 * Creates a new screen scheme for an issue type in Jira.
+	 * 
 	 * @author abar
-	 * @param project : the project which uses the issueType
-	 * @param issueTypeScheme : the issue type scheme that will be used
-	 * @param issueType : the issue type which will be used 
+	 * @param project
+	 *            : the project which uses the issueType
+	 * @param issueTypeScheme
+	 *            : the issue type scheme that will be used
+	 * @param issueType
+	 *            : the issue type which will be used
 	 * @return The issue type screen scheme which was created
-	 */ 
-	public static IssueTypeScreenScheme addIssueTypeScreenSchemeToProject(Project project, FieldScreenScheme fieldScreenScheme, IssueType issueType) {
+	 */
+	public static IssueTypeScreenScheme addIssueTypeScreenSchemeToProject(Project project,
+			FieldScreenScheme fieldScreenScheme, IssueType issueType) {
 
-		final IssueTypeScreenSchemeManager issueTypeScreenSchemeManager =  ComponentAccessor.getIssueTypeScreenSchemeManager();
+		final IssueTypeScreenSchemeManager issueTypeScreenSchemeManager = ComponentAccessor
+				.getIssueTypeScreenSchemeManager();
 		IssueTypeScreenScheme issueTypeScreenScheme = issueTypeScreenSchemeManager.getIssueTypeScreenScheme(project);
 
-		if(issueTypeScreenScheme == null){
-			//set default issue type screen scheme
+		if (issueTypeScreenScheme == null) {
+			// set default issue type screen scheme
 			issueTypeScreenSchemeManager.associateWithDefaultScheme(project);
 			issueTypeScreenScheme = issueTypeScreenSchemeManager.getIssueTypeScreenScheme(project);
 		}
 
-		//compose
-		IssueTypeScreenSchemeEntity issueTypeScreenSchemeEntity = new IssueTypeScreenSchemeEntityImpl(issueTypeScreenSchemeManager, (GenericValue) null, JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getConstantsManager());
+		// compose
+		IssueTypeScreenSchemeEntity issueTypeScreenSchemeEntity = new IssueTypeScreenSchemeEntityImpl(
+				issueTypeScreenSchemeManager, (GenericValue) null, JiraManagerPlugin.fieldScreenSchemeManager,
+				ComponentAccessor.getConstantsManager());
 		issueTypeScreenSchemeEntity.setIssueTypeId(issueType.getId());
 		issueTypeScreenSchemeEntity.setFieldScreenScheme(fieldScreenScheme);
 		issueTypeScreenScheme.addEntity(issueTypeScreenSchemeEntity);
 
 		return issueTypeScreenScheme;
-	} 
+	}
+
 	/**
 	 * Add custom statuses to Jira
+	 * 
 	 * @author abar
-	 * @param statuses : a list of all statuses we want to add to our Jira configuration
-	 * @param projectKey : the project we add the statuses to
+	 * @param statuses
+	 *            : a list of all statuses we want to add to our Jira
+	 *            configuration
+	 * @param projectKey
+	 *            : the project we add the statuses to
 	 * @return A Map of statuses and their ids
-	 */ 
+	 */
 	public static Map<String, String> addStatuses(String projectKey, List<String> statuses) {
 		Map<String, String> statusMap = new HashMap<String, String>();
 
@@ -154,8 +177,8 @@ public class JiraObjectManipulator {
 			Status tempStatus = JiraObjectGetter.getStatusByName(projectKey, status);
 
 			if (tempStatus == null) {
-				tempStatus = statusManager.createStatus(status, "",
-						"/images/icons/status_open.gif", statusManagerCategory.getStatusCategory(new Long(catId)));
+				tempStatus = statusManager.createStatus(status, "", "/images/icons/status_open.gif",
+						statusManagerCategory.getStatusCategory(new Long(catId)));
 			}
 			statusMap.put(status, tempStatus.getId());
 		}
@@ -164,13 +187,16 @@ public class JiraObjectManipulator {
 
 	/**
 	 * Maps the workflow scheme of a given workflow to a given project.
+	 * 
 	 * @author abar
-	 * @param workflow: the workflow we take to map its scheme to a project
-	 * @param project: the project we add the given workflow scheme to
-	 */  
+	 * @param workflow:
+	 *            the workflow we take to map its scheme to a project
+	 * @param project:
+	 *            the project we add the given workflow scheme to
+	 */
 	public static void addWorkflowToProject(WorkflowScheme workflowScheme, Project project) {
 		Scheme scheme = ComponentAccessor.getWorkflowSchemeManager().getSchemeObject(workflowScheme.getId());
-		if(scheme != null && project != null) {
+		if (scheme != null && project != null) {
 			ComponentAccessor.getWorkflowSchemeManager().addSchemeToProject(project, scheme);
 		}
 	}
@@ -185,19 +211,22 @@ public class JiraObjectManipulator {
 	 * @param user
 	 * @return
 	 */
-	public static long addAttachment(String issueKey, byte [] barray, String fileName, String type, ApplicationUser user){
+	public static long addAttachment(String issueKey, byte[] barray, String fileName, String type,
+			ApplicationUser user) {
 
 		try {
 			MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 
-			//TODO : path os?
+			// TODO : path os?
 			String filePath = "/tmp/pubflow_tmp" + new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32);
 			FileOutputStream stream = new FileOutputStream(filePath);
 
-			stream.write(barray);	
+			stream.write(barray);
 			stream.close();
-			File barrayFile = new File(filePath); 
-			ChangeItemBean attachment = ComponentAccessor.getAttachmentManager().createAttachment(new CreateAttachmentParamsBean(barrayFile, fileName + type, "text/plain", user, issue, false, false, null, new Timestamp(System.currentTimeMillis()), true));
+			File barrayFile = new File(filePath);
+			ComponentAccessor.getAttachmentManager()
+					.createAttachment(new CreateAttachmentParamsBean(barrayFile, fileName + type, "text/plain", user,
+							issue, false, false, null, new Timestamp(System.currentTimeMillis()), true));
 
 			// TODO: no id?
 			return 0L;
@@ -211,13 +240,13 @@ public class JiraObjectManipulator {
 	/**
 	 * Adds a new comment to an issue
 	 * 
-	 * @param issueKey 
-	 * @param comment 
+	 * @param issueKey
+	 * @param comment
 	 * @param user
 	 * @return returns if the new comment has been added successful
 	 */
 
-	public static Comment addIssueComment(String issueKey, String comment, ApplicationUser user){
+	public static Comment addIssueComment(String issueKey, String comment, ApplicationUser user) {
 		log.info("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
 
 		if (user != null) {
@@ -240,20 +269,21 @@ public class JiraObjectManipulator {
 
 	/**
 	 * Creates a new workflow in Jira
+	 * 
 	 * @author arl, abar
 	 * @param projectKey
 	 * @param workflowXML
 	 * @return returns the created JiraWorkflow object
 	 */
-	public static JiraWorkflow addWorkflow(String projectKey, String workflowXML,
-			ApplicationUser user) {
+	public static JiraWorkflow addWorkflow(String projectKey, String workflowXML, ApplicationUser user) {
 
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + Appendix.WORKFLOW);
 
 		if (jiraWorkflow == null && workflowXML != null) {
 			try {
 				jiraWorkflow = new ConfigurableJiraWorkflow(projectKey + Appendix.WORKFLOW,
-						WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), ComponentAccessor.getWorkflowManager());
+						WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML),
+						ComponentAccessor.getWorkflowManager());
 				ComponentAccessor.getWorkflowManager().createWorkflow(user, jiraWorkflow);
 			} catch (FactoryException e) {
 				e.printStackTrace();
@@ -263,42 +293,51 @@ public class JiraObjectManipulator {
 		return jiraWorkflow;
 	}
 
-	  /**
-	   * Add a User to a group in Jira
-	   * @author abar
-	   * 
-	   * @param pubFlowUser : a user we want to a group
-	   * @param pGroup: the name of a group we want to add an user to 
-	   * 
-	   */
-	  public static void addUserToGroup(ApplicationUser pubflowUser, String pGroup)
-	      throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
-	      OperationNotPermittedException, OperationFailedException {
-	    Group group = ComponentAccessor.getGroupManager().getGroup(pGroup);
-	    if (group != null) {
-	    	ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-	    }
-	  }
+	/**
+	 * Add a User to a group in Jira
+	 * 
+	 * @author abar
+	 * 
+	 * @param pubFlowUser
+	 *            : a user we want to a group
+	 * @param pGroup:
+	 *            the name of a group we want to add an user to
+	 * 
+	 */
+	public static void addUserToGroup(ApplicationUser pubflowUser, String pGroup)
+			throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
+			OperationNotPermittedException, OperationFailedException {
+		Group group = ComponentAccessor.getGroupManager().getGroup(pGroup);
+		if (group != null) {
+			ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
+		}
+	}
 
-	  /**
-	   * Add a User to a group in Jira
-	   * @author abar
-	   * 
-	   * @param pubFlowUser : a user we want to a group
-	   * @param group: the group we want to add an user to 
-	   * 
-	   */
-	  public static void addUserToGroup(ApplicationUser pubflowUser, Group group)
-	      throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
-	      OperationNotPermittedException, OperationFailedException {
-		  ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-	  }
+	/**
+	 * Add a User to a group in Jira
+	 * 
+	 * @author abar
+	 * 
+	 * @param pubFlowUser
+	 *            : a user we want to a group
+	 * @param group:
+	 *            the group we want to add an user to
+	 * 
+	 */
+	public static void addUserToGroup(ApplicationUser pubflowUser, Group group)
+			throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
+			OperationNotPermittedException, OperationFailedException {
+		ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
+	}
 
 	/**
 	 * Changes the status of an issue
 	 * 
-	 * @param issueKey  : issue key
-	 * @param statusName : has to be a preexisiting status name, eg. provided by getStatusNames(..) 
+	 * @param issueKey
+	 *            : issue key
+	 * @param statusName
+	 *            : has to be a preexisiting status name, eg. provided by
+	 *            getStatusNames(..)
 	 * @return returns true if the change has been processed successfully
 	 */
 

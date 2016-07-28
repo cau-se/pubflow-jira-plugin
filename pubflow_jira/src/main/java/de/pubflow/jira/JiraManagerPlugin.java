@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2016 Marc Adolf, Arnd Plumhoff (http://www.pubflow.uni-kiel.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.pubflow.jira;
 
 import java.io.BufferedReader;
@@ -37,7 +52,6 @@ import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.core.jira.JiraConnector;
 import de.pubflow.server.core.workflow.ServiceCallData;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 
@@ -125,14 +139,15 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 	 * @throws Exception 
 	 */
 
+	@SuppressWarnings("deprecation")
 	@EventListener
 	public void onIssueEvent(IssueEvent issueEvent) {
 		InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
 
 		Issue issue = issueEvent.getIssue();
-		
+
 		if (
-				//(issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) && ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName() != "jira") ||
+				//TODO deprecated
 				issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
 
 			try {
@@ -143,7 +158,9 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
 					wfpm.add(wfp);
 				}
-
+				
+				callData.setJiraKey(issue.getKey());
+				
 				callData.setParameters(wfpm);
 				//TODO
 				//wm.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));

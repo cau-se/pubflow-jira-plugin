@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Marc Adolf, Arnd Plumhoff (http://www.pubflow.uni-kiel.de/)
+* Copyright (C) 2016 Marc Adolf, Arnd Plumhoff (http://www.pubflow.uni-kiel.de/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
-package de.pubflow.workflow.engine.jbpm;
+package de.pubflow.server.common.enumeration;
 
-import org.junit.After;
-import org.junit.Before;
-
-/**
- * @author pcb
- *
- */
-public class JBPMEngineTest {
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
+public enum WorkflowState{
+	REGISTERED,
+	RUNNING,
+	ERROR,
+	FINISHED;
+	
 }

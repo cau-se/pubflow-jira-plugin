@@ -13,37 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.pubflow.server.core.jira;
+package de.pubflow.server.core.communication;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.UUID;
 
-public class JiraConnector {
+/**
+ * Represents the message to the Workflow engine, which updates the Workflow and
+ * triggers events
+ * 
+ * @author Marc Adolf
+ *
+ */
+public class WorkflowUpdateCall {
+	// TODO
 
-	private static Logger myLogger = LoggerFactory.getLogger(JiraConnector.class.getSimpleName());
-	private static JiraConnector jiraConnector;
+	private UUID id;
 
-	static {
-		myLogger = LoggerFactory.getLogger(JiraConnector.class);
+	public WorkflowUpdateCall() {
 	}
 
-	public JiraConnector(){
+	public UUID getId() {
+		return id;
 	}
 
-	public static JiraConnector getInstance(){
-		if (jiraConnector == null) {
-			jiraConnector = new JiraConnector();
-		}
-		return jiraConnector;			
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
-	public void start() throws Exception {		
-		//Scheduler.getInstance().start();
-	}
-
-	public void stop(){
-		//Scheduler.getInstance().shutdown();
-	}
-
-	
 }
