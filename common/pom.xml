@@ -40,7 +40,15 @@
 						<ruleset>${project.basedir}/../config/pmd-ruleset.xml</ruleset>
 					</rulesets>
 				</configuration>
-			</plugin>	
+			</plugin>
+			<!-- Findbugs -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<configuration>
+					<excludeFilterFile>${project.basedir}/../config/fb-filter.xml</excludeFilterFile>
+				</configuration>
+			</plugin>					
 		</plugins>	
 	</build>
 
