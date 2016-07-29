@@ -36,6 +36,23 @@
       <actions>
         <action id="11" name="Send to Data Management">
           <meta name="jira.description"></meta>
+            <conditions type="AND">
+              <condition type="class">
+                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
+                <arg name="group">datamanager</arg>
+              </condition>
+              <condition type="class">
+                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
+                <arg name="group">scientists</arg>
+              </condition>              
+            </conditions>
+		      </restrict-to>
+	      <validators>
+	        <validator name="" type="class">
+	          <arg name="class.name">de.pubflow.jira.misc.IssueAttachmentValidator</arg>
+	          <arg name="issuetype">OCN</arg>
+	        </validator>
+	      </validators>  
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="2">
               <post-functions>
