@@ -18,6 +18,7 @@ package de.pubflow.server.common.enumeration;
 public enum WorkflowState{
 	REGISTERED,
 	RUNNING,
+	DEPLOY_ERROR,
 	ERROR,
 	FINISHED;
 	

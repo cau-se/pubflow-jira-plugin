@@ -158,11 +158,10 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
 					wfpm.add(wfp);
 				}
-				
+				//to enable mapping to the jira ticket
 				callData.setJiraKey(issue.getKey());
 				
 				callData.setParameters(wfpm);
-				//TODO
 				//wm.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
 				WorkflowBroker wfBroker= WorkflowBroker.getInstance();
 				wfBroker.receiveWFCall(callData);
@@ -185,7 +184,6 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 						+ "about your data as a comment:\nTitle, Authors, Cruise\n\nAfter that you can start the processing by pressing the "
 						+ "\"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically."
 						+ "\nThank you!";
-
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
 //				JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(), new byte[]{0}, "rawdata", "txt", user);
 			} else {

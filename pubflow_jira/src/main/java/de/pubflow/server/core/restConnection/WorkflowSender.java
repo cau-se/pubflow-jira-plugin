@@ -85,8 +85,9 @@ public class WorkflowSender {
 			myLogger.error("Could not deplay new Workflow with ID: " + wfCall.getId().toString());
 			myLogger.error(e.toString());
 			throw new WFRestException("Workflow could not be started");
+		} finally {
+			myLogger.info(response);
 		}
-		myLogger.info(response);
 	}
 
 	/**
