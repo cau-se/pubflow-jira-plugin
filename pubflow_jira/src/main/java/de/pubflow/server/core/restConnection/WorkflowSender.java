@@ -24,8 +24,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import de.pubflow.server.common.exceptions.WFRestException;
-import de.pubflow.server.core.communication.WorkflowCall;
-import de.pubflow.server.core.communication.WorkflowUpdateCall;
+import de.pubflow.server.core.restMessages.WorkflowCall;
+import de.pubflow.server.core.restMessages.WorkflowUpdateCall;
 
 /**
  * The WorkflowSender is responsible for the outgoing communication with the

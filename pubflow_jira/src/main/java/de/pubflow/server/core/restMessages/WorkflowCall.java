@@ -16,11 +16,13 @@
 /**
  * 
  */
-package de.pubflow.server.core.communication;
+package de.pubflow.server.core.restMessages;
 
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import de.pubflow.server.common.entity.workflow.WFParameter;
 
@@ -30,6 +32,7 @@ import de.pubflow.server.common.entity.workflow.WFParameter;
  *
  * @author Marc Adolf
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class WorkflowCall {
 
 	/**
