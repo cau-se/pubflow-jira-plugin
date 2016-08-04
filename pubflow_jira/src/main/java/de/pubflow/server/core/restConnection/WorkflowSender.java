@@ -41,7 +41,7 @@ public class WorkflowSender {
 
 	private WorkflowSender() throws WFRestException {
 		myLogger = LoggerFactory.getLogger(this.getClass());
-		// TODO load url from file
+		// TODO load url from file /config
 		try {
 			targetURL = new URL("http://localhost:8080/executeNewWF");
 		} catch (MalformedURLException e) {
@@ -53,14 +53,16 @@ public class WorkflowSender {
 	 * Accesses the singleton and initializes it if needed
 	 * 
 	 * @return the one and only {@link WorkflowSender}
+	 * @throws WFRestException 
 	 */
-	synchronized public static WorkflowSender getInstance() {
+	synchronized public static WorkflowSender getInstance() throws WFRestException {
 		if (instance == null) {
 			try {
 				instance = new WorkflowSender();
 			} catch (WFRestException e) {
 				// TODO better exception handling
 				e.printStackTrace();
+				throw e;
 			}
 		}
 		return instance;
@@ -78,9 +80,9 @@ public class WorkflowSender {
 	public void initWorkflow(WorkflowCall wfCall) throws WFRestException {
 		myLogger.info("Trying to deploy workflow with ID: " + wfCall.getId());
 		RestTemplate restTemplate = new RestTemplate();
-		String response = "";
+		String response = "Initial REST call response: ";
 		try {
-			response = restTemplate.postForObject(targetURL.toString(), wfCall, String.class);
+			response += restTemplate.postForObject(targetURL.toString(), wfCall, String.class);
 		} catch (RestClientException e) {
 			myLogger.error("Could not deplay new Workflow with ID: " + wfCall.getId().toString());
 			myLogger.error(e.toString());
@@ -100,9 +102,9 @@ public class WorkflowSender {
 	 */
 	public void updateWorkflow(WorkflowUpdateCall wfUpdate) throws WFRestException {
 		RestTemplate restTemplate = new RestTemplate();
-		String response = "";
+		String response = "Update REST call response: ";
 		try {
-			response = restTemplate.postForObject(targetURL.toString(), wfUpdate, String.class);
+			response += restTemplate.postForObject(targetURL.toString(), wfUpdate, String.class);
 		} catch (RestClientException e) {
 			myLogger.error("Could not deplay new Workflow with ID: " + wfUpdate.getId().toString());
 			myLogger.error(e.toString());

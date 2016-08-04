@@ -76,7 +76,7 @@ public class WorkflowBroker {
 	 */
 	public void receiveWFCall(ServiceCallData wm) throws WFException {
 
-		// TODO Save Workflows in DB and load from it
+		// TODO Save Workflows in DB and load from it on startup
 
 		if (!wm.isValid()) {
 			myLogger.error("Workflow NOT deployed >> Msg is not valid ");
@@ -84,14 +84,6 @@ public class WorkflowBroker {
 		}
 		myLogger.info("Creating new Instance of the '" + wm.getWorkflowID() + "' Workflow");
 		WorkflowCall wfRestCall = new WorkflowCall();
-
-		// add Callback address to the REST call
-		try {
-			wfRestCall.setCallbackAddress(WorkflowReceiver.getCallbackAddress());
-		} catch (MalformedURLException | UnknownHostException e) {
-			myLogger.error("Could not set callback address for the REST call");
-			throw new WFException("Could not set callback address");
-		}
 
 		myLogger.info("Saving and deploying new Workflow");
 		WorkflowStorage storage = WorkflowStorage.getInstance();
@@ -105,23 +97,36 @@ public class WorkflowBroker {
 			myLogger.debug("Workflow ID already exists. Updating new ID.");
 		}
 
+		// add Callback address to the REST call
+		try {
+			wfRestCall.setCallbackAddress(WorkflowReceiver.getCallbackAddress());
+		} catch (MalformedURLException | UnknownHostException e) {
+			myLogger.error("Could not set callback address for the REST call");
+			throw new WFException("Could not set callback address");
+		}
+
 		WorkflowProvider provider = WorkflowProvider.getInstance();
 		WorkflowEntity wfEntity = provider.getByWFID(wm.getWorkflowID());
+		if(wfEntity == null){
+			myLogger.error("Workflow +'"+wm.getWorkflowID() +"' not found");
+			throw new WFException("Workflow +'"+wm.getWorkflowID() +"' not found");
+		}
 
 		// set parameters for the REST call
 		wfRestCall.setType(wfEntity.getType().toString());
 		wfRestCall.setWf(wfEntity.getgBpmn());
 		wfRestCall.setId(wm.getWorkflowInstanceId());
 		wfRestCall.setWorkflowParameters(computeParameter(wm));
+		
+		wm.setState(WorkflowState.RUNNING);
 
 		try {
-			wm.setState(WorkflowState.RUNNING);
 			WorkflowSender.getInstance().initWorkflow(wfRestCall);
+			myLogger.info("Workflow deployed");
 		} catch (WFRestException e) {
 			wm.setState(WorkflowState.DEPLOY_ERROR);
 			myLogger.error("Could not deploy workflow");
 		}
-
 	}
 
 	private List<WFParameter> computeParameter(ServiceCallData data) {
@@ -222,20 +227,25 @@ public class WorkflowBroker {
 			// saved ServiceCall
 			currentWorkflow.setState(WorkflowState.FINISHED);
 
-		}
-		else{
-			//Error handling needs to update the Jira issue since the Workflow could not execute
-			//maybe some other worker has already successfully completed the work 
-			if(currentWorkflow.getState() == WorkflowState.FINISHED){
+		} else {
+			// Error handling needs to update the Jira issue since the Workflow
+			// could not execute
+			// maybe some other worker has already successfully completed the
+			// work
+			if (currentWorkflow.getState() == WorkflowState.FINISHED) {
 				return;
-			} else{
+			} else {
 				currentWorkflow.setState(WorkflowState.ERROR);
-				myLogger.error("Workflow with id " + wfAnswer.getId()+ " failed, with message: '"+ wfAnswer.getErrorMessage()+"'");
-				//Error handling from the class JiraManagerPlugin
-				//TODO may be improved in the future
-				JiraObjectManipulator.addIssueComment(currentWorkflow.getJiraKey(), "Workflow "+currentWorkflow.getWorkflowID() + " failed due to: '"+ wfAnswer.getErrorMessage()+"'", JiraObjectGetter.getUserByName("PubFlow"));
+				myLogger.error("Workflow with id " + wfAnswer.getId() + " failed, with message: '"
+						+ wfAnswer.getErrorMessage() + "'");
+				// Error handling from the class JiraManagerPlugin
+				// TODO may be improved in the future
+				JiraObjectManipulator.addIssueComment(
+						currentWorkflow.getJiraKey(), "Workflow " + currentWorkflow.getWorkflowID()
+								+ " failed due to: '" + wfAnswer.getErrorMessage() + "'",
+						JiraObjectGetter.getUserByName("PubFlow"));
 			}
-			
+
 		}
 	}
 }

@@ -40,7 +40,7 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
 public class WorkflowReceiver {
 	private static final String updateAddress="/workflowUpdate";
 	 
-	//TODO
+	//TODO static Url /init at the startup
 	
 	@PUT
 	@Path(updateAddress)

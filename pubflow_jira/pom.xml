@@ -9,7 +9,7 @@
 	</parent>
 
 	<name>PubFlow Jira Plugin</name>
-	<artifactId>jira</artifactId>
+	<artifactId>PubFlow_jira</artifactId>
 	<description></description>
 	<organization>
 		<name>Christian-Albrechts-Universität zu Kiel - Arbeitsgruppe Software Engineering</name>
@@ -41,7 +41,7 @@
 			<name>Marc Adolf</name>
 			<email>mad@informatik.uni-kiel.de</email>
 			<organization>Kiel University</organization>
-			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/team/marc-adolf</organizationUrl>
+			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/marc-adolf</organizationUrl>
 			<timezone>Europe/Berlin</timezone>
 			<roles>
 				<role>PMC Member</role>
@@ -143,17 +143,6 @@
 			<version>2.2.5</version>
 		</dependency>
 
-
-		<!-- WFS -->
-
-		<dependency>
-			<groupId>org.jbpm</groupId>
-			<artifactId>jbpm-bpmn2</artifactId>
-			<version>5.4.0.Final</version>
-		</dependency>
-
-
-
 		<!-- HSQLDB -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -189,43 +178,20 @@
 			<version>3.0.2</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
+               <groupId>org.springframework.ws</groupId>
+               <artifactId>spring-ws-core</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
-		<!-- <dependency> -->
-		<!-- <groupId>com.sun.jersey.contribs</groupId> -->
-		<!-- <artifactId>jersey-multipart</artifactId> -->
-		<!-- <version>1.9</version> -->
-		<!-- </dependency> -->
-
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>1.8-atlassian-15</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -269,13 +235,7 @@
 						</property>
 					</systemProperties>
 					<enableFastdev>false</enableFastdev>
-					<pluginArtifacts>
-						<pluginArtifact>
-							<groupId>de.pubflow</groupId>
-							<artifactId>cvoo-rest</artifactId>
-							<version>0.0.1-SNAPSHOT</version>
-						</pluginArtifact>
-					</pluginArtifacts>
+					<enableQuickReload>true</enableQuickReload>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -332,11 +292,6 @@
 			<!-- CHECKSTYLE -->
 
 
-			<!-- Spring -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -348,11 +303,8 @@
 		<pmd.version>3.6</pmd.version>
 		<javadoc.version>2.10.3</javadoc.version>
 		<java.version>1.8</java.version>
-		<!-- <amps.version>4.2.5</amps.version> -->
 		<amps.version>6.2.4</amps.version>
-		<!-- <jira.version>5.2.1</jira.version> -->
 		<jira.version>7.1.4</jira.version>
-		<!-- <jira.version>6.3.3</jira.version> -->
 	</properties>
 
 

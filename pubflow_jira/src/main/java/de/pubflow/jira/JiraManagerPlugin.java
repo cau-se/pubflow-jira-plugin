@@ -59,9 +59,9 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
  * Simple JIRA listener using the atlassian-event library and demonstrating
  * plugin lifecycle integration.
  */
-public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
+public class JiraManagerPlugin implements InitializingBean, DisposableBean {
 	private static final Logger log = LoggerFactory.getLogger(PubFlowSystem.class);
-	
+
 	public static WorkflowSchemeManager workflowSchemeManager;
 	public static IssueTypeManager issueTypeManager;
 	public static EventPublisher eventPublisher;
@@ -72,13 +72,16 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 
 	/**
 	 * Constructor.
-	 * @param eventPublisher injected {@code EventPublisher} implementation.
+	 * 
+	 * @param eventPublisher
+	 *            injected {@code EventPublisher} implementation.
 	 */
-	public JiraManagerPlugin(EventPublisher eventPublisher, IssueTypeManager issueTypeManager, FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager) {	
+	public JiraManagerPlugin(EventPublisher eventPublisher, IssueTypeManager issueTypeManager,
+			FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager) {
 		log.debug("Plugin started");
 		try {
 			PubFlowSystem.getInstance();
-		
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,12 +92,11 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		JiraManagerPlugin.eventPublisher = eventPublisher;
 	}
 
-
 	/**
 	 * @param resourceName
 	 * @return
 	 */
-	public static String getTextResource(String resourceName) { 
+	public static String getTextResource(String resourceName) {
 		StringBuffer content = new StringBuffer();
 
 		try {
@@ -115,6 +117,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 
 	/**
 	 * Called when the plugin has been enabled.
+	 * 
 	 * @throws Exception
 	 */
 	@Override
@@ -125,6 +128,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 
 	/**
 	 * Called when the plugin is being disabled or removed.
+	 * 
 	 * @throws Exception
 	 */
 	@Override
@@ -135,11 +139,11 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 
 	/**
 	 * Receives any {@code IssueEvent}s sent by JIRA.
-	 * @param issueEvent the IssueEvent passed to us
-	 * @throws Exception 
+	 * 
+	 * @param issueEvent
+	 *            the IssueEvent passed to us
 	 */
 
-	@SuppressWarnings("deprecation")
 	@EventListener
 	public void onIssueEvent(IssueEvent issueEvent) {
 		InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
@@ -147,36 +151,40 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 		Issue issue = issueEvent.getIssue();
 
 		if (
-				//TODO deprecated
-				issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
+		issue.getStatus().getName().equals("Data Processing by PubFlow")) {
 
 			try {
 				ServiceCallData callData = new ServiceCallData();
-				List<WFParameter> wfpm = new LinkedList<WFParameter>();				
+				List<WFParameter> wfpm = new LinkedList<WFParameter>();
 
 				for (Entry<String, String> e : msg.getValues().entrySet()) {
 					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
 					wfpm.add(wfp);
 				}
-				//to enable mapping to the jira ticket
+				// to enable mapping to the jira ticket
 				callData.setJiraKey(issue.getKey());
-				
+
 				callData.setParameters(wfpm);
-				//wm.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
-				WorkflowBroker wfBroker= WorkflowBroker.getInstance();
+				// TODO add workflow id (string), its necessary !
+				//TODO test it
+				long JiraWfId = issue.getWorkflowId();
+				System.out.println("test: "+ComponentAccessor.getWorkflowSchemeManager().getSchemeObject(JiraWfId).getName());
+				// callData.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
+				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
 				wfBroker.receiveWFCall(callData);
 
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage() + " " + e.getCause());
 				e.printStackTrace();
-				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), e.getClass().getSimpleName() + e.getMessage(), user);
+				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(),
+						e.getClass().getSimpleName() + e.getMessage(), user);
 			}
 
-		} else if (issueEvent.getEventTypeId().equals( EventType.ISSUE_UPDATED_ID)) {
-			//TODO
+		} else if (issueEvent.getEventTypeId().equals(EventType.ISSUE_UPDATED_ID)) {
+			// TODO
 
-		} else if (issueEvent.getIssue().getStatusObject().getName().equals("Open") && 
-				!issueEvent.getEventTypeId().equals(EventType.ISSUE_DELETED_ID)) {
+		} else if (issueEvent.getIssue().getStatus().getName().equals("Open")
+				&& !issueEvent.getEventTypeId().equals(EventType.ISSUE_DELETED_ID)) {
 			if (ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0) {
 
 				String txtmsg = "Dear " + issueEvent.getUser().getName() + " (" + issueEvent.getUser().getName()
@@ -185,9 +193,11 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 						+ "\"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically."
 						+ "\nThank you!";
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
-//				JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(), new byte[]{0}, "rawdata", "txt", user);
+				// JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(),
+				// new byte[]{0}, "rawdata", "txt", user);
 			} else {
-				MutableIssue mutableIssue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueEvent.getIssue().getKey());
+				MutableIssue mutableIssue = ComponentAccessor.getIssueManager()
+						.getIssueByCurrentKey(issueEvent.getIssue().getKey());
 				mutableIssue.setAssignee(issueEvent.getIssue().getReporter());
 			}
 		}
@@ -213,7 +223,7 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 				if (event.isStartElement()) {
 					String localPart = event.asStartElement().getName().getLocalPart();
 					switch (localPart) {
-					case "step": 
+					case "step":
 						try {
 							steps.add(event.asStartElement().getAttributeByName(new QName("name")).getValue());
 						} catch (NullPointerException e1) {
@@ -221,7 +231,8 @@ public class JiraManagerPlugin implements InitializingBean, DisposableBean  {
 							e1.printStackTrace();
 						}
 						break;
-					default: break;
+					default:
+						break;
 					}
 				}
 			}
