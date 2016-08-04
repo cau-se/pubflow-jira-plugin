@@ -9,27 +9,42 @@
 		<vendor name="${project.organization.name}" url="${project.organization.url}" />
 	</plugin-info>
 
+   <!-- Components whose declarations are different when using the compat library -->
+    <component key="jiraManagerPluginJobRunner" class="de.pubflow.jira.JiraManagerPluginJobRunner">
+        <description>The job runner for processing scheduled tasks</description>
+    </component>
+
+    <!-- Components whose declarations are the same when using the compat library -->
+    <component key="jiraManagerPluginJob" class="de.pubflow.jira.JiraManagerPluginJob">
+        <description>Creates this plugin's example data</description>
+    </component>
+
+    
 	<component key="PubFlow Event Handler" class="de.pubflow.jira.JiraManagerPlugin">
 		<description>Processes the incoming JIRA issue events.
 		</description>
 	</component>
 
-	<component key="PubFlow Environment Initializer" class="de.pubflow.jira.JiraManagerInitializer">
-		<description>Initializes the issues types, screens, etc. for every
-			workflow.
-		</description>
-	</component>
+	<!-- Note: This MUST be public and registered under the LifecycleAware interface to work! -->
+    <component key="jiraManagerPlugin" class="de.pubflow.jira.JiraManagerPlugin" public="true">
+        <description>Manages this plugin's lifecycle.</description>
+        <interface>com.atlassian.sal.api.lifecycle.LifecycleAware</interface>
+    </component>
 
+	<component-import key="pluginScheduler">
+        <description>SAL Scheduler</description>
+        <interface>com.atlassian.sal.api.scheduling.PluginScheduler</interface>
+    </component-import>
+    
+    <!-- Application-provided components -->
+    <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher" />
+    <component-import key="schedulerService" interface="com.atlassian.scheduler.SchedulerService" />
+    <component-import key="schedulerHistoryService" interface="com.atlassian.scheduler.SchedulerHistoryService" />
 
-	<workflow-condition key="issueAttachment-condition"
-		name="Conditions Package">
-		<description>E.g. condition that checks if an file has been attached
-			to an
-			issue when starting a transition.
-		</description>
-		<condition-class>
-			de.pubflow.jira.misc.IssueAttachmentCondition
-		</condition-class>
-	</workflow-condition>
+	<workflow-validator key="attachmentvalidator" name="Attachment Validator">
+	<validator-class>
+        de.pubflow.jira.misc.IssueAttachmentValidator
+    </validator-class>
+    </workflow-validator>
 
 </atlassian-plugin>
