@@ -373,7 +373,7 @@ public class JiraManagerInitializer {
 
 			List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project);
 			FieldScreenScheme fieldScreenScheme = initHumbleScreens(screenNames, customFields, issueTypeName, customFieldIds, project);
-			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme, JiraObjectGetter.getIssueTypeByName(issueTypeName));
+			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme, JiraObjectGetter.getIssueTypeByName(issueTypeName+Appendix.ISSUETYPE));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
