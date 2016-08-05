@@ -1,19 +1,22 @@
+/**
+ * Copyright (C) 2016 Marc Adolf, Arnd Plumhoff (http://www.pubflow.uni-kiel.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.pubflow.server.core.jira;
 
-import it.sauronsoftware.cron4j.Scheduler;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.pubflow.server.common.entity.workflow.ParameterType;
-import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.core.scheduling.PubFlowJob;
-import de.pubflow.server.core.workflow.WorkflowBroker;
-import de.pubflow.server.core.workflow.ServiceCallData;
 
 public class JiraConnector {
 
@@ -42,87 +45,5 @@ public class JiraConnector {
 		//Scheduler.getInstance().shutdown();
 	}
 
-	/**
-	 * 
-	 * @param msg
-	 * @throws SchedulerException 
-	 */
-	public void compute(ServiceCallData msg) {
-		myLogger.info("Compute");
-
-		String quartzCron = "";
-
-		List<WFParameter> parameters = msg.getParameters();
-		List<WFParameter> filteredParameters = new LinkedList<WFParameter>();
-
-		for(WFParameter parameter : parameters){ 
-			myLogger.info(parameter.getKey() + " : " + parameter.getValue());
-			String key = parameter.getKey();
-
-			if(parameter.getPayloadClazz().equals(ParameterType.STRING)){
-				String value = (String) parameter.getValue();
-
-				switch (key) {
-				case "quartzCron":
-					quartzCron = value;
-					break;
-
-				case "status":
-					msg.setState(null);
-					break;
-
-				case "assignee":
-					break;
-
-				case "eventType":
-					break;
-
-				case "date":
-					break;
-					
-				case "issueKey":
-					filteredParameters.add(parameter);
-					break;
-					
-				case "reporter":
-					break;
-					
-				case "workflowName":
-					break;
-					
-				default:
-					try{
-						//if(msg.getWorkflowID().substring(msg.getWorkflowID().lastIndexOf(".") + 1).equals(key.substring(key.lastIndexOf("_") + 1))){
-						//	parameter.setKey(key.substring(0, key.lastIndexOf("_")));
-						parameter.setKey(key);
-						filteredParameters.add(parameter);
-						//}
-					}catch(Exception e){
-						myLogger.error(e.getCause().toString() + " : " + e.getMessage());
-					}
-
-				}
-			}
-		}			
-
-		msg.setParameters(filteredParameters);
-
-		if(!quartzCron.equals("")){		
-			myLogger.info("Scheduling new job");			
-			final ServiceCallData schedulerMsg = msg;
-			Scheduler s = new Scheduler();
-
-			s.schedule(quartzCron, new Runnable() {					
-				public void run() {
-					PubFlowJob.execute(schedulerMsg);
-				}
-			});
-			s.start();
-
-		}else{
-			myLogger.info("Leaving JiraConnector");			
-			WorkflowBroker.getInstance().receiveWFCall(msg);
-		}
-
-	}
+	
 }

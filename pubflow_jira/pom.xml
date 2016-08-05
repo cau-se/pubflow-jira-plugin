@@ -7,6 +7,25 @@
 		<artifactId>pubflow</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+<<<<<<< HEAD
+=======
+
+	<name>PubFlow Jira Plugin</name>
+	<artifactId>PubFlow_jira</artifactId>
+	<description></description>
+	<organization>
+		<name>Christian-Albrechts-Universität zu Kiel - Arbeitsgruppe Software Engineering</name>
+		<url>http://www.pubflow.de</url>
+	</organization>
+	<inceptionYear>2016</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>LICENSE</url>
+		</license>
+	</licenses>
+>>>>>>> mad/restWF
 
 	<name>PubFlow Jira Plugin</name>
 	<artifactId>pubflow_jira</artifactId>
@@ -14,6 +33,52 @@
 	<packaging>atlassian-plugin</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
+<<<<<<< HEAD
+=======
+	<repositories>
+		<repository>
+			<id>atlassian-public</id>
+			<url>https://m2proxy.atlassian.com/repository/public</url>
+		</repository>
+	</repositories>
+
+	<developers>
+		<developer>
+			<id>mad</id>
+			<name>Marc Adolf</name>
+			<email>mad@informatik.uni-kiel.de</email>
+			<organization>Kiel University</organization>
+			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/marc-adolf</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>PMC Member</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>arl</id>
+			<name>Arnd Plumhoff</name>
+			<email>arl@informatik.uni-kiel.de</email>
+			<organization>Kiel University</organization>
+			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/arnd-plumhoff</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>PMC Member</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Alexander Barbie</name>
+			<email>abar@informatik.uni-kiel.de</email>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</contributor>
+	</contributors>
+
+>>>>>>> mad/restWF
 	<dependencies>
 		<!-- BASICS -->
 		<dependency>
@@ -85,35 +150,21 @@
 			<version>2.2.5</version>
 		</dependency>
 
-
-		<!-- WFS -->
-
-		<dependency>
-			<groupId>org.jbpm</groupId>
-			<artifactId>jbpm-bpmn2</artifactId>
-			<version>5.4.0.Final</version>
-		</dependency>
-
-
-
 		<!-- HSQLDB -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.3.0</version>
 		</dependency>
 
 		<!-- HIBERNATE -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.2.1.Final</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.2.1.Final</version>
 		</dependency>
 
 		<dependency>
@@ -125,7 +176,6 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.3.1.Final</version>
 		</dependency>
 
 		<!-- REST -->
@@ -136,11 +186,14 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- <dependency> -->
-		<!-- <groupId>com.sun.jersey.contribs</groupId> -->
-		<!-- <artifactId>jersey-multipart</artifactId> -->
-		<!-- <version>1.9</version> -->
-		<!-- </dependency> -->
+		<dependency>
+               <groupId>org.springframework.ws</groupId>
+               <artifactId>spring-ws-core</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
@@ -149,6 +202,7 @@
 			<scope>provided</scope>
 		</dependency>
 
+<<<<<<< HEAD
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>jsr311-api</artifactId>
@@ -163,6 +217,8 @@
 			<scope>provided</scope>
 		</dependency>
 
+=======
+>>>>>>> mad/restWF
 		<!-- QUARTZ -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -202,6 +258,11 @@
 							<value>sun.*,com.sun.*,org.w3c.*,javax.*</value>
 						</property>
 					</systemProperties>
+<<<<<<< HEAD
+=======
+					<enableFastdev>false</enableFastdev>
+					<enableQuickReload>true</enableQuickReload>
+>>>>>>> mad/restWF
 				</configuration>
 			</plugin>
 			<plugin>
@@ -214,6 +275,7 @@
 				<extensions>true</extensions>
 			</plugin>
 
+<<<<<<< HEAD
 			<!-- PMD -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -228,20 +290,81 @@
 						<systemPath>${project.basedir}/../config/pmd/CustomPmdRules_1.0.0.201507080630.jar</systemPath>
 					</dependency>
 				</dependencies>
+=======
+			<!-- JAVADOC -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${javadoc.version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- LICENSE HEADER -->
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.5</version>
+>>>>>>> mad/restWF
 				<configuration>
 					<rulesets>
 						<ruleset>${project.basedir}/../config/pmd-ruleset.xml</ruleset>
 					</rulesets>
 				</configuration>
+<<<<<<< HEAD
 			</plugin>	
+=======
+				<executions>
+					<execution>
+						<id>license-validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- CHECKSTYLE -->
+
+
+>>>>>>> mad/restWF
 		</plugins>
 	</build>
 
 	<properties>
+<<<<<<< HEAD
 		<!-- <amps.version>4.2.5</amps.version> -->
+=======
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<javadocOutputDir>apidocs</javadocOutputDir>
+		<checkstyle.version>2.17</checkstyle.version>
+		<findbugs.version>3.0.3</findbugs.version>
+		<pmd.version>3.6</pmd.version>
+		<javadoc.version>2.10.3</javadoc.version>
+		<java.version>1.8</java.version>
+>>>>>>> mad/restWF
 		<amps.version>6.2.4</amps.version>
-		<!-- <jira.version>5.2.1</jira.version> -->
 		<jira.version>7.1.4</jira.version>
-		<!-- <jira.version>6.3.3</jira.version> -->
 	</properties>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<!-- Import dependency management from Spring Boot -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>1.3.6.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

@@ -84,8 +84,6 @@ public class JiraManagerInitializer {
 
 	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
 	private static Logger log = Logger.getLogger(JiraManagerInitializer.class);
-	private static boolean inited = false;
-
 
 	  /**
 	   * Creates a new Jira project
@@ -99,7 +97,6 @@ public class JiraManagerInitializer {
 	   * @return returns the created project object
 	   * @throws Exception
 	   */
-
 	  public static Project initProject(String projectName, String projectKey, ApplicationUser user,
 	      boolean kill) throws Exception {
 	    final PermissionSchemeManager permissionSchemeManager = ComponentAccessor.getPermissionSchemeManager();

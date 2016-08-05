@@ -57,14 +57,14 @@ import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.core.jira.JiraConnector;
 import de.pubflow.server.core.workflow.ServiceCallData;
+import de.pubflow.server.core.workflow.WorkflowBroker;
 
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
  * plugin lifecycle integration.
  */
-public class JiraManagerPlugin implements LifecycleAware, InitializingBean, DisposableBean  {
+public class JiraManagerPlugin implements LifecycleAware, InitializingBean, DisposableBean {
 	private static final Logger log = LoggerFactory.getLogger(PubFlowSystem.class);
 
 	public static WorkflowSchemeManager workflowSchemeManager;
@@ -75,7 +75,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("PubFlow");
 	public static final SecureRandom secureRandom = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
-	
+
 	@GuardedBy("this")
 	private final Set<LifecycleEvent> lifecycleEvents = EnumSet.noneOf(LifecycleEvent.class);
 
@@ -86,7 +86,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 *            injected {@code EventPublisher} implementation.
 	 */
 	public JiraManagerPlugin(EventPublisher eventPublisher, IssueTypeManager issueTypeManager,
-			FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager, JiraManagerPluginJob jiraManagerPluginJob) {
+			FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager,
+			JiraManagerPluginJob jiraManagerPluginJob) {
 		log.debug("Plugin started");
 		try {
 			PubFlowSystem.getInstance();
@@ -102,7 +103,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		this.jiraManagerPluginJob = jiraManagerPluginJob;
 	}
 
-	
 	/**
 	 * @param resourceName
 	 * @return
@@ -127,11 +127,32 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
+	 * Called when the plugin has been enabled.
+	 * 
+	 * @throws Exception
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// register ourselves with the EventPublisher
+		eventPublisher.register(this);
+	}
+
+	/**
+	 * Called when the plugin is being disabled or removed.
+	 * 
+	 * @throws Exception
+	 */
+	@Override
+	public void destroy() throws Exception {
+		// unregister ourselves with the EventPublisher
+		eventPublisher.unregister(this);
+	}
+
+	/**
 	 * Receives any {@code IssueEvent}s sent by JIRA.
 	 * 
 	 * @param issueEvent
 	 *            the IssueEvent passed to us
-	 * @throws Exception
 	 */
 
 	@EventListener
@@ -140,26 +161,28 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 
 		Issue issue = issueEvent.getIssue();
 
-		if (
-		// (issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) &&
-		// ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName()
-		// != "jira") ||
-		issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
+		if (issue.getStatus().getName().equals("Data Processing by PubFlow")) {
 
 			try {
-				ServiceCallData wm = new ServiceCallData();
+				ServiceCallData callData = new ServiceCallData();
 				List<WFParameter> wfpm = new LinkedList<WFParameter>();
 
 				for (Entry<String, String> e : msg.getValues().entrySet()) {
 					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
 					wfpm.add(wfp);
 				}
+				// to enable mapping to the jira ticket
+				callData.setJiraKey(issue.getKey());
 
-				wm.setParameters(wfpm);
-				// TODO
-				// wm.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
-				JiraConnector jpmp = JiraConnector.getInstance();
-				jpmp.compute(wm);
+				callData.setParameters(wfpm);
+				// TODO add workflow id (string), its necessary !
+				// TODO test it
+				long JiraWfId = issue.getWorkflowId();
+				System.out.println(
+						"test: " + ComponentAccessor.getWorkflowSchemeManager().getSchemeObject(JiraWfId).getName());
+				// callData.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
+				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
+				wfBroker.receiveWFCall(callData);
 
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage() + " " + e.getCause());
@@ -171,7 +194,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		} else if (issueEvent.getEventTypeId().equals(EventType.ISSUE_UPDATED_ID)) {
 			// TODO
 
-		} else if (issueEvent.getIssue().getStatusObject().getName().equals("Open")
+		} else if (issueEvent.getIssue().getStatus().getName().equals("Open")
 				&& !issueEvent.getEventTypeId().equals(EventType.ISSUE_DELETED_ID)) {
 			if (ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0) {
 
@@ -180,7 +203,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 						+ "about your data as a comment:\nTitle, Authors, Cruise\n\nAfter that you can start the processing by pressing the "
 						+ "\"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically."
 						+ "\nThank you!";
-
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
 				// JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(),
 				// new byte[]{0}, "rawdata", "txt", user);
@@ -233,17 +255,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * Called when the plugin has been enabled.
-	 * 
-	 * @throws Exception
-	 */
-	@Override
-	public void afterPropertiesSet() {
-		registerListener();
-		onLifecycleEvent(LifecycleEvent.AFTER_PROPERTIES_SET);
-	}
-
-	/**
 	 * This is received from SAL after the system is really up and running from
 	 * its perspective. This includes things like the database being set up and
 	 * other tricky things like that. This needs to happen before we try to
@@ -268,17 +279,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * Called when the plugin is being disabled or removed.
-	 * 
-	 * @throws Exception
-	 */
-	@Override
-	public void destroy() throws Exception {
-		unregisterListener();
-		jiraManagerPluginJob.destroy();
-	}
-
-	/**
 	 * The latch which ensures all of the plugin/application lifecycle progress
 	 * is completed before we call {@code launch()}.
 	 */
@@ -286,8 +286,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		log.info("onLifecycleEvent: " + event);
 		if (isLifecycleReady(event)) {
 			log.info("Got the last lifecycle event... Time to get started!");
-			unregisterListener();
-
 			try {
 				launch();
 			} catch (Exception ex) {
@@ -307,16 +305,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		log.info("LAUNCH!");
 		jiraManagerPluginJob.init();
 		log.info("launched successfully");
-	}
-
-	private void registerListener() {
-		log.info("registerListeners");
-		eventPublisher.register(this);
-	}
-
-	private void unregisterListener() {
-		log.info("unregisterListeners");
-		eventPublisher.unregister(this);
 	}
 
 	/**
