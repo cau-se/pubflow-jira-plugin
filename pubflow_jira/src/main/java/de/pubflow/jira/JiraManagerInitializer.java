@@ -84,7 +84,6 @@ public class JiraManagerInitializer {
 
 	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
 	private static Logger log = Logger.getLogger(JiraManagerInitializer.class);
-	private static boolean inited = false;
 
 
 	  /**
