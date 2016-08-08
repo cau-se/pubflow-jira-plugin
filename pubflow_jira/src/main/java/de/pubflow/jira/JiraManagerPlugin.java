@@ -47,6 +47,7 @@ import com.atlassian.jira.event.type.EventType;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
+import com.atlassian.jira.issue.issuetype.IssueTypeImpl;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
@@ -138,7 +139,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
 
 		Issue issue = issueEvent.getIssue();
-
 		if (issue.getStatus().getName().equals("Data Processing by PubFlow")) {
 
 			try {
@@ -151,14 +151,15 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 				}
 				// to enable mapping to the jira ticket
 				callData.setJiraKey(issue.getKey());
-
 				callData.setParameters(wfpm);
 				// TODO add workflow id (string), its necessary !
 				// TODO test it
 				long JiraWfId = issue.getWorkflowId();
 				System.out.println(
-						"test: " + ComponentAccessor.getWorkflowSchemeManager().getSchemeObject(JiraWfId).getName());
+						"test: " + ((IssueTypeImpl)issue.getIssueType()).getPropertySet().getString("workflowID"));
 				// callData.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
+				callData.setWorkflowID("de.publfow.OCN");
+//				callData.setWorkflowID(((IssueTypeImpl)issue.getIssueType()).getPropertySet().getString("workflowID"));
 				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
 				wfBroker.receiveWFCall(callData);
 

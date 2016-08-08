@@ -62,6 +62,7 @@ public class WorkflowReceiver {
 	 * @throws UnknownHostException
 	 */
 	public static URL getCallbackAddress() throws MalformedURLException, UnknownHostException {
-		return new URL(InetAddress.getLocalHost().getHostAddress().toString()+updateAddress);
+		//TODO set URL at startup 
+		return new URL("https://"+InetAddress.getLocalHost().getHostAddress().toString()+updateAddress);
 	}
 }

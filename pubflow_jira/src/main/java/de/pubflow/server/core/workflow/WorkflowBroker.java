@@ -102,7 +102,7 @@ public class WorkflowBroker {
 			wfRestCall.setCallbackAddress(WorkflowReceiver.getCallbackAddress());
 		} catch (MalformedURLException | UnknownHostException e) {
 			myLogger.error("Could not set callback address for the REST call");
-			throw new WFException("Could not set callback address");
+			throw new WFException("  Could not set callback address");
 		}
 
 		WorkflowProvider provider = WorkflowProvider.getInstance();

@@ -47,6 +47,7 @@ import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeItem;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeItemImpl;
 import com.atlassian.jira.issue.fields.screen.FieldScreenTab;
 import com.atlassian.jira.issue.issuetype.IssueType;
+import com.atlassian.jira.issue.issuetype.IssueTypeImpl;
 import com.atlassian.jira.issue.operation.IssueOperations;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
@@ -239,10 +240,11 @@ public class JiraObjectCreator {
 	 * @param project : the project which uses the issueType
 	 * @return The issue type which was created
 	 */ 
-	public static IssueType createIssueType(Project project, String issueTypeName)
+	public static IssueType createIssueType(Project project, String issueTypeName, String workflowID)
 			throws CreateException {
 		IssueType issueType = JiraObjectGetter.findIssueTypeByName(project, issueTypeName + Appendix.ISSUETYPE);
 		if (issueType == null) {
+//			((IssueTypeImpl) issueType).getPropertySet().setString("workflowID", workflowID);
 			issueType = ComponentAccessor.getConstantsManager().insertIssueType(
 					issueTypeName + Appendix.ISSUETYPE, new Long(1), null, "Issue type for PubFlow",
 					new Long(10300));

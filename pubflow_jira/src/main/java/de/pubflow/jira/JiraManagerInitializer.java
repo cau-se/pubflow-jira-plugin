@@ -128,10 +128,10 @@ public class JiraManagerInitializer {
 	 * @param projectKey : the project's key we add the issue type and scheme to
 	 * @param issueTypeName : the name of the issue type we want to create
 	 */
-	public static void initIssueManagement(String projectKey, String issueTypeName)
+	public static void initIssueManagement(String projectKey, String issueTypeName, String workflowID)
 			throws CreateException {
 		final Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
-		JiraObjectCreator.createIssueType(project, issueTypeName);
+		JiraObjectCreator.createIssueType(project, issueTypeName,workflowID);
 		final FieldConfigScheme issueTypeScheme = JiraObjectCreator.createIssueTypeScheme(projectKey, issueTypeName);
 		JiraObjectManipulator.addIssueTypeSchemeToProject(issueTypeScheme, project);
 	}
@@ -320,7 +320,7 @@ public class JiraManagerInitializer {
 			statuses.add("Done");
 			statuses.add("Rejected");
 
-			initIssueManagement(projectKey, issueTypeName);
+			initIssueManagement(projectKey, issueTypeName, "de.pubflow.OCN");
 			JiraObjectManipulator.addStatuses(projectKey, statuses);
 			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/PubFlow.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"), issueTypeName);
 
