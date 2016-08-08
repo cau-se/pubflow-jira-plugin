@@ -127,28 +127,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * Called when the plugin has been enabled.
-	 * 
-	 * @throws Exception
-	 */
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		// register ourselves with the EventPublisher
-		eventPublisher.register(this);
-	}
-
-	/**
-	 * Called when the plugin is being disabled or removed.
-	 * 
-	 * @throws Exception
-	 */
-	@Override
-	public void destroy() throws Exception {
-		// unregister ourselves with the EventPublisher
-		eventPublisher.unregister(this);
-	}
-
-	/**
 	 * Receives any {@code IssueEvent}s sent by JIRA.
 	 * 
 	 * @param issueEvent
@@ -255,6 +233,17 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
+	 * Called when the plugin has been enabled.
+	 * 
+	 * @throws Exception
+	 */
+	@Override
+	public void afterPropertiesSet() {
+		registerListener();
+		onLifecycleEvent(LifecycleEvent.AFTER_PROPERTIES_SET);
+	}
+
+	/**
 	 * This is received from SAL after the system is really up and running from
 	 * its perspective. This includes things like the database being set up and
 	 * other tricky things like that. This needs to happen before we try to
@@ -279,6 +268,17 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
+	 * Called when the plugin is being disabled or removed.
+	 * 
+	 * @throws Exception
+	 */
+	@Override
+	public void destroy() throws Exception {
+		unregisterListener();
+		jiraManagerPluginJob.destroy();
+	}
+
+	/**
 	 * The latch which ensures all of the plugin/application lifecycle progress
 	 * is completed before we call {@code launch()}.
 	 */
@@ -286,6 +286,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		log.info("onLifecycleEvent: " + event);
 		if (isLifecycleReady(event)) {
 			log.info("Got the last lifecycle event... Time to get started!");
+			unregisterListener();
+
 			try {
 				launch();
 			} catch (Exception ex) {
@@ -305,6 +307,16 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		log.info("LAUNCH!");
 		jiraManagerPluginJob.init();
 		log.info("launched successfully");
+	}
+
+	private void registerListener() {
+		log.info("registerListeners");
+		eventPublisher.register(this);
+	}
+
+	private void unregisterListener() {
+		log.info("unregisterListeners");
+		eventPublisher.unregister(this);
 	}
 
 	/**

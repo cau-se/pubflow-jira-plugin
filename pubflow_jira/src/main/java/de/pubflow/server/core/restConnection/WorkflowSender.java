@@ -20,8 +20,8 @@ import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+//import org.springframework.web.client.RestClientException;
+//import org.springframework.web.client.RestTemplate;
 
 import de.pubflow.server.common.exceptions.WFRestException;
 import de.pubflow.server.core.restMessages.WorkflowCall;
@@ -78,18 +78,18 @@ public class WorkflowSender {
 	 *             if the connection responses with a code other than 2xx
 	 */
 	public void initWorkflow(WorkflowCall wfCall) throws WFRestException {
-		myLogger.info("Trying to deploy workflow with ID: " + wfCall.getId());
-		RestTemplate restTemplate = new RestTemplate();
-		String response = "Initial REST call response: ";
-		try {
-			response += restTemplate.postForObject(targetURL.toString(), wfCall, String.class);
-		} catch (RestClientException e) {
-			myLogger.error("Could not deplay new Workflow with ID: " + wfCall.getId().toString());
-			myLogger.error(e.toString());
-			throw new WFRestException("Workflow could not be started");
-		} finally {
-			myLogger.info(response);
-		}
+//		myLogger.info("Trying to deploy workflow with ID: " + wfCall.getId());
+//		RestTemplate restTemplate = new RestTemplate();
+//		String response = "Initial REST call response: ";
+//		try {
+//			response += restTemplate.postForObject(targetURL.toString(), wfCall, String.class);
+//		} catch (RestClientException e) {
+//			myLogger.error("Could not deplay new Workflow with ID: " + wfCall.getId().toString());
+//			myLogger.error(e.toString());
+//			throw new WFRestException("Workflow could not be started");
+//		} finally {
+//			myLogger.info(response);
+//		}
 	}
 
 	/**
@@ -101,16 +101,16 @@ public class WorkflowSender {
 	 *             if the connection responses with a code other than 2xx
 	 */
 	public void updateWorkflow(WorkflowUpdateCall wfUpdate) throws WFRestException {
-		RestTemplate restTemplate = new RestTemplate();
-		String response = "Update REST call response: ";
-		try {
-			response += restTemplate.postForObject(targetURL.toString(), wfUpdate, String.class);
-		} catch (RestClientException e) {
-			myLogger.error("Could not deplay new Workflow with ID: " + wfUpdate.getId().toString());
-			myLogger.error(e.toString());
-			throw new WFRestException("Workflow could not be started");
-		}
-		myLogger.info(response);
+//		RestTemplate restTemplate = new RestTemplate();
+//		String response = "Update REST call response: ";
+//		try {
+//			response += restTemplate.postForObject(targetURL.toString(), wfUpdate, String.class);
+//		} catch (RestClientException e) {
+//			myLogger.error("Could not deplay new Workflow with ID: " + wfUpdate.getId().toString());
+//			myLogger.error(e.toString());
+//			throw new WFRestException("Workflow could not be started");
+//		}
+//		myLogger.info(response);
 	}
 
 }

@@ -32,7 +32,6 @@ import de.pubflow.server.common.entity.workflow.WFParameter;
  *
  * @author Marc Adolf
  */
-@JsonIgnoreProperties(ignoreUnknown=true)
 public class WorkflowCall {
 
 	/**
