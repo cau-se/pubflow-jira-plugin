@@ -64,17 +64,17 @@ public class JiraObjectGetter {
 	 * @return the issueType we looked for (null if it does not exist)
 	 */
 	public static IssueType getIssueTypeByName(String issueTypeName) {
-		IssueType issueType = null;
-
-		Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
-
-		for (IssueType tempIssueType : issueTypes) {
-			if (tempIssueType.getName().equals(issueTypeName)) {
-				return tempIssueType;
-			}
-		}
-
-		return issueType;
+	    IssueType issueType = null;
+	    
+	    Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
+	    
+	    for(IssueType tempIssueType : issueTypes) {
+	      if(tempIssueType.getName().equals(issueTypeName)) {
+	        return tempIssueType;
+	      }
+	    }
+	    
+	    return issueType;
 	}
 
 	/**

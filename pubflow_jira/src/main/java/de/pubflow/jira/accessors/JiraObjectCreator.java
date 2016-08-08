@@ -262,21 +262,21 @@ public class JiraObjectCreator {
 	 * @return returns WorkflowScheme
 	 */
 
-	public static WorkflowScheme createWorkflowScheme(String projectKey, ApplicationUser user, JiraWorkflow jiraWorkflow) {
+	public static WorkflowScheme createWorkflowScheme(String projectKey, ApplicationUser user, JiraWorkflow jiraWorkflow, String issueTypeName) {
 		AssignableWorkflowScheme workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowSchemeObj(projectKey + Appendix.WORKFLOWSCHEME);
 
 		if(workflowScheme == null) {
 			Scheme scheme = ComponentAccessor.getWorkflowSchemeManager().createSchemeObject(projectKey + Appendix.WORKFLOWSCHEME, "Workflow scheme for the Pubflow project");
 			workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowSchemeObj(scheme.getName()); // necessary intermediate step
 			AssignableWorkflowScheme.Builder workflowSchemeBuilder = workflowScheme.builder();
-			IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName("OCN" + Appendix.ISSUETYPE);
+			IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
 
 			workflowSchemeBuilder.setName(projectKey + Appendix.WORKFLOWSCHEME);
 			workflowSchemeBuilder.setDescription("Workflow scheme for Pubflow.");
 			//	      workflowSchemeBuilder.setDefaultWorkflow(jiraWorkflow.getName());
 			workflowSchemeBuilder.setMapping(ocnIssueType.getId(), jiraWorkflow.getName());
 
-			return JiraManagerPlugin.workflowSchemeManager.updateWorkflowScheme(workflowSchemeBuilder.build());    
+			return ComponentAccessor.getWorkflowSchemeManager().updateWorkflowScheme(workflowSchemeBuilder.build());    
 		}
 
 		return workflowScheme;

@@ -59,6 +59,7 @@ public class JiraEndpoint {
 			// return JiraObjectCreator.createIssue("PUB", issueTypeName,
 			// summary, description, reporter, JiraManagerPlugin.user,
 			// parameters);
+			return "moin";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -92,6 +93,7 @@ public class JiraEndpoint {
 			// issue.getIssueTypeName(), issue.getSummary(),
 			// issue.getDescription(), issue.getReporter(),
 			// JiraManagerPlugin.user, issue.getParameters());
+			return "moin";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -197,6 +199,7 @@ public class JiraEndpoint {
 			// TODO
 			// JiraObjectCreator.createProject(projectName, projectKey,
 			// JiraManagerPlugin.user, false);
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
