@@ -236,9 +236,9 @@ public class JiraManagerInitializer {
 	 * @param workflowXML : the path to a XML that defines the workflow
 	 * @param user : the ApplicationUser that can create a workflow (administrator in general)
 	 */
-	public static void initWorkflow(String projectKey, String workflowXML, ApplicationUser user) {
+	public static void initWorkflow(String projectKey, String workflowXML, ApplicationUser user, String issueTypeName) {
 		JiraWorkflow jiraWorkflow = JiraObjectManipulator.addWorkflow(projectKey, workflowXML, user);    
-		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow);
+		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow, issueTypeName+Appendix.ISSUETYPE);
 
 		JiraObjectManipulator.addWorkflowToProject(workflowScheme, ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
 
@@ -323,7 +323,7 @@ public class JiraManagerInitializer {
 
 			initIssueManagement(projectKey, issueTypeName);
 			JiraObjectManipulator.addStatuses(projectKey, statuses);
-			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/PubFlow.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"));
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/PubFlow.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"), issueTypeName);
 
 			List<String> screenNames = new ArrayList<String>();
 			screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionCreate");
