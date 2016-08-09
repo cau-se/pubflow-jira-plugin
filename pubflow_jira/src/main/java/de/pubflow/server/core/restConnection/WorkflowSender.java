@@ -15,13 +15,20 @@
  */
 package de.pubflow.server.core.restConnection;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 //import org.springframework.web.client.RestClientException;
 //import org.springframework.web.client.RestTemplate;
+
+import com.google.gson.Gson;
 
 import de.pubflow.server.common.exceptions.WFRestException;
 import de.pubflow.server.core.restMessages.WorkflowCall;
@@ -36,24 +43,20 @@ import de.pubflow.server.core.restMessages.WorkflowUpdateCall;
  */
 public class WorkflowSender {
 	private static WorkflowSender instance;
-	private URL targetURL;
+	private String targetURL;
 	private Logger myLogger;
 
 	private WorkflowSender() throws WFRestException {
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		// TODO load url from file /config
-		try {
-			targetURL = new URL("http://localhost:8080/executeNewWF");
-		} catch (MalformedURLException e) {
-			throw new WFRestException("Could not load target URL");
-		}
+		targetURL = new String("http://localhost:8080/executeNewWF");
 	}
 
 	/**
 	 * Accesses the singleton and initializes it if needed
 	 * 
 	 * @return the one and only {@link WorkflowSender}
-	 * @throws WFRestException 
+	 * @throws WFRestException
 	 */
 	synchronized public static WorkflowSender getInstance() throws WFRestException {
 		if (instance == null) {
@@ -76,20 +79,37 @@ public class WorkflowSender {
 	 *            Workflow
 	 * @throws WFRestException
 	 *             if the connection responses with a code other than 2xx
+	 * @throws IOException
+	 * @throws ClientProtocolException
 	 */
 	public void initWorkflow(WorkflowCall wfCall) throws WFRestException {
-//		myLogger.info("Trying to deploy workflow with ID: " + wfCall.getId());
-//		RestTemplate restTemplate = new RestTemplate();
-//		String response = "Initial REST call response: ";
-//		try {
-//			response += restTemplate.postForObject(targetURL.toString(), wfCall, String.class);
-//		} catch (RestClientException e) {
-//			myLogger.error("Could not deplay new Workflow with ID: " + wfCall.getId().toString());
-//			myLogger.error(e.toString());
-//			throw new WFRestException("Workflow could not be started");
-//		} finally {
-//			myLogger.info(response);
-//		}
+		myLogger.info("Trying to deploy workflow with ID: " + wfCall.getId());
+		Gson gson = new Gson();
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		HttpPost post = new HttpPost(targetURL);
+		HttpResponse response = null;
+
+		try {
+			StringEntity postingString = new StringEntity(gson.toJson(wfCall));
+
+			System.out.println(wfCall.getCallbackAddress());
+			System.out.println("id: "+wfCall.getId());
+			System.out.println("posting string: " + postingString);
+
+			post.setEntity(postingString);
+			post.setHeader("Content-type", "application/json");
+			response = httpClient.execute(post);
+
+			System.out.println("response: " + response);
+
+			myLogger.info("Http response: "+ response.toString());
+
+		} catch (IOException e) {
+			myLogger.error("Could not deplay new Workflow with ID: " + wfCall.getId().toString());
+			myLogger.error(e.toString());
+			throw new WFRestException("Workflow could not be started");
+		}
+
 	}
 
 	/**
@@ -101,16 +121,18 @@ public class WorkflowSender {
 	 *             if the connection responses with a code other than 2xx
 	 */
 	public void updateWorkflow(WorkflowUpdateCall wfUpdate) throws WFRestException {
-//		RestTemplate restTemplate = new RestTemplate();
-//		String response = "Update REST call response: ";
-//		try {
-//			response += restTemplate.postForObject(targetURL.toString(), wfUpdate, String.class);
-//		} catch (RestClientException e) {
-//			myLogger.error("Could not deplay new Workflow with ID: " + wfUpdate.getId().toString());
-//			myLogger.error(e.toString());
-//			throw new WFRestException("Workflow could not be started");
-//		}
-//		myLogger.info(response);
+		// RestTemplate restTemplate = new RestTemplate();
+		// String response = "Update REST call response: ";
+		// try {
+		// response += restTemplate.postForObject(targetURL.toString(),
+		// wfUpdate, String.class);
+		// } catch (RestClientException e) {
+		// myLogger.error("Could not deplay new Workflow with ID: " +
+		// wfUpdate.getId().toString());
+		// myLogger.error(e.toString());
+		// throw new WFRestException("Workflow could not be started");
+		// }
+		// myLogger.info(response);
 	}
 
 }

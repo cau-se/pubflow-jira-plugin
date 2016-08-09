@@ -29,6 +29,7 @@ public class WorkflowAnswer {
 	private UUID id;
 	private String result;
 	private String errorMessage;
+	private String newStatus;
 
 	public WorkflowAnswer() {
 
@@ -56,6 +57,14 @@ public class WorkflowAnswer {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+
+	public String getNewStatus() {
+		return newStatus;
+	}
+
+	public void setNewStatus(String newStatus) {
+		this.newStatus = newStatus;
 	}
 
 }

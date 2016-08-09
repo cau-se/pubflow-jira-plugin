@@ -27,6 +27,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.pubflow.server.common.exceptions.WFRestException;
 import de.pubflow.server.core.restMessages.WorkflowAnswer;
 import de.pubflow.server.core.workflow.WorkflowBroker;
@@ -38,31 +41,35 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
  */
 @Path("/workflow")
 public class WorkflowReceiver {
-	private static final String updateAddress="/workflowUpdate";
-	 
-	//TODO static Url /init at the startup
-	
+	private static final String updateAddress = "/workflowUpdate";
+
+	// TODO static Url /init at the startup
+
 	@PUT
 	@Path(updateAddress)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response receiveWorkflowAnswer(WorkflowAnswer wfAnswer){
+	public Response receiveWorkflowAnswer(WorkflowAnswer wfAnswer) {
+		Logger myLogger = LoggerFactory.getLogger(this.getClass());
+
+		myLogger.info("answer: " + wfAnswer);
 		try {
 			WorkflowBroker.getInstance().receiveWorkflowAnswer(wfAnswer);
 		} catch (WFRestException e) {
-			return Response.status(404).entity(null).build();				
+			return Response.status(404).entity(null).build();
 		}
 		return Response.ok().build();
 	}
-	
+
 	/**
 	 * 
 	 * @return the complete URL for callback of the Workflow engine
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 * @throws UnknownHostException
 	 */
 	public static URL getCallbackAddress() throws MalformedURLException, UnknownHostException {
-		//TODO set URL at startup 
-		return new URL("https://"+InetAddress.getLocalHost().getHostAddress().toString()+updateAddress);
+		// TODO set URL at startup
+		//TODO set port dynamically (@ startup)
+		return new URL("http://" + InetAddress.getLocalHost().getHostAddress().toString()+ ":2990" + updateAddress);
 	}
 }

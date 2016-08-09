@@ -18,8 +18,6 @@ package de.pubflow.server.core.restMessages;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import de.pubflow.server.common.entity.workflow.WFParameter;
 
 /**

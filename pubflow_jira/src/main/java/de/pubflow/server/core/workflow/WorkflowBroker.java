@@ -35,6 +35,7 @@ import de.pubflow.server.common.enumeration.WorkflowState;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.exceptions.WFRestException;
 import de.pubflow.server.common.repository.WorkflowProvider;
+import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.restConnection.WorkflowReceiver;
 import de.pubflow.server.core.restConnection.WorkflowSender;
 import de.pubflow.server.core.restMessages.WorkflowAnswer;
@@ -71,29 +72,29 @@ public class WorkflowBroker {
 	 * Handles new Workflow calls for Pubflow. They will be saved and send to
 	 * the Workflow Microservice
 	 * 
-	 * @param wm
+	 * @param callData
 	 * @throws WFException
 	 */
-	public void receiveWFCall(ServiceCallData wm) throws WFException {
+	public void receiveWFCall(ServiceCallData callData) throws WFException {
 
 		// TODO Save Workflows in DB and load from it on startup
 
-		if (!wm.isValid()) {
+		if (!callData.isValid()) {
 			myLogger.error("Workflow NOT deployed >> Msg is not valid ");
 			return;
 		}
-		myLogger.info("Creating new Instance of the '" + wm.getWorkflowID() + "' Workflow");
+		myLogger.info("Creating new Instance of the '" + callData.getWorkflowID() + "' Workflow");
 		WorkflowCall wfRestCall = new WorkflowCall();
 
 		myLogger.info("Saving and deploying new Workflow");
 		WorkflowStorage storage = WorkflowStorage.getInstance();
 		try {
-			wm.setState(WorkflowState.REGISTERED);
-			storage.addWorkflowCall(wm);
+			callData.setState(WorkflowState.REGISTERED);
+			storage.addWorkflowCall(callData);
 		} catch (WorkflowException e) {
-			UUID newID = storage.addWorkflowCallWithNewID(wm);
+			UUID newID = storage.addWorkflowCallWithNewID(callData);
 			// update ID
-			wm.setWorkflowInstanceId(newID);
+			callData.setWorkflowInstanceId(newID);
 			myLogger.debug("Workflow ID already exists. Updating new ID.");
 		}
 
@@ -106,26 +107,27 @@ public class WorkflowBroker {
 		}
 
 		WorkflowProvider provider = WorkflowProvider.getInstance();
-		WorkflowEntity wfEntity = provider.getByWFID(wm.getWorkflowID());
+		WorkflowEntity wfEntity = provider.getByWFID(callData.getWorkflowID());
 		if(wfEntity == null){
-			myLogger.error("Workflow +'"+wm.getWorkflowID() +"' not found");
-			throw new WFException("Workflow +'"+wm.getWorkflowID() +"' not found");
+			myLogger.error("Workflow +'"+callData.getWorkflowID() +"' not found");
+			throw new WFException("Workflow +'"+callData.getWorkflowID() +"' not found");
 		}
 
 		// set parameters for the REST call
 		wfRestCall.setType(wfEntity.getType().toString());
 		wfRestCall.setWf(wfEntity.getgBpmn());
-		wfRestCall.setId(wm.getWorkflowInstanceId());
-		wfRestCall.setWorkflowParameters(computeParameter(wm));
+		wfRestCall.setId(callData.getWorkflowInstanceId());
+		wfRestCall.setWorkflowParameters(computeParameter(callData));
 		
-		wm.setState(WorkflowState.RUNNING);
+		callData.setState(WorkflowState.RUNNING);
 
 		try {
 			WorkflowSender.getInstance().initWorkflow(wfRestCall);
 			myLogger.info("Workflow deployed");
 		} catch (WFRestException e) {
-			wm.setState(WorkflowState.DEPLOY_ERROR);
+			callData.setState(WorkflowState.DEPLOY_ERROR);
 			myLogger.error("Could not deploy workflow");
+			throw e;
 		}
 	}
 
@@ -226,6 +228,9 @@ public class WorkflowBroker {
 			// all "legacy" workflows), we only need to update the state of the
 			// saved ServiceCall
 			currentWorkflow.setState(WorkflowState.FINISHED);
+			if(wfAnswer.getNewStatus() !=null){
+				JiraObjectManipulator.changeStatus(currentWorkflow.getJiraKey(), wfAnswer.getNewStatus());
+			}
 
 		} else {
 			// Error handling needs to update the Jira issue since the Workflow

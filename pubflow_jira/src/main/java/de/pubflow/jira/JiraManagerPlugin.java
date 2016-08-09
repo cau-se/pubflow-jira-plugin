@@ -154,20 +154,18 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 				callData.setParameters(wfpm);
 				// TODO add workflow id (string), its necessary !
 				// TODO test it
-				long JiraWfId = issue.getWorkflowId();
-				System.out.println(
-						"test: " + ((IssueTypeImpl)issue.getIssueType()).getPropertySet().getString("workflowID"));
 				// callData.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
-				callData.setWorkflowID("de.publfow.OCN");
-//				callData.setWorkflowID(((IssueTypeImpl)issue.getIssueType()).getPropertySet().getString("workflowID"));
+				callData.setWorkflowID("de.pubflow.OCN");
+				// callData.setWorkflowID(((IssueTypeImpl)issue.getIssueType()).getPropertySet().getString("workflowID"));
 				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
 				wfBroker.receiveWFCall(callData);
 
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage() + " " + e.getCause());
-				e.printStackTrace();
+//				e.printStackTrace();
 				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(),
-						e.getClass().getSimpleName() + e.getMessage(), user);
+						// e.getClass().getSimpleName()
+						"Error: " + e.getMessage(), user);
 			}
 
 		} else if (issueEvent.getEventTypeId().equals(EventType.ISSUE_UPDATED_ID)) {
