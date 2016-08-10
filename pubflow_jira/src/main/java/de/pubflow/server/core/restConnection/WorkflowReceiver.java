@@ -70,6 +70,6 @@ public class WorkflowReceiver {
 	public static URL getCallbackAddress() throws MalformedURLException, UnknownHostException {
 		// TODO set URL at startup
 		//TODO set port dynamically (@ startup)
-		return new URL("http://" + InetAddress.getLocalHost().getHostAddress().toString()+ ":2990" + updateAddress);
+		return new URL("http://" + InetAddress.getLocalHost().getHostAddress().toString()+ ":2990" + "/jira/rest/receiver/1.0/workflow");
 	}
 }
