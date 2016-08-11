@@ -30,6 +30,8 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+
 import de.pubflow.server.common.exceptions.WFRestException;
 import de.pubflow.server.core.restMessages.WorkflowAnswer;
 import de.pubflow.server.core.workflow.WorkflowBroker;
@@ -40,12 +42,14 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
  *
  */
 @Path("/workflow")
+@AnonymousAllowed
 public class WorkflowReceiver {
 	private static final String updateAddress = "/workflowUpdate";
 
 	// TODO static Url /init at the startup
 
 	@PUT
+	@AnonymousAllowed
 	@Path(updateAddress)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
