@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import de.pubflow.server.common.repository.abstractRepository.adapters.StorageAdapter;
 import de.pubflow.server.common.repository.abstractRepository.misc.ERepositoryName;
-import de.pubflow.server.core.workflow.ServiceCallData;
 
 public abstract class BasicProvider<T> implements IProvider<T> {
 

@@ -35,7 +35,6 @@ import de.pubflow.server.common.enumeration.WorkflowState;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.exceptions.WFRestException;
 import de.pubflow.server.common.repository.WorkflowProvider;
-import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.restConnection.WorkflowReceiver;
 import de.pubflow.server.core.restConnection.WorkflowSender;
 import de.pubflow.server.core.restMessages.WorkflowAnswer;

@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import de.pubflow.common.PropLoader;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.repository.WorkflowLocationInformation;
 import de.pubflow.server.common.repository.abstractRepository.adapters.FSStorageAdapter;

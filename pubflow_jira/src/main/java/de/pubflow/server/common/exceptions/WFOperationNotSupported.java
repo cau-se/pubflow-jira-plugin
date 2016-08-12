@@ -17,4 +17,9 @@ package de.pubflow.server.common.exceptions;
 
 public class WFOperationNotSupported extends Error{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 }

@@ -47,7 +47,6 @@ import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeItem;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeItemImpl;
 import com.atlassian.jira.issue.fields.screen.FieldScreenTab;
 import com.atlassian.jira.issue.issuetype.IssueType;
-import com.atlassian.jira.issue.issuetype.IssueTypeImpl;
 import com.atlassian.jira.issue.operation.IssueOperations;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;

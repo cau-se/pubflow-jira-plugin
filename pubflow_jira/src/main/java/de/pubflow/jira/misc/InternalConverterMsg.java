@@ -50,7 +50,7 @@ public class InternalConverterMsg {
 		date = issueEvent.getTime();
 
 		Issue issue = issueEvent.getIssue();
-		issueTypeName = issue.getIssueTypeObject().getName();
+		issueTypeName = issue.getIssueType().getName();
 
 		values.put("reporter", issue.getReporterId());
 		values.put("assignee", issue.getAssigneeId());
@@ -58,7 +58,7 @@ public class InternalConverterMsg {
 		values.put("issueKey", issue.getKey() + "");
 		values.put("eventType", eventType + "");
 		values.put("date", date.getTime() + "");
-		values.put("status", issue.getStatusObject().getName());
+		values.put("status", issue.getStatus().getName());
 
 		List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
 

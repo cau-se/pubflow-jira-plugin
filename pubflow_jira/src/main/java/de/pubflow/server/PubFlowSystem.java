@@ -38,8 +38,8 @@ public class PubFlowSystem {
 		}
 
 		// Register shutdownhook
-		Thread t = new Thread(new ShutdownActions());
-		Runtime.getRuntime().addShutdownHook(t);
+//		Thread t = new Thread(new ShutdownActions());
+//		Runtime.getRuntime().addShutdownHook(t);
 		myLogger.info("Running");
 	}
 
@@ -58,9 +58,7 @@ public class PubFlowSystem {
 			Thread.currentThread().setName("PubFlow Shutdownhook");
 			Logger shutdownLogger = LoggerFactory.getLogger(this.getClass());
 			shutdownLogger.info("<< Shutting down PubFlow >>");
-			PubFlowSystem core = PubFlowSystem.getInstance();
 			shutdownLogger.info("Stopping Quartz");
-			//TODO
 			// Write props to file
 			shutdownLogger.debug("Saving Properties to File");
 			PropLoader.getInstance().saveProperties();

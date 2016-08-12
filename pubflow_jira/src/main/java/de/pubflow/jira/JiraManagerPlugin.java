@@ -47,7 +47,6 @@ import com.atlassian.jira.event.type.EventType;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
-import com.atlassian.jira.issue.issuetype.IssueTypeImpl;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
