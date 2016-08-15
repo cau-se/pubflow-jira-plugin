@@ -53,6 +53,7 @@ import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.opensymphony.workflow.loader.ActionDescriptor;
 
+import de.pubflow.common.PropLoader;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
@@ -236,6 +237,8 @@ public class JiraManagerInitializer {
 	 * @param user : the ApplicationUser that can create a workflow (administrator in general)
 	 */
 	public static void initWorkflow(String projectKey, String workflowXML, ApplicationUser user, String issueTypeName) {
+		
+		
 		JiraWorkflow jiraWorkflow = JiraObjectManipulator.addWorkflow(projectKey, workflowXML, user);    
 		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow, issueTypeName+Appendix.ISSUETYPE);
 
@@ -252,6 +255,46 @@ public class JiraManagerInitializer {
 	}
 
 	/**
+	 * Initialized the Look&Feel
+	 */
+	public static void initLookAndFeel(){
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, 
+				PropLoader.getInstance().getProperty( "JIRA_BASEURL", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, 
+				PropLoader.getInstance().getProperty("JIRA_MODE", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, 
+				PropLoader.getInstance().getProperty("JIRA_TITLE", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_BGCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_BGCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_HIGHLIGHTCOLOR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_SEPARATOR_BGCOLOR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_TEXTCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_BGCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_MENU_BGCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_SEPARATOR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_MENU_SEPARATOR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_TEXTCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_MENU_TEXTCOLOUR", JiraManagerInitializer.class));	
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_BASEBGCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_HERO_BUTTON_BASEBGCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_TEXTCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_HERO_BUTTON_TEXTCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_ACTIVE_LINKCOLOUR", JiraManagerInitializer.class));
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_HEADINGCOLOUR", JiraManagerInitializer.class));		
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, 
+				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_LINKCOLOUR", JiraManagerInitializer.class));		
+		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, 
+				PropLoader.getInstance().getProperty("JIRA_LF_LOGO_URL", JiraManagerInitializer.class));		
+	}
+	
+	/**
 	 * Initialized the whole PubFlow project.
 	 * @author arl, abar
 	 * 
@@ -259,6 +302,7 @@ public class JiraManagerInitializer {
 	public static void initPubFlowProject()
 			throws GenericEntityException, KeyManagementException, UnrecoverableKeyException,
 			NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+		
 		final ApplicationProperties applicationPropertiesManager = ComponentAccessor.getApplicationProperties();
 		applicationPropertiesManager.setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		applicationPropertiesManager.setString(APKeys.JIRA_MODE, "Private");
@@ -266,6 +310,9 @@ public class JiraManagerInitializer {
 		final String issueTypeName = "OCN";
 		final String projectKey = "PUB";
 		Project project = ComponentAccessor.getProjectManager().getProjectObjByName("PubFlow");
+		
+		initLookAndFeel();
+		
 		try {
 			if (project == null) {
 				//
