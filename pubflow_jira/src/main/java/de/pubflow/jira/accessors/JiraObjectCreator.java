@@ -61,9 +61,13 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.UserDetails;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.AssignableWorkflowScheme;
+import com.atlassian.jira.workflow.ConfigurableJiraWorkflow;
 import com.atlassian.jira.workflow.JiraWorkflow;
+import com.atlassian.jira.workflow.WorkflowManager;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
+import com.atlassian.jira.workflow.WorkflowUtil;
+import com.opensymphony.workflow.FactoryException;
 
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.Appendix;
@@ -491,5 +495,33 @@ public class JiraObjectCreator {
 			
 		}
 		return statusMap;
+	}
+	
+	/**
+	 * Creates a new workflow in Jira
+	 * @author arl, abar
+	 * @param projectKey
+	 * @param workflowXML
+	 * @return returns the created JiraWorkflow object
+	 */
+	public static JiraWorkflow addWorkflow(String projectKey, String workflowXML,
+			ApplicationUser user) {
+		final WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager();
+		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(projectKey + Appendix.WORKFLOW);
+
+		if (jiraWorkflow == null && workflowXML != null) {
+			try {
+				jiraWorkflow = new ConfigurableJiraWorkflow(projectKey + Appendix.WORKFLOW,
+						WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), workflowManager);
+				workflowManager.createWorkflow(user, jiraWorkflow);
+				log.info("addWorkflow: Successfully added a new workflow "+ jiraWorkflow.getName());
+			} catch (FactoryException e) {
+				e.printStackTrace();
+			}
+		} else {
+			log.debug("addWorkflow: Workflow "+ jiraWorkflow.getName()+" already exists.");
+		}
+
+		return jiraWorkflow;
 	}	
 }

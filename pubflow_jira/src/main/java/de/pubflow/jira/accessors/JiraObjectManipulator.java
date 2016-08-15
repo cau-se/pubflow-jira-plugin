@@ -21,9 +21,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.ofbiz.core.entity.GenericValue;
 import org.slf4j.Logger;
@@ -34,10 +32,7 @@ import com.atlassian.crowd.exception.GroupNotFoundException;
 import com.atlassian.crowd.exception.OperationFailedException;
 import com.atlassian.crowd.exception.OperationNotPermittedException;
 import com.atlassian.crowd.exception.UserNotFoundException;
-import com.atlassian.crowd.exception.embedded.InvalidGroupException;
 import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.config.StatusCategoryManager;
-import com.atlassian.jira.config.StatusManager;
 import com.atlassian.jira.exception.AddException;
 import com.atlassian.jira.exception.PermissionException;
 import com.atlassian.jira.issue.Issue;
@@ -62,14 +57,11 @@ import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.workflow.ConfigurableJiraWorkflow;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
-import com.atlassian.jira.workflow.WorkflowUtil;
-import com.opensymphony.workflow.FactoryException;
+import com.atlassian.jira.workflow.WorkflowSchemeManager;
 
 import de.pubflow.jira.JiraManagerPlugin;
-import de.pubflow.jira.misc.Appendix;
 
 public class JiraObjectManipulator {
 
@@ -140,9 +132,13 @@ public class JiraObjectManipulator {
 	 * @param project: the project we add the given workflow scheme to
 	 */  
 	public static void addWorkflowToProject(WorkflowScheme workflowScheme, Project project) {
-		Scheme scheme = ComponentAccessor.getWorkflowSchemeManager().getSchemeObject(workflowScheme.getId());
+		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
+		Scheme scheme = workflowSchemeManager.getSchemeObject(workflowScheme.getId());
 		if(scheme != null && project != null) {
-			ComponentAccessor.getWorkflowSchemeManager().addSchemeToProject(project, scheme);
+			workflowSchemeManager.addSchemeToProject(project, scheme);
+			log.info("addWorkflowToProject: the workflowscheme "+scheme.getName()+" was added to the project "+ project.getName());
+		} else {
+			log.debug("addWorkflowToProject: the project is already mapped to the scheme "+ scheme.getName());
 		}
 	}
 
@@ -209,31 +205,6 @@ public class JiraObjectManipulator {
 		}
 	}
 
-	/**
-	 * Creates a new workflow in Jira
-	 * @author arl, abar
-	 * @param projectKey
-	 * @param workflowXML
-	 * @return returns the created JiraWorkflow object
-	 */
-	public static JiraWorkflow addWorkflow(String projectKey, String workflowXML,
-			ApplicationUser user) {
-
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + Appendix.WORKFLOW);
-
-		if (jiraWorkflow == null && workflowXML != null) {
-			try {
-				jiraWorkflow = new ConfigurableJiraWorkflow(projectKey + Appendix.WORKFLOW,
-						WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), ComponentAccessor.getWorkflowManager());
-				ComponentAccessor.getWorkflowManager().createWorkflow(user, jiraWorkflow);
-			} catch (FactoryException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return jiraWorkflow;
-	}
-
 	  /**
 	   * Add a User to a group in Jira
 	   * @author abar
@@ -246,9 +217,12 @@ public class JiraObjectManipulator {
 	      throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
 	      OperationNotPermittedException, OperationFailedException {
 	    Group group = ComponentAccessor.getGroupManager().getGroup(pGroup);
-	    if (group != null) {
-	    	ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-	    }
+		  if(pubflowUser != null && group != null) {
+			  ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
+			  log.info("addUserToGroup: added the user "+pubflowUser.getUsername()+" to group " +group.getName());
+		  } else {
+			  log.error("addUserToGroup: user "+ pubflowUser +" can't be added to group "+ group);
+		  }
 	  }
 
 	  /**
@@ -262,7 +236,13 @@ public class JiraObjectManipulator {
 	  public static void addUserToGroup(ApplicationUser pubflowUser, Group group)
 	      throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
 	      OperationNotPermittedException, OperationFailedException {
-		  ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
+		  if(pubflowUser != null && group != null) {
+			  ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
+			  log.info("addUserToGroup: added the user "+pubflowUser.getUsername()+" to group " +group.getName());
+		  } else {
+			  log.error("addUserToGroup: user "+ pubflowUser +" can't be added to group "+ group);
+		  }
+		  
 	  }
 
 	/**
@@ -280,9 +260,11 @@ public class JiraObjectManipulator {
 		Status nextStatus = JiraObjectGetter.getStatusByName(issue.getProjectObject().getKey(), statusName);
 
 		if (issue == null || jiraWorkflow == null || nextStatus == null) {
+			log.debug("changeStatus: issue, jiraworklfow, or nextStatus is null.");
 			return false;
 		} else {
 			ComponentAccessor.getWorkflowManager().migrateIssueToWorkflow(issue, jiraWorkflow, nextStatus);
+			log.info("changeStatus: successfully changed current status of an issue to next status.");
 			return true;
 		}
 	}
