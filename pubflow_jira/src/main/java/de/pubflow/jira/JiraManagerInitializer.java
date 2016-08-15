@@ -352,7 +352,7 @@ public class JiraManagerInitializer {
 			statuses.add("Rejected");
 
 			initIssueManagement(projectKey, issueTypeName);
-			JiraObjectManipulator.addStatuses(projectKey, statuses);
+			JiraObjectCreator.addStatuses(projectKey, statuses);
 			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/PubFlow.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"), issueTypeName);
 
 			List<String> screenNames = new ArrayList<String>();
