@@ -62,7 +62,6 @@ import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.user.ApplicationUsers;
 import com.atlassian.jira.workflow.ConfigurableJiraWorkflow;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
@@ -74,27 +73,8 @@ import de.pubflow.jira.misc.Appendix;
 
 public class JiraObjectManipulator {
 
-
-
-	/**
-	 * Add a User to a group in Jira
-	 * @author abar
-	 * 
-	 * @param name: the name of the group we want to creat
-	 * 
-	 * @return returns the created Group object
-	 */
-	public static Group createGroup(String name)
-			throws OperationNotPermittedException, InvalidGroupException {
-		Group group = ComponentAccessor.getGroupManager().getGroup(name);
-		if (group == null) {
-			group = ComponentAccessor.getGroupManager().createGroup(name);
-		}
-
-		return group;
-	}
-
 	private static Logger log = LoggerFactory.getLogger(JiraObjectManipulator.class);
+	
 	/**
 	 * @author abar
 	 * @param issueTypeScheme : the issue type Scheme we map to the project
@@ -151,32 +131,7 @@ public class JiraObjectManipulator {
 
 		return issueTypeScreenScheme;
 	} 
-	
-	/**
-	 * Add custom statuses to Jira
-	 * @author abar
-	 * @param statuses : a list of all statuses we want to add to our Jira configuration
-	 * @param projectKey : the project we add the statuses to
-	 * @return A Map of statuses and their ids
-	 */ 
-	public static Map<String, String> addStatuses(String projectKey, List<String> statuses) {
-		Map<String, String> statusMap = new HashMap<String, String>();
 
-		StatusManager statusManager = ComponentAccessor.getComponent(StatusManager.class);
-		int catId = 2;
-		StatusCategoryManager statusManagerCategory = ComponentAccessor.getComponent(StatusCategoryManager.class);
-
-		for (String status : statuses) {
-			Status tempStatus = JiraObjectGetter.getStatusByName(projectKey, status);
-
-			if (tempStatus == null) {
-				tempStatus = statusManager.createStatus(status, "",
-						"/images/icons/status_open.gif", statusManagerCategory.getStatusCategory(new Long(catId)));
-			}
-			statusMap.put(status, tempStatus.getId());
-		}
-		return statusMap;
-	}
 
 	/**
 	 * Maps the workflow scheme of a given workflow to a given project.

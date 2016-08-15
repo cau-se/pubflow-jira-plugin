@@ -17,7 +17,9 @@ package de.pubflow.jira.accessors;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ofbiz.core.entity.GenericEntityException;
 import org.slf4j.Logger;
@@ -27,6 +29,8 @@ import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.exception.OperationNotPermittedException;
 import com.atlassian.crowd.exception.embedded.InvalidGroupException;
 import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.config.StatusCategoryManager;
+import com.atlassian.jira.config.StatusManager;
 import com.atlassian.jira.exception.AddException;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
@@ -49,6 +53,7 @@ import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeItemImpl;
 import com.atlassian.jira.issue.fields.screen.FieldScreenTab;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.operation.IssueOperations;
+import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.security.groups.GroupManager;
@@ -437,10 +442,12 @@ public class JiraObjectCreator {
 	}
 
 	/**
-	 * @param name
-	 * @return
-	 * @throws OperationNotPermittedException
-	 * @throws InvalidGroupException
+	 * Add a User to a group in Jira
+	 * @author abar
+	 * 
+	 * @param name: the name of the group we want to creat
+	 * 
+	 * @return returns the created Group object
 	 */
 	public static Group createGroup(String name)
 			throws OperationNotPermittedException, InvalidGroupException {
@@ -455,4 +462,34 @@ public class JiraObjectCreator {
 
 		return group;
 	}
+	
+	/**
+	 * Add custom statuses to Jira
+	 * @author abar
+	 * @param statuses : a list of all statuses we want to add to our Jira configuration
+	 * @param projectKey : the project we add the statuses to
+	 * @return A Map of statuses and their ids
+	 */ 
+	public static Map<String, String> addStatuses(String projectKey, List<String> statuses) {
+		final StatusManager statusManager = ComponentAccessor.getComponent(StatusManager.class);
+		final StatusCategoryManager statusManagerCategory = ComponentAccessor.getComponent(StatusCategoryManager.class);
+		final int catId = 2;
+		Map<String, String> statusMap = new HashMap<String, String>();
+
+		for (String status : statuses) {
+			Status tempStatus = JiraObjectGetter.getStatusByName(projectKey, status);
+
+			if (tempStatus == null) {
+				tempStatus = statusManager.createStatus(status, "",
+						"/images/icons/status_open.gif", statusManagerCategory.getStatusCategory(new Long(catId)));
+				log.info("addStatuses: status "+ tempStatus.getName()+" was created.");
+			} else {
+				log.debug("addStatuses: status "+tempStatus.getName()+" already exists.");
+			}
+			
+			statusMap.put(status, tempStatus.getId());
+			
+		}
+		return statusMap;
+	}	
 }
