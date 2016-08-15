@@ -255,7 +255,7 @@ public class JiraManagerInitializer {
 	}
 
 	/**
-	 * Initialized the Look&Feel
+	 * Initializes the Look&Feel
 	 */
 	public static void initLookAndFeel(){
 		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, 
@@ -295,7 +295,7 @@ public class JiraManagerInitializer {
 	}
 	
 	/**
-	 * Initialized the whole PubFlow project.
+	 * Initializes the whole PubFlow project.
 	 * @author arl, abar
 	 * 
 	 */
