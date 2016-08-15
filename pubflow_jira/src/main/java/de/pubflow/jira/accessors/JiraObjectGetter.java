@@ -155,7 +155,7 @@ public class JiraObjectGetter {
 				}
 			}
 		}
-
+		log.debug("getStatusByName: not status with name "+statusName+" was found.");
 		return null;
 	}
 
@@ -178,7 +178,7 @@ public class JiraObjectGetter {
 	}
 
 	public static ApplicationUser getUserByName(String userName) {
-		return ComponentAccessor.getUserUtil().getUserByName(userName);
+		return ComponentAccessor.getUserManager().getUserByName(userName);
 	}
 
 	/**
@@ -201,6 +201,8 @@ public class JiraObjectGetter {
 	        return issueType;
 	      }
 	    }
+	    
+	    log.debug("findIssueTypeByName: no issueType named "+name+" was found.");
 	    return null;
 	  }
 	
