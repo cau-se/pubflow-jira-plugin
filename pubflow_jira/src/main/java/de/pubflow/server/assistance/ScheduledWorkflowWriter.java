@@ -47,7 +47,6 @@ public class ScheduledWorkflowWriter {
 		System.out.println("File count : " + wfList.size());
 		for (ServiceCallData workflowEntity : wfList) {	
 			System.out.println("-----------------------------------------------");
-			System.out.println("Instance Id : " + workflowEntity.getWorkflowInstanceId());
 			System.out.println("Workflow Id : " + workflowEntity.getWorkflowID());
 			System.out.println("Workflow Parameter : " + workflowEntity.getParameters());
 		}

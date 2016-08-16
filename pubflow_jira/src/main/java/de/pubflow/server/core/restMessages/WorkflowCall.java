@@ -20,7 +20,6 @@ package de.pubflow.server.core.restMessages;
 
 import java.net.URL;
 import java.util.List;
-import java.util.UUID;
 
 import de.pubflow.server.common.entity.workflow.WFParameter;
 
@@ -35,11 +34,7 @@ public class WorkflowCall {
 	/**
 	 * Used to map the workflow to other services, events and responses.
 	 */
-	private UUID id;
-	/**
-	 * The workflow to be executed, as byte array.
-	 */
-	private byte[] wf;
+	private String jiraKey;
 	/**
 	 * The type of the workflow (e.g. BPMN2)
 	 */
@@ -48,30 +43,18 @@ public class WorkflowCall {
 	 * Parameters used to execute the workflow.
 	 */
 	private List<WFParameter> workflowParameters;
-	/**
-	 * Url to response to
-	 */
-	private URL callbackAddress;
 
 	public WorkflowCall() {
 	}
 
-	public UUID getId() {
-		return id;
+	public String getId() {
+		return jiraKey;
 	}
 
-	public void setId(UUID id) {
-		this.id = id;
+	public void setId(String id) {
+		this.jiraKey = id;
 	}
 
-	public byte[] getWf() {
-		return wf;
-	}
-
-	public void setWf(byte[] wf) {
-		this.wf = wf;
-
-	}
 
 	public String getType() {
 		return type;
@@ -90,15 +73,8 @@ public class WorkflowCall {
 	}
 
 	public String toString() {
-		return "WF message: id: " + id + " wf: " + wf;
+		return "WF message: id: " + jiraKey + " wf: " + type;
 	}
 
-	public URL getCallbackAddress() {
-		return callbackAddress;
-	}
-
-	public void setCallbackAddress(URL callbackAddress) {
-		this.callbackAddress = callbackAddress;
-	}
 
 }

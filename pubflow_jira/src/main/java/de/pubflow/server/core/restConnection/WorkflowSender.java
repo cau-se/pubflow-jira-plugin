@@ -32,7 +32,6 @@ import com.google.gson.Gson;
 
 import de.pubflow.server.common.exceptions.WFRestException;
 import de.pubflow.server.core.restMessages.WorkflowCall;
-import de.pubflow.server.core.restMessages.WorkflowUpdateCall;
 
 /**
  * The WorkflowSender is responsible for the outgoing communication with the
@@ -92,10 +91,6 @@ public class WorkflowSender {
 		try {
 			StringEntity postingString = new StringEntity(gson.toJson(wfCall));
 
-			System.out.println(wfCall.getCallbackAddress());
-			System.out.println("id: "+wfCall.getId());
-			System.out.println("posting string: " + postingString);
-
 			post.setEntity(postingString);
 			post.setHeader("Content-type", "application/json");
 			response = httpClient.execute(post);
@@ -104,35 +99,12 @@ public class WorkflowSender {
 
 			myLogger.info("Http response: "+ response.toString());
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			myLogger.error("Could not deplay new Workflow with ID: " + wfCall.getId().toString());
 			myLogger.error(e.toString());
 			throw new WFRestException("Workflow could not be started");
 		}
 
-	}
-
-	/**
-	 * Updates a Workflow, for example if an event occurs.
-	 * 
-	 * @param wfUpdate
-	 *            The description of the update or event
-	 * @throws WFRestException
-	 *             if the connection responses with a code other than 2xx
-	 */
-	public void updateWorkflow(WorkflowUpdateCall wfUpdate) throws WFRestException {
-		// RestTemplate restTemplate = new RestTemplate();
-		// String response = "Update REST call response: ";
-		// try {
-		// response += restTemplate.postForObject(targetURL.toString(),
-		// wfUpdate, String.class);
-		// } catch (RestClientException e) {
-		// myLogger.error("Could not deplay new Workflow with ID: " +
-		// wfUpdate.getId().toString());
-		// myLogger.error(e.toString());
-		// throw new WFRestException("Workflow could not be started");
-		// }
-		// myLogger.info(response);
 	}
 
 }

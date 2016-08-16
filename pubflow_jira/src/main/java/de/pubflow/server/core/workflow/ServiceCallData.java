@@ -17,42 +17,28 @@ package de.pubflow.server.core.workflow;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
-import de.pubflow.server.common.enumeration.WorkflowState;
 
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
 public class ServiceCallData implements Serializable {
 
 	private static final long serialVersionUID = -4931074023209271264L;
 
-	// TODO maybe a state is necessary
-
-	/**
-	 * The ID used to identify this workflow
-	 */
-	private UUID workflowInstanceId;
 	/**
 	 * The id used to get the (bpmn) workflow
 	 */
 	private String workflowID = "";
 	
-	private WorkflowState state = WorkflowState.REGISTERED;
 	private WFType type = null;
 	private List<WFParameter> parameters = null;
 	private String jiraKey;
 
 	public ServiceCallData() {
-		workflowInstanceId = UUID.randomUUID();
-	}
-
-	public void setWorkflowInstanceId(UUID workflowInstanceId) {
-		this.workflowInstanceId = workflowInstanceId;
 	}
 
 	/**
@@ -117,22 +103,9 @@ public class ServiceCallData implements Serializable {
 		this.jiraKey = jiraKey;
 	}
 
-	public UUID getWorkflowInstanceId() {
-		return workflowInstanceId;
-	}
 
 	public WFType getType() {
 		return type;
 	}
-
-	public WorkflowState getState() {
-		return state;
-	}
-
-	public void setState(WorkflowState state) {
-		this.state = state;
-	}
-	
-	
 	
 }

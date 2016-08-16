@@ -15,31 +15,21 @@
  */
 package de.pubflow.server.core.workflow;
 
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opensymphony.workflow.WorkflowException;
-
-import de.pubflow.jira.accessors.JiraObjectGetter;
-import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.server.common.entity.WorkflowEntity;
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.common.enumeration.WorkflowState;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.exceptions.WFRestException;
 import de.pubflow.server.common.repository.WorkflowProvider;
-import de.pubflow.server.core.restConnection.WorkflowReceiver;
 import de.pubflow.server.core.restConnection.WorkflowSender;
 import de.pubflow.server.core.restMessages.WorkflowAnswer;
 import de.pubflow.server.core.restMessages.WorkflowCall;
-import de.pubflow.server.core.workflow.store.WorkflowStorage;
 
 /**
  * Handles all Workflow execution. The initialization and updates are covered by
@@ -85,25 +75,8 @@ public class WorkflowBroker {
 		myLogger.info("Creating new Instance of the '" + callData.getWorkflowID() + "' Workflow");
 		WorkflowCall wfRestCall = new WorkflowCall();
 
-		myLogger.info("Saving and deploying new Workflow");
-		WorkflowStorage storage = WorkflowStorage.getInstance();
-		try {
-			callData.setState(WorkflowState.REGISTERED);
-			storage.addWorkflowCall(callData);
-		} catch (WorkflowException e) {
-			UUID newID = storage.addWorkflowCallWithNewID(callData);
-			// update ID
-			callData.setWorkflowInstanceId(newID);
-			myLogger.debug("Workflow ID already exists. Updating new ID.");
-		}
+		myLogger.info("Deploying new Workflow");
 
-		// add Callback address to the REST call
-		try {
-			wfRestCall.setCallbackAddress(WorkflowReceiver.getCallbackAddress());
-		} catch (MalformedURLException | UnknownHostException e) {
-			myLogger.error("Could not set callback address for the REST call");
-			throw new WFException("  Could not set callback address");
-		}
 
 		WorkflowProvider provider = WorkflowProvider.getInstance();
 		WorkflowEntity wfEntity = provider.getByWFID(callData.getWorkflowID());
@@ -114,17 +87,13 @@ public class WorkflowBroker {
 
 		// set parameters for the REST call
 		wfRestCall.setType(wfEntity.getType().toString());
-		wfRestCall.setWf(wfEntity.getgBpmn());
-		wfRestCall.setId(callData.getWorkflowInstanceId());
 		wfRestCall.setWorkflowParameters(computeParameter(callData));
 		
-		callData.setState(WorkflowState.RUNNING);
 
 		try {
 			WorkflowSender.getInstance().initWorkflow(wfRestCall);
 			myLogger.info("Workflow deployed");
 		} catch (WFRestException e) {
-			callData.setState(WorkflowState.DEPLOY_ERROR);
 			myLogger.error("Could not deploy workflow");
 			throw e;
 		}
@@ -146,7 +115,6 @@ public class WorkflowBroker {
 					break;
 
 				case "status":
-					data.setState(null);
 					break;
 
 				case "assignee":
@@ -218,38 +186,6 @@ public class WorkflowBroker {
 	 * @throws WFRestException
 	 */
 	synchronized public void receiveWorkflowAnswer(WorkflowAnswer wfAnswer) throws WFRestException {
-		ServiceCallData currentWorkflow = WorkflowStorage.getInstance().lookupWorkflowCall(wfAnswer.getId());
-		if (currentWorkflow == null) {
-			throw new WFRestException("Workflow not found");
-		}
-		if (!wfAnswer.getResult().contains("error")) {
-			// since the workflow will currently call the rest api (to support
-			// all "legacy" workflows), we only need to update the state of the
-			// saved ServiceCall
-			currentWorkflow.setState(WorkflowState.FINISHED);
-			if(wfAnswer.getNewStatus() !=null){
-				JiraObjectManipulator.changeStatus(currentWorkflow.getJiraKey(), wfAnswer.getNewStatus());
-			}
-
-		} else {
-			// Error handling needs to update the Jira issue since the Workflow
-			// could not execute
-			// maybe some other worker has already successfully completed the
-			// work
-			if (currentWorkflow.getState() == WorkflowState.FINISHED) {
-				return;
-			} else {
-				currentWorkflow.setState(WorkflowState.ERROR);
-				myLogger.error("Workflow with id " + wfAnswer.getId() + " failed, with message: '"
-						+ wfAnswer.getErrorMessage() + "'");
-				// Error handling from the class JiraManagerPlugin
-				// TODO may be improved in the future
-				JiraObjectManipulator.addIssueComment(
-						currentWorkflow.getJiraKey(), "Workflow " + currentWorkflow.getWorkflowID()
-								+ " failed due to: '" + wfAnswer.getErrorMessage() + "'",
-						JiraObjectGetter.getUserByName("PubFlow"));
-			}
-
-		}
+		//TODO or delete
 	}
 }

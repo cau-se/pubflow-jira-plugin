@@ -21,7 +21,6 @@
 package de.pubflow.server.common.repository;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,14 +59,6 @@ public class ScheduledWorkflowProvider extends BasicProvider<ServiceCallData> {
 		return super.getAllEntries();
 	}
 
-	public ServiceCallData getScheduledWorkflow(UUID instanceId) {
-		for (ServiceCallData wm : super.getAllEntries()) {
-			if (wm.getWorkflowInstanceId() == instanceId) {
-				return wm;
-			}
-		}
-		return null;
-	}
 
 	// ----------------------------------------------------------------------------------------
 	// Inner Classes
