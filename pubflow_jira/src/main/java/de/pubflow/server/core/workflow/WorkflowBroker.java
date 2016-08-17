@@ -15,21 +15,22 @@
  */
 package de.pubflow.server.core.workflow;
 
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pubflow.server.common.entity.WorkflowEntity;
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.exceptions.WFRestException;
-import de.pubflow.server.common.repository.WorkflowProvider;
+import de.pubflow.server.core.restConnection.WorkflowReceiver;
 import de.pubflow.server.core.restConnection.WorkflowSender;
-import de.pubflow.server.core.restMessages.WorkflowAnswer;
-import de.pubflow.server.core.restMessages.WorkflowCall;
+import de.pubflow.server.core.workflow.messages.ServiceCallData;
+import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
 
 /**
  * Handles all Workflow execution. The initialization and updates are covered by
@@ -73,25 +74,37 @@ public class WorkflowBroker {
 			return;
 		}
 		myLogger.info("Creating new Instance of the '" + callData.getWorkflowID() + "' Workflow");
-		WorkflowCall wfRestCall = new WorkflowCall();
+		WorkflowRestCall wfRestCall = new WorkflowRestCall();
 
+		// add Callback address to the REST call
+		try {
+			wfRestCall.setCallbackAddress(WorkflowReceiver.getCallbackAddress());
+		} catch (MalformedURLException | UnknownHostException e) {
+			myLogger.error("Could not set callback address for the REST call");
+			throw new WFException("  Could not set callback address");
+		}
+		
 		myLogger.info("Deploying new Workflow");
 
+		// TODO extract Code to microService
+		// --------
+		// choose which workflow api should be called
+//		WorkflowProvider provider = WorkflowProvider.getInstance();
+//		WorkflowEntity wfEntity = provider.getByWFID(callData.getWorkflowID());
+//		if (wfEntity == null) {
+//			myLogger.error("Workflow +'" + callData.getWorkflowID() + "' not found");
+//			throw new WFException("Workflow +'" + callData.getWorkflowID() + "' not found");
+//		}
 
-		WorkflowProvider provider = WorkflowProvider.getInstance();
-		WorkflowEntity wfEntity = provider.getByWFID(callData.getWorkflowID());
-		if(wfEntity == null){
-			myLogger.error("Workflow +'"+callData.getWorkflowID() +"' not found");
-			throw new WFException("Workflow +'"+callData.getWorkflowID() +"' not found");
-		}
+		String workflowPath = "/workflow/OCN";
+
+		// _-----------------------_
 
 		// set parameters for the REST call
-		wfRestCall.setType(wfEntity.getType().toString());
 		wfRestCall.setWorkflowParameters(computeParameter(callData));
-		
 
 		try {
-			WorkflowSender.getInstance().initWorkflow(wfRestCall);
+			WorkflowSender.getInstance().initWorkflow(wfRestCall, workflowPath);
 			myLogger.info("Workflow deployed");
 		} catch (WFRestException e) {
 			myLogger.error("Could not deploy workflow");
@@ -185,7 +198,7 @@ public class WorkflowBroker {
 	 * 
 	 * @throws WFRestException
 	 */
-	synchronized public void receiveWorkflowAnswer(WorkflowAnswer wfAnswer) throws WFRestException {
-		//TODO or delete
+	synchronized public void receiveWorkflowAnswer(){
+		// TODO or delete
 	}
 }

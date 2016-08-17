@@ -21,7 +21,7 @@ import java.util.List;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
 import de.pubflow.server.common.repository.ScheduledWorkflowProvider;
-import de.pubflow.server.core.workflow.ServiceCallData;
+import de.pubflow.server.core.workflow.messages.ServiceCallData;
 
 public class ScheduledWorkflowWriter {
 

@@ -55,17 +55,16 @@ import com.atlassian.sal.api.lifecycle.LifecycleAware;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.InternalConverterMsg;
-import de.pubflow.server.PubFlowSystem;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.core.workflow.ServiceCallData;
 import de.pubflow.server.core.workflow.WorkflowBroker;
+import de.pubflow.server.core.workflow.messages.ServiceCallData;
 
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
  * plugin lifecycle integration.
  */
 public class JiraManagerPlugin implements LifecycleAware, InitializingBean, DisposableBean {
-	private static final Logger log = LoggerFactory.getLogger(PubFlowSystem.class);
+	private static final Logger log = LoggerFactory.getLogger(JiraManagerPlugin.class);
 
 	public static WorkflowSchemeManager workflowSchemeManager;
 	public static IssueTypeManager issueTypeManager;
@@ -89,13 +88,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 			FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager,
 			JiraManagerPluginJob jiraManagerPluginJob) {
 		log.debug("Plugin started");
-		try {
-			PubFlowSystem.getInstance();
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		JiraManagerPlugin.issueTypeManager = issueTypeManager;
 		JiraManagerPlugin.fieldScreenSchemeManager = fieldScreenSchemeManager;
 		JiraManagerPlugin.statusManager = statusManager;
@@ -151,17 +144,19 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 				// to enable mapping to the jira ticket
 				callData.setJiraKey(issue.getKey());
 				callData.setParameters(wfpm);
+
 				// TODO add workflow id (string), its necessary !
 				// TODO test it
 				// callData.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
 				callData.setWorkflowID("de.pubflow.OCN");
+
 				// callData.setWorkflowID(((IssueTypeImpl)issue.getIssueType()).getPropertySet().getString("workflowID"));
 				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
 				wfBroker.receiveWFCall(callData);
 
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage() + " " + e.getCause());
-//				e.printStackTrace();
+				// e.printStackTrace();
 				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(),
 						// e.getClass().getSimpleName()
 						"Error: " + e.getMessage(), user);

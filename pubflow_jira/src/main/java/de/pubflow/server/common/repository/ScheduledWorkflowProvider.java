@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import de.pubflow.server.common.repository.abstractRepository.BasicProvider;
 import de.pubflow.server.common.repository.abstractRepository.adapters.FSStorageAdapter;
 import de.pubflow.server.common.repository.abstractRepository.misc.ERepositoryName;
-import de.pubflow.server.core.workflow.ServiceCallData;
+import de.pubflow.server.core.workflow.messages.ServiceCallData;
 
 public class ScheduledWorkflowProvider extends BasicProvider<ServiceCallData> {
 

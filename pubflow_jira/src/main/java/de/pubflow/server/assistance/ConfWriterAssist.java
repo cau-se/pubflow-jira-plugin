@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 package de.pubflow.server.assistance;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Properties;
-
-import de.pubflow.server.PubFlowSystem;
-
 
 public class ConfWriterAssist {
 
@@ -36,7 +34,7 @@ public class ConfWriterAssist {
 		try {
 			fi = new FileInputStream(CONF_FILE);
 
-		}catch (FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
@@ -48,20 +46,19 @@ public class ConfWriterAssist {
 
 			fs = new FileOutputStream(CONF_FILE);
 
-			String signiture = PubFlowSystem.class.toString();
+			pubflowConf.setProperty("PubFlowSystem-CONFSERVER", "ON");
+			pubflowConf.storeToXML(fs,
+					"PubFlow Properties File (last updated " + Calendar.getInstance().getTime().toString() + ")");
 
-			pubflowConf.setProperty( signiture+"-CONFSERVER","ON" );
-			pubflowConf.storeToXML( fs, "PubFlow Properties File (last updated " + Calendar.getInstance().getTime().toString()+")");
-
-		}catch ( IOException e ){
+		} catch (IOException e) {
 			e.printStackTrace();
 
-		}finally{
-			try { 
-				fi.close(); 
+		} finally {
+			try {
+				fi.close();
 				fs.close();
 
-			} catch ( Exception e ){ 
+			} catch (Exception e) {
 			}
 		}
 	}

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 import de.pubflow.server.common.exceptions.WFRestException;
-import de.pubflow.server.core.restMessages.WorkflowCall;
+import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
 
 /**
  * The WorkflowSender is responsible for the outgoing communication with the
@@ -48,7 +48,7 @@ public class WorkflowSender {
 	private WorkflowSender() throws WFRestException {
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		// TODO load url from file /config
-		targetURL = new String("http://localhost:8080/executeNewWF");
+		targetURL = new String("http://localhost:8080");
 	}
 
 	/**
@@ -81,11 +81,11 @@ public class WorkflowSender {
 	 * @throws IOException
 	 * @throws ClientProtocolException
 	 */
-	public void initWorkflow(WorkflowCall wfCall) throws WFRestException {
+	public void initWorkflow(WorkflowRestCall wfCall,String workflowPath) throws WFRestException {
 		myLogger.info("Trying to deploy workflow with ID: " + wfCall.getId());
 		Gson gson = new Gson();
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost post = new HttpPost(targetURL);
+		HttpPost post = new HttpPost(targetURL+workflowPath);
 		HttpResponse response = null;
 
 		try {
@@ -94,8 +94,6 @@ public class WorkflowSender {
 			post.setEntity(postingString);
 			post.setHeader("Content-type", "application/json");
 			response = httpClient.execute(post);
-
-			System.out.println("response: " + response);
 
 			myLogger.info("Http response: "+ response.toString());
 

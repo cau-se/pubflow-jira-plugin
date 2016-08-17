@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.pubflow.server.core.workflow;
+package de.pubflow.server.core.workflow.messages;
 
 import java.io.Serializable;
 import java.util.List;
