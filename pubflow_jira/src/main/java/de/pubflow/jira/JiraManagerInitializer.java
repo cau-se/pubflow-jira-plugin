@@ -248,7 +248,7 @@ public class JiraManagerInitializer {
 		JiraObjectManipulator.addWorkflowToProject(workflowScheme, ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
 
 		Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
-		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName("OCN" + Appendix.ISSUETYPE);
+		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE);
 		try {
 			ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(ComponentAccessor.getWorkflowSchemeManager().getWorkflowScheme(project), jiraWorkflow.getName(), ocnIssueType.getId());
 		} catch (GenericEntityException e) {
