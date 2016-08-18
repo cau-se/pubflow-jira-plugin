@@ -15,7 +15,6 @@
  */
 package de.pubflow.server.core.workflow;
 
-import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,7 +78,7 @@ public class WorkflowBroker {
 		// add Callback address to the REST call
 		try {
 			wfRestCall.setCallbackAddress(WorkflowReceiver.getCallbackAddress());
-		} catch (MalformedURLException | UnknownHostException e) {
+		} catch (UnknownHostException e) {
 			myLogger.error("Could not set callback address for the REST call");
 			throw new WFException("  Could not set callback address");
 		}

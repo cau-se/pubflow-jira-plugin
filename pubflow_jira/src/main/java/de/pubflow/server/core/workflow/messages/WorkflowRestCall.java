@@ -18,7 +18,6 @@
  */
 package de.pubflow.server.core.workflow.messages;
 
-import java.net.URL;
 import java.util.List;
 
 import de.pubflow.server.common.entity.workflow.WFParameter;
@@ -36,24 +35,22 @@ public class WorkflowRestCall {
 	 */
 	private String jiraKey;
 	/**
-	 * Parameters used to execute the workflow.
-	 */
-
-	/**
 	 * Url to response to
 	 */
-	private URL callbackAddress;
-
+	private String callbackAddress;
+	/**
+	 * Parameters used to execute the workflow.
+	 */
 	private List<WFParameter> workflowParameters;
 
 	public WorkflowRestCall() {
 	}
 
-	public String getId() {
+	public String getJiraKey() {
 		return jiraKey;
 	}
 
-	public void setId(String id) {
+	public void setJiraKey(String id) {
 		this.jiraKey = id;
 	}
 
@@ -65,11 +62,11 @@ public class WorkflowRestCall {
 		this.workflowParameters = workflowParameters;
 	}
 
-	public URL getCallbackAddress() {
+	public String getCallbackAddress() {
 		return callbackAddress;
 	}
 
-	public void setCallbackAddress(URL callbackAddress) {
+	public void setCallbackAddress(String callbackAddress) {
 		this.callbackAddress = callbackAddress;
 	}
 

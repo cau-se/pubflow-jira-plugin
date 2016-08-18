@@ -120,7 +120,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * Receives any {@code IssueEvent}s sent by JIRA.
+	 * Receives any {@code IssueEvent}s sent by JIRA. Extracts data to an
+	 * instance of the {@link ServiceCallData} to work with a general class
 	 * 
 	 * @param issueEvent
 	 *            the IssueEvent passed to us
@@ -156,9 +157,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage() + " " + e.getCause());
-				// e.printStackTrace();
 				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(),
-						// e.getClass().getSimpleName()
 						"Error: " + e.getMessage(), user);
 			}
 
@@ -175,8 +174,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 						+ "\"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically."
 						+ "\nThank you!";
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
-				// JiraObjectManipulator.addAttachment(issueEvent.getIssue().getKey(),
-				// new byte[]{0}, "rawdata", "txt", user);
 			} else {
 				MutableIssue mutableIssue = ComponentAccessor.getIssueManager()
 						.getIssueByCurrentKey(issueEvent.getIssue().getKey());

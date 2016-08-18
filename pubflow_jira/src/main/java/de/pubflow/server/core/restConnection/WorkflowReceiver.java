@@ -17,7 +17,6 @@ package de.pubflow.server.core.restConnection;
 
 import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.UnknownHostException;
 
 import javax.ws.rs.Path;
@@ -49,9 +48,9 @@ public class WorkflowReceiver {
 	 * @throws MalformedURLException
 	 * @throws UnknownHostException
 	 */
-	public static URL getCallbackAddress() throws MalformedURLException, UnknownHostException {
+	public static String getCallbackAddress() throws UnknownHostException {
 		// TODO set URL at startup
 		// TODO set port dynamically (@ startup)
-		return new URL("http://" + InetAddress.getLocalHost().getHostAddress().toString() + ":2990");
+		return "http://" + InetAddress.getLocalHost().getHostAddress().toString() + ":2990";
 	}
 }
