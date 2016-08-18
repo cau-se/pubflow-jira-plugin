@@ -154,7 +154,7 @@ public class JiraManagerInitializer {
 
 
 	public static FieldScreenScheme initHumbleScreens(List<String> names, List<CustomFieldDefinition> customFields, String issueTypeName, List<Long> customFieldIdsTest, Project project) throws Exception {
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow("PUB" + Appendix.WORKFLOW);
+		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(project.getKey() + Appendix.WORKFLOW);
 		Map<String,LinkedList<CustomFieldDefinition>>availableActionFieldScreens=new HashMap<String,LinkedList<CustomFieldDefinition>>();
 
 		final CustomFieldManager customFieldManager =ComponentAccessor.getCustomFieldManager();
