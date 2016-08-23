@@ -30,6 +30,7 @@ import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.exception.AddException;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
+import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.IssueFieldConstants;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.context.GlobalIssueContext;
@@ -55,6 +56,7 @@ import com.atlassian.jira.user.UserDetails;
 import com.atlassian.jira.workflow.AssignableWorkflowScheme;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
+import com.atlassian.jira.workflow.WorkflowSchemeManager;
 
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.Appendix;
@@ -179,6 +181,7 @@ public class JiraObjectCreator {
 	 */  
 	public static List<Long> createCustomFields(List<CustomFieldDefinition> customFields, Project project, String issueTypeName) throws GenericEntityException {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
+		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 		final Collection<IssueType> issueTypes = issueTypeSchemeManager.getIssueTypesForProject(project);
 		final List<IssueType> issueTypesList = new ArrayList<IssueType>();
 
@@ -189,7 +192,7 @@ public class JiraObjectCreator {
 		for(CustomFieldDefinition e : customFields){
 
 			//check if custom field already exists
-			CustomField customFieldObject = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(e.getName()
+			CustomField customFieldObject = customFieldManager.getCustomFieldObjectByName(e.getName()
 					+ "_" + issueTypeName);
 
 			if(customFieldObject == null){
@@ -197,9 +200,9 @@ public class JiraObjectCreator {
 						+ issueTypeName + " null, creating");
 
 				//create custom field
-				customFieldObject = ComponentAccessor.getCustomFieldManager().createCustomField(e.getName()
+				customFieldObject = customFieldManager.createCustomField(e.getName()
 						+ "_" + issueTypeName, e.getName() + "-CustomField for " +
-								issueTypeName, ComponentAccessor.getCustomFieldManager().getCustomFieldType(e.getType()),
+								issueTypeName, customFieldManager.getCustomFieldType(e.getType()),
 								null,
 								contexts, issueTypesList); 
 
@@ -265,11 +268,12 @@ public class JiraObjectCreator {
 	 */
 
 	public static WorkflowScheme createWorkflowScheme(String projectKey, ApplicationUser user, JiraWorkflow jiraWorkflow, String issueTypeName) {
-		AssignableWorkflowScheme workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowSchemeObj(projectKey + Appendix.WORKFLOWSCHEME);
+		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
+		AssignableWorkflowScheme workflowScheme = workflowSchemeManager.getWorkflowSchemeObj(projectKey + Appendix.WORKFLOWSCHEME);
 
 		if(workflowScheme == null) {
-			Scheme scheme = ComponentAccessor.getWorkflowSchemeManager().createSchemeObject(projectKey + Appendix.WORKFLOWSCHEME, "Workflow scheme for the Pubflow project");
-			workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowSchemeObj(scheme.getName()); // necessary intermediate step
+			Scheme scheme = workflowSchemeManager.createSchemeObject(projectKey + Appendix.WORKFLOWSCHEME, "Workflow scheme for the Pubflow project");
+			workflowScheme = workflowSchemeManager.getWorkflowSchemeObj(scheme.getName()); // necessary intermediate step
 			AssignableWorkflowScheme.Builder workflowSchemeBuilder = workflowScheme.builder();
 			IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
 
@@ -278,7 +282,7 @@ public class JiraObjectCreator {
 			//	      workflowSchemeBuilder.setDefaultWorkflow(jiraWorkflow.getName());
 			workflowSchemeBuilder.setMapping(ocnIssueType.getId(), jiraWorkflow.getName());
 
-			return ComponentAccessor.getWorkflowSchemeManager().updateWorkflowScheme(workflowSchemeBuilder.build());    
+			return workflowSchemeManager.updateWorkflowScheme(workflowSchemeBuilder.build());    
 		}
 
 		return workflowScheme;
