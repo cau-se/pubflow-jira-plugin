@@ -136,13 +136,13 @@ public class JiraManagerInitializer {
 			throws CreateException {
 		final Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
 		JiraObjectCreator.createIssueType(project, issueTypeName,workflowID);
-		final FieldConfigScheme issueTypeScheme = JiraObjectCreator.createIssueTypeScheme(projectKey, issueTypeName);
+		final FieldConfigScheme issueTypeScheme = JiraObjectCreator.createIssueTypeScheme(project, issueTypeName);
 		JiraObjectManipulator.addIssueTypeSchemeToProject(issueTypeScheme, project);
 	}
 
 
 	public static FieldScreenScheme initHumbleScreens(List<String> names, List<CustomFieldDefinition> customFields, String issueTypeName, List<Long> customFieldIdsTest, Project project) throws Exception {
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow("PUB" + Appendix.WORKFLOW);
+		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(project.getKey() + Appendix.WORKFLOW);
 		Map<String,LinkedList<CustomFieldDefinition>>availableActionFieldScreens=new HashMap<String,LinkedList<CustomFieldDefinition>>();
 
 		final CustomFieldManager customFieldManager =ComponentAccessor.getCustomFieldManager();
@@ -458,9 +458,9 @@ public class JiraManagerInitializer {
 			customFieldsRawToOCN.add(new CustomFieldDefinition("Title", CustomFieldType.TEXT, false, new String[]{"11"}));
 			customFieldsRawToOCN.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
 
-			List<Long> customFieldIdsOCNTo4D = JiraObjectCreator.createCustomFields(customFieldsOCNTo4D, project);
-			List<Long> customFieldIdsCVOOTo4D = JiraObjectCreator.createCustomFields(customFieldsOCNTo4D, project);
-			List<Long> customFieldIdsRawToOCN = JiraObjectCreator.createCustomFields(customFieldsRawToOCN, project);			
+			List<Long> customFieldIdsOCNTo4D = JiraObjectCreator.createCustomFields(customFieldsOCNTo4D, project, issueTypeOCNTo4DName);
+			List<Long> customFieldIdsCVOOTo4D = JiraObjectCreator.createCustomFields(customFieldsOCNTo4D, project, issueTypeCVOOTo4DName);
+			List<Long> customFieldIdsRawToOCN = JiraObjectCreator.createCustomFields(customFieldsRawToOCN, project, issueTypeRawToOCNName);			
 			
 			FieldScreenScheme fieldScreenSchemeOCNTo4D = initHumbleScreens(screenNamesOCNTo4D, customFieldsOCNTo4D, issueTypeOCNTo4DName, customFieldIdsOCNTo4D, project);
 			FieldScreenScheme fieldScreenSchemeCVOOTo4D = initHumbleScreens(screenNamesCVOOTo4D, customFieldsOCNTo4D, issueTypeCVOOTo4DName, customFieldIdsCVOOTo4D, project);

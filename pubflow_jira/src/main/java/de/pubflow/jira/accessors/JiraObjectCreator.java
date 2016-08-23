@@ -177,7 +177,7 @@ public class JiraObjectCreator {
 	 * @param project: the project in which the fields will be used (custom fields will be mapped to issue types)
 	 * @return a list of all ids of the created custom fields
 	 */  
-	public static List<Long> createCustomFields(List<CustomFieldDefinition> customFields, Project project) throws GenericEntityException {
+	public static List<Long> createCustomFields(List<CustomFieldDefinition> customFields, Project project, String issueTypeName) throws GenericEntityException {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final Collection<IssueType> issueTypes = issueTypeSchemeManager.getIssueTypesForProject(project);
 		final List<IssueType> issueTypesList = new ArrayList<IssueType>();
@@ -190,16 +190,16 @@ public class JiraObjectCreator {
 
 			//check if custom field already exists
 			CustomField customFieldObject = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(e.getName()
-					+ "_" + "OCN");
+					+ "_" + issueTypeName);
 
 			if(customFieldObject == null){
 				log.debug("newIssueType - customField search : " + e.getName() + "_"
-						+ "OCN" + " null, creating");
+						+ issueTypeName + " null, creating");
 
 				//create custom field
 				customFieldObject = ComponentAccessor.getCustomFieldManager().createCustomField(e.getName()
-						+ "_" + "OCN", e.getName() + "-CustomField for " +
-								"OCN", ComponentAccessor.getCustomFieldManager().getCustomFieldType(e.getType()),
+						+ "_" + issueTypeName, e.getName() + "-CustomField for " +
+								issueTypeName, ComponentAccessor.getCustomFieldManager().getCustomFieldType(e.getType()),
 								null,
 								contexts, issueTypesList); 
 
@@ -219,14 +219,14 @@ public class JiraObjectCreator {
 	 * @param issueTypeName : the name of the issue type we add a scheme for
 	 * @return The issue type scheme which was created
 	 */ 
-	public static FieldConfigScheme createIssueTypeScheme(String projectKey, String issueTypeName) {
+	public static FieldConfigScheme createIssueTypeScheme(Project project, String issueTypeName) {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final Collection<String> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeIds();
 		FieldConfigScheme schemeExisting = issueTypeSchemeManager
-				.getConfigScheme(ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
+				.getConfigScheme(project);
 		if (schemeExisting == issueTypeSchemeManager.getDefaultIssueTypeScheme()) {
-			schemeExisting = issueTypeSchemeManager.create(projectKey + Appendix.ISSUETYPESCHEME,
-					"IssueType Scheme for Pubflow", (List<String>) issueTypes);
+			schemeExisting = issueTypeSchemeManager.create(project.getKey() + Appendix.ISSUETYPESCHEME,
+					"IssueType Scheme for "+project.getName(), (List<String>) issueTypes);
 		}
 
 		return schemeExisting;
