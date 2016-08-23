@@ -219,14 +219,15 @@ public class JiraObjectCreator {
 	 * @param issueTypeName : the name of the issue type we add a scheme for
 	 * @return The issue type scheme which was created
 	 */ 
-	public static FieldConfigScheme createIssueTypeScheme(Project project, String issueTypeName) {
+	public static FieldConfigScheme createIssueTypeScheme(Project project) {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final Collection<String> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeIds();
-		FieldConfigScheme schemeExisting = issueTypeSchemeManager
-				.getConfigScheme(project);
+		FieldConfigScheme schemeExisting = issueTypeSchemeManager.getConfigScheme(project);
 		if (schemeExisting == issueTypeSchemeManager.getDefaultIssueTypeScheme()) {
 			schemeExisting = issueTypeSchemeManager.create(project.getKey() + Appendix.ISSUETYPESCHEME,
 					"IssueType Scheme for "+project.getName(), (List<String>) issueTypes);
+		} else {
+			issueTypeSchemeManager.update(schemeExisting, issueTypes);
 		}
 
 		return schemeExisting;

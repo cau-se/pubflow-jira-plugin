@@ -136,7 +136,7 @@ public class JiraManagerInitializer {
 			throws CreateException {
 		final Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
 		JiraObjectCreator.createIssueType(project, issueTypeName,workflowID);
-		final FieldConfigScheme issueTypeScheme = JiraObjectCreator.createIssueTypeScheme(project, issueTypeName);
+		final FieldConfigScheme issueTypeScheme = JiraObjectCreator.createIssueTypeScheme(project);
 		JiraObjectManipulator.addIssueTypeSchemeToProject(issueTypeScheme, project);
 	}
 
