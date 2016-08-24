@@ -30,6 +30,7 @@ import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.exception.AddException;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
+import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.IssueFieldConstants;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.context.GlobalIssueContext;
@@ -55,6 +56,7 @@ import com.atlassian.jira.user.UserDetails;
 import com.atlassian.jira.workflow.AssignableWorkflowScheme;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
+import com.atlassian.jira.workflow.WorkflowSchemeManager;
 
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.Appendix;
@@ -177,8 +179,9 @@ public class JiraObjectCreator {
 	 * @param project: the project in which the fields will be used (custom fields will be mapped to issue types)
 	 * @return a list of all ids of the created custom fields
 	 */  
-	public static List<Long> createCustomFields(List<CustomFieldDefinition> customFields, Project project) throws GenericEntityException {
+	public static List<Long> createCustomFields(List<CustomFieldDefinition> customFields, Project project, String issueTypeName) throws GenericEntityException {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
+		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 		final Collection<IssueType> issueTypes = issueTypeSchemeManager.getIssueTypesForProject(project);
 		final List<IssueType> issueTypesList = new ArrayList<IssueType>();
 
@@ -189,17 +192,17 @@ public class JiraObjectCreator {
 		for(CustomFieldDefinition e : customFields){
 
 			//check if custom field already exists
-			CustomField customFieldObject = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName(e.getName()
-					+ "_" + "OCN");
+			CustomField customFieldObject = customFieldManager.getCustomFieldObjectByName(e.getName()
+					+ "_" + issueTypeName);
 
 			if(customFieldObject == null){
 				log.debug("newIssueType - customField search : " + e.getName() + "_"
-						+ "OCN" + " null, creating");
+						+ issueTypeName + " null, creating");
 
 				//create custom field
-				customFieldObject = ComponentAccessor.getCustomFieldManager().createCustomField(e.getName()
-						+ "_" + "OCN", e.getName() + "-CustomField for " +
-								"OCN", ComponentAccessor.getCustomFieldManager().getCustomFieldType(e.getType()),
+				customFieldObject = customFieldManager.createCustomField(e.getName()
+						+ "_" + issueTypeName, e.getName() + "-CustomField for " +
+								issueTypeName, customFieldManager.getCustomFieldType(e.getType()),
 								null,
 								contexts, issueTypesList); 
 
@@ -219,14 +222,15 @@ public class JiraObjectCreator {
 	 * @param issueTypeName : the name of the issue type we add a scheme for
 	 * @return The issue type scheme which was created
 	 */ 
-	public static FieldConfigScheme createIssueTypeScheme(String projectKey, String issueTypeName) {
+	public static FieldConfigScheme createIssueTypeScheme(Project project) {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final Collection<String> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeIds();
-		FieldConfigScheme schemeExisting = issueTypeSchemeManager
-				.getConfigScheme(ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
+		FieldConfigScheme schemeExisting = issueTypeSchemeManager.getConfigScheme(project);
 		if (schemeExisting == issueTypeSchemeManager.getDefaultIssueTypeScheme()) {
-			schemeExisting = issueTypeSchemeManager.create(projectKey + Appendix.ISSUETYPESCHEME,
-					"IssueType Scheme for Pubflow", (List<String>) issueTypes);
+			schemeExisting = issueTypeSchemeManager.create(project.getKey() + Appendix.ISSUETYPESCHEME,
+					"IssueType Scheme for "+project.getName(), (List<String>) issueTypes);
+		} else {
+			issueTypeSchemeManager.update(schemeExisting, issueTypes);
 		}
 
 		return schemeExisting;
@@ -264,11 +268,12 @@ public class JiraObjectCreator {
 	 */
 
 	public static WorkflowScheme createWorkflowScheme(String projectKey, ApplicationUser user, JiraWorkflow jiraWorkflow, String issueTypeName) {
-		AssignableWorkflowScheme workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowSchemeObj(projectKey + Appendix.WORKFLOWSCHEME);
+		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
+		AssignableWorkflowScheme workflowScheme = workflowSchemeManager.getWorkflowSchemeObj(projectKey + Appendix.WORKFLOWSCHEME);
 
 		if(workflowScheme == null) {
-			Scheme scheme = ComponentAccessor.getWorkflowSchemeManager().createSchemeObject(projectKey + Appendix.WORKFLOWSCHEME, "Workflow scheme for the Pubflow project");
-			workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowSchemeObj(scheme.getName()); // necessary intermediate step
+			Scheme scheme = workflowSchemeManager.createSchemeObject(projectKey + Appendix.WORKFLOWSCHEME, "Workflow scheme for the Pubflow project");
+			workflowScheme = workflowSchemeManager.getWorkflowSchemeObj(scheme.getName()); // necessary intermediate step
 			AssignableWorkflowScheme.Builder workflowSchemeBuilder = workflowScheme.builder();
 			IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
 
@@ -277,7 +282,7 @@ public class JiraObjectCreator {
 			//	      workflowSchemeBuilder.setDefaultWorkflow(jiraWorkflow.getName());
 			workflowSchemeBuilder.setMapping(ocnIssueType.getId(), jiraWorkflow.getName());
 
-			return ComponentAccessor.getWorkflowSchemeManager().updateWorkflowScheme(workflowSchemeBuilder.build());    
+			return workflowSchemeManager.updateWorkflowScheme(workflowSchemeBuilder.build());    
 		}
 
 		return workflowScheme;
