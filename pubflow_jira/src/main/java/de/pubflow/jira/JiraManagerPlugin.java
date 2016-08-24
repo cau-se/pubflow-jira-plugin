@@ -75,7 +75,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("PubFlow");
 	public static final SecureRandom secureRandom = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
-	
+
 	@GuardedBy("this")
 	private final Set<LifecycleEvent> lifecycleEvents = EnumSet.noneOf(LifecycleEvent.class);
 
@@ -102,7 +102,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		this.jiraManagerPluginJob = jiraManagerPluginJob;
 	}
 
-	
+
 	/**
 	 * @param resourceName
 	 * @return
@@ -141,10 +141,10 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		Issue issue = issueEvent.getIssue();
 
 		if (
-		// (issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) &&
-		// ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName()
-		// != "jira") ||
-		issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
+				// (issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) &&
+				// ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName()
+				// != "jira") ||
+				issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
 
 			try {
 				ServiceCallData wm = new ServiceCallData();

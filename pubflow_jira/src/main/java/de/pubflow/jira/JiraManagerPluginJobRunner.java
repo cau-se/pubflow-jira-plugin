@@ -29,22 +29,22 @@ import com.atlassian.scheduler.JobRunnerRequest;
 import com.atlassian.scheduler.JobRunnerResponse;
 
 public class JiraManagerPluginJobRunner implements JobRunner {
-  @Override
-  public JobRunnerResponse runJob(JobRunnerRequest request) {
+	@Override
+	public JobRunnerResponse runJob(JobRunnerRequest request) {
 
-        try
-        {
-            return JobRunnerResponse.success(initPubflow());
-        }
-        catch (Exception e)
-        {
-            return JobRunnerResponse.failed(e);
-        }
-  }
-  
-  private String initPubflow() throws KeyManagementException, UnrecoverableKeyException, GenericEntityException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+		try
+		{
+			return JobRunnerResponse.success(initPubflow());
+		}
+		catch (Exception e)
+		{
+			return JobRunnerResponse.failed(e);
+		}
+	}
 
-	  JiraManagerInitializer.initPubFlowProject();
-    return "Initilizing pubflow.";
-  }
+	private String initPubflow() throws KeyManagementException, UnrecoverableKeyException, GenericEntityException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+
+		JiraManagerInitializer.initPubFlowProject();
+		return "Initilizing pubflow.";
+	}
 }

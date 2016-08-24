@@ -50,7 +50,7 @@ public class JiraEndpoint{
 
 	public static String createIssue(String issueTypeName, String summary, String description, HashMap<String, String> parameters, String reporter) {
 		try {
-//			return JiraObjectCreator.createIssue("PUB", issueTypeName, summary, description, reporter, JiraManagerPlugin.user, parameters);
+			//			return JiraObjectCreator.createIssue("PUB", issueTypeName, summary, description, reporter, JiraManagerPlugin.user, parameters);
 			return "moin";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,7 +58,7 @@ public class JiraEndpoint{
 		return "";
 	}
 
-	
+
 	public static List<String> getAllIssuesBySummaryContains(String snippet){
 		try {
 			return JiraObjectGetter.getAllIssueSummariesBySummaryContains(snippet);
@@ -68,7 +68,7 @@ public class JiraEndpoint{
 		}
 		return null;
 	}
-	
+
 	public static boolean lookupIssue(String name){
 		try {
 			return JiraObjectGetter.lookupIssue(name);
@@ -78,10 +78,10 @@ public class JiraEndpoint{
 		}
 		return false;
 	}
-	
+
 	public static String createIssue(JiraIssue issue) {
 		try {
-//			return JiraObjectCreator.createIssue("PUB", issue.getIssueTypeName(), issue.getSummary(), issue.getDescription(), issue.getReporter(), JiraManagerPlugin.user, issue.getParameters());
+			//			return JiraObjectCreator.createIssue("PUB", issue.getIssueTypeName(), issue.getSummary(), issue.getDescription(), issue.getReporter(), JiraManagerPlugin.user, issue.getParameters());
 			return "moin";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -172,7 +172,7 @@ public class JiraEndpoint{
 
 	public static boolean createProject(String projectName, String projectKey, String workflowXML, LinkedList<String> steps) {
 		try {
-//			JiraObjectCreator.createProject(projectName, projectKey, JiraManagerPlugin.user, false);
+			//			JiraObjectCreator.createProject(projectName, projectKey, JiraManagerPlugin.user, false);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

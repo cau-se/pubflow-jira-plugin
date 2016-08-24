@@ -88,55 +88,55 @@ public class JiraManagerInitializer {
 	private static Logger log = Logger.getLogger(JiraManagerInitializer.class);
 	private static final ProjectManager projectManager = ComponentAccessor.getProjectManager();
 
-	  /**
-	   * Creates a new Jira project
-	   * 
-	   * @param projectName
-	   *          : the name of the new project
-	   * @param projectKey
-	   *          : the project's key
-	   * @param user : the ApplicationUser that holds the project (lead of the project)
-	   * 
-	   * @return returns the created project object
-	   * @throws Exception
-	   */
+	/**
+	 * Creates a new Jira project
+	 * 
+	 * @param projectName
+	 *          : the name of the new project
+	 * @param projectKey
+	 *          : the project's key
+	 * @param user : the ApplicationUser that holds the project (lead of the project)
+	 * 
+	 * @return returns the created project object
+	 * @throws Exception
+	 */
 
-	  public static Project initProject(String projectName, String projectKey, ApplicationUser user,
-	      boolean kill) throws Exception {
-		  log.debug("initProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
-		  final PermissionSchemeManager permissionSchemeManager = ComponentAccessor.getPermissionSchemeManager();
-	    
-		  if (user != null){
-				log.debug("initProject - user : " + user.getUsername());
-			}else{
-				log.error("initProject - user null");
-				throw new Exception("User is null");
-			}  
-		  
-	    if (projectKey.length() > 4) {
-	    	final String errorMsg = "initProject: error: project key length > 4 ! ";
-	    	log.error(errorMsg);
-	    	throw new Exception(errorMsg);
-	    }
+	public static Project initProject(String projectName, String projectKey, ApplicationUser user,
+			boolean kill) throws Exception {
+		log.debug("initProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
+		final PermissionSchemeManager permissionSchemeManager = ComponentAccessor.getPermissionSchemeManager();
 
-	    Project project = projectManager.getProjectObjByKey(projectKey);
+		if (user != null){
+			log.debug("initProject - user : " + user.getUsername());
+		}else{
+			log.error("initProject - user null");
+			throw new Exception("User is null");
+		}  
 
-	    if (project == null) {
-	      int avatarId = 10100;
-	      ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName)
-	          .withLead(user).withKey(projectKey).withDescription("Geht so").withType("business")
-	          .withAvatarId(new Long(avatarId)).build();
-	      project = projectManager.createProject(user, projectData);
-	      permissionSchemeManager.addDefaultSchemeToProject(project);
-	      log.info("initProject: created a new project with projectKey "+projectKey);
-	    } else {
-	    	log.debug("initProject: project with projectKey " +projectKey+ " already exists");
-	    }
-	    
-	    return project;
-	  }
+		if (projectKey.length() > 4) {
+			final String errorMsg = "initProject: error: project key length > 4 ! ";
+			log.error(errorMsg);
+			throw new Exception(errorMsg);
+		}
 
-	  
+		Project project = projectManager.getProjectObjByKey(projectKey);
+
+		if (project == null) {
+			int avatarId = 10100;
+			ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName)
+					.withLead(user).withKey(projectKey).withDescription("Geht so").withType("business")
+					.withAvatarId(new Long(avatarId)).build();
+			project = projectManager.createProject(user, projectData);
+			permissionSchemeManager.addDefaultSchemeToProject(project);
+			log.info("initProject: created a new project with projectKey "+projectKey);
+		} else {
+			log.debug("initProject: project with projectKey " +projectKey+ " already exists");
+		}
+
+		return project;
+	}
+
+
 	/**
 	 * Initializes the issue types, issue type scheme and maps them to a project
 	 *
@@ -158,7 +158,7 @@ public class JiraManagerInitializer {
 		Map<String,LinkedList<CustomFieldDefinition>>availableActionFieldScreens=new HashMap<String,LinkedList<CustomFieldDefinition>>();
 
 		final CustomFieldManager customFieldManager =ComponentAccessor.getCustomFieldManager();
-		
+
 		for(CustomFieldDefinition customFieldDefinition : customFields)
 		{
 			for (String id : customFieldDefinition.getScreens()) {
@@ -254,13 +254,13 @@ public class JiraManagerInitializer {
 	 */
 	public static void initWorkflow(String projectKey, String workflowXML, ApplicationUser user, String issueTypeName) {
 		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager(); 
-		
+
 		if (user != null){
 			log.debug("initWorkflow: user : " + user.getUsername());
 		} else {
 			log.error("initWorkflow: user is null");
 		}
-		
+
 		JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user);    
 		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow, issueTypeName+Appendix.ISSUETYPE);
 
@@ -268,7 +268,7 @@ public class JiraManagerInitializer {
 
 		Project project = projectManager.getProjectObjByKey(projectKey);
 		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName("OCN" + Appendix.ISSUETYPE);
-		
+
 		try {
 			workflowSchemeManager.addWorkflowToScheme(workflowSchemeManager.getWorkflowScheme(project), jiraWorkflow.getName(), ocnIssueType.getId());
 			log.info("initWorkflow: add the workflow: "+jiraWorkflow.getName()+" to the workflowscheme of the project: "+project.getName());
@@ -332,9 +332,9 @@ public class JiraManagerInitializer {
 				ApplicationUser userScientist = JiraObjectCreator.createUser("SampleScientist", "sciencerulez");
 				JiraObjectManipulator.addUserToGroup(userScientist, groupScientists);
 				JiraObjectManipulator.addUserToGroup(userScientist, "jira-software-users");
-				
+
 				log.debug("initPubfowProject: created users and usergroups for PubFlow");
-				
+
 				project = initProject("PubFlow", projectKey, userRoot, false);
 			}
 
