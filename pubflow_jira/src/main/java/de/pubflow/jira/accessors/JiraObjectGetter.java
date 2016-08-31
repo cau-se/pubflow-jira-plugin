@@ -48,8 +48,8 @@ public class JiraObjectGetter {
 		final FieldScreenManager fieldScreenManager = ComponentAccessor.getFieldScreenManager();
 		Collection<FieldScreen> fieldScreens = fieldScreenManager.getFieldScreens();
 
-		for(FieldScreen fieldScreen : fieldScreens) {
-			if(fieldScreen.getName().equals(name)) {
+		for (FieldScreen fieldScreen : fieldScreens) {
+			if (fieldScreen.getName().equals(name)) {
 				return fieldScreen;
 			}
 		}
@@ -59,7 +59,8 @@ public class JiraObjectGetter {
 
 	/**
 	 * @author abar
-	 * @param issueTypeName: The issue type we want to look up
+	 * @param issueTypeName:
+	 *            The issue type we want to look up
 	 * @return the issueType we looked for (null if it does not exist)
 	 */
 	public static IssueType getIssueTypeByName(String issueTypeName) {
@@ -79,17 +80,17 @@ public class JiraObjectGetter {
 	/**
 	 * @param id
 	 * @return
-	 * @throws GenericEntityException 
+	 * @throws GenericEntityException
 	 */
-	public static boolean lookupIssue(String name) throws GenericEntityException  {	
+	public static boolean lookupIssue(String name) throws GenericEntityException {
 		long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
 		Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
 		List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
 
 		log.info("lookupIssue - name : " + name);
 
-		for(Issue issue : issues){
-			if (issue.getSummary().equals(name)){
+		for (Issue issue : issues) {
+			if (issue.getSummary().equals(name)) {
 				log.info("lookupIssue - return true");
 				return true;
 			}
@@ -104,7 +105,7 @@ public class JiraObjectGetter {
 	 * @param id
 	 * @return
 	 */
-	public static String getIssueKeyById(long id) {	
+	public static String getIssueKeyById(long id) {
 		String key = ComponentAccessor.getIssueManager().getIssueObject(id).getKey();
 		log.info("getIssueKeyById - id : " + id);
 		log.info("getIssueKeyById - return " + key);
@@ -112,15 +113,15 @@ public class JiraObjectGetter {
 		return key;
 	}
 
-	public static List<String> getAllIssueSummariesBySummaryContains(String snippet) throws GenericEntityException{
+	public static List<String> getAllIssueSummariesBySummaryContains(String snippet) throws GenericEntityException {
 		long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
 		Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
 		List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
 		log.info("getAllIssueSummariesBySummaryContains - snippet : " + snippet);
 
 		List<String> resultList = new LinkedList<String>();
-		for(Issue issue : issues){
-			if(issue.getSummary().contains(snippet)){
+		for (Issue issue : issues) {
+			if (issue.getSummary().contains(snippet)) {
 				resultList.add(issue.getSummary());
 			}
 		}
@@ -145,7 +146,9 @@ public class JiraObjectGetter {
 	 * @return
 	 */
 	public static Status getStatusByName(String projectKey, String statusName) {
-		//List<Status> statuses = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + WORKFLOW_APPENDIX).getLinkedStatusObjects();
+		// List<Status> statuses =
+		// ComponentAccessor.getWorkflowManager().getWorkflow(projectKey +
+		// WORKFLOW_APPENDIX).getLinkedStatusObjects();
 		Collection<Status> statuses = JiraManagerPlugin.statusManager.getStatuses();
 
 		for (Status statusItem : statuses) {
@@ -162,12 +165,14 @@ public class JiraObjectGetter {
 	/**
 	 * Get available status names
 	 * 
-	 * @param projectKey : the projects key
+	 * @param projectKey
+	 *            : the projects key
 	 * @return returns a string array of all available status names
 	 */
 
 	public static List<String> getStatusNames(String projectKey) {
-		List<Status> status = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey + Appendix.WORKFLOW.getName()).getLinkedStatusObjects();
+		List<Status> status = ComponentAccessor.getWorkflowManager()
+				.getWorkflow(projectKey + Appendix.WORKFLOW.getName()).getLinkedStatusObjects();
 		List<String> result = new ArrayList<String>();
 
 		for (Status statusItem : status) {
@@ -177,6 +182,7 @@ public class JiraObjectGetter {
 		return result;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static ApplicationUser getUserByName(String userName) {
 		return ComponentAccessor.getUserManager().getUserByName(userName);
 	}
@@ -206,12 +212,14 @@ public class JiraObjectGetter {
 	    return null;
 	  }
 	
+
 	/**
-	 *  searches for an issue type by its name 
-	 *	quite expensive
+	 * searches for an issue type by its name quite expensive
 	 * 
-	 * @param name : the issue type's name
-	 * @return returns the issue type id returns null if no or more than one issue type with the provided name has been found 
+	 * @param name
+	 *            : the issue type's name
+	 * @return returns the issue type id returns null if no or more than one
+	 *         issue type with the provided name has been found
 	 */
 
 	public static IssueType findIssueTypeByName(String name) {
@@ -220,7 +228,8 @@ public class JiraObjectGetter {
 
 		log.info("findIssueTypeByName - name : " + name);
 
-		//iterate through all available issue types and check for equality of names
+		// iterate through all available issue types and check for equality of
+		// names
 		for (IssueType it : JiraManagerPlugin.issueTypeManager.getIssueTypes()) {
 			if (it.getName().equals(name)) {
 				counter++;

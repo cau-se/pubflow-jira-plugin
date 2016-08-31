@@ -23,17 +23,21 @@ import com.atlassian.jira.user.ApplicationUser;
 
 public class JiraObjectRemover {
 
-
 	/**
 	 * Removes an User in Jira
+	 * 
 	 * @author abar
 	 * 
-	 * @param loggedUser : An user that can remove another user (Administrator in general)
-	 * @param userToDelete : the name of the user that shall be removed
+	 * @param loggedUser
+	 *            : An user that can remove another user (Administrator in
+	 *            general)
+	 * @param userToDelete
+	 *            : the name of the user that shall be removed
 	 */
 	public static void deleteUser(ApplicationUser loggedUser, String userToDelete) {
 		if (userToDelete != null) {
-			ComponentAccessor.getUserUtil().removeUser(loggedUser, ComponentAccessor.getUserManager().getUserByName(userToDelete));
+			ComponentAccessor.getUserUtil().removeUser(loggedUser,
+					ComponentAccessor.getUserManager().getUserByName(userToDelete));
 		}
 	}
 

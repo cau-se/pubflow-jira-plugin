@@ -51,7 +51,6 @@ import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenScheme;
 import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeEntity;
 import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeEntityImpl;
 import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeManager;
-import com.atlassian.jira.issue.history.ChangeItemBean;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
@@ -69,12 +68,11 @@ public class JiraObjectManipulator {
 	
 	/**
 	 * @author abar
-	 * @param issueTypeScheme : the issue type Scheme we map to the project
+	 * @param issueTypeScheme
+	 *            : the issue type Scheme we map to the project
 	 */
-	public static void addIssueTypeSchemeToProject(FieldConfigScheme issueTypeScheme,
-			Project project) {
-		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor
-				.getIssueTypeSchemeManager();
+	public static void addIssueTypeSchemeToProject(FieldConfigScheme issueTypeScheme, Project project) {
+		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final FieldConfigSchemeManager fieldConfigSchemeManager = ComponentAccessor.getFieldConfigSchemeManager();
 		final FieldManager fieldManager = ComponentAccessor.getFieldManager();
 
@@ -87,36 +85,42 @@ public class JiraObjectManipulator {
 			log.debug("projectIds: $projectIds");
 			Long[] ids = new Long[projectIds.size()];
 
-			List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true,
-					projectIds.toArray(ids), ComponentAccessor.getProjectManager());
-			fieldConfigSchemeManager.updateFieldConfigScheme(issueTypeScheme,
-					contexts, fieldManager.getConfigurableField(IssueFieldConstants.ISSUE_TYPE));
+			List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true, projectIds.toArray(ids),
+					ComponentAccessor.getProjectManager());
+			fieldConfigSchemeManager.updateFieldConfigScheme(issueTypeScheme, contexts,
+					fieldManager.getConfigurableField(IssueFieldConstants.ISSUE_TYPE));
 		}
 	}
 
-
-
 	/**
 	 * Creates a new screen scheme for an issue type in Jira.
+	 * 
 	 * @author abar
-	 * @param project : the project which uses the issueType
-	 * @param issueTypeScheme : the issue type scheme that will be used
-	 * @param issueType : the issue type which will be used 
+	 * @param project
+	 *            : the project which uses the issueType
+	 * @param issueTypeScheme
+	 *            : the issue type scheme that will be used
+	 * @param issueType
+	 *            : the issue type which will be used
 	 * @return The issue type screen scheme which was created
-	 */ 
-	public static IssueTypeScreenScheme addIssueTypeScreenSchemeToProject(Project project, FieldScreenScheme fieldScreenScheme, IssueType issueType) {
+	 */
+	public static IssueTypeScreenScheme addIssueTypeScreenSchemeToProject(Project project,
+			FieldScreenScheme fieldScreenScheme, IssueType issueType) {
 
-		final IssueTypeScreenSchemeManager issueTypeScreenSchemeManager =  ComponentAccessor.getIssueTypeScreenSchemeManager();
+		final IssueTypeScreenSchemeManager issueTypeScreenSchemeManager = ComponentAccessor
+				.getIssueTypeScreenSchemeManager();
 		IssueTypeScreenScheme issueTypeScreenScheme = issueTypeScreenSchemeManager.getIssueTypeScreenScheme(project);
 
-		if(issueTypeScreenScheme == null){
-			//set default issue type screen scheme
+		if (issueTypeScreenScheme == null) {
+			// set default issue type screen scheme
 			issueTypeScreenSchemeManager.associateWithDefaultScheme(project);
 			issueTypeScreenScheme = issueTypeScreenSchemeManager.getIssueTypeScreenScheme(project);
 		}
 
-		//compose
-		IssueTypeScreenSchemeEntity issueTypeScreenSchemeEntity = new IssueTypeScreenSchemeEntityImpl(issueTypeScreenSchemeManager, (GenericValue) null, JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getConstantsManager());
+		// compose
+		IssueTypeScreenSchemeEntity issueTypeScreenSchemeEntity = new IssueTypeScreenSchemeEntityImpl(
+				issueTypeScreenSchemeManager, (GenericValue) null, JiraManagerPlugin.fieldScreenSchemeManager,
+				ComponentAccessor.getConstantsManager());
 		issueTypeScreenSchemeEntity.setIssueTypeId(issueType.getId());
 		issueTypeScreenSchemeEntity.setFieldScreenScheme(fieldScreenScheme);
 		issueTypeScreenScheme.addEntity(issueTypeScreenSchemeEntity);
@@ -127,10 +131,13 @@ public class JiraObjectManipulator {
 
 	/**
 	 * Maps the workflow scheme of a given workflow to a given project.
+	 * 
 	 * @author abar
-	 * @param workflow: the workflow we take to map its scheme to a project
-	 * @param project: the project we add the given workflow scheme to
-	 */  
+	 * @param workflow:
+	 *            the workflow we take to map its scheme to a project
+	 * @param project:
+	 *            the project we add the given workflow scheme to
+	 */
 	public static void addWorkflowToProject(WorkflowScheme workflowScheme, Project project) {
 		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
 		Scheme scheme = workflowSchemeManager.getSchemeObject(workflowScheme.getId());
@@ -152,19 +159,22 @@ public class JiraObjectManipulator {
 	 * @param user
 	 * @return
 	 */
-	public static long addAttachment(String issueKey, byte [] barray, String fileName, String type, ApplicationUser user){
+	public static long addAttachment(String issueKey, byte[] barray, String fileName, String type,
+			ApplicationUser user) {
 
 		try {
 			MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 
-			//TODO : path os?
+			// TODO : path os?
 			String filePath = "/tmp/pubflow_tmp" + new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32);
 			FileOutputStream stream = new FileOutputStream(filePath);
 
-			stream.write(barray);	
+			stream.write(barray);
 			stream.close();
-			File barrayFile = new File(filePath); 
-			ChangeItemBean attachment = ComponentAccessor.getAttachmentManager().createAttachment(new CreateAttachmentParamsBean(barrayFile, fileName + type, "text/plain", user, issue, false, false, null, new Timestamp(System.currentTimeMillis()), true));
+			File barrayFile = new File(filePath);
+			ComponentAccessor.getAttachmentManager()
+					.createAttachment(new CreateAttachmentParamsBean(barrayFile, fileName + type, "text/plain", user,
+							issue, false, false, null, new Timestamp(System.currentTimeMillis()), true));
 
 			// TODO: no id?
 			return 0L;
@@ -178,13 +188,13 @@ public class JiraObjectManipulator {
 	/**
 	 * Adds a new comment to an issue
 	 * 
-	 * @param issueKey 
-	 * @param comment 
+	 * @param issueKey
+	 * @param comment
 	 * @param user
 	 * @return returns if the new comment has been added successful
 	 */
 
-	public static Comment addIssueComment(String issueKey, String comment, ApplicationUser user){
+	public static Comment addIssueComment(String issueKey, String comment, ApplicationUser user) {
 		log.info("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
 
 		if (user != null) {
@@ -205,7 +215,7 @@ public class JiraObjectManipulator {
 		}
 	}
 
-	  /**
+	/**
 	   * Add a User to a group in Jira
 	   * @author abar
 	   * 
@@ -248,8 +258,11 @@ public class JiraObjectManipulator {
 	/**
 	 * Changes the status of an issue
 	 * 
-	 * @param issueKey  : issue key
-	 * @param statusName : has to be a preexisiting status name, eg. provided by getStatusNames(..) 
+	 * @param issueKey
+	 *            : issue key
+	 * @param statusName
+	 *            : has to be a preexisiting status name, eg. provided by
+	 *            getStatusNames(..)
 	 * @return returns true if the change has been processed successfully
 	 */
 

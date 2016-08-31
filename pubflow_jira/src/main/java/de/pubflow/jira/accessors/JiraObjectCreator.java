@@ -242,14 +242,15 @@ public class JiraObjectCreator {
 	 * @param issueTypeName : the name of the issue type we add a scheme for
 	 * @return The issue type scheme which was created
 	 */ 
-	public static FieldConfigScheme createIssueTypeScheme(String projectKey, String issueTypeName) {
+	public static FieldConfigScheme createIssueTypeScheme(Project project) {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final Collection<String> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeIds();
-		FieldConfigScheme schemeExisting = issueTypeSchemeManager
-				.getConfigScheme(ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
+		FieldConfigScheme schemeExisting = issueTypeSchemeManager.getConfigScheme(project);
 		if (schemeExisting == issueTypeSchemeManager.getDefaultIssueTypeScheme()) {
-			schemeExisting = issueTypeSchemeManager.create(projectKey + Appendix.ISSUETYPESCHEME,
-					"IssueType Scheme for Pubflow", (List<String>) issueTypes);
+			schemeExisting = issueTypeSchemeManager.create(project.getKey() + Appendix.ISSUETYPESCHEME,
+					"IssueType Scheme for "+project.getName(), (List<String>) issueTypes);
+		} else {
+			issueTypeSchemeManager.update(schemeExisting, issueTypes);
 		}
 
 		return schemeExisting;
@@ -262,10 +263,11 @@ public class JiraObjectCreator {
 	 * @param project : the project which uses the issueType
 	 * @return The issue type which was created
 	 */ 
-	public static IssueType createIssueType(Project project, String issueTypeName)
+	public static IssueType createIssueType(Project project, String issueTypeName, String workflowID)
 			throws CreateException {
 		IssueType issueType = JiraObjectGetter.findIssueTypeByName(project, issueTypeName + Appendix.ISSUETYPE);
 		if (issueType == null) {
+//			((IssueTypeImpl) issueType).getPropertySet().setString("workflowID", workflowID);
 			issueType = ComponentAccessor.getConstantsManager().insertIssueType(
 					issueTypeName + Appendix.ISSUETYPE, new Long(1), null, "Issue type for PubFlow",
 					new Long(10300));
@@ -295,6 +297,7 @@ public class JiraObjectCreator {
 		if(workflowScheme == null) {
 			Scheme scheme = workflowSchemeManger.createSchemeObject(projectKey + Appendix.WORKFLOWSCHEME, "Workflow scheme for the Pubflow project");
 			workflowScheme = workflowSchemeManger.getWorkflowSchemeObj(scheme.getName()); // necessary intermediate step
+
 			AssignableWorkflowScheme.Builder workflowSchemeBuilder = workflowScheme.builder();
 			IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
 
@@ -489,7 +492,7 @@ public class JiraObjectCreator {
 				log.info("addStatuses: status "+ tempStatus.getName()+" was created.");
 			} else {
 				log.debug("addStatuses: status "+tempStatus.getName()+" already exists.");
-			}
+			} 
 			
 			statusMap.put(status, tempStatus.getId());
 			
