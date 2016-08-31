@@ -50,6 +50,7 @@ import com.atlassian.jira.permission.PermissionSchemeManager;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
@@ -288,39 +289,39 @@ public class JiraManagerInitializer {
 	 * Initializes the Look&Feel
 	 */
 	public static void initJiraSettings(){
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, 
-				PropLoader.getInstance().getProperty( "JIRA_BASEURL", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, 
+		final ApplicationProperties applicationProperties = ComponentAccessor.getApplicationProperties();
+		applicationProperties.setString(APKeys.JIRA_BASEURL, PropLoader.getInstance().getProperty( "JIRA_BASEURL", JiraManagerInitializer.class));
+		applicationProperties.setString(APKeys.JIRA_MODE, 
 				PropLoader.getInstance().getProperty("JIRA_MODE", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, 
+		applicationProperties.setString(APKeys.JIRA_TITLE, 
 				PropLoader.getInstance().getProperty("JIRA_TITLE", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_BGCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_BGCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_BGCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_HIGHLIGHTCOLOR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_SEPARATOR_BGCOLOR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_TEXTCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_TEXTCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_BGCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_MENU_BGCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_MENU_BGCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_SEPARATOR, 
+		applicationProperties.setString(APKeys.JIRA_LF_MENU_SEPARATOR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_MENU_SEPARATOR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_TEXTCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_MENU_TEXTCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_MENU_TEXTCOLOUR", JiraManagerInitializer.class));	
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_BASEBGCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_HERO_BUTTON_BASEBGCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_HERO_BUTTON_BASEBGCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_TEXTCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_HERO_BUTTON_TEXTCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_HERO_BUTTON_TEXTCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_ACTIVE_LINKCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_HEADINGCOLOUR", JiraManagerInitializer.class));		
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_LINKCOLOUR", JiraManagerInitializer.class));		
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, 
+		applicationProperties.setString(APKeys.JIRA_LF_LOGO_URL, 
 				PropLoader.getInstance().getProperty("JIRA_LF_LOGO_URL", JiraManagerInitializer.class));	
 
 		SMTPMailServerImpl smtp = new SMTPMailServerImpl();
@@ -344,6 +345,27 @@ public class JiraManagerInitializer {
 
 	/**
 	 * Initializes the whole PubFlow project.
+	 * 
+	 * Set application properties
+	 * 		v
+	 * "PubFlow" project will be initialized.
+	 * 		v
+	 * user groups "datamanager" and "scientists" are created
+	 * 		v
+	 * users "PubFlow" and "root" will created and added to all user groups.
+	 * 		v
+	 * Statuses will be created
+	 * 		v
+	 * IssueTypes and Schemes will be created (need statuses)
+	 * 		v
+	 * Create Workflow and Scheme (needs statuses, project, and issuetypes)
+	 * 		v
+	 * Create CustomField
+	 * 		v
+	 * Create all Screens (needs screennames, issuetypes, customfields, and a project)
+	 * 		v
+	 * Map sceenschemes to a given project (needs the project, the issuetype, and the screen for the issuetype)
+	 * 
 	 * @author arl, abar
 	 * 
 	 */
@@ -351,6 +373,7 @@ public class JiraManagerInitializer {
 			throws GenericEntityException, KeyManagementException, UnrecoverableKeyException,
 			NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
 		final ApplicationProperties applicationPropertiesManager = ComponentAccessor.getApplicationProperties();
+		final UserManager userManager = ComponentAccessor.getUserManager();
 		applicationPropertiesManager.setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		applicationPropertiesManager.setString(APKeys.JIRA_MODE, "Private");
 		applicationPropertiesManager.setString(APKeys.JIRA_BASEURL, "http://maui.informatik.uni-kiel.de:2990/jira/");
@@ -427,7 +450,8 @@ public class JiraManagerInitializer {
 			statuses.add("Closed");
 			statuses.add("Done");
 			statuses.add("Rejected");
-
+			JiraObjectCreator.addStatuses(projectKey, statuses);
+			
 			final String issueTypeCVOOTo4DName = "Export Data (CVOO) to PANGAEA";
 			final String issueTypeOCNTo4DName = "Export Data (OCN) to PANGAEA";
 			final String issueTypeEprintsName = "EPRINTS";
@@ -437,12 +461,11 @@ public class JiraManagerInitializer {
 			initIssueManagement(projectKey, issueTypeEprintsName, "de.pubflow.EPRINTS");
 			initIssueManagement(projectKey, issueTypeCVOOTo4DName, "de.pubflow.CVOO");
 			initIssueManagement(projectKey, issueTypeOCNTo4DName, "de.pubflow.OCN");
-			JiraObjectCreator.addStatuses(projectKey, statuses);
 			
-			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"), issueTypeCVOOTo4DName);
-			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"), issueTypeOCNTo4DName);
-			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"), issueTypeEprintsName);
-			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/RAWTOCVOO-WORKFLOW.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"), issueTypeRawToOCNName);
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), userManager.getUserByName("PubFlow"), issueTypeCVOOTo4DName);
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), userManager.getUserByName("PubFlow"), issueTypeOCNTo4DName);
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), userManager.getUserByName("PubFlow"), issueTypeEprintsName);
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/RAWTOCVOO-WORKFLOW.xml"), userManager.getUserByName("PubFlow"), issueTypeRawToOCNName);
 
 			List<String> screenNamesCVOOTo4D = new ArrayList<String>();
 			screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionCreate");
