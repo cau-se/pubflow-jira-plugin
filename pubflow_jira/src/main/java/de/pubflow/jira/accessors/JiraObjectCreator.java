@@ -199,9 +199,9 @@ public class JiraObjectCreator {
 	 * @param project: the project in which the fields will be used (custom fields will be mapped to issue types)
 	 * @return a list of all ids of the created custom fields
 	 */  
-	public static List<Long> createCustomFields(List<CustomFieldDefinition> customFields, Project project) throws GenericEntityException {
-		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+	public static List<Long> createCustomFields(List<CustomFieldDefinition> customFields, Project project, String issueTypeName) throws GenericEntityException {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
+		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 		final Collection<IssueType> issueTypes = issueTypeSchemeManager.getIssueTypesForProject(project);
 		final List<IssueType> issueTypesList = new ArrayList<IssueType>();
 
@@ -213,16 +213,16 @@ public class JiraObjectCreator {
 
 			//check if custom field already exists
 			CustomField customFieldObject = customFieldManager.getCustomFieldObjectByName(e.getName()
-					+ "_" + "OCN");
+					+ "_" + issueTypeName);
 
 			if(customFieldObject == null){
-				log.debug("createCustomFields: customField search : " + e.getName() + "_"
-						+ "OCN" + " null, creating");
+				log.debug("newIssueType - customField search : " + e.getName() + "_"
+						+ issueTypeName + " null, creating");
 
 				//create custom field
 				customFieldObject = customFieldManager.createCustomField(e.getName()
-						+ "_" + "OCN", e.getName() + "-CustomField for " +
-								"OCN", customFieldManager.getCustomFieldType(e.getType()),
+						+ "_" + issueTypeName, e.getName() + "-CustomField for " +
+								issueTypeName, customFieldManager.getCustomFieldType(e.getType()),
 								null,
 								contexts, issueTypesList); 
 
