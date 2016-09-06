@@ -22,12 +22,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.pubflow.jira.accessors.JiraObjectGetter;
+import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.exceptions.WFRestException;
-import de.pubflow.server.core.restConnection.WorkflowReceiver;
+import de.pubflow.server.core.restConnection.JiraRestConnector;
 import de.pubflow.server.core.restConnection.WorkflowSender;
+import de.pubflow.server.core.workflow.messages.ReceivedWorkflowAnswer;
 import de.pubflow.server.core.workflow.messages.ServiceCallData;
 import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
 
@@ -41,24 +44,15 @@ import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
  */
 public class WorkflowBroker {
 
-	private static volatile WorkflowBroker instance;
-
 	private Logger myLogger;
 
-	private WorkflowBroker() {
+	public WorkflowBroker() {
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting WorkflowBroker");
 	}
 
-	public static synchronized WorkflowBroker getInstance() {
-		if (instance == null) {
-			instance = new WorkflowBroker();
-		}
-		return instance;
-	}
-
 	/**
-	 * Handles new Workflow calls for Pubflow. They will be saved and send to
+	 * Handles new Workflow calls for PubFlow. They will be saved and send to
 	 * the Workflow Microservice
 	 * 
 	 * @param callData
@@ -77,33 +71,25 @@ public class WorkflowBroker {
 
 		// add Callback address to the REST call
 		try {
-			wfRestCall.setCallbackAddress(WorkflowReceiver.getCallbackAddress());
+			wfRestCall.setCallbackAddress(JiraRestConnector.getCallbackAddress());
 		} catch (UnknownHostException e) {
 			myLogger.error("Could not set callback address for the REST call");
 			throw new WFException("  Could not set callback address");
 		}
-		
+
 		myLogger.info("Deploying new Workflow");
-
-		// TODO extract Code to microService
-		// --------
-		// choose which workflow api should be called
-//		WorkflowProvider provider = WorkflowProvider.getInstance();
-//		WorkflowEntity wfEntity = provider.getByWFID(callData.getWorkflowID());
-//		if (wfEntity == null) {
-//			myLogger.error("Workflow +'" + callData.getWorkflowID() + "' not found");
-//			throw new WFException("Workflow +'" + callData.getWorkflowID() + "' not found");
-//		}
-
-		String workflowPath = "/workflow/OCN";
-
-		// _-----------------------_
 
 		// set parameters for the REST call
 		wfRestCall.setWorkflowParameters(computeParameter(callData));
 
+		// lookup the URL
+		String workflowURL = getCorrespondingWorkflowURL(callData.getWorkflowID());
+
+		// TODO: testing remove this
+		workflowURL = "/TestWorkflow";
+
 		try {
-			WorkflowSender.getInstance().initWorkflow(wfRestCall, workflowPath);
+			WorkflowSender.getInstance().initWorkflow(wfRestCall, workflowURL);
 			myLogger.info("Workflow deployed");
 		} catch (WFRestException e) {
 			myLogger.error("Could not deploy workflow");
@@ -150,11 +136,6 @@ public class WorkflowBroker {
 
 				default:
 					try {
-						// if(msg.getWorkflowID().substring(msg.getWorkflowID().lastIndexOf(".")
-						// + 1).equals(key.substring(key.lastIndexOf("_") +
-						// 1))){
-						// parameter.setKey(key.substring(0,
-						// key.lastIndexOf("_")));
 						parameter.setKey(key);
 						filteredParameters.add(parameter);
 						// }
@@ -165,7 +146,11 @@ public class WorkflowBroker {
 				}
 			}
 		}
-		// TODO this case is not considered and may be needed in the future
+		// TODO the case of scheduled Workflows is not considered in the moment
+		// and may be needed in the future (?)
+		
+		
+		
 		// msg.setParameters(filteredParameters);
 		//
 		// if(!quartzCron.equals("")){
@@ -186,18 +171,61 @@ public class WorkflowBroker {
 	}
 
 	/**
-	 * TODO handles updates/ events for existing workflows
-	 */
-	public void receiveWorkflowUpdate() {
-		// TODO
-	}
-
-	/**
-	 * Handles answers from the Workflow Microservice
+	 * Handles answers from the Workflow Microservice.
 	 * 
 	 * @throws WFRestException
 	 */
-	synchronized public void receiveWorkflowAnswer(){
-		// TODO or delete
+	public void receiveWorkflowAnswer(String jiraKey, ReceivedWorkflowAnswer answer) {
+		// TODO a generic mapping for available Workflows, which tells what to
+		// do in certain events
+		if (JiraObjectGetter.getIssueByJiraKey(jiraKey) == null) {
+			myLogger.info("Got answer to non-existing issue  with key: " + jiraKey + " with message: ");
+			myLogger.info(answer.toString());
+			return;
+		}
+
+		if (answer.getResult().toLowerCase().contains("error")) {
+			myLogger.error("Workflow with id " + jiraKey + " failed, with message: '" + answer.getErrorMessage() + "'");
+
+			JiraObjectManipulator.addIssueComment(jiraKey,
+					"Workflow  failed due to: '" + answer.getErrorMessage() + "'",
+					JiraObjectGetter.getUserByName("PubFlow"));
+
+		} else {
+			// TODO in case of no error
+
+		}
+
+		if (answer.getNewStatus() != null) {
+			JiraObjectManipulator.changeStatus(jiraKey, answer.getNewStatus());
+		}
+
 	}
+
+	private String getCorrespondingWorkflowURL(String workflow) {
+		String workflowURL = "";
+
+		// TODO is there a better/prettier way to map the Workflow String from Jira to
+		// the REST URL?
+
+		switch (workflow) {
+		case "OCN":
+			workflowURL = "/OCNWorkflow";
+			break;
+
+		case "CVOO":
+			workflowURL = "/CVOOWorkflow";
+			break;
+
+		case "EPRINTS":
+			workflowURL = "/EPrintsWorkflow";
+			break;
+
+		default:
+			break;
+		}
+
+		return workflowURL;
+	}
+
 }

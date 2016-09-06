@@ -65,6 +65,7 @@ public class PropLoader {
 	}
 
 	public String getProperty(String key, Class clazz) {
+		System.out.println("name: "+clazz.getCanonicalName() );
 		String prop = properties.getProperty(clazz.getCanonicalName() + "#" + key);
 
 		if ((prop == null) || (prop.equals(""))){

@@ -267,6 +267,7 @@ public class JiraObjectManipulator {
 		}
 	}
 
+
 	/**
 	 * Creates a new workflow in Jira
 	 * 

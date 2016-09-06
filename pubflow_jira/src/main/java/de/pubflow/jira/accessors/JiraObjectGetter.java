@@ -243,5 +243,15 @@ public class JiraObjectGetter {
 			return null;
 		}
 	}
+	
+	/**
+	 * Looks up the issue to the given key.
+	 * 
+	 * @param issueKey
+	 * @return
+	 */
+	public static Issue getIssueByJiraKey(String issueKey) {
+		return ComponentAccessor.getIssueManager().getIssueObject(issueKey);
+	}
 
 }
