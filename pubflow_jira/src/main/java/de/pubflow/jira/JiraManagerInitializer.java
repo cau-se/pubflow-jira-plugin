@@ -48,9 +48,15 @@ import com.atlassian.jira.issue.fields.screen.FieldScreenTab;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.permission.PermissionSchemeManager;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
+import com.atlassian.jira.workflow.WorkflowSchemeManager;
+import com.atlassian.mail.MailException;
+import com.atlassian.mail.MailProtocol;
+import com.atlassian.mail.server.impl.SMTPMailServerImpl;
 import com.opensymphony.workflow.loader.ActionDescriptor;
 
 import de.pubflow.common.PropLoader;
@@ -85,43 +91,60 @@ public class JiraManagerInitializer {
 
 	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
 	private static Logger log = Logger.getLogger(JiraManagerInitializer.class);
+	private static final ProjectManager projectManager = ComponentAccessor.getProjectManager();
+
+	/**
+	 * Creates a new Jira project
+	 * 
+	 * @param projectName
+	 *          : the name of the new project
+	 * @param projectKey
+	 *          : the project's key
+	 * @param user : the ApplicationUser that holds the project (lead of the project)
+	 * 
+	 * @return returns the created project object
+	 * @throws Exception
+	 */
+
+	public static Project initProject(String projectName, String projectKey, ApplicationUser user,
+			boolean kill) throws Exception {
+
+		log.debug("initProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
+		final PermissionSchemeManager permissionSchemeManager = ComponentAccessor.getPermissionSchemeManager();
+
+		if (user != null){
+			log.debug("initProject - user : " + user.getUsername());
+		}else{
+			log.error("initProject - user null");
+			throw new Exception("User is null");
+		}  
+
+		if (projectKey.length() > 4) {
+			final String errorMsg = "initProject: error: project key length > 4 ! ";
+			log.error(errorMsg);
+			throw new Exception(errorMsg);
+		}
+
+		Project project = projectManager.getProjectObjByKey(projectKey);
 
 
-	  /**
-	   * Creates a new Jira project
-	   * 
-	   * @param projectName
-	   *          : the name of the new project
-	   * @param projectKey
-	   *          : the project's key
-	   * @param user : the ApplicationUser that holds the project (lead of the project)
-	   * 
-	   * @return returns the created project object
-	   * @throws Exception
-	   */
+		if (project == null) {
+			int avatarId = 10100;
+			ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName)
+					.withLead(user).withKey(projectKey).withDescription("Geht so").withType("business")
+					.withAvatarId(new Long(avatarId)).build();
+			project = projectManager.createProject(user, projectData);
+			permissionSchemeManager.addDefaultSchemeToProject(project);
+			log.info("initProject: created a new project with projectKey "+projectKey);
+		} else {
+			log.debug("initProject: project with projectKey " +projectKey+ " already exists");
 
-	  public static Project initProject(String projectName, String projectKey, ApplicationUser user,
-	      boolean kill) throws Exception {
-	    final PermissionSchemeManager permissionSchemeManager = ComponentAccessor.getPermissionSchemeManager();
-	    if (projectKey.length() > 4) {
-	      throw new Exception("error: project key length > 4 ! ");
-	    }
+		}
 
-	    Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
+		return project;
+	}
 
-	    if (project == null) {
-	      int avatarId = 10100;
-	      ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName)
-	          .withLead(user).withKey(projectKey).withDescription("Geht so").withType("business")
-	          .withAvatarId(new Long(avatarId)).build();
-	      project = ComponentAccessor.getProjectManager().createProject(user, projectData);
-	      permissionSchemeManager.addDefaultSchemeToProject(project);
-	    }
-	    
-	    return project;
-	  }
 
-	  
 	/**
 	 * Initializes the issue types, issue type scheme and maps them to a project
 	 *
@@ -131,18 +154,19 @@ public class JiraManagerInitializer {
 	 */
 	public static void initIssueManagement(String projectKey, String issueTypeName, String workflowID)
 			throws CreateException {
-		final Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
-		JiraObjectCreator.createIssueType(project, issueTypeName,workflowID);
-		final FieldConfigScheme issueTypeScheme = JiraObjectCreator.createIssueTypeScheme(projectKey, issueTypeName);
+		final Project project = projectManager.getProjectObjByKey(projectKey);
+		JiraObjectCreator.createIssueType(project, issueTypeName, workflowID);
+		final FieldConfigScheme issueTypeScheme = JiraObjectCreator.createIssueTypeScheme(project);
+
 		JiraObjectManipulator.addIssueTypeSchemeToProject(issueTypeScheme, project);
 	}
 
-
 	public static FieldScreenScheme initHumbleScreens(List<String> names, List<CustomFieldDefinition> customFields, String issueTypeName, List<Long> customFieldIdsTest, Project project) throws Exception {
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow("PUB" + Appendix.WORKFLOW);
+		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(project.getKey() + Appendix.WORKFLOW);
 		Map<String,LinkedList<CustomFieldDefinition>>availableActionFieldScreens=new HashMap<String,LinkedList<CustomFieldDefinition>>();
 
 		final CustomFieldManager customFieldManager =ComponentAccessor.getCustomFieldManager();
+
 		for(CustomFieldDefinition customFieldDefinition : customFields)
 		{
 			for (String id : customFieldDefinition.getScreens()) {
@@ -153,7 +177,7 @@ public class JiraManagerInitializer {
 				} else {
 					availableActionFieldScreens.get(id).add(customFieldDefinition);
 				}
-				log.debug("newIssueType - transition screen grouping loops / id : " + id + " / name : "
+				log.debug("initHumbleScreens: transition screen grouping loops / id : " + id + " / name : "
 						+ customFieldDefinition.getName());
 			}
 		}    
@@ -169,14 +193,13 @@ public class JiraManagerInitializer {
 			List<String> customFieldIds = new LinkedList<String>();
 
 			for(CustomFieldDefinition c : e.getValue()){
-				log.debug("newIssueType - transition screen id loops / c.getName() : " + c.getName() + "_" + issueTypeName);
-				String l = customFieldManager.getCustomFieldObjectByName(c.getName()
-						+ "_" + issueTypeName).getId();
+				log.debug("initHumbleScreens: transition screen id loops / c.getName() : " + c.getName() + "_" + issueTypeName);
+				String l = customFieldManager.getCustomFieldObjectByName(c.getName() + "_" + issueTypeName).getId();
 
 				if(l != null){
 					customFieldIds.add(l);
 				}else{
-					log.error("newIssueType - custom field is null / c.getName() : " +
+					log.error("initHumbleScreens: custom field is null / c.getName() : " +
 							c.getName() + "_" + issueTypeName);
 				}
 			}
@@ -228,6 +251,7 @@ public class JiraManagerInitializer {
 		return fieldScreenScheme;
 	}
 
+
 	/**
 	 * Initializes the workflow, workflow scheme and maps them to a project
 	 *
@@ -237,19 +261,26 @@ public class JiraManagerInitializer {
 	 * @param user : the ApplicationUser that can create a workflow (administrator in general)
 	 */
 	public static void initWorkflow(String projectKey, String workflowXML, ApplicationUser user, String issueTypeName) {
-		
-		
-		JiraWorkflow jiraWorkflow = JiraObjectManipulator.addWorkflow(projectKey, workflowXML, user);    
+		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager(); 
+
+		if (user != null){
+			log.debug("initWorkflow: user : " + user.getUsername());
+		} else {
+			log.error("initWorkflow: user is null");
+		}
+
+		JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user);    
 		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow, issueTypeName+Appendix.ISSUETYPE);
+		JiraObjectManipulator.addWorkflowToProject(workflowScheme, projectManager.getProjectObjByKey(projectKey));
+		Project project = projectManager.getProjectObjByKey(projectKey);
+		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE);
 
-		JiraObjectManipulator.addWorkflowToProject(workflowScheme, ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
-
-		Project project = ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey);
-		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName("OCN" + Appendix.ISSUETYPE);
 		try {
-			ComponentAccessor.getWorkflowSchemeManager().addWorkflowToScheme(ComponentAccessor.getWorkflowSchemeManager().getWorkflowScheme(project), jiraWorkflow.getName(), ocnIssueType.getId());
+			workflowSchemeManager.addWorkflowToScheme(workflowSchemeManager.getWorkflowScheme(project), jiraWorkflow.getName(), ocnIssueType.getId());
+			log.info("initWorkflow: add the workflow: "+jiraWorkflow.getName()+" to the workflowscheme of the project: "+project.getName());
 		} catch (GenericEntityException e) {
 			// TODO Auto-generated catch block
+			log.error("initWorkflow: Couldn't  add the workflow: "+jiraWorkflow.getName()+" to the workflowscheme of the project: "+project.getName());
 			e.printStackTrace();
 		}
 	}
@@ -257,62 +288,101 @@ public class JiraManagerInitializer {
 	/**
 	 * Initializes the Look&Feel
 	 */
-	public static void initLookAndFeel(){
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_BASEURL, 
-				PropLoader.getInstance().getProperty( "JIRA_BASEURL", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_MODE, 
+	public static void initJiraSettings(){
+		final ApplicationProperties applicationProperties = ComponentAccessor.getApplicationProperties();
+		applicationProperties.setString(APKeys.JIRA_BASEURL, PropLoader.getInstance().getProperty( "JIRA_BASEURL", JiraManagerInitializer.class));
+		applicationProperties.setString(APKeys.JIRA_MODE, 
 				PropLoader.getInstance().getProperty("JIRA_MODE", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_TITLE, 
+		applicationProperties.setString(APKeys.JIRA_TITLE, 
 				PropLoader.getInstance().getProperty("JIRA_TITLE", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_BGCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_BGCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_BGCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_HIGHLIGHTCOLOR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_HIGHLIGHTCOLOR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_SEPARATOR_BGCOLOR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_SEPARATOR_BGCOLOR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_TEXTCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_TEXTCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TOP_TEXTHIGHLIGHTCOLOR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_BGCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_MENU_BGCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_MENU_BGCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_SEPARATOR, 
+		applicationProperties.setString(APKeys.JIRA_LF_MENU_SEPARATOR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_MENU_SEPARATOR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_MENU_TEXTCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_MENU_TEXTCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_MENU_TEXTCOLOUR", JiraManagerInitializer.class));	
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_BASEBGCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_HERO_BUTTON_BASEBGCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_HERO_BUTTON_BASEBGCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_HERO_BUTTON_TEXTCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_HERO_BUTTON_TEXTCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_HERO_BUTTON_TEXTCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TEXT_ACTIVE_LINKCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_ACTIVE_LINKCOLOUR", JiraManagerInitializer.class));
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TEXT_HEADINGCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_HEADINGCOLOUR", JiraManagerInitializer.class));		
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, 
+		applicationProperties.setString(APKeys.JIRA_LF_TEXT_LINKCOLOUR, 
 				PropLoader.getInstance().getProperty("JIRA_LF_TEXT_LINKCOLOUR", JiraManagerInitializer.class));		
-		ComponentAccessor.getApplicationProperties().setString(APKeys.JIRA_LF_LOGO_URL, 
-				PropLoader.getInstance().getProperty("JIRA_LF_LOGO_URL", JiraManagerInitializer.class));		
+		applicationProperties.setString(APKeys.JIRA_LF_LOGO_URL, 
+				PropLoader.getInstance().getProperty("JIRA_LF_LOGO_URL", JiraManagerInitializer.class));	
+
+		SMTPMailServerImpl smtp = new SMTPMailServerImpl();
+		smtp.setName("Mail Server");
+		smtp.setDescription("");
+		smtp.setDefaultFrom("pubflow@bough.de");
+		smtp.setPrefix("[pubflow]");
+		smtp.setPort("587");
+		smtp.setMailProtocol(MailProtocol.SMTP);
+		smtp.setHostname("mail.bough.de");
+		smtp.setUsername("wp10598327-pubflow");
+		smtp.setPassword("kidoD3l77");
+		smtp.setTlsRequired(true);
+		try {
+			ComponentAccessor.getMailServerManager().create(smtp);
+		} catch (MailException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+
 	/**
 	 * Initializes the whole PubFlow project.
+	 * 
+	 * Set application properties
+	 * 		v
+	 * "PubFlow" project will be initialized.
+	 * 		v
+	 * user groups "datamanager" and "scientists" are created
+	 * 		v
+	 * users "PubFlow" and "root" will created and added to all user groups.
+	 * 		v
+	 * Statuses will be created
+	 * 		v
+	 * IssueTypes and Schemes will be created (need statuses)
+	 * 		v
+	 * Create Workflow and Scheme (needs statuses, project, and issuetypes)
+	 * 		v
+	 * Create CustomField
+	 * 		v
+	 * Create all Screens (needs screennames, issuetypes, customfields, and a project)
+	 * 		v
+	 * Map sceenschemes to a given project (needs the project, the issuetype, and the screen for the issuetype)
+	 * 
 	 * @author arl, abar
 	 * 
 	 */
 	public static void initPubFlowProject()
 			throws GenericEntityException, KeyManagementException, UnrecoverableKeyException,
 			NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
-		
 		final ApplicationProperties applicationPropertiesManager = ComponentAccessor.getApplicationProperties();
+		final UserManager userManager = ComponentAccessor.getUserManager();
 		applicationPropertiesManager.setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		applicationPropertiesManager.setString(APKeys.JIRA_MODE, "Private");
 		applicationPropertiesManager.setString(APKeys.JIRA_BASEURL, "http://maui.informatik.uni-kiel.de:2990/jira/");
-		final String issueTypeName = "OCN";
+		
+		initJiraSettings();
+		
 		final String projectKey = "PUB";
-		Project project = ComponentAccessor.getProjectManager().getProjectObjByName("PubFlow");
-		
-		initLookAndFeel();
-		
+		Project project = projectManager.getProjectObjByName("PubFlow");
+
 		try {
 			if (project == null) {
 				//
@@ -351,8 +421,22 @@ public class JiraManagerInitializer {
 				ApplicationUser userScientist = JiraObjectCreator.createUser("SampleScientist", "sciencerulez");
 				JiraObjectManipulator.addUserToGroup(userScientist, groupScientists);
 				JiraObjectManipulator.addUserToGroup(userScientist, "jira-software-users");
+
+				log.debug("initPubfowProject: created users and usergroups for PubFlow");
+
 				project = initProject("PubFlow", projectKey, userRoot, false);
 			}
+
+			//RAWTOPUBFLOW
+			//			List<ConditionDefinition> conditionsRawToOCN = new LinkedList<ConditionDefinition>();
+			//			List<ConditionDefinition> conditionsOCNTo4D = new LinkedList<ConditionDefinition>();
+
+			//			conditionsRawToOCN.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{21, 81, 161, 171, 71, 91}));	
+			//			conditionsRawToOCN.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsScientists, new int[]{11}));
+			//			conditionsRawToOCN.add(new ConditionDefinition(ConditionDefinitionType.ATTACHMENT, null, new int[]{11}));
+
+			//			conditionsOCNTo4D.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsDatamanager, new int[]{171, 71, 91, 111, 151, 131, 191}));
+			//			conditionsOCNTo4D.add(new ConditionDefinition(ConditionDefinitionType.USERINGROUP, mapParamsPubFlow, new int[]{41,101}));
 
 			List<String> statuses = new LinkedList<String>();
 			statuses.add("Open");
@@ -366,60 +450,80 @@ public class JiraManagerInitializer {
 			statuses.add("Closed");
 			statuses.add("Done");
 			statuses.add("Rejected");
+			JiraObjectCreator.addStatuses(projectKey, statuses);
+			
+			final String issueTypeCVOOTo4DName = "Export Data (CVOO) to PANGAEA";
+			final String issueTypeOCNTo4DName = "Export Data (OCN) to PANGAEA";
+			final String issueTypeEprintsName = "EPRINTS";
+			final String issueTypeRawToOCNName = "Publish Raw Cruise Data";
 
-			initIssueManagement(projectKey, issueTypeName, "de.pubflow.OCN");
-			JiraObjectManipulator.addStatuses(projectKey, statuses);
-			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/PubFlow.xml"), ComponentAccessor.getUserManager().getUserByName("PubFlow"), issueTypeName);
+			initIssueManagement(projectKey, issueTypeRawToOCNName, "");
+			initIssueManagement(projectKey, issueTypeEprintsName, "de.pubflow.EPRINTS");
+			initIssueManagement(projectKey, issueTypeCVOOTo4DName, "de.pubflow.CVOO");
+			initIssueManagement(projectKey, issueTypeOCNTo4DName, "de.pubflow.OCN");
+			
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), userManager.getUserByName("PubFlow"), issueTypeCVOOTo4DName);
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/OCNTO4D-WORKFLOW.xml"), userManager.getUserByName("PubFlow"), issueTypeOCNTo4DName);
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/EPRINTS.xml"), userManager.getUserByName("PubFlow"), issueTypeEprintsName);
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource("/RAWTOCVOO-WORKFLOW.xml"), userManager.getUserByName("PubFlow"), issueTypeRawToOCNName);
 
-			List<String> screenNames = new ArrayList<String>();
-			screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionCreate");
-			screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionEdit");
-			screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionView");
+			List<String> screenNamesCVOOTo4D = new ArrayList<String>();
+			screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionCreate");
+			screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionEdit");
+			screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionView");
 
+			List<String> screenNamesOCNTo4D = new ArrayList<String>();
+			screenNamesOCNTo4D.add(issueTypeOCNTo4DName + Appendix.FIELDSCREEN + "ActionCreate");
+			screenNamesOCNTo4D.add(issueTypeOCNTo4DName + Appendix.FIELDSCREEN + "ActionEdit");
+			screenNamesOCNTo4D.add(issueTypeOCNTo4DName + Appendix.FIELDSCREEN + "ActionView");
 
-			LinkedList<CustomFieldDefinition> customFields = new
-					LinkedList<CustomFieldDefinition>();
-			customFields.add(new CustomFieldDefinition("Leg ID",
-					CustomFieldType.TEXT, true, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("PID",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Login",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Source",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Author",
-					CustomFieldType.TEXT, false, new String[]{"11", "141",
-			"111"}));
-			customFields.add(new CustomFieldDefinition("Project",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Topology",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Status",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Zielpfad",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Reference",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("File name",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Leg comment",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Quartz Cron",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("DOI",
-					CustomFieldType.TEXT, false, new String[]{"141", "111"}));
-			customFields.add(new CustomFieldDefinition("Author name",
-					CustomFieldType.TEXT, false, new String[]{"11"}));
-			customFields.add(new CustomFieldDefinition("Title",
-					CustomFieldType.TEXT, false, new String[]{"11"}));
-			customFields.add(new CustomFieldDefinition("Cruise",
-					CustomFieldType.TEXT, false, new String[]{"11"}));
-			customFields.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new
-					String[]{"141", "111"}));
+			List<String> screenNamesEprints = new ArrayList<String>();
+			screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionCreate");
+			screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionEdit");
+			screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionView");
 
-			List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project);
-			FieldScreenScheme fieldScreenScheme = initHumbleScreens(screenNames, customFields, issueTypeName, customFieldIds, project);
-			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme, JiraObjectGetter.getIssueTypeByName(issueTypeName+Appendix.ISSUETYPE));
+			List<String> screenNamesRawToOCN = new ArrayList<String>();
+			screenNamesRawToOCN.add(issueTypeRawToOCNName + Appendix.FIELDSCREEN + "ActionCreate");
+			screenNamesRawToOCN.add(issueTypeRawToOCNName + Appendix.FIELDSCREEN + "ActionEdit");
+			screenNamesRawToOCN.add(issueTypeRawToOCNName + Appendix.FIELDSCREEN + "ActionView");
+
+			LinkedList<CustomFieldDefinition> customFieldsOCNTo4D = new LinkedList<CustomFieldDefinition>();
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("PID", CustomFieldType.TEXT, false, new String[]{ "111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Login", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Source", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Project", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Topology", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Status", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Target Path", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Reference", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("File Name", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Leg Comment", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Quartz Cron", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("DOI", CustomFieldType.TEXT, false, new String[]{"111", "191"}));
+			customFieldsOCNTo4D.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false, new String[]{"111", "191"}));
+
+			LinkedList<CustomFieldDefinition> customFieldsRawToOCN = new LinkedList<CustomFieldDefinition>();
+			customFieldsRawToOCN.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[]{"11"}));
+			customFieldsRawToOCN.add(new CustomFieldDefinition("Author Name", CustomFieldType.TEXT, false, new String[]{"11"}));
+			customFieldsRawToOCN.add(new CustomFieldDefinition("Title", CustomFieldType.TEXT, false, new String[]{"11"}));
+			customFieldsRawToOCN.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[]{"11"}));
+
+			List<Long> customFieldIdsOCNTo4D = JiraObjectCreator.createCustomFields(customFieldsOCNTo4D, project, issueTypeOCNTo4DName);
+			List<Long> customFieldIdsCVOOTo4D = JiraObjectCreator.createCustomFields(customFieldsOCNTo4D, project, issueTypeCVOOTo4DName);
+			List<Long> customFieldIdsRawToOCN = JiraObjectCreator.createCustomFields(customFieldsRawToOCN, project, issueTypeRawToOCNName);			
+			
+			FieldScreenScheme fieldScreenSchemeOCNTo4D = initHumbleScreens(screenNamesOCNTo4D, customFieldsOCNTo4D, issueTypeOCNTo4DName, customFieldIdsOCNTo4D, project);
+			FieldScreenScheme fieldScreenSchemeCVOOTo4D = initHumbleScreens(screenNamesCVOOTo4D, customFieldsOCNTo4D, issueTypeCVOOTo4DName, customFieldIdsCVOOTo4D, project);
+			FieldScreenScheme fieldScreenSchemeEprints = initHumbleScreens(screenNamesEprints, new LinkedList<CustomFieldDefinition>(), issueTypeEprintsName, new ArrayList<Long>(), project);
+			FieldScreenScheme fieldScreenSchemeRawToOCN = initHumbleScreens(screenNamesRawToOCN, customFieldsRawToOCN, issueTypeRawToOCNName, customFieldIdsRawToOCN, project);
+			
+			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenSchemeOCNTo4D, JiraObjectGetter.getIssueTypeByName(issueTypeOCNTo4DName + Appendix.ISSUETYPE));
+			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenSchemeCVOOTo4D, JiraObjectGetter.getIssueTypeByName(issueTypeCVOOTo4DName + Appendix.ISSUETYPE));
+			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenSchemeEprints, JiraObjectGetter.getIssueTypeByName(issueTypeEprintsName + Appendix.ISSUETYPE));
+			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenSchemeRawToOCN, JiraObjectGetter.getIssueTypeByName(issueTypeRawToOCNName + Appendix.ISSUETYPE));
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
