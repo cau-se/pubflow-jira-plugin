@@ -68,6 +68,8 @@ public class WorkflowBroker {
 		}
 		myLogger.info("Creating new Instance of the '" + callData.getWorkflowID() + "' Workflow");
 		WorkflowRestCall wfRestCall = new WorkflowRestCall();
+		
+		wfRestCall.setID(callData.getJiraKey());
 
 		// add Callback address to the REST call
 		try {
@@ -87,7 +89,7 @@ public class WorkflowBroker {
 
 		// TODO: testing remove this
 		workflowURL = "/TestWorkflow";
-
+		System.out.println(workflowURL);
 		try {
 			WorkflowSender.getInstance().initWorkflow(wfRestCall, workflowURL);
 			myLogger.info("Workflow deployed");
@@ -148,9 +150,7 @@ public class WorkflowBroker {
 		}
 		// TODO the case of scheduled Workflows is not considered in the moment
 		// and may be needed in the future (?)
-		
-		
-		
+
 		// msg.setParameters(filteredParameters);
 		//
 		// if(!quartzCron.equals("")){
@@ -205,7 +205,8 @@ public class WorkflowBroker {
 	private String getCorrespondingWorkflowURL(String workflow) {
 		String workflowURL = "";
 
-		// TODO is there a better/prettier way to map the Workflow String from Jira to
+		// TODO is there a better/prettier way to map the Workflow String from
+		// Jira to
 		// the REST URL?
 
 		switch (workflow) {

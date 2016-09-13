@@ -28,6 +28,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+
 import de.pubflow.common.IJiraRestConnector;
 import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.workflow.WorkflowBroker;
@@ -87,6 +89,7 @@ public class JiraRestConnector implements IJiraRestConnector {
 	}
 
 	@POST
+	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(answerPath)
 	public Response receiveWorkflowAnswer(@PathParam("issueKey") String issueKey, ReceivedWorkflowAnswer wfAnswer) {

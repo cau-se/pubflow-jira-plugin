@@ -43,12 +43,14 @@ import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
 public class WorkflowSender {
 	private static WorkflowSender instance;
 	private String targetURL;
+	private String urlAddition;
 	private Logger myLogger;
 
 	private WorkflowSender() throws WFRestException {
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		// TODO load url from file /config
-		targetURL = new String("http://localhost:8080");
+		targetURL = "http://localhost:8080";
+		urlAddition = "/workflow";
 	}
 
 	/**
@@ -82,14 +84,12 @@ public class WorkflowSender {
 	 * @throws WFRestException
 	 *             if the connection responses with a HTTP response code other
 	 *             than 2xx
-	 * @throws IOException
-	 * @throws ClientProtocolException
 	 */
 	public void initWorkflow(WorkflowRestCall wfCall, String workflowPath) throws WFRestException {
 		myLogger.info("Trying to use workflow on: " + workflowPath);
 		Gson gson = new Gson();
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost post = new HttpPost(targetURL + workflowPath);
+		HttpPost post = new HttpPost(targetURL + urlAddition + workflowPath);
 		HttpResponse response = null;
 
 		try {
@@ -98,11 +98,11 @@ public class WorkflowSender {
 			post.setEntity(postingString);
 			post.setHeader("Content-type", "application/json");
 			response = httpClient.execute(post);
-
+System.out.println(post.getURI());
 			myLogger.info("Http response: " + response.toString());
 
 		} catch (Exception e) {
-			myLogger.error("Could not deplay new Workflow with ID: " + wfCall.getJiraKey());
+			myLogger.error("Could not deploy new Workflow with ID: " + wfCall.getID());
 			myLogger.error(e.toString());
 			throw new WFRestException("Workflow could not be started");
 		}

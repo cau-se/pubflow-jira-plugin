@@ -33,7 +33,7 @@ public class WorkflowRestCall {
 	/**
 	 * Used to map the workflow to other services, events and responses.
 	 */
-	private String jiraKey;
+	private String id;
 	/**
 	 * Url to response to
 	 */
@@ -46,12 +46,12 @@ public class WorkflowRestCall {
 	public WorkflowRestCall() {
 	}
 
-	public String getJiraKey() {
-		return jiraKey;
+	public String getID() {
+		return id;
 	}
 
-	public void setJiraKey(String id) {
-		this.jiraKey = id;
+	public void setID(String id) {
+		this.id = id;
 	}
 
 	public List<WFParameter> getWorkflowParameters() {

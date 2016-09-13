@@ -311,7 +311,7 @@ public class JiraManagerInitializer {
 		final String projectKey = "PUB";
 		Project project = ComponentAccessor.getProjectManager().getProjectObjByName("PubFlow");
 		
-		initLookAndFeel();
+//		initLookAndFeel();
 		
 		try {
 			if (project == null) {

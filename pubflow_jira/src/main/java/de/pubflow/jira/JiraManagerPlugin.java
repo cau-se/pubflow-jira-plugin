@@ -145,7 +145,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 				// to enable mapping to the jira ticket
 				callData.setJiraKey(issue.getKey());
 				callData.setParameters(wfpm);
-
 				// TODO add workflow id (string), its necessary !
 				
 				// currently not working
