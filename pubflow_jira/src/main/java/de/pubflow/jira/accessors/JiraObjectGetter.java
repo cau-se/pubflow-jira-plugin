@@ -158,7 +158,7 @@ public class JiraObjectGetter {
 				}
 			}
 		}
-
+		log.debug("getStatusByName: not status with name "+statusName+" was found.");
 		return null;
 	}
 
@@ -184,32 +184,34 @@ public class JiraObjectGetter {
 
 	@SuppressWarnings("deprecation")
 	public static ApplicationUser getUserByName(String userName) {
-		// TODO deprecated
-		return ComponentAccessor.getUserUtil().getUserByName(userName);
+		return ComponentAccessor.getUserManager().getUserByName(userName);
 	}
 
 	/**
-	 * searches for an issue type by its name quite expensive
-	 * 
-	 * @param name
-	 *            : the issue type's name
-	 * 
-	 * @return returns the issue type id returns null if no or more than one
-	 *         issue type with the provided name has been found
-	 * 
-	 */
+	   * searches for an issue type by its name quite expensive
+	   * 
+	   * @param name
+	   *          : the issue type's name
+	   * 
+	   * @return returns the issue type id returns null if no or more than one issue type with the
+	   *         provided name has been found
+	   * 
+	   */
 
-	public static IssueType findIssueTypeByName(Project project, String name) {
-		log.debug("findIssueTypeByName - name : " + name);
-		Collection<IssueType> issueTypes = project.getIssueTypes();
+	  public static IssueType findIssueTypeByName(Project project, String name) {
+	    log.debug("findIssueTypeByName - name : " + name);
+	    Collection<IssueType> issueTypes = project.getIssueTypes();
 
-		for (IssueType issueType : issueTypes) {
-			if (issueType.getName().equals(name)) {
-				return issueType;
-			}
-		}
-		return null;
-	}
+	    for (IssueType issueType : issueTypes) {
+	      if (issueType.getName().equals(name)) {
+	        return issueType;
+	      }
+	    }
+	    
+	    log.debug("findIssueTypeByName: no issueType named "+name+" was found.");
+	    return null;
+	  }
+	
 
 	/**
 	 * searches for an issue type by its name quite expensive

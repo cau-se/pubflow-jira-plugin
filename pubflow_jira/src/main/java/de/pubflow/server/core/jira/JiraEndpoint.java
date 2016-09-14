@@ -33,7 +33,7 @@ import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 
 @WebService(targetNamespace = "pubflow.de") // (endpointInterface =
-											// "de.pubflow.jira.ws.IJiraEndpoint")
+// "de.pubflow.jira.ws.IJiraEndpoint")
 @SOAPBinding(style = Style.DOCUMENT)
 public class JiraEndpoint {
 
@@ -55,10 +55,8 @@ public class JiraEndpoint {
 	public static String createIssue(String issueTypeName, String summary, String description,
 			HashMap<String, String> parameters, String reporter) {
 		try {
-			// TODO
-			// return JiraObjectCreator.createIssue("PUB", issueTypeName,
-			// summary, description, reporter, JiraManagerPlugin.user,
-			// parameters);
+			//			return JiraObjectCreator.createIssue("PUB", issueTypeName, summary, description, reporter, JiraManagerPlugin.user, parameters);
+
 			return "moin";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,11 +86,8 @@ public class JiraEndpoint {
 
 	public static String createIssue(JiraIssue issue) {
 		try {
-			// TODO
-			// return JiraObjectCreator.createIssue("PUB",
-			// issue.getIssueTypeName(), issue.getSummary(),
-			// issue.getDescription(), issue.getReporter(),
-			// JiraManagerPlugin.user, issue.getParameters());
+			//			return JiraObjectCreator.createIssue("PUB", issue.getIssueTypeName(), issue.getSummary(), issue.getDescription(), issue.getReporter(), JiraManagerPlugin.user, issue.getParameters());
+
 			return "moin";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -196,9 +191,8 @@ public class JiraEndpoint {
 	public static boolean createProject(String projectName, String projectKey, String workflowXML,
 			LinkedList<String> steps) {
 		try {
-			// TODO
-			// JiraObjectCreator.createProject(projectName, projectKey,
-			// JiraManagerPlugin.user, false);
+			//			JiraObjectCreator.createProject(projectName, projectKey, JiraManagerPlugin.user, false);
+
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -225,12 +219,6 @@ public class JiraEndpoint {
 	public static boolean addAttachment(JiraAttachment attachment) {
 		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(),
 				"", JiraManagerPlugin.user);
-
-		return true;
-	}
-
-	public static boolean addWorkflow(String projectKey, String workflowXML) {
-		JiraObjectManipulator.addWorkflow(projectKey, workflowXML, JiraManagerPlugin.user);
 
 		return true;
 	}

@@ -68,7 +68,7 @@ public class WorkflowBroker {
 		}
 		myLogger.info("Creating new Instance of the '" + callData.getWorkflowID() + "' Workflow");
 		WorkflowRestCall wfRestCall = new WorkflowRestCall();
-		
+
 		wfRestCall.setID(callData.getJiraKey());
 
 		// add Callback address to the REST call
@@ -86,10 +86,7 @@ public class WorkflowBroker {
 
 		// lookup the URL
 		String workflowURL = getCorrespondingWorkflowURL(callData.getWorkflowID());
-
-		// TODO: testing remove this
-		workflowURL = "/TestWorkflow";
-		System.out.println(workflowURL);
+		myLogger.info("Using REST-API: " + workflowURL);
 		try {
 			WorkflowSender.getInstance().initWorkflow(wfRestCall, workflowURL);
 			myLogger.info("Workflow deployed");
@@ -206,20 +203,23 @@ public class WorkflowBroker {
 		String workflowURL = "";
 
 		// TODO is there a better/prettier way to map the Workflow String from
-		// Jira to
-		// the REST URL?
+		// Jira to the REST URL?
 
 		switch (workflow) {
-		case "OCN":
+		case "de.pubFlow.OCN":
 			workflowURL = "/OCNWorkflow";
 			break;
 
-		case "CVOO":
+		case "de.pubflow.CVOO":
 			workflowURL = "/CVOOWorkflow";
 			break;
 
-		case "EPRINTS":
+		case "de.pubflow.EPRINTS":
 			workflowURL = "/EPrintsWorkflow";
+			break;
+
+		case "de.pubflow.Test":
+			workflowURL = "/TestWorkflow";
 			break;
 
 		default:

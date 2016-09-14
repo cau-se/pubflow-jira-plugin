@@ -96,6 +96,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		this.jiraManagerPluginJob = jiraManagerPluginJob;
 	}
 
+
 	/**
 	 * @param resourceName
 	 * @return
@@ -132,7 +133,12 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
 
 		Issue issue = issueEvent.getIssue();
-		if (issue.getStatus().getName().equals("Data Processing by PubFlow")) {
+		if (
+				// (issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) &&
+				// ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName()
+				// != "jira") ||
+				issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
+
 
 			try {
 				ServiceCallData callData = new ServiceCallData();
