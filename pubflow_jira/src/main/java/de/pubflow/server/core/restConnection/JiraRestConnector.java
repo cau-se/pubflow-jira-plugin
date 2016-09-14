@@ -38,7 +38,8 @@ import de.pubflow.server.core.workflow.messages.ReceivedWorkflowAnswer;
 @Path(JiraRestConnector.basePath)
 public class JiraRestConnector implements IJiraRestConnector {
 
-	static final String basePath = "/pubflow/jira/issues";
+	private static final String jiraRestPath = "/jira/rest/receiver/1.0";
+	static final String basePath = "/pubflow/issues";
 	private static final String answerPath = "/{issueKey}/result";
 
 	@POST
@@ -108,7 +109,8 @@ public class JiraRestConnector implements IJiraRestConnector {
 		// TODO is this the right place for this?
 
 		// TODO set port dynamically (@ startup)
-		return "http://" + InetAddress.getLocalHost().getHostAddress().toString() + ":2990" + basePath + answerPath;
+		return "http://" + InetAddress.getLocalHost().getHostAddress().toString() + ":2990" + jiraRestPath + basePath
+				+ answerPath;
 	}
 
 }

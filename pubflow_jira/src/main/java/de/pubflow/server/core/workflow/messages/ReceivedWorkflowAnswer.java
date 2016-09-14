@@ -28,7 +28,6 @@ public class ReceivedWorkflowAnswer {
 	/**
 	 * 
 	 */
-	private String jiraKey;
 	private String result;
 	private String errorMessage;
 	private String newStatus;
@@ -61,12 +60,5 @@ public class ReceivedWorkflowAnswer {
 		this.newStatus = newStatus;
 	}
 
-	public String getJiraKey() {
-		return jiraKey;
-	}
-
-	public void setJiraKey(String jiraKey) {
-		this.jiraKey = jiraKey;
-	}
 
 }
