@@ -225,8 +225,6 @@
                             <value>sun.*,com.sun.*,org.w3c.*,javax.*</value>
                         </property>
                     </systemProperties>
-                    <enableFastdev>false</enableFastdev>
-                    <enableQuickReload>true</enableQuickReload>
                 </configuration>
             </plugin>
             <plugin>
