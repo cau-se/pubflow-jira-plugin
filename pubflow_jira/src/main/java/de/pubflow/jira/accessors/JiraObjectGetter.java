@@ -182,7 +182,6 @@ public class JiraObjectGetter {
 		return result;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static ApplicationUser getUserByName(String userName) {
 		return ComponentAccessor.getUserManager().getUserByName(userName);
 	}

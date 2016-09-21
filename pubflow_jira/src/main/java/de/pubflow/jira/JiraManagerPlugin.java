@@ -137,7 +137,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 				// (issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) &&
 				// ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName()
 				// != "jira") ||
-				issue.getStatusObject().getName().equals("Data Processing by PubFlow")) {
+				issue.getStatus().getName().equals("Data Processing by PubFlow")) {
 
 
 			try {
