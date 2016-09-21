@@ -158,7 +158,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 				
 				callData.setWorkflowID("de.pubflow.OCN");
 
-				// callData.setWorkflowID(((IssueTypeImpl)issue.getIssueType()).getPropertySet().getString("workflowID"));
+				callData.setWorkflowID(issue.getIssueType().getId());
 				WorkflowBroker wfBroker = new WorkflowBroker();
 				wfBroker.receiveWFCall(callData);
 

@@ -40,6 +40,8 @@ import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.issue.CustomFieldManager;
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.config.FieldConfigScheme;
 import com.atlassian.jira.issue.fields.screen.FieldScreen;
@@ -52,6 +54,7 @@ import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.JiraWorkflow;
+import com.atlassian.jira.workflow.WorkflowManager;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.atlassian.mail.MailException;
@@ -523,7 +526,7 @@ public class JiraManagerInitializer {
 			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenSchemeCVOOTo4D, JiraObjectGetter.getIssueTypeByName(issueTypeCVOOTo4DName + Appendix.ISSUETYPE));
 			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenSchemeEprints, JiraObjectGetter.getIssueTypeByName(issueTypeEprintsName + Appendix.ISSUETYPE));
 			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenSchemeRawToOCN, JiraObjectGetter.getIssueTypeByName(issueTypeRawToOCNName + Appendix.ISSUETYPE));
-
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
