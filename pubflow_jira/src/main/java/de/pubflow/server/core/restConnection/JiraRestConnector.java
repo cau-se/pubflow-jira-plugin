@@ -94,7 +94,7 @@ public class JiraRestConnector implements IJiraRestConnector {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(answerPath)
 	public Response receiveWorkflowAnswer(@PathParam("issueKey") String issueKey, ReceivedWorkflowAnswer wfAnswer) {
-		new WorkflowBroker().receiveWorkflowAnswer(issueKey, wfAnswer);
+		WorkflowBroker.getInstance().receiveWorkflowAnswer(issueKey, wfAnswer);
 		return Response.ok().build();
 	}
 

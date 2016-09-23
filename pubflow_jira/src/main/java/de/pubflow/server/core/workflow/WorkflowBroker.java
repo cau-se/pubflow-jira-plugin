@@ -16,8 +16,10 @@
 package de.pubflow.server.core.workflow;
 
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,7 @@ import de.pubflow.server.core.restConnection.WorkflowSender;
 import de.pubflow.server.core.workflow.messages.ReceivedWorkflowAnswer;
 import de.pubflow.server.core.workflow.messages.ServiceCallData;
 import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
+import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 
 /**
  * Handles all Workflow execution. The initialization and updates are covered by
@@ -43,13 +46,20 @@ import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
  *
  */
 public class WorkflowBroker {
-
 	private Logger myLogger;
 
-	public WorkflowBroker() {
+	static private  final WorkflowBroker instance= new WorkflowBroker();
+	static private Map<String, AbstractWorkflow> registeredWorkflows = new HashMap<String, AbstractWorkflow>();
+
+	private WorkflowBroker() {
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting WorkflowBroker");
 	}
+	
+	static public WorkflowBroker getInstance(){
+		return instance;
+	}
+	
 
 	/**
 	 * Handles new Workflow calls for PubFlow. They will be saved and send to
@@ -85,10 +95,15 @@ public class WorkflowBroker {
 		wfRestCall.setWorkflowParameters(computeParameter(callData));
 
 		// lookup the URL
-		String workflowURL = getCorrespondingWorkflowURL(callData.getWorkflowID());
+		AbstractWorkflow workflow = registeredWorkflows.get(callData.getWorkflowID());
+		if (workflow == null){
+			myLogger.error(callData.getWorkflowID()+" was not found by the WorkflowBroker");
+			throw new WFException("Workflow not found/registered");
+		}
+		String workflowURL = workflow.getCompleteServiceURL();
 		myLogger.info("Using REST-API: " + workflowURL);
 		try {
-			WorkflowSender.getInstance().initWorkflow(wfRestCall, workflowURL);
+			WorkflowSender.initWorkflow(wfRestCall, workflowURL);
 			myLogger.info("Workflow deployed");
 		} catch (WFRestException e) {
 			myLogger.error("Could not deploy workflow");
@@ -199,34 +214,13 @@ public class WorkflowBroker {
 
 	}
 
-	private String getCorrespondingWorkflowURL(String workflow) {
-		String workflowURL = "";
 
-		// TODO is there a better/prettier way to map the Workflow String from
-		// Jira to the REST URL?
-
-		switch (workflow) {
-		case "de.pubFlow.OCN":
-			workflowURL = "/OCNWorkflow";
-			break;
-
-		case "de.pubflow.CVOO":
-			workflowURL = "/CVOOWorkflow";
-			break;
-
-		case "de.pubflow.EPRINTS":
-			workflowURL = "/EPrintsWorkflow";
-			break;
-
-		case "de.pubflow.Test":
-			workflowURL = "/TestWorkflow";
-			break;
-
-		default:
-			break;
-		}
-
-		return workflowURL;
+	/**
+	 * Saves the Workflow in a Map.
+	 * The entry is used to lookup the Workflow during execution of PubFlow.
+	 * @param workflow
+	 */
+	static public void addWorkflow(AbstractWorkflow workflow){
+		registeredWorkflows.put(workflow.getWorkflowName(), workflow);
 	}
-
 }
