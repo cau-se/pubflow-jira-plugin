@@ -70,6 +70,7 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 import de.pubflow.server.core.workflow.types.CVOOTo4DWorkflow;
 import de.pubflow.server.core.workflow.types.EPrintsWorkflow;
 import de.pubflow.server.core.workflow.types.OCNTo4DWorkflow;
+import de.pubflow.server.core.workflow.types.OldOCNWorkflow;
 import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
 
 /**
@@ -135,7 +136,7 @@ public class JiraManagerInitializer {
 		if (project == null) {
 			int avatarId = 10100;
 			ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName).withLead(user)
-					.withKey(projectKey).withDescription("Geht so").withType("business")
+					.withKey(projectKey).withDescription("Data Pulication Workflows").withType("business")
 					.withAvatarId(new Long(avatarId)).build();
 			project = projectManager.createProject(user, projectData);
 			permissionSchemeManager.addDefaultSchemeToProject(project);
@@ -464,6 +465,9 @@ public class JiraManagerInitializer {
 			addNewWorkflow(projectKey, new OCNTo4DWorkflow(), project, user);
 			addNewWorkflow(projectKey, new CVOOTo4DWorkflow(), project, user);
 			addNewWorkflow(projectKey, new RawToOCNWorkflow(), project, user);
+			
+			//for testing purposes 
+			addNewWorkflow(projectKey, new OldOCNWorkflow(), project, user);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
