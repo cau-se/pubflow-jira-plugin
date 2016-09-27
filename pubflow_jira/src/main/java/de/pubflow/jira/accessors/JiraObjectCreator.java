@@ -508,13 +508,14 @@ public class JiraObjectCreator {
 	 * @return returns the created JiraWorkflow object
 	 */
 	public static JiraWorkflow addWorkflow(String projectKey, String workflowXML,
-			ApplicationUser user) {
+			ApplicationUser user, String issueTypeName) {
+		String workflowName= issueTypeName + Appendix.WORKFLOW;
 		final WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager();
-		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(projectKey + Appendix.WORKFLOW);
+		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(workflowName);
 
 		if (jiraWorkflow == null && workflowXML != null) {
 			try {
-				jiraWorkflow = new ConfigurableJiraWorkflow(projectKey + Appendix.WORKFLOW,
+				jiraWorkflow = new ConfigurableJiraWorkflow(workflowName,
 						WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), workflowManager);
 				workflowManager.createWorkflow(user, jiraWorkflow);
 				log.info("addWorkflow: Successfully added a new workflow "+ jiraWorkflow.getName());
@@ -523,7 +524,7 @@ public class JiraObjectCreator {
 				e.printStackTrace();
 			}
 		} else {
-			log.debug("addWorkflow: Workflow "+ jiraWorkflow.getName()+" already exists.");
+			log.info("addWorkflow: Workflow "+ jiraWorkflow.getName()+" already exists.");
 		}
 
 		return jiraWorkflow;

@@ -170,7 +170,7 @@ public class JiraManagerInitializer {
 	public static FieldScreenScheme initHumbleScreens(List<String> names, List<CustomFieldDefinition> customFields,
 			String issueTypeName, List<Long> customFieldIdsTest, Project project) throws Exception {
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager()
-				.getWorkflow(project.getKey() + Appendix.WORKFLOW);
+				.getWorkflow(issueTypeName + Appendix.WORKFLOW);
 		Map<String, LinkedList<CustomFieldDefinition>> availableActionFieldScreens = new HashMap<String, LinkedList<CustomFieldDefinition>>();
 
 		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
@@ -281,7 +281,7 @@ public class JiraManagerInitializer {
 			log.error("initWorkflow: user is null");
 		}
 
-		JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user);
+		JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user, issueTypeName);
 		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
 				issueTypeName + Appendix.ISSUETYPE);
 		JiraObjectManipulator.addWorkflowToProject(workflowScheme, projectManager.getProjectObjByKey(projectKey));
@@ -363,25 +363,14 @@ public class JiraManagerInitializer {
 	/**
 	 * Initializes the whole PubFlow project.
 	 * 
-	 * Set application properties
-	 * 			 v 
-	 * "PubFlow" project will be initialized. 
-	 * 			 v
-	 * User groups "datamanager" and "scientists" are created 
-	 * 			 v 
-	 * Users "PubFlow" and "root" will created and added to all user groups. 
-	 * 			 v
-	 * Statuses will be created 
-	 * 			 v
-	 * IssueTypes and Schemes will be created (need statuses) 
-	 * 			 v
-	 * Create Workflow and Scheme (needs statuses, project, and issue types) 
-	 * 			 v
-	 * Create CustomField
-	 * 			 v
-	 * Create all Screens (needs screen names, issue types, custom fields, and a project) 
-	 * 			 v 
-	 * Map screen schemes to a given project (needs the project, the issue type, and the screen for the issue type)
+	 * Set application properties v "PubFlow" project will be initialized. v
+	 * User groups "datamanager" and "scientists" are created v Users "PubFlow"
+	 * and "root" will created and added to all user groups. v Statuses will be
+	 * created v IssueTypes and Schemes will be created (need statuses) v Create
+	 * Workflow and Scheme (needs statuses, project, and issue types) v Create
+	 * CustomField v Create all Screens (needs screen names, issue types, custom
+	 * fields, and a project) v Map screen schemes to a given project (needs the
+	 * project, the issue type, and the screen for the issue type)
 	 * 
 	 * @author arl, abar
 	 * 
@@ -457,22 +446,34 @@ public class JiraManagerInitializer {
 			statuses.add("Rejected");
 			JiraObjectCreator.addStatuses(projectKey, statuses);
 
-			ApplicationUser user = userManager.getUserByName("PubFlow");
-
-			// add workflows
-
-			addNewWorkflow(projectKey, new EPrintsWorkflow(), project, user);
-			addNewWorkflow(projectKey, new OCNTo4DWorkflow(), project, user);
-			addNewWorkflow(projectKey, new CVOOTo4DWorkflow(), project, user);
-			addNewWorkflow(projectKey, new RawToOCNWorkflow(), project, user);
-			
-			//for testing purposes 
-			addNewWorkflow(projectKey, new OldOCNWorkflow(), project, user);
-
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return;
 		}
+
+		ApplicationUser user = userManager.getUserByName("PubFlow");
+
+		// add workflows
+
+		List<AbstractWorkflow> workflowsToAdd = new LinkedList<>();
+		workflowsToAdd.add(new EPrintsWorkflow());
+		workflowsToAdd.add(new OCNTo4DWorkflow());
+		workflowsToAdd.add(new CVOOTo4DWorkflow());
+		workflowsToAdd.add(new RawToOCNWorkflow());
+
+		// for testing purposes
+		workflowsToAdd.add(new OldOCNWorkflow());
+
+		// add the workflows one after another
+		for (AbstractWorkflow workflow : workflowsToAdd) {
+			try {
+				addNewWorkflow(projectKey, workflow, project, user);
+			} catch (Exception e) {
+				log.info("Could not add Workflow: " + workflow.getWorkflowName());
+				log.debug("",e);
+			}
+		}
+
 	}
 
 	private static void addNewWorkflow(String projectKey, AbstractWorkflow workflow, Project project,

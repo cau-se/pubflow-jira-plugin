@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.jira.accessors.JiraObjectGetter;
+import de.pubflow.jira.misc.Appendix;
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.exceptions.WFException;
@@ -45,7 +46,7 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
  *
  */
 public class WorkflowBroker {
-	private Logger myLogger;
+	static private Logger myLogger;
 
 	static private final WorkflowBroker instance = new WorkflowBroker();
 	static private Map<String, AbstractWorkflow> registeredWorkflows = new HashMap<String, AbstractWorkflow>();
@@ -196,7 +197,7 @@ public class WorkflowBroker {
 			return;
 		}
 
-		String workflowName = JiraObjectGetter.getIssueTypeIDbyJiraKey(jiraKey);
+		String workflowName = JiraObjectGetter.getIssueTypeNamebyJiraKey(jiraKey);
 
 		AbstractWorkflow workflow = registeredWorkflows.get(workflowName);
 
@@ -215,6 +216,7 @@ public class WorkflowBroker {
 	 * @param workflow
 	 */
 	static public void addWorkflow(AbstractWorkflow workflow) {
-		registeredWorkflows.put(workflow.getWorkflowName(), workflow);
+		registeredWorkflows.put(workflow.getWorkflowName()+Appendix.ISSUETYPE, workflow);
+		myLogger.info("Registered Workflow: "+workflow.getWorkflowName() +" at the WorkflowBroker");
 	}
 }

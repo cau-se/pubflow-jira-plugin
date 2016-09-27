@@ -77,8 +77,8 @@ public class JiraObjectGetter {
 	    return issueType;
 	}
 	
-	public static String getIssueTypeIDbyJiraKey(String jiraKey){
-		return getIssueByJiraKey(jiraKey).getIssueType().getId();
+	public static String getIssueTypeNamebyJiraKey(String jiraKey){
+		return getIssueByJiraKey(jiraKey).getIssueType().getName();
 	}
 
 	/**
