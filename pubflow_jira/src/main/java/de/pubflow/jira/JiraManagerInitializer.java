@@ -291,7 +291,7 @@ public class JiraManagerInitializer {
 		try {
 			workflowSchemeManager.addWorkflowToScheme(workflowSchemeManager.getWorkflowScheme(project),
 					jiraWorkflow.getName(), ocnIssueType.getId());
-			log.info("initWorkflow: add the workflow: " + jiraWorkflow.getName()
+			log.info("initWorkflow: added the workflow: " + jiraWorkflow.getName()
 					+ " to the workflowscheme of the project: " + project.getName());
 		} catch (GenericEntityException e) {
 			// TODO Auto-generated catch block

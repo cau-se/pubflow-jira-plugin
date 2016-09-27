@@ -519,6 +519,7 @@ public class JiraObjectCreator {
 				workflowManager.createWorkflow(user, jiraWorkflow);
 				log.info("addWorkflow: Successfully added a new workflow "+ jiraWorkflow.getName());
 			} catch (FactoryException e) {
+				log.info("Error during initialization  xml -> Jira workflow" );
 				e.printStackTrace();
 			}
 		} else {
