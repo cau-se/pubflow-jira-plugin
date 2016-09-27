@@ -76,6 +76,10 @@ public class JiraObjectGetter {
 	    
 	    return issueType;
 	}
+	
+	public static String getIssueTypeIDbyJiraKey(String jiraKey){
+		return getIssueByJiraKey(jiraKey).getIssueType().getId();
+	}
 
 	/**
 	 * @param id

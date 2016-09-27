@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.jira.accessors.JiraObjectGetter;
-import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.exceptions.WFException;
@@ -48,18 +47,17 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 public class WorkflowBroker {
 	private Logger myLogger;
 
-	static private  final WorkflowBroker instance= new WorkflowBroker();
+	static private final WorkflowBroker instance = new WorkflowBroker();
 	static private Map<String, AbstractWorkflow> registeredWorkflows = new HashMap<String, AbstractWorkflow>();
 
 	private WorkflowBroker() {
 		myLogger = LoggerFactory.getLogger(this.getClass());
 		myLogger.info("Starting WorkflowBroker");
 	}
-	
-	static public WorkflowBroker getInstance(){
+
+	static public WorkflowBroker getInstance() {
 		return instance;
 	}
-	
 
 	/**
 	 * Handles new Workflow calls for PubFlow. They will be saved and send to
@@ -96,8 +94,8 @@ public class WorkflowBroker {
 
 		// lookup the URL
 		AbstractWorkflow workflow = registeredWorkflows.get(callData.getWorkflowID());
-		if (workflow == null){
-			myLogger.error(callData.getWorkflowID()+" was not found by the WorkflowBroker");
+		if (workflow == null) {
+			myLogger.error(callData.getWorkflowID() + " was not found by the WorkflowBroker");
 			throw new WFException("Workflow not found/registered");
 		}
 		String workflowURL = workflow.getCompleteServiceURL();
@@ -183,7 +181,9 @@ public class WorkflowBroker {
 	}
 
 	/**
-	 * Handles answers from the Workflow Microservice.
+	 * Maps the answers from the Workflow Microservice to a
+	 * {@link AbstractWorkflow Workflow} and delegates the handling of the
+	 * answer to this object.
 	 * 
 	 * @throws WFRestException
 	 */
@@ -196,31 +196,25 @@ public class WorkflowBroker {
 			return;
 		}
 
-		if (answer.getResult().toLowerCase().contains("error")) {
-			myLogger.error("Workflow with id " + jiraKey + " failed, with message: '" + answer.getErrorMessage() + "'");
+		String workflowName = JiraObjectGetter.getIssueTypeIDbyJiraKey(jiraKey);
 
-			JiraObjectManipulator.addIssueComment(jiraKey,
-					"Workflow  failed due to: '" + answer.getErrorMessage() + "'",
-					JiraObjectGetter.getUserByName("PubFlow"));
+		AbstractWorkflow workflow = registeredWorkflows.get(workflowName);
 
-		} else {
-			// TODO in case of no error
-
+		if (workflow == null) {
+			myLogger.info("Got answer to issue with key " + jiraKey + " but the issue type is not registered.");
+			return;
 		}
 
-		if (answer.getNewStatus() != null) {
-			JiraObjectManipulator.changeStatus(jiraKey, answer.getNewStatus());
-		}
-
+		workflow.handleWorkflowAnswer(jiraKey, answer);
 	}
 
-
 	/**
-	 * Saves the Workflow in a Map.
-	 * The entry is used to lookup the Workflow during execution of PubFlow.
+	 * Saves the Workflow in a Map. The entry is used to lookup the Workflow
+	 * during execution of PubFlow.
+	 * 
 	 * @param workflow
 	 */
-	static public void addWorkflow(AbstractWorkflow workflow){
+	static public void addWorkflow(AbstractWorkflow workflow) {
 		registeredWorkflows.put(workflow.getWorkflowName(), workflow);
 	}
 }

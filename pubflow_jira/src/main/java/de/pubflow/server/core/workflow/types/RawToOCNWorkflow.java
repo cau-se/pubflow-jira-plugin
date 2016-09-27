@@ -64,17 +64,4 @@ public class RawToOCNWorkflow extends AbstractWorkflow {
 		return customFieldsRawToOCN;
 
 	}
-
-	@Override
-	public void handleWorkflowResults() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleWorkflowError() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

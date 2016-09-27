@@ -90,16 +90,6 @@ public class CVOOTo4DWorkflow extends AbstractWorkflow {
 		return customFieldsCVOOTo4D;
 	}
 
-	@Override
-	public void handleWorkflowResults() {
-		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void handleWorkflowError() {
-		// TODO Auto-generated method stub
-
-	}
 
 }
