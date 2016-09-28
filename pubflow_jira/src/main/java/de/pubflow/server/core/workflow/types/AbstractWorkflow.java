@@ -112,6 +112,11 @@ abstract public class AbstractWorkflow {
 
 			handleWorkflowResults(jiraKey, answer);
 		}
+		
+		//maybe the called service defines which status should be set next
+		if (answer.getNewStatus() != null) {
+			JiraObjectManipulator.changeStatus(jiraKey, answer.getNewStatus());
+		}
 	}
 
 	/**

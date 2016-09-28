@@ -51,6 +51,7 @@ import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.JiraWorkflow;
+import com.atlassian.jira.workflow.WorkflowManager;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.atlassian.mail.MailException;
@@ -432,18 +433,42 @@ public class JiraManagerInitializer {
 				project = initProject("PubFlow", projectKey, userRoot, false);
 			}
 
+
+			
+
+			
 			List<String> statuses = new LinkedList<String>();
+			
+			//the order of the statuses is important for the id
+			//the id has to be the same as in the xml for jira
+			//this is  the way how jira does things
+			
+			//should already exist in Jira with ID=1
 			statuses.add("Open");
+
+			//	Ready for Convertion by Data Management ID: 10000
 			statuses.add("Ready for Convertion by Data Management");
+//			Ready for OCN-Import already ID: 10001
 			statuses.add("Ready for OCN-Import");
-			statuses.add("Prepare for PubFlow");
+//			Prepare for PubFlow ID: 10002
+			statuses.add("Prepared for PubFlow");
+//			Data Processing by PubFlow ID: 10003
 			statuses.add("Data Processing by PubFlow");
+// 			Ready for Pangaea-Import ID: 10004
 			statuses.add("Ready for Pangaea-Import");
+//			Data Needs Correction ID: 10005
 			statuses.add("Data Needs Correction");
+//			Waiting for DOI ID: 10006
 			statuses.add("Waiting for DOI");
+			//should already exist in Jira with ID=6
 			statuses.add("Closed");
+//			Done ID: 10007
 			statuses.add("Done");
+//			Rejected ID: 10008
 			statuses.add("Rejected");
+			
+//			add new statuses at the end
+			
 			JiraObjectCreator.addStatuses(projectKey, statuses);
 
 		} catch (Exception e) {
@@ -483,6 +508,16 @@ public class JiraManagerInitializer {
 
 		String issueTypeName = workflow.getWorkflowName();
 
+		
+		String workflowName= issueTypeName + Appendix.WORKFLOW;
+		final WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager();
+		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(workflowName);
+		
+		//is this workflow already registered within Jira -> we don't need to init it again
+		if( jiraWorkflow == null){
+			
+		
+		
 		initIssueManagement(projectKey, issueTypeName, workflow.getWorkflowID());
 		initWorkflow(projectKey, JiraManagerPlugin.getTextResource(workflow.getJiraWorkflowXMLPath()), user,
 				issueTypeName);
@@ -497,8 +532,11 @@ public class JiraManagerInitializer {
 
 		JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme,
 				JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE));
-
+		}
+		
+		
 		// register Workflow with WorkflowBroker
+		//this should happen even if the Workflow is already saved by jira
 		WorkflowBroker.addWorkflow(workflow);
 
 	}

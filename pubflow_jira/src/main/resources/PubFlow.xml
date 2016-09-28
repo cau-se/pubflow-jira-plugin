@@ -403,7 +403,7 @@
         </action>
       </actions>
     </step>
-    <step id="12" name="Prepare for PubFlow">
+    <step id="12" name="Prepared for PubFlow">
       <meta name="jira.status.id">10002</meta>
       <actions>
         <action id="131" name="Send To PubFlow">

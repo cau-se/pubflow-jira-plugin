@@ -489,9 +489,9 @@ public class JiraObjectCreator {
 			if (tempStatus == null) {
 				tempStatus = statusManager.createStatus(status, "",
 						"/images/icons/status_open.gif", statusManagerCategory.getStatusCategory(new Long(catId)));
-				log.info("addStatuses: status "+ tempStatus.getName()+" was created.");
+				log.info("addStatuses: status "+ tempStatus.getName()+" was created with ID: "+tempStatus.getId());
 			} else {
-				log.debug("addStatuses: status "+tempStatus.getName()+" already exists.");
+				log.debug("addStatuses: status "+tempStatus.getName()+" already exists with ID: "+ tempStatus.getId());
 			} 
 			
 			statusMap.put(status, tempStatus.getId());

@@ -162,7 +162,7 @@ public class JiraObjectGetter {
 				}
 			}
 		}
-		log.debug("getStatusByName: not status with name "+statusName+" was found.");
+		log.debug("getStatusByName: no status with name "+statusName+" was found.");
 		return null;
 	}
 
