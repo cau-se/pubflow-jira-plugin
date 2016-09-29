@@ -433,41 +433,40 @@ public class JiraManagerInitializer {
 				project = initProject("PubFlow", projectKey, userRoot, false);
 			}
 
-
-			
-
-			
 			List<String> statuses = new LinkedList<String>();
-			
-			//the order of the statuses is important for the id
-			//the id has to be the same as in the xml for jira
-			//this is  the way how jira does things
-			
-			//should already exist in Jira with ID=1
+
+			// the order of the statuses is important for the id
+			// the id has to be the same as in the xml for jira
+			// this is the way how jira does things
+
+			// should already exist in Jira with ID=1
 			statuses.add("Open");
 
-			//	Ready for Convertion by Data Management ID: 10000
+			// Ready for Convertion by Data Management ID: 10000
 			statuses.add("Ready for Convertion by Data Management");
-//			Ready for OCN-Import already ID: 10001
+			// Ready for OCN-Import already ID: 10001
 			statuses.add("Ready for OCN-Import");
-//			Prepare for PubFlow ID: 10002
+			// Prepare for PubFlow ID: 10002
 			statuses.add("Prepared for PubFlow");
-//			Data Processing by PubFlow ID: 10003
+			// Data Processing by PubFlow ID: 10003
 			statuses.add("Data Processing by PubFlow");
-// 			Ready for Pangaea-Import ID: 10004
+			// Ready for Pangaea-Import ID: 10004
 			statuses.add("Ready for Pangaea-Import");
-//			Data Needs Correction ID: 10005
+			// Data Needs Correction ID: 10005
 			statuses.add("Data Needs Correction");
-//			Waiting for DOI ID: 10006
+			// Waiting for DOI ID: 10006
 			statuses.add("Waiting for DOI");
-			//should already exist in Jira with ID=6
+			// should already exist in Jira with ID=6
 			statuses.add("Closed");
-//			Done ID: 10007
+			// Done ID: 10007
 			statuses.add("Done");
-//			Rejected ID: 10008
+			// Rejected ID: 10008
 			statuses.add("Rejected");
+			// Pangaea Data Upload ID:10009
+			statuses.add("Pangaea Data Upload");
 			
-//			add new statuses at the end
+			// add new statuses at the end
+			//TODO is there a more generic solution?
 			
 			JiraObjectCreator.addStatuses(projectKey, statuses);
 
@@ -495,7 +494,7 @@ public class JiraManagerInitializer {
 				addNewWorkflow(projectKey, workflow, project, user);
 			} catch (Exception e) {
 				log.info("Could not add Workflow: " + workflow.getWorkflowName());
-				log.debug("",e);
+				log.debug("", e);
 			}
 		}
 
@@ -508,35 +507,32 @@ public class JiraManagerInitializer {
 
 		String issueTypeName = workflow.getWorkflowName();
 
-		
-		String workflowName= issueTypeName + Appendix.WORKFLOW;
+		String workflowName = issueTypeName + Appendix.WORKFLOW;
 		final WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager();
 		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(workflowName);
-		
-		//is this workflow already registered within Jira -> we don't need to init it again
-		if( jiraWorkflow == null){
-			
-		
-		
-		initIssueManagement(projectKey, issueTypeName, workflow.getWorkflowID());
-		initWorkflow(projectKey, JiraManagerPlugin.getTextResource(workflow.getJiraWorkflowXMLPath()), user,
-				issueTypeName);
 
-		List<String> screenNames = workflow.getScreenNames();
-		List<CustomFieldDefinition> customFields = workflow.getCustomFields();
+		// is this workflow already registered within Jira -> we don't need to
+		// init it again
+		if (jiraWorkflow == null) {
 
-		List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, issueTypeName);
+			initIssueManagement(projectKey, issueTypeName, workflow.getWorkflowID());
+			initWorkflow(projectKey, JiraManagerPlugin.getTextResource(workflow.getJiraWorkflowXMLPath()), user,
+					issueTypeName);
 
-		FieldScreenScheme fieldScreenScheme = initHumbleScreens(screenNames, customFields, issueTypeName,
-				customFieldIds, project);
+			List<String> screenNames = workflow.getScreenNames();
+			List<CustomFieldDefinition> customFields = workflow.getCustomFields();
 
-		JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme,
-				JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE));
+			List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, issueTypeName);
+
+			FieldScreenScheme fieldScreenScheme = initHumbleScreens(screenNames, customFields, issueTypeName,
+					customFieldIds, project);
+
+			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme,
+					JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE));
 		}
-		
-		
+
 		// register Workflow with WorkflowBroker
-		//this should happen even if the Workflow is already saved by jira
+		// this should happen even if the Workflow is already saved by jira
 		WorkflowBroker.addWorkflow(workflow);
 
 	}

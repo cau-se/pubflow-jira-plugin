@@ -32,7 +32,7 @@
   </initial-actions>
   <steps>
     <step id="2" name="Pangaea Data Upload">
-      <meta name="jira.status.id">10008</meta>
+      <meta name="jira.status.id">10009</meta>
       <actions>
         <action id="11" name="Close">
           <meta name="jira.description"></meta>

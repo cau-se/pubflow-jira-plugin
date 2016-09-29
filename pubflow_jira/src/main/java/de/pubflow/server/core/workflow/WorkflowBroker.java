@@ -62,7 +62,8 @@ public class WorkflowBroker {
 
 	/**
 	 * Handles new Workflow calls for PubFlow. They will be saved and send to
-	 * the Workflow Microservice
+	 * the Workflow Microservice.
+	 * Works only if a Workflow service should be called. 
 	 * 
 	 * @param callData
 	 * @throws WFException
