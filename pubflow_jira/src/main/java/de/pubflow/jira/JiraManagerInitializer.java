@@ -16,7 +16,6 @@
 package de.pubflow.jira;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +31,6 @@ import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericEntityException;
 
-import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.jira.bc.project.ProjectCreationData;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
@@ -63,7 +61,6 @@ import de.pubflow.common.PropLoader;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
-import de.pubflow.jira.accessors.JiraObjectRemover;
 import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.server.core.workflow.WorkflowBroker;
@@ -392,41 +389,7 @@ public class JiraManagerInitializer {
 		try {
 			if (project == null) {
 				//
-				Group groupDataManager = JiraObjectCreator.createGroup("datamanager");
-				Group groupScientists = JiraObjectCreator.createGroup("scientists");
-				//
-				ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow",
-						new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
-				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-administrators");
-				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-core-users");
-				JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-software-users");
-				JiraObjectManipulator.addUserToGroup(userPubFlow, groupScientists);
-				JiraObjectManipulator.addUserToGroup(userPubFlow, groupDataManager);
-				//
-				// //TODO fix deprecation when admin is application user by
-				// default
-				ApplicationUser userRoot = JiraObjectCreator.createUser("root", "$Boogie3");
-				JiraObjectManipulator.addUserToGroup(userRoot, groupDataManager);
-				JiraObjectManipulator.addUserToGroup(userRoot, groupScientists);
-				JiraObjectManipulator.addUserToGroup(userRoot, "jira-administrators");
-
-				// The Group "jira-developers" does not exist in Jira 7.x.x. Use
-				// "jira-core-users"
-				// The Group "jira-users" does not exist in Jira 7.x.x. Use
-				// "jira-software-users"
-				JiraObjectManipulator.addUserToGroup(userRoot, "jira-core-users");
-				JiraObjectManipulator.addUserToGroup(userRoot, "jira-software-users");
-				JiraObjectRemover.deleteUser(userRoot, "admin");
-				//
-				ApplicationUser userDataManager = JiraObjectCreator.createUser("SampleDataManager", "ilovedata");
-				JiraObjectManipulator.addUserToGroup(userDataManager, groupDataManager);
-				JiraObjectManipulator.addUserToGroup(userDataManager, groupScientists);
-				JiraObjectManipulator.addUserToGroup(userDataManager, "jira-core-users");
-				JiraObjectManipulator.addUserToGroup(userDataManager, "jira-software-users");
-
-				ApplicationUser userScientist = JiraObjectCreator.createUser("SampleScientist", "sciencerulez");
-				JiraObjectManipulator.addUserToGroup(userScientist, groupScientists);
-				JiraObjectManipulator.addUserToGroup(userScientist, "jira-software-users");
+				ApplicationUser userRoot = JiraDefaultUser.addDefaultUser(project, projectKey);
 
 				log.debug("initPubfowProject: created users and usergroups for PubFlow");
 
@@ -464,10 +427,10 @@ public class JiraManagerInitializer {
 			statuses.add("Rejected");
 			// Pangaea Data Upload ID:10009
 			statuses.add("Pangaea Data Upload");
-			
+
 			// add new statuses at the end
-			//TODO is there a more generic solution?
-			
+			// TODO is there a more generic solution?
+
 			JiraObjectCreator.addStatuses(projectKey, statuses);
 
 		} catch (Exception e) {
