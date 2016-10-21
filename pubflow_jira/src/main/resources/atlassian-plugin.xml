@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+  </plugin-info>
+  <!-- Components whose declarations are different when using the compat library -->
+  <component key="jiraManagerPluginJobRunner" class="de.pubflow.jira.JiraManagerPluginJobRunner">
+    <description>The job runner for processing scheduled tasks</description>
+  </component>
+  <!-- Components whose declarations are the same when using the compat library -->
+  <component key="jiraManagerPluginJob" class="de.pubflow.jira.JiraManagerPluginJob">
+    <description>Creates this plugin's example data</description>
+  </component>
+  <component key="PubFlow Event Handler" class="de.pubflow.jira.JiraManagerPlugin">
+    <description>Processes the incoming JIRA issue events.</description>
+  </component>
+  <!-- Note: This MUST be public and registered under the LifecycleAware interface to work! -->
+  <component key="jiraManagerPlugin" class="de.pubflow.jira.JiraManagerPlugin" public="true">
+    <description>Manages this plugin's lifecycle.</description>
+    <interface>com.atlassian.sal.api.lifecycle.LifecycleAware</interface>
+  </component>
+  <component-import key="pluginScheduler">
+    <description>SAL Scheduler</description>
+    <interface>com.atlassian.sal.api.scheduling.PluginScheduler</interface>
+  </component-import>
+  <!-- Application-provided components -->
+  <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher"/>
+  <component-import key="schedulerService" interface="com.atlassian.scheduler.SchedulerService"/>
+  <component-import key="schedulerHistoryService" interface="com.atlassian.scheduler.SchedulerHistoryService"/>
+  <workflow-validator key="attachmentvalidator" name="Attachment Validator">
+    <validator-class>de.pubflow.jira.misc.IssueAttachmentValidator</validator-class>
+  </workflow-validator>
+  <resource type="i18n" name="i18n" location="de.pubflow.server.core.restConnection.WorkflowReceiver"/>
+  <rest name="Workflow Receiver" i18n-name-key="workflow-receiver.name" key="workflow-receiver" path="/receiver" version="1.0">
+    <description key="workflow-receiver.description">The Workflow Receiver Plugin</description>
+  </rest>
+</atlassian-plugin>

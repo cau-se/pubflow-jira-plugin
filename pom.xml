@@ -1,0 +1,249 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<groupId>de.pubflow</groupId>
+	<artifactId>pubflow</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modelVersion>4.0.0</modelVersion>
+
+	<organization>
+		<name>Christian-Albrechts-Universität zu Kiel - Arbeitsgruppe Software Engineering</name>
+		<url>http://www.pubflow.de</url>
+	</organization>
+	<inceptionYear>2016</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>LICENSE</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>mad</id>
+			<name>Marc Adolf</name>
+			<email>mad@informatik.uni-kiel.de</email>
+			<organization>Kiel University</organization>
+			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/team/marc-adolf</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>PMC Member</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>arl</id>
+			<name>Arnd Plumhoff</name>
+			<email>arl@informatik.uni-kiel.de</email>
+			<organization>Kiel University</organization>
+			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/arnd-plumhoff</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>PMC Member</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Alexander Barbie</name>
+			<email>abar@informatik.uni-kiel.de</email>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</contributor>
+	</contributors>
+
+	<repositories>
+		<repository>
+			<id>atlassian-public</id>
+			<url>https://m2proxy.atlassian.com/repository/public</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<amps.version>6.2.4</amps.version>
+		<!-- <jira.version>5.2.1</jira.version> -->
+		<jira.version>7.1.4</jira.version>
+		<common.version>1.0.0-SNAPSHOT</common.version>
+		<pubflow.jira.version>1.0.0-SNAPSHOT</pubflow.jira.version>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<javadocOutputDir>apidocs</javadocOutputDir>
+		<checkstyle.version>2.17</checkstyle.version>
+		<findbugs.version>3.0.3</findbugs.version>
+		<pmd.version>3.6</pmd.version>
+		<javadoc.version>2.10.3</javadoc.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>de.pubflow</groupId>
+				<artifactId>common</artifactId>
+				<version>${common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pubflow</groupId>
+				<artifactId>pubflow_jira</artifactId>
+				<version>${pubflow.jira.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.atlassian.plugins.rest</groupId>
+				<artifactId>atlassian-rest-common</artifactId>
+				<version>3.0.2</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.7.5</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.17</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.json-simple</groupId>
+				<artifactId>json-simple</artifactId>
+				<version>1.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<!-- JAVADOC -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${javadoc.version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- LICENSE HEADER -->
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+					<properties>
+						<owner>Marc Adolf, Arnd Plumhoff</owner>
+						<email>http://www.pubflow.uni-kiel.de/</email>
+					</properties>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>license-validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- CHECKSTYLE -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<!-- Lock down plugin version for build reproducibility -->
+				<version>2.17</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>7.0</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<consoleOutput>true</consoleOutput>
+							<configLocation>config/cs-conf.xml</configLocation>
+							<failsOnError>false</failsOnError>
+							<linkXRef>false</linkXRef>
+						</configuration>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- PMD -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>${pmd.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>de.chw</groupId>
+						<artifactId>pmd.ruleset</artifactId>
+						<version>0.0.1-SNAPSHOT</version>
+						<scope>system</scope>
+						<systemPath>${project.basedir}/config/pmd/CustomPmdRules_1.0.0.201507080630.jar</systemPath>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<rulesets>
+						<ruleset>${project.basedir}/config/pmd-ruleset.xml</ruleset>
+					</rulesets>
+					<linkXref>true</linkXref>
+					<includeTests>true</includeTests>
+					<targetJdk>${java.version}</targetJdk>
+					<!-- <failurePriority>1</failurePriority> -->
+					<failOnViolation>true</failOnViolation>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>pmd</goal>
+							<goal>cpd</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>					
+		</plugins>
+	</build>
+
+	<modules>
+		<module>common</module>
+		<module>pubflow_jira</module>
+	</modules>
+
+</project>
