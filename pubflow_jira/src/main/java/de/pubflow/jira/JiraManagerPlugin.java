@@ -56,8 +56,8 @@ import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.common.entity.workflow.WFParameter;
+import de.pubflow.server.core.rest.messages.ServiceCallData;
 import de.pubflow.server.core.workflow.WorkflowBroker;
-import de.pubflow.server.core.workflow.messages.ServiceCallData;
 
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating

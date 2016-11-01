@@ -19,10 +19,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.jws.soap.SOAPBinding.Style;
-
 import org.ofbiz.core.entity.GenericEntityException;
 
 import de.pubflow.common.entity.JiraAttachment;
@@ -32,9 +28,7 @@ import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 
-@WebService(targetNamespace = "pubflow.de") // (endpointInterface =
-// "de.pubflow.jira.ws.IJiraEndpoint")
-@SOAPBinding(style = Style.DOCUMENT)
+
 public class JiraEndpoint {
 
 	/**
@@ -223,8 +217,4 @@ public class JiraEndpoint {
 		return true;
 	}
 
-	public static void removeAttachment(long attachmentId) {
-		// TODO Auto-generated method stub
-
-	}
 }

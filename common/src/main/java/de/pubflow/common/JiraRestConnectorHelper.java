@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response;
 
 import org.json.simple.JSONObject;
 
-public class JiraRestConnectorHelper implements IJiraRestConnector{
+public class JiraRestConnectorHelper {
 
 	private String baseUrl = "";
 
