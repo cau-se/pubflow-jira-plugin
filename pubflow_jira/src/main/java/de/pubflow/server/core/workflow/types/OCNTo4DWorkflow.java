@@ -35,7 +35,7 @@ public class OCNTo4DWorkflow extends AbstractWorkflow {
 
 	public OCNTo4DWorkflow() {
 		// TODO OCN and CVOO use currently the same XML file for Jira
-		super("Export Data (OCN) to PANGAEA ", "de.pubflow.OCN", "/OCNTO4D-WORKFLOW.xml", "/workflow/OCNWorkflow");
+		super("Export Data (OCN) to PANGAEA", "de.pubflow.OCN", "/OCNTO4D-WORKFLOW.xml", "/workflow/OCNWorkflow");
 	}
 
 	@Override

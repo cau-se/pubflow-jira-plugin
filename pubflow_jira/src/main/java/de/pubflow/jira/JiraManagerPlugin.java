@@ -71,7 +71,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static EventPublisher eventPublisher;
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
 	public static StatusManager statusManager;
-	public static ApplicationUser user = JiraObjectGetter.getUserByName("PubFlow");
+	public static ApplicationUser user = JiraObjectGetter.getUserByName("root");
 	public static final SecureRandom secureRandom = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
 

@@ -20,42 +20,44 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.ofbiz.core.entity.GenericEntityException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.common.entity.JiraAttachment;
 import de.pubflow.common.entity.JiraComment;
 import de.pubflow.common.entity.JiraIssue;
 import de.pubflow.jira.JiraManagerPlugin;
+import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 
-
 public class JiraEndpoint {
+
+	private static Logger myLogger = LoggerFactory.getLogger(JiraEndpoint.class);
 
 	/**
 	 * Creates a new Issue in Jira
-	 * 
-	 * @param projectKey
-	 *            : the projects key
+	 *
 	 * @param issueTypeName
-	 *            : determines which issue type should be used as issue scheme
-	 * @param comment
-	 *            : value for default field 'comment'
+	 * @param summary
+	 * @param description
 	 * @param parameters
-	 *            : map of custom field values (name : value)
-	 * @return returns the issue id
-	 * 
-	 **/
-
+	 * @param reporter
+	 * @return
+	 */
 	public static String createIssue(String issueTypeName, String summary, String description,
 			HashMap<String, String> parameters, String reporter) {
 		try {
-			//			return JiraObjectCreator.createIssue("PUB", issueTypeName, summary, description, reporter, JiraManagerPlugin.user, parameters);
-
-			return "moin";
+			ApplicationUser pubflowUser = JiraObjectGetter.getUserByName("PubFlow");
+			myLogger.info("Creating new issue with type: " + issueTypeName);
+			return JiraObjectCreator.createIssue("PUB", issueTypeName, summary, description, pubflowUser, pubflowUser,
+					parameters);
 		} catch (Exception e) {
-			e.printStackTrace();
+			myLogger.warn("Failed to create new Issue through PubFlow", e);
+			return null;
 		}
-		return "";
 	}
 
 	public static List<String> getAllIssuesBySummaryContains(String snippet) {
@@ -80,7 +82,10 @@ public class JiraEndpoint {
 
 	public static String createIssue(JiraIssue issue) {
 		try {
-			//			return JiraObjectCreator.createIssue("PUB", issue.getIssueTypeName(), issue.getSummary(), issue.getDescription(), issue.getReporter(), JiraManagerPlugin.user, issue.getParameters());
+			// return JiraObjectCreator.createIssue("PUB",
+			// issue.getIssueTypeName(), issue.getSummary(),
+			// issue.getDescription(), issue.getReporter(),
+			// JiraManagerPlugin.user, issue.getParameters());
 
 			return "moin";
 		} catch (Exception e) {
@@ -185,7 +190,8 @@ public class JiraEndpoint {
 	public static boolean createProject(String projectName, String projectKey, String workflowXML,
 			LinkedList<String> steps) {
 		try {
-			//			JiraObjectCreator.createProject(projectName, projectKey, JiraManagerPlugin.user, false);
+			// JiraObjectCreator.createProject(projectName, projectKey,
+			// JiraManagerPlugin.user, false);
 
 			return true;
 		} catch (Exception e) {

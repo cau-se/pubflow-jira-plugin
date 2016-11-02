@@ -217,7 +217,7 @@ public class WorkflowBroker {
 	 * @param workflow
 	 */
 	static public void addWorkflow(AbstractWorkflow workflow) {
-		registeredWorkflows.put(workflow.getWorkflowName()+Appendix.ISSUETYPE, workflow);
+		registeredWorkflows.put(workflow.getWorkflowName(), workflow);
 		myLogger.info("Registered Workflow: "+workflow.getWorkflowName() +" at the WorkflowBroker");
 	}
 }

@@ -59,9 +59,6 @@ public class JiraRestConnector {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/attachments")
 	public Response addAttachment(@PathParam("issueKey") String issueKey, AddAttachmentMessage attachmentMessage) {
-		System.out.println(attachmentMessage.getbArray());
-		System.out.println(attachmentMessage.getFileName());
-		System.out.println(attachmentMessage.getType());
 		JiraEndpoint.addAttachment(issueKey, attachmentMessage.getbArray(), attachmentMessage.getFileName(),
 				attachmentMessage.getType());
 		try {
@@ -89,12 +86,13 @@ public class JiraRestConnector {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
 	public Response createIssue(IssueCreationMessage creationMessage) {
-		JiraEndpoint.createIssue(creationMessage.getIssueTypeName(), creationMessage.getSummary(),
+		String newIssueKey = JiraEndpoint.createIssue(creationMessage.getIssueTypeName(), creationMessage.getSummary(),
 				creationMessage.getDescription(), creationMessage.getParameters(), creationMessage.getReporter());
-		try {
-			return Response.status(204).entity(null).build();
-		} catch (Exception e) {
-			return Response.status(500).entity(null).build();
+		if (newIssueKey != null) {
+			return Response.status(201).entity(newIssueKey).build();
+		} else {
+			return Response.status(400).entity(null).build();
+
 		}
 	}
 

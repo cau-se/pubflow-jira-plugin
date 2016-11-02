@@ -16,7 +16,7 @@
 package de.pubflow.jira.misc;
 
 public enum Appendix{
-	ISSUETYPE(""),
+//	ISSUETYPE(""),
 	FIELDSCREEN("_FieldScreen"),
 	WORKFLOWSCHEME("_WorkflowScheme"),
 	WORKFLOW("_Workflow"),
