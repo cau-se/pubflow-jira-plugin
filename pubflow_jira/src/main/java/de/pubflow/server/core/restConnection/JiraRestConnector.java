@@ -30,13 +30,12 @@ import javax.ws.rs.core.Response;
 
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 
-import de.pubflow.common.IJiraRestConnector;
 import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 import de.pubflow.server.core.workflow.messages.ReceivedWorkflowAnswer;
 
 @Path(JiraRestConnector.basePath)
-public class JiraRestConnector implements IJiraRestConnector {
+public class JiraRestConnector  {
 
 	private static final String jiraRestPath = "/jira/rest/receiver/1.0";
 	static final String basePath = "/pubflow/issues";

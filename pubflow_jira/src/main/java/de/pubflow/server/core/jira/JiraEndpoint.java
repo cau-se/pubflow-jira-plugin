@@ -23,8 +23,6 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
-import org.ofbiz.core.entity.GenericEntityException;
-
 import de.pubflow.common.entity.JiraAttachment;
 import de.pubflow.common.entity.JiraComment;
 import de.pubflow.common.entity.JiraIssue;
@@ -67,7 +65,7 @@ public class JiraEndpoint {
 	public static List<String> getAllIssuesBySummaryContains(String snippet) {
 		try {
 			return JiraObjectGetter.getAllIssueSummariesBySummaryContains(snippet);
-		} catch (GenericEntityException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -77,7 +75,7 @@ public class JiraEndpoint {
 	public static boolean lookupIssue(String name) {
 		try {
 			return JiraObjectGetter.lookupIssue(name);
-		} catch (GenericEntityException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

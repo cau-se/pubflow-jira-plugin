@@ -8,8 +8,6 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     
-    
-    
     <name>PubFlow Jira Plugin</name>
     <artifactId>JiraPlugin</artifactId>
     <description/>
@@ -26,12 +24,14 @@
         </license>
     </licenses>
     <packaging>atlassian-plugin</packaging>
+  
     <repositories>
         <repository>
             <id>atlassian-public</id>
             <url>https://m2proxy.atlassian.com/repository/public</url>
         </repository>
     </repositories>
+   
     <developers>
         <developer>
             <id>mad</id>

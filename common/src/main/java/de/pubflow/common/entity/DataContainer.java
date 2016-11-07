@@ -13,32 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.pubflow.common;
+package de.pubflow.common.entity;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import de.pubflow.common.entity.JiraAttachment;
-import de.pubflow.common.entity.JiraComment;
-import de.pubflow.common.entity.JiraIssue;
-
 
 public class DataContainer{	
-	private HashMap<String, Object> map;
+	
+	private HashMap<String, String> map;
 	private LinkedList<JiraAttachment> attachments;
 	private LinkedList<JiraComment> comments;
 	private LinkedList<JiraIssue> issues;
 	private String defaultIssueKey;
+	private String status;
 	
-	public DataContainer(String defaultIssueKey){
-		this.defaultIssueKey = defaultIssueKey;
-
+	public DataContainer(){
+		this.defaultIssueKey = "";
 		issues = new LinkedList<JiraIssue>();
 		attachments = new LinkedList<JiraAttachment>();
 		comments = new LinkedList<JiraComment>();
-		map =  new HashMap<String, Object>();
+		map =  new HashMap<String, String>();
+	}
+	
+	public DataContainer(String defaultIssueKey){
+		this.defaultIssueKey = defaultIssueKey;
+		issues = new LinkedList<JiraIssue>();
+		attachments = new LinkedList<JiraAttachment>();
+		comments = new LinkedList<JiraComment>();
+		map =  new HashMap<String, String>();
 	}
 
 	public String getDefaultIssueKey() {
@@ -49,8 +51,8 @@ public class DataContainer{
 		this.defaultIssueKey = defaultIssueKey;
 	}
 
-	public Set<Entry<String, Object>> entrySet(){
-		return map.entrySet();
+	public HashMap<String, String> entrySet(){
+		return map;
 	}
 
 	public void newJiraIssue(String workflowName, String summary, String description, String reporter, HashMap<String, String> parameters){
@@ -82,16 +84,28 @@ public class DataContainer{
 		this.attachments = new LinkedList<JiraAttachment>();
 		return attachments;
 	}
-
-	public String get(Object key) throws Exception {
-		try{
-			return (String) map.get(key);
-		}catch(Exception e){
-			throw new Exception("set with key " + key + "is protected!");
-		}
+	
+	public void setStatus(String status){
+		this.status = status;
 	}
 
-	public void put(String key, Object value) {
+	public String getStatusAndFlush(){
+		return status;
+	}
+	
+	public HashMap<String, String> getMap() {
+		return map;
+	}
+
+	public void setMap(HashMap<String, String> map) {
+		this.map = map;
+	}
+
+	public String get(String key) {
+		return map.get(key);
+	}
+
+	public void put(String key, String value) {
 		map.put(key, value);
 	}
 
