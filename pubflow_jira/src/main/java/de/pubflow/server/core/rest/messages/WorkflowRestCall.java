@@ -16,7 +16,7 @@
 /**
  * 
  */
-package de.pubflow.server.core.workflow.messages;
+package de.pubflow.server.core.rest.messages;
 
 import java.util.List;
 

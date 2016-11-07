@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 import de.pubflow.server.common.exceptions.WFRestException;
-import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
+import de.pubflow.server.core.rest.messages.WorkflowRestCall;
 
 /**
  * The WorkflowSender is responsible for the outgoing communication with the

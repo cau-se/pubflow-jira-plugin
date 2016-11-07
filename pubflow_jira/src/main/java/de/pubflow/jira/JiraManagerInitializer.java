@@ -281,10 +281,10 @@ public class JiraManagerInitializer {
 
 		JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user, issueTypeName);
 		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
-				issueTypeName + Appendix.ISSUETYPE);
+				issueTypeName);
 		JiraObjectManipulator.addWorkflowToProject(workflowScheme, projectManager.getProjectObjByKey(projectKey));
 		Project project = projectManager.getProjectObjByKey(projectKey);
-		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE);
+		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
 
 		try {
 			workflowSchemeManager.addWorkflowToScheme(workflowSchemeManager.getWorkflowScheme(project),
@@ -491,7 +491,7 @@ public class JiraManagerInitializer {
 					customFieldIds, project);
 
 			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme,
-					JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE));
+					JiraObjectGetter.getIssueTypeByName(issueTypeName));
 		}
 
 		// register Workflow with WorkflowBroker

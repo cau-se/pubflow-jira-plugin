@@ -29,9 +29,13 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 
+<<<<<<< HEAD
 import de.pubflow.common.entity.DataContainer;
 
 public class JiraRestConnectorHelper{
+=======
+public class JiraRestConnectorHelper {
+>>>>>>> d5cc9bd30d5cb3530cfcafc71d8a434b1c58d24a
 
 	private String baseUrl = "";
 

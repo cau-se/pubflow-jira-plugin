@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.pubflow.server.core.workflow.messages;
+package de.pubflow.server.core.rest.messages;
 
 /**
  * Contains information about the result or the errors created during the
@@ -25,9 +25,6 @@ package de.pubflow.server.core.workflow.messages;
  */
 public class ReceivedWorkflowAnswer {
 
-	/**
-	 * 
-	 */
 	private String result;
 	private String errorMessage;
 	private String newStatus;
@@ -59,6 +56,5 @@ public class ReceivedWorkflowAnswer {
 	public void setNewStatus(String newStatus) {
 		this.newStatus = newStatus;
 	}
-
 
 }
