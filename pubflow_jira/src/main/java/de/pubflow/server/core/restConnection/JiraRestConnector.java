@@ -28,9 +28,9 @@ import javax.ws.rs.core.Response;
 
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 
+import de.pubflow.common.entity.JiraAttachment;
+import de.pubflow.common.entity.JiraIssue;
 import de.pubflow.server.core.jira.JiraEndpoint;
-import de.pubflow.server.core.rest.messages.AddAttachmentMessage;
-import de.pubflow.server.core.rest.messages.IssueCreationMessage;
 import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 
@@ -59,9 +59,9 @@ public class JiraRestConnector  {
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/attachments")
-	public Response addAttachment(@PathParam("issueKey") String issueKey, AddAttachmentMessage attachmentMessage) {
-		JiraEndpoint.addAttachment(issueKey, attachmentMessage.getbArray(), attachmentMessage.getFileName(),
-				attachmentMessage.getType());
+	public Response addAttachment(@PathParam("issueKey") String issueKey, JiraAttachment attachment) {
+		JiraEndpoint.addAttachment(issueKey, attachment.getData(), attachment.getFilename(),
+				attachment.getType());
 		try {
 			return Response.status(204).entity(null).build();
 		} catch (Exception e) {
@@ -86,9 +86,9 @@ public class JiraRestConnector  {
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response createIssue(IssueCreationMessage creationMessage) {
-		String newIssueKey = JiraEndpoint.createIssue(creationMessage.getIssueTypeName(), creationMessage.getSummary(),
-				creationMessage.getDescription(), creationMessage.getParameters(), creationMessage.getReporter());
+	public Response createIssue(JiraIssue issue) {
+		String newIssueKey = JiraEndpoint.createIssue(issue.getIssueTypeName(), issue.getSummary(),
+				issue.getDescription(), issue.getParameters(), issue.getReporter());
 		if (newIssueKey != null) {
 			return Response.status(201).entity(newIssueKey).build();
 		} else {

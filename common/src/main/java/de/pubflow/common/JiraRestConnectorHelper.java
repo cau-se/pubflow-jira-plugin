@@ -23,19 +23,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Map;
-
-import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 
-<<<<<<< HEAD
 import de.pubflow.common.entity.DataContainer;
+import de.pubflow.common.entity.JiraAttachment;
+import de.pubflow.common.entity.JiraComment;
+import de.pubflow.common.entity.JiraIssue;
 
 public class JiraRestConnectorHelper{
-=======
-public class JiraRestConnectorHelper {
->>>>>>> d5cc9bd30d5cb3530cfcafc71d8a434b1c58d24a
 
 	private String baseUrl = "";
 
@@ -43,8 +39,8 @@ public class JiraRestConnectorHelper {
 		this.baseUrl = baseUrl;
 	}
 
-	public DataContainer getDocumentContent(String urlString, DataContainer data){
-		DataContainer response = null;
+	public Object getDocumentContent(String urlString, Object data, Class<?> clazz){
+		Object response = null;
 		try {
 			URL url = new URL(baseUrl + urlString);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -54,7 +50,7 @@ public class JiraRestConnectorHelper {
 			conn.setConnectTimeout(50000);
 			conn.setReadTimeout(50000);
 			OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-			
+
 			System.out.println("Request url : " + urlString);
 
 			Gson gson = new Gson();
@@ -75,11 +71,19 @@ public class JiraRestConnectorHelper {
 				msg += part;
 			}
 			br.close();
-			
-			response = gson.fromJson(msg, DataContainer.class);
+
+			if(!clazz.getClass().equals(String.class)){
+				try{
+					response = gson.fromJson(msg, clazz);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}else{
+				response = conn.getResponseCode();
+			}
 			conn.disconnect();
-			
-			
+
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 
@@ -91,55 +95,59 @@ public class JiraRestConnectorHelper {
 		}
 
 		return response;
-
 	}
 
-	public Response changeStatus(String issueKey, String statusName) {
-		String urlString = String.format("/%s/status", issueKey);
-
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("issueKey", issueKey);
-		data.put("statusName", statusName);
+	public String handleJiraTransmissions(DataContainer data){
+		for(JiraComment comment : data.getJiraCommentsAndFlush()){
+			addIssueComment(data.getDefaultIssueKey(), comment.getText());
+		}
 		
-		getDocumentContent(urlString, data);
-		return null;
-	}
-
-	public Response addAttachment(String issueKey, byte[] barray, String fileName, String type) {
-		String urlString = String.format("/%s/attachments", issueKey);
-
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("issueKey", issueKey);
-		data.put("barray", barray);
-		data.put("fileName", fileName);
-		data.put("type", type);
+		for(JiraIssue issue : data.getJiraIssuesAndFlush()){
+			createIssue(issue.getIssueTypeName(), issue.getSummary(), issue.getDescription(), issue.getParameters(), issue.getReporter());
+		}
 		
-		getDocumentContent(urlString, data);
-		return null;
-	}
-
-	public Response addIssueComment(String issueKey, String comment) {
-		String urlString = String.format("/%s/comments", issueKey);
-
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("issueKey", issueKey);
-		data.put("comment", comment);
+		for(JiraAttachment attachment : data.getJiraAttachmentsAndFlush()){
+			addAttachment(data.getDefaultIssueKey(), attachment.getData(), attachment.getFilename(), attachment.getType());
+		}
 		
-		getDocumentContent(urlString, data);
-		return null;
+		return "";
+	}
+	
+	public String changeStatus(String issueKey, String statusName) {
+		String urlString = String.format("/pubflow/issues/%s/status", issueKey);
+		String responseCode = (String) getDocumentContent(urlString, statusName, String.class);
+		return responseCode;
 	}
 
-	public Response createIssue(String issueTypeName, String summary, String description, HashMap<String, String>  parameters, String reporter) {
-		String urlString = "/";
+	public String addAttachment(String issueKey, byte[] barray, String fileName, String type) {
+		String urlString = String.format("/pubflow/issues/PUB-1/attachments", issueKey);
+		JiraAttachment attachment = new JiraAttachment();
+		attachment.setData(barray);
+		attachment.setType(type);
+		attachment.setFilename(fileName);
+		attachment.setIssueKey(issueKey);
 
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("issueTypeName", issueTypeName);
-		data.put("summary", summary);
-		data.put("description", description);
-		data.put("parameters", parameters);
-		data.put("reporter", reporter);
+		String responseCode = (String) getDocumentContent(urlString, attachment, JiraAttachment.class);
+		return responseCode;
+	}
 
-		getDocumentContent(urlString, data);
-		return null;
+	public String addIssueComment(String issueKey, String comment) {
+		String urlString = String.format("/pubflow/issues/%s/comments", issueKey);
+		String responseCode = (String) getDocumentContent(urlString, comment, String.class);
+		
+		return responseCode;
+	}
+
+	public String createIssue(String issueTypeName, String summary, String description, HashMap<String, String>  parameters, String reporter) {
+		String urlString = String.format("/pubflow/issues/");
+		JiraIssue issue = new JiraIssue();
+		issue.setSummary(summary);
+		issue.setDescription(description);
+		issue.setReporter(reporter);
+		issue.setIssueTypeName(issueTypeName);
+		issue.setParameters(parameters);
+		
+		String responseCode = (String) getDocumentContent(urlString, issue, JiraIssue.class);
+		return responseCode;
 	}
 }
