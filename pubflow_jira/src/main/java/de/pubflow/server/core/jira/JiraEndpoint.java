@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.ofbiz.core.entity.GenericEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +62,7 @@ public class JiraEndpoint {
 	public static List<String> getAllIssuesBySummaryContains(String snippet) {
 		try {
 			return JiraObjectGetter.getAllIssueSummariesBySummaryContains(snippet);
-		} catch (GenericEntityException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -73,7 +72,7 @@ public class JiraEndpoint {
 	public static boolean lookupIssue(String name) {
 		try {
 			return JiraObjectGetter.lookupIssue(name);
-		} catch (GenericEntityException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

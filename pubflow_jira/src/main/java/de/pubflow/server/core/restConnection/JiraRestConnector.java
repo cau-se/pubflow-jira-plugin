@@ -35,7 +35,8 @@ import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 
 @Path(JiraRestConnector.basePath)
-public class JiraRestConnector {
+public class JiraRestConnector  {
+
 
 	private static final String jiraRestPath = "/jira/rest/receiver/1.0";
 	static final String basePath = "/pubflow/issues";

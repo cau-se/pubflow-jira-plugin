@@ -58,7 +58,7 @@ public class JiraDefaultUser {
 	public static ApplicationUser addDefaultUser(Project project, String projectKey)
 			throws PermissionException, CreateException, AddException, OperationNotPermittedException,
 			InvalidGroupException, GroupNotFoundException, UserNotFoundException, OperationFailedException{
-		Group groupDataManager = JiraObjectCreator.createGroup("datamanager");
+		Group groupDataManager = JiraObjectCreator.createGroup("datamanagers");
 		Group groupScientists = JiraObjectCreator.createGroup("scientists");
 		//
 		ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow",

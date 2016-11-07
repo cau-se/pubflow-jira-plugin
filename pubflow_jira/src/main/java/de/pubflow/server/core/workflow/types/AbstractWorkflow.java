@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.CustomFieldDefinition;
-import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
+import de.pubflow.server.core.workflow.messages.ReceivedWorkflowAnswer;
 
 /**
  * Represents the general Jira Workflow type/scheme. Contains the name, the path

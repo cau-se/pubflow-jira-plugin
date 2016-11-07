@@ -18,19 +18,24 @@ package de.pubflow.common;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.ws.rs.core.Response;
 
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
 
+<<<<<<< HEAD
+import de.pubflow.common.entity.DataContainer;
+
+public class JiraRestConnectorHelper{
+=======
 public class JiraRestConnectorHelper {
+>>>>>>> d5cc9bd30d5cb3530cfcafc71d8a434b1c58d24a
 
 	private String baseUrl = "";
 
@@ -38,46 +43,43 @@ public class JiraRestConnectorHelper {
 		this.baseUrl = baseUrl;
 	}
 
-	public String getDocumentContent(String urlString, Map<String, Object> data){
-		String msg = "";
+	public DataContainer getDocumentContent(String urlString, DataContainer data){
+		DataContainer response = null;
 		try {
-
 			URL url = new URL(baseUrl + urlString);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Accept", "application/json");
-
-			JSONObject o = new JSONObject();
-
-			for(Entry<String, Object> e : data.entrySet()){
-				o.put(e.getKey(), e.getValue());
-			}
-
-			String input = "";		
+			conn.setRequestProperty("content-type", "application/json");
 			conn.setDoOutput(true);
+			conn.setConnectTimeout(50000);
+			conn.setReadTimeout(50000);
+			OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+			
+			System.out.println("Request url : " + urlString);
 
-			OutputStream os = conn.getOutputStream();
-			os.write(input.getBytes());
-			os.flush();
+			Gson gson = new Gson();
+			out.write(gson.toJson(data));
+			out.close();
 
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
+			if (conn.getResponseCode() != 200 && conn.getResponseCode() != 202) {
+				System.out.println(gson.toJson(data));
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(conn.getInputStream())));
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
 			String part = "";
-			System.out.println("Output from Server .... \n");
+			String msg = "";
 
 			while ((part = br.readLine()) != null) {
 				msg += part;
 			}
-
+			br.close();
+			
+			response = gson.fromJson(msg, DataContainer.class);
 			conn.disconnect();
-
+			
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 
@@ -88,7 +90,7 @@ public class JiraRestConnectorHelper {
 			e.printStackTrace();
 		}
 
-		return msg;
+		return response;
 
 	}
 

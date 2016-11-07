@@ -19,18 +19,22 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
 			</plugin>
-	
+
 			<!-- PMD -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-								<version>${pmd.version}</version>
+				<version>${pmd.version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>de.chw</groupId>
 						<artifactId>pmd.ruleset</artifactId>
-												<version>0.0.1-SNAPSHOT</version>
+						<version>0.0.1-SNAPSHOT</version>
 						<scope>system</scope>
 						<systemPath>${project.basedir}/../config/pmd/CustomPmdRules_1.0.0.201507080630.jar</systemPath>
 					</dependency>
@@ -48,8 +52,8 @@
 				<configuration>
 					<excludeFilterFile>${project.basedir}/../config/fb-filter.xml</excludeFilterFile>
 				</configuration>
-			</plugin>					
-		</plugins>	
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencies>
@@ -64,8 +68,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
