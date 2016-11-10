@@ -47,11 +47,11 @@ public class JiraRestConnector  {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/status")
 	public Response changeStatus(@PathParam("issueKey") String issueKey, String statusName) {
-		JiraEndpoint.changeStatus(issueKey, statusName);
+		JiraEndpoint.changeStatus(issueKey, statusName.substring(1, statusName.length() - 1));
 		try {
-			return Response.status(204).entity(null).build();
+			return Response.status(204).entity("").build();
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();
+			return Response.status(500).entity("").build();
 		}
 	}
 
@@ -63,9 +63,9 @@ public class JiraRestConnector  {
 		JiraEndpoint.addAttachment(issueKey, attachment.getData(), attachment.getFilename(),
 				attachment.getType());
 		try {
-			return Response.status(204).entity(null).build();
+			return Response.status(204).entity("").build();
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();
+			return Response.status(500).entity("").build();
 		}
 	}
 
@@ -76,9 +76,9 @@ public class JiraRestConnector  {
 	public Response addIssueComment(@PathParam("issueKey") String issueKey, String comment) {
 		JiraEndpoint.addIssueComment(issueKey, comment);
 		try {
-			return Response.status(204).entity(null).build();
+			return Response.status(204).entity("").build();
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();
+			return Response.status(500).entity("").build();
 		}
 	}
 
@@ -92,7 +92,7 @@ public class JiraRestConnector  {
 		if (newIssueKey != null) {
 			return Response.status(201).entity(newIssueKey).build();
 		} else {
-			return Response.status(400).entity(null).build();
+			return Response.status(400).entity("").build();
 
 		}
 	}

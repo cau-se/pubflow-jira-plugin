@@ -18,16 +18,19 @@ package de.pubflow.common.entity;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class DataContainer{	
 	
-	private HashMap<String, String> map;
+	private String defaultIssueKey;
+	private String status;
 	private LinkedList<JiraAttachment> attachments;
 	private LinkedList<JiraComment> comments;
 	private LinkedList<JiraIssue> issues;
-	private String defaultIssueKey;
-	private String status;
+	private HashMap<String, String> map;
 	
 	public DataContainer(){
+		this.status = "";
 		this.defaultIssueKey = "";
 		issues = new LinkedList<JiraIssue>();
 		attachments = new LinkedList<JiraAttachment>();
@@ -36,11 +39,8 @@ public class DataContainer{
 	}
 	
 	public DataContainer(String defaultIssueKey){
+		this();
 		this.defaultIssueKey = defaultIssueKey;
-		issues = new LinkedList<JiraIssue>();
-		attachments = new LinkedList<JiraAttachment>();
-		comments = new LinkedList<JiraComment>();
-		map =  new HashMap<String, String>();
 	}
 
 	public String getDefaultIssueKey() {
@@ -50,49 +50,39 @@ public class DataContainer{
 	public void setDefaultIssueKey(String defaultIssueKey) {
 		this.defaultIssueKey = defaultIssueKey;
 	}
-
-	public HashMap<String, String> entrySet(){
-		return map;
-	}
-
-	public void newJiraIssue(String workflowName, String summary, String description, String reporter, HashMap<String, String> parameters){
-		issues.add(new JiraIssue(workflowName, summary, description, parameters, reporter));
-	}
 	
-	public void newJiraComment(String text){
-		comments.add(new JiraComment(defaultIssueKey, text));
-	}
-
-	public void newJiraAttachment(String fileName, byte[] data){
-		attachments.add(new JiraAttachment(defaultIssueKey, "", fileName, data));
-	}
-
-	public LinkedList<JiraComment> getJiraCommentsAndFlush(){
-		LinkedList<JiraComment> comments =  (LinkedList<JiraComment>) this.comments.clone();
-		this.comments = new LinkedList<JiraComment>();
-		return comments;
-	}
-	
-	public LinkedList<JiraIssue> getJiraIssuesAndFlush(){
-		LinkedList<JiraIssue> issues =  (LinkedList<JiraIssue>) this.issues.clone();
-		this.issues = new LinkedList<JiraIssue>();
-		return issues;
-	}
-
-	public LinkedList<JiraAttachment> getJiraAttachmentsAndFlush(){
-		LinkedList<JiraAttachment> attachments =  (LinkedList<JiraAttachment>) this.attachments.clone();
-		this.attachments = new LinkedList<JiraAttachment>();
-		return attachments;
+	public String getStatus() {
+		return status;
 	}
 	
 	public void setStatus(String status){
 		this.status = status;
 	}
 
-	public String getStatusAndFlush(){
-		return status;
+	public LinkedList<JiraAttachment> getAttachments() {
+		return attachments;
 	}
-	
+
+	public void setAttachments(LinkedList<JiraAttachment> attachments) {
+		this.attachments = attachments;
+	}
+
+	public LinkedList<JiraComment> getComments() {
+		return comments;
+	}
+
+	public void setComments(LinkedList<JiraComment> comments) {
+		this.comments = comments;
+	}
+
+	public LinkedList<JiraIssue> getIssues() {
+		return issues;
+	}
+
+	public void setIssues(LinkedList<JiraIssue> issues) {
+		this.issues = issues;
+	}
+
 	public HashMap<String, String> getMap() {
 		return map;
 	}
@@ -111,5 +101,28 @@ public class DataContainer{
 
 	public boolean containsKey(String key){
 		return map.containsKey(key);
+	}
+	
+	@JsonIgnore
+	public void newJiraIssue(String workflowName, String summary, String description, String reporter, HashMap<String, String> parameters){
+		issues.add(new JiraIssue(workflowName, summary, description, parameters, reporter));
+	}
+
+	@JsonIgnore
+	public void newJiraComment(String text){
+		comments.add(new JiraComment(defaultIssueKey, text));
+	}
+
+	@JsonIgnore
+	public void newJiraAttachment(String fileName, byte[] data){
+		attachments.add(new JiraAttachment(defaultIssueKey, "", fileName, data));
+	}
+	
+	@JsonIgnore
+	public void flush(){
+		this.comments = new LinkedList<JiraComment>();
+		this.issues = new LinkedList<JiraIssue>();
+		this.attachments = new LinkedList<JiraAttachment>();
+		this.status = "";
 	}
 }

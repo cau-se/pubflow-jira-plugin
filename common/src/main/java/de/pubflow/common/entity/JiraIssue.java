@@ -17,12 +17,6 @@ package de.pubflow.common.entity;
 
 import java.util.HashMap;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
 public class JiraIssue {
 	private String issueTypeName; 
 	private String summary; 
@@ -79,5 +73,11 @@ public class JiraIssue {
 
 	public void setReporter(String reporter) {
 		this.reporter = reporter;
+	}
+
+	@Override
+	public String toString() {
+		return "JiraIssue [issueTypeName=" + issueTypeName + ", summary=" + summary + ", description=" + description
+				+ ", parameters=" + parameters + ", reporter=" + reporter + "]";
 	}
 }

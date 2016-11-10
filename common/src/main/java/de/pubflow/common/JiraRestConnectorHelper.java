@@ -16,6 +16,7 @@
 package de.pubflow.common;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -24,7 +25,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-import com.google.gson.Gson;
+import org.codehaus.jackson.JsonParser.Feature;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 
 import de.pubflow.common.entity.DataContainer;
 import de.pubflow.common.entity.JiraAttachment;
@@ -51,14 +55,17 @@ public class JiraRestConnectorHelper{
 			conn.setReadTimeout(50000);
 			OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
 
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(Feature.AUTO_CLOSE_SOURCE, true);
+			mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	
 			System.out.println("Request url : " + urlString);
 
-			Gson gson = new Gson();
-			out.write(gson.toJson(data));
+			mapper.writeValue(out, data);
 			out.close();
 
-			if (conn.getResponseCode() != 200 && conn.getResponseCode() != 202) {
-				System.out.println(gson.toJson(data));
+			if (conn.getResponseCode() < 200 || conn.getResponseCode() > 299) {
+				System.out.println(mapper.writeValueAsString(data));
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 
@@ -72,9 +79,9 @@ public class JiraRestConnectorHelper{
 			}
 			br.close();
 
-			if(!clazz.getClass().equals(String.class)){
+			if(clazz != Integer.class){
 				try{
-					response = gson.fromJson(msg, clazz);
+					response = mapper.readValue(msg, clazz);
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -83,6 +90,9 @@ public class JiraRestConnectorHelper{
 			}
 			conn.disconnect();
 
+			FileWriter fw = new FileWriter("/tmp/" + Math.random());
+			fw.write(msg);
+			fw.close();
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -98,43 +108,63 @@ public class JiraRestConnectorHelper{
 	}
 
 	public String handleJiraTransmissions(DataContainer data){
-		for(JiraComment comment : data.getJiraCommentsAndFlush()){
-			addIssueComment(data.getDefaultIssueKey(), comment.getText());
+		System.out.println("handleJiraTransmissions");
+		System.out.println(data.getComments().size());
+
+		if(data.getComments() != null){
+			for(JiraComment comment : data.getComments()){
+				addIssueComment(data.getDefaultIssueKey(), comment.getText());
+			}
 		}
-		
-		for(JiraIssue issue : data.getJiraIssuesAndFlush()){
-			createIssue(issue.getIssueTypeName(), issue.getSummary(), issue.getDescription(), issue.getParameters(), issue.getReporter());
+
+		System.out.println(data.getIssues().size());
+
+		if(data.getIssues() != null){
+			for(JiraIssue issue : data.getIssues()){
+				createIssue(issue.getIssueTypeName(), issue.getSummary(), issue.getDescription(), issue.getParameters(), issue.getReporter());
+			}
 		}
-		
-		for(JiraAttachment attachment : data.getJiraAttachmentsAndFlush()){
-			addAttachment(data.getDefaultIssueKey(), attachment.getData(), attachment.getFilename(), attachment.getType());
+
+		System.out.println(data.getAttachments().size());
+
+		if(data.getAttachments() != null){
+			for(JiraAttachment attachment : data.getAttachments()){
+				addAttachment(data.getDefaultIssueKey(), attachment.getData(), attachment.getFilename(), attachment.getType());
+			}
 		}
-		
+
+		if(data.getStatus() != null){
+			changeStatus(data.getDefaultIssueKey(), data.getStatus());
+		}
+
+		data.flush();
+
 		return "";
 	}
-	
-	public String changeStatus(String issueKey, String statusName) {
+
+	public Integer changeStatus(String issueKey, String statusName) {
 		String urlString = String.format("/pubflow/issues/%s/status", issueKey);
-		String responseCode = (String) getDocumentContent(urlString, statusName, String.class);
+		Integer responseCode = (Integer) getDocumentContent(urlString, statusName, Integer.class);
+		System.out.println("changeStatus : " + statusName);
 		return responseCode;
 	}
 
-	public String addAttachment(String issueKey, byte[] barray, String fileName, String type) {
-		String urlString = String.format("/pubflow/issues/PUB-1/attachments", issueKey);
+	public Integer addAttachment(String issueKey, byte[] barray, String fileName, String type) {
+		String urlString = String.format("/pubflow/issues/%s/attachments", issueKey);
 		JiraAttachment attachment = new JiraAttachment();
 		attachment.setData(barray);
 		attachment.setType(type);
 		attachment.setFilename(fileName);
 		attachment.setIssueKey(issueKey);
-
-		String responseCode = (String) getDocumentContent(urlString, attachment, JiraAttachment.class);
+		Integer responseCode = (Integer) getDocumentContent(urlString, attachment, Integer.class);
+		System.out.println("addAttachment : " + attachment.toString());
 		return responseCode;
 	}
 
-	public String addIssueComment(String issueKey, String comment) {
+	public Integer addIssueComment(String issueKey, String comment) {
 		String urlString = String.format("/pubflow/issues/%s/comments", issueKey);
-		String responseCode = (String) getDocumentContent(urlString, comment, String.class);
-		
+		Integer responseCode = (Integer) getDocumentContent(urlString, comment, Integer.class);
+		System.out.println("addIssueComment : " + comment);
 		return responseCode;
 	}
 
@@ -146,8 +176,8 @@ public class JiraRestConnectorHelper{
 		issue.setReporter(reporter);
 		issue.setIssueTypeName(issueTypeName);
 		issue.setParameters(parameters);
-		
-		String responseCode = (String) getDocumentContent(urlString, issue, JiraIssue.class);
+		String responseCode = (String) getDocumentContent(urlString, issue, String.class);
+		System.out.println("createIssue : " + urlString);
 		return responseCode;
 	}
 }
