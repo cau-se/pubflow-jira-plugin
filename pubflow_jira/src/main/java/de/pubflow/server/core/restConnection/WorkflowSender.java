@@ -73,6 +73,11 @@ public class WorkflowSender {
 			myLogger.error(e.toString());
 			throw new WFRestException("Workflow could not be started");
 		}
+		if (response.getStatusLine().getStatusCode() >= 300) {
+			throw new WFRestException(
+					"The called WorkflowService send status code: " + response.getStatusLine().getStatusCode()
+							+ " and error: " + response.getStatusLine().getReasonPhrase());
+		}
 
 	}
 

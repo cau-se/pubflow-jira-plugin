@@ -36,10 +36,20 @@ import de.pubflow.jira.accessors.JiraObjectRemover;
 /**
  * Contains all default users that are initialized at the first Jira startup.
  * Used to avoid publication of passwords to Github.
+ * 
  * @author Marc Adolf
  *
  */
 public class JiraDefaultUser {
+	private Group groupDataManager = null;
+	private Group groupScientists = null;
+	Project project;
+	String projectKey;
+
+	public JiraDefaultUser(Project project, String projectKey) {
+		this.project = project;
+		this.projectKey = projectKey;
+	}
 
 	/**
 	 * Inits default users and returns the root user for further actions.
@@ -55,11 +65,11 @@ public class JiraDefaultUser {
 	 * @throws UserNotFoundException
 	 * @throws OperationFailedException
 	 */
-	public static ApplicationUser addDefaultUser(Project project, String projectKey)
+	public ApplicationUser addDefaultUser()
 			throws PermissionException, CreateException, AddException, OperationNotPermittedException,
-			InvalidGroupException, GroupNotFoundException, UserNotFoundException, OperationFailedException{
-		Group groupDataManager = JiraObjectCreator.createGroup("datamanagers");
-		Group groupScientists = JiraObjectCreator.createGroup("scientists");
+			InvalidGroupException, GroupNotFoundException, UserNotFoundException, OperationFailedException {
+		groupDataManager = JiraObjectCreator.createGroup("datamanagers");
+		groupScientists = JiraObjectCreator.createGroup("scientists");
 		//
 		ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow",
 				new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
@@ -68,9 +78,19 @@ public class JiraDefaultUser {
 		JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-software-users");
 		JiraObjectManipulator.addUserToGroup(userPubFlow, groupScientists);
 		JiraObjectManipulator.addUserToGroup(userPubFlow, groupDataManager);
-		//
-		// //TODO fix deprecation when admin is application user by
-		// default
+
+		
+//		this.createTestUsers();
+		
+		return userPubFlow;
+		// log.debug("initPubfowProject: created users and usergroups for
+		// PubFlow");
+
+	}
+
+	@SuppressWarnings("unused")
+	private void createTestUsers() throws GroupNotFoundException, UserNotFoundException, PermissionException,
+			AddException, OperationNotPermittedException, OperationFailedException, CreateException {
 		ApplicationUser userRoot = JiraObjectCreator.createUser("root", "$Boogie3");
 		JiraObjectManipulator.addUserToGroup(userRoot, groupDataManager);
 		JiraObjectManipulator.addUserToGroup(userRoot, groupScientists);
@@ -93,9 +113,5 @@ public class JiraDefaultUser {
 		ApplicationUser userScientist = JiraObjectCreator.createUser("SampleScientist", "sciencerulez");
 		JiraObjectManipulator.addUserToGroup(userScientist, groupScientists);
 		JiraObjectManipulator.addUserToGroup(userScientist, "jira-software-users");
-
-		return userRoot;
-//		log.debug("initPubfowProject: created users and usergroups for PubFlow");
-
 	}
 }

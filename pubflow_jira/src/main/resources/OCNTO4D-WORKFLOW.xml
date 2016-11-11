@@ -63,7 +63,7 @@
       </actions>
     </step>
     <step id="4" name="Data Processing by PubFlow">
-      <meta name="jira.status.id">10003</meta>
+      <meta name="jira.status.id">10103</meta>
       <actions>
         <action id="41" name="Ready for Pangaea-Import">
           <meta name="jira.description"></meta>
@@ -134,7 +134,7 @@
       </actions>
     </step>
     <step id="5" name="Ready for Pangaea-Import">
-      <meta name="jira.status.id">10004</meta>
+      <meta name="jira.status.id">10104</meta>
       <actions>
         <action id="171" name="Add DOI">
           <meta name="jira.description"></meta>
@@ -168,7 +168,7 @@
       <meta name="jira.status.id">6</meta>
     </step>
     <step id="9" name="Done">
-      <meta name="jira.status.id">10007</meta>
+      <meta name="jira.status.id">10001</meta>
       <actions>
         <action id="71" name="Close">
           <meta name="jira.description"></meta>
@@ -206,7 +206,7 @@
       </actions>
     </step>
     <step id="10" name="Rejected">
-      <meta name="jira.status.id">10008</meta>
+      <meta name="jira.status.id">10107</meta>
       <actions>
         <action id="91" name="Close">
           <meta name="jira.description"></meta>
@@ -244,7 +244,7 @@
       </actions>
     </step>
     <step id="11" name="Data Needs Correction">
-      <meta name="jira.status.id">10005</meta>
+      <meta name="jira.status.id">10105</meta>
       <actions>
         <action id="111" name="Resend to PubFlow" view="fieldscreen">
           <meta name="jira.description"></meta>
@@ -317,7 +317,7 @@
       </actions>
     </step>
     <step id="12" name="Prepared for PubFlow">
-      <meta name="jira.status.id">10002</meta>
+      <meta name="jira.status.id">10102</meta>
       <actions>
         <action id="131" name="Send To PubFlow">
           <meta name="jira.description"></meta>
