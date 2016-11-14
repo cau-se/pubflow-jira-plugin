@@ -67,6 +67,7 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
 import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 import de.pubflow.server.core.workflow.types.CVOOTo4DWorkflow;
 import de.pubflow.server.core.workflow.types.EPrintsWorkflow;
+import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
 
 /**
  * 
@@ -455,7 +456,7 @@ public class JiraManagerInitializer {
 		workflowsToAdd.add(new EPrintsWorkflow());
 //		workflowsToAdd.add(new OCNTo4DWorkflow());
 		workflowsToAdd.add(new CVOOTo4DWorkflow());
-//		workflowsToAdd.add(new RawToOCNWorkflow());
+		workflowsToAdd.add(new RawToOCNWorkflow());
 
 		// for testing purposes
 //		workflowsToAdd.add(new OldOCNWorkflow());
