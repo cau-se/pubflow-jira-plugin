@@ -28,7 +28,6 @@ import java.util.HashMap;
 import org.codehaus.jackson.JsonParser.Feature;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 
 import de.pubflow.common.entity.DataContainer;
 import de.pubflow.common.entity.JiraAttachment;
@@ -47,6 +46,7 @@ public class JiraRestConnectorHelper{
 		Object response = null;
 		try {
 			URL url = new URL(baseUrl + urlString);
+            HttpURLConnection.setFollowRedirects(true);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("content-type", "application/json");
@@ -66,7 +66,7 @@ public class JiraRestConnectorHelper{
 
 			if (conn.getResponseCode() < 200 || conn.getResponseCode() > 299) {
 				System.out.println(mapper.writeValueAsString(data));
-				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode()+ " " + conn.getResponseMessage());
 			}
 
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
