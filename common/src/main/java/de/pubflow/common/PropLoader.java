@@ -35,7 +35,7 @@ public class PropLoader {
 	 * Defines the path to the resource folder of PubFlow
 	 */
 	public static final String RESOURCES = PUBFLOW_HOME_PATH + "resources/";
-	private static final String CONF_FILE = PUBFLOW_HOME_PATH + " Pubflow.conf";
+	private static final String CONF_FILE = PUBFLOW_HOME_PATH + "Pubflow.conf";
 	private Logger myLogger = LoggerFactory.getLogger(this.getClass());
 	private Properties properties = new Properties();
 
