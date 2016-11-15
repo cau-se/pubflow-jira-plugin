@@ -185,7 +185,7 @@
       </actions>
     </step>
     <step id="3" name="Ready for OCN-Import">
-      <meta name="jira.status.id">10102</meta>
+      <meta name="jira.status.id">10101</meta>
       <actions>
         <action id="171" name="Done">
           <meta name="jira.description"></meta>
