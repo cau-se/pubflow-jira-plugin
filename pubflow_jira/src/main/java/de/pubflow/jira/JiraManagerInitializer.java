@@ -67,8 +67,6 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
 import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 import de.pubflow.server.core.workflow.types.CVOOTo4DWorkflow;
 import de.pubflow.server.core.workflow.types.EPrintsWorkflow;
-import de.pubflow.server.core.workflow.types.OCNTo4DWorkflow;
-import de.pubflow.server.core.workflow.types.OldOCNWorkflow;
 import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
 
 /**
@@ -281,10 +279,10 @@ public class JiraManagerInitializer {
 
 		JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user, issueTypeName);
 		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
-				issueTypeName + Appendix.ISSUETYPE);
+				issueTypeName);
 		JiraObjectManipulator.addWorkflowToProject(workflowScheme, projectManager.getProjectObjByKey(projectKey));
 		Project project = projectManager.getProjectObjByKey(projectKey);
-		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE);
+		IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
 
 		try {
 			workflowSchemeManager.addWorkflowToScheme(workflowSchemeManager.getWorkflowScheme(project),
@@ -388,12 +386,14 @@ public class JiraManagerInitializer {
 
 		try {
 			if (project == null) {
-				//
-				ApplicationUser userRoot = JiraDefaultUser.addDefaultUser(project, projectKey);
+				
+				JiraDefaultUser defaultUserCreator = new JiraDefaultUser(project, projectKey);
+				//Add  users and return the project owner
+				ApplicationUser owningUser = defaultUserCreator.addDefaultUser();
 
 				log.debug("initPubfowProject: created users and usergroups for PubFlow");
 
-				project = initProject("PubFlow", projectKey, userRoot, false);
+				project = initProject("PubFlow", projectKey, owningUser, false);
 			}
 
 			List<String> statuses = new LinkedList<String>();
@@ -406,26 +406,36 @@ public class JiraManagerInitializer {
 			statuses.add("Open");
 
 			// Ready for Convertion by Data Management ID: 10000
+			//quickfix: 10100
 			statuses.add("Ready for Convertion by Data Management");
 			// Ready for OCN-Import already ID: 10001
+			//quickfix: 10101
 			statuses.add("Ready for OCN-Import");
 			// Prepare for PubFlow ID: 10002
+			//quickfix: 10102
 			statuses.add("Prepared for PubFlow");
 			// Data Processing by PubFlow ID: 10003
+			//quickfix: 10103
 			statuses.add("Data Processing by PubFlow");
 			// Ready for Pangaea-Import ID: 10004
+			//quickfix: 10104
 			statuses.add("Ready for Pangaea-Import");
 			// Data Needs Correction ID: 10005
+			//quickfix: 10105
 			statuses.add("Data Needs Correction");
 			// Waiting for DOI ID: 10006
+			//quickfix: 10106
 			statuses.add("Waiting for DOI");
 			// should already exist in Jira with ID=6
 			statuses.add("Closed");
 			// Done ID: 10007
+			//quickfix:10001
 			statuses.add("Done");
 			// Rejected ID: 10008
+			//quickfix:  10107
 			statuses.add("Rejected");
 			// Pangaea Data Upload ID:10009
+			//quickfix: 10108
 			statuses.add("Pangaea Data Upload");
 
 			// add new statuses at the end
@@ -444,12 +454,12 @@ public class JiraManagerInitializer {
 
 		List<AbstractWorkflow> workflowsToAdd = new LinkedList<>();
 		workflowsToAdd.add(new EPrintsWorkflow());
-		workflowsToAdd.add(new OCNTo4DWorkflow());
+//		workflowsToAdd.add(new OCNTo4DWorkflow());
 		workflowsToAdd.add(new CVOOTo4DWorkflow());
 		workflowsToAdd.add(new RawToOCNWorkflow());
 
 		// for testing purposes
-		workflowsToAdd.add(new OldOCNWorkflow());
+//		workflowsToAdd.add(new OldOCNWorkflow());
 
 		// add the workflows one after another
 		for (AbstractWorkflow workflow : workflowsToAdd) {
@@ -491,7 +501,7 @@ public class JiraManagerInitializer {
 					customFieldIds, project);
 
 			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme,
-					JiraObjectGetter.getIssueTypeByName(issueTypeName + Appendix.ISSUETYPE));
+					JiraObjectGetter.getIssueTypeByName(issueTypeName));
 		}
 
 		// register Workflow with WorkflowBroker

@@ -80,7 +80,7 @@
       </actions>
     </step>
     <step id="2" name="Ready for Convertion by Data Management">
-      <meta name="jira.status.id">10000</meta>
+      <meta name="jira.status.id">10100</meta>
       <actions>
         <action id="21" name="Ready for OCN-Import">
           <meta name="jira.description"></meta>
@@ -185,7 +185,7 @@
       </actions>
     </step>
     <step id="3" name="Ready for OCN-Import">
-      <meta name="jira.status.id">10001</meta>
+      <meta name="jira.status.id">10102</meta>
       <actions>
         <action id="171" name="Done">
           <meta name="jira.description"></meta>
@@ -219,7 +219,7 @@
       <meta name="jira.status.id">6</meta>
     </step>
     <step id="9" name="Done">
-      <meta name="jira.status.id">10007</meta>
+      <meta name="jira.status.id">10001</meta>
       <actions>
         <action id="71" name="Close">
           <meta name="jira.description"></meta>
@@ -257,7 +257,7 @@
       </actions>
     </step>
     <step id="10" name="Rejected">
-      <meta name="jira.status.id">10008</meta>
+      <meta name="jira.status.id">10107</meta>
       <actions>
         <action id="91" name="Close">
           <meta name="jira.description"></meta>

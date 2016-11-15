@@ -1,278 +1,283 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  
-    <parent>
-        <groupId>de.pubflow</groupId>
-        <artifactId>pubflow</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
-    
-    
-    
-    <name>PubFlow Jira Plugin</name>
-    <artifactId>JiraPlugin</artifactId>
-    <description/>
-    <organization>
-        <name>Christian-Albrechts-Universität zu Kiel - Arbeitsgruppe Software Engineering</name>
-        <url>http://www.pubflow.de</url>
-    </organization>
-    <modelVersion>4.0.0</modelVersion>
-    <inceptionYear>2016</inceptionYear>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>LICENSE</url>
-        </license>
-    </licenses>
-    <packaging>atlassian-plugin</packaging>
-    <repositories>
-        <repository>
-            <id>atlassian-public</id>
-            <url>https://m2proxy.atlassian.com/repository/public</url>
-        </repository>
-    </repositories>
-    <developers>
-        <developer>
-            <id>mad</id>
-            <name>Marc Adolf</name>
-            <email>mad@informatik.uni-kiel.de</email>
-            <organization>Kiel University</organization>
-            <organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/marc-adolf</organizationUrl>
-            <timezone>Europe/Berlin</timezone>
-            <roles>
-                <role>PMC Member</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>arl</id>
-            <name>Arnd Plumhoff</name>
-            <email>arl@informatik.uni-kiel.de</email>
-            <organization>Kiel University</organization>
-            <organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/arnd-plumhoff</organizationUrl>
-            <timezone>Europe/Berlin</timezone>
-            <roles>
-                <role>PMC Member</role>
-            </roles>
-        </developer>
-    </developers>
-    <contributors>
-        <contributor>
-            <name>Alexander Barbie</name>
-            <email>abar@informatik.uni-kiel.de</email>
-            <timezone>Europe/Berlin</timezone>
-            <roles>
-                <role>Committer</role>
-            </roles>
-        </contributor>
-    </contributors>
-    <dependencies>
-        <!-- BASICS -->
-        <dependency>
-            <groupId>de.pubflow</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
-        <!-- JIRA -->
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-api</artifactId>
-            <version>${jira.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-core</artifactId>
-            <version>${jira.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.sal</groupId>
-            <artifactId>sal-api</artifactId>
-            <version>3.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.templaterenderer</groupId>
-            <artifactId>atlassian-template-renderer-api</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- CRON4J -->
-        <dependency>
-            <groupId>it.sauronsoftware.cron4j</groupId>
-            <artifactId>cron4j</artifactId>
-            <version>2.2.5</version>
-        </dependency>
-        <!-- HSQLDB -->
-        <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <!-- HIBERNATE -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>4.2.1.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.2.1.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.5.6-Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>4.3.1.Final</version>
-        </dependency>
-        <!-- REST -->
-        <dependency>
-            <groupId>com.atlassian.plugins.rest</groupId>
-            <artifactId>atlassian-rest-common</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- <dependency> <groupId>org.springframework.ws</groupId> <artifactId>spring-ws-core</artifactId> 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>de.pubflow</groupId>
+		<artifactId>pubflow</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<name>PubFlow Jira Plugin</name>
+	<artifactId>JiraPlugin</artifactId>
+	<description />
+	<organization>
+		<name>Christian-Albrechts-Universität zu Kiel - Arbeitsgruppe Software Engineering</name>
+		<url>http://www.pubflow.de</url>
+	</organization>
+	<modelVersion>4.0.0</modelVersion>
+	<inceptionYear>2016</inceptionYear>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>LICENSE</url>
+		</license>
+	</licenses>
+	<packaging>atlassian-plugin</packaging>
+
+	<repositories>
+		<repository>
+			<id>atlassian-public</id>
+			<url>https://m2proxy.atlassian.com/repository/public</url>
+		</repository>
+	</repositories>
+
+	<developers>
+		<developer>
+			<id>mad</id>
+			<name>Marc Adolf</name>
+			<email>mad@informatik.uni-kiel.de</email>
+			<organization>Kiel University</organization>
+			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/marc-adolf</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>PMC Member</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>arl</id>
+			<name>Arnd Plumhoff</name>
+			<email>arl@informatik.uni-kiel.de</email>
+			<organization>Kiel University</organization>
+			<organizationUrl>http://www.se.informatik.uni-kiel.de/en/team/arnd-plumhoff</organizationUrl>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>PMC Member</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Alexander Barbie</name>
+			<email>abar@informatik.uni-kiel.de</email>
+			<timezone>Europe/Berlin</timezone>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</contributor>
+	</contributors>
+
+	<dependencies>
+
+		<!-- BASICS -->
+		<dependency>
+			<groupId>de.pubflow</groupId>
+			<artifactId>common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<!-- JIRA -->
+		<dependency>
+			<groupId>com.atlassian.jira</groupId>
+			<artifactId>jira-api</artifactId>
+			<version>${jira.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.jira</groupId>
+			<artifactId>jira-core</artifactId>
+			<version>${jira.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.sal</groupId>
+			<artifactId>sal-api</artifactId>
+			<version>3.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.templaterenderer</groupId>
+			<artifactId>atlassian-template-renderer-api</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- CRON4J -->
+		<dependency>
+			<groupId>it.sauronsoftware.cron4j</groupId>
+			<artifactId>cron4j</artifactId>
+			<version>2.2.5</version>
+		</dependency>
+		<!-- HSQLDB -->
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<!-- HIBERNATE -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.2.1.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>4.2.1.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.5.6-Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.3.1.Final</version>
+		</dependency>
+		<!-- REST -->
+		<dependency>
+			<groupId>com.atlassian.plugins.rest</groupId>
+			<artifactId>atlassian-rest-common</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- <dependency> <groupId>org.springframework.ws</groupId> <artifactId>spring-ws-core</artifactId> 
 			</dependency> <dependency> <groupId>com.fasterxml.jackson.core</groupId> 
 			<artifactId>jackson-databind</artifactId> </dependency> -->
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>1.8-atlassian-15</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Google Gson to convert classes to Json -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.7</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-jira-plugin</artifactId>
-                <version>${amps.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <productVersion>${jira.version}</productVersion>
-                    <productDataVersion>${jira.version}</productDataVersion>
-                    <enableFastdev>false</enableFastdev>
-                    <enableQuickReload>true</enableQuickReload>
-                    <systemPropertyVariables>
-                        <atlassian.mail.senddisabled>false</atlassian.mail.senddisabled>
-                    </systemPropertyVariables>
-                    <systemProperties>
-                        <property>
-                            <name>atlassian.org.osgi.framework.bootdelegation</name>
-                            <value>sun.*,com.sun.*,org.w3c.*,javax.*</value>
-                        </property>
-                    </systemProperties>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-amps-plugin</artifactId>
-                <version>${amps.version}</version>
-                <configuration>
-                    <allowGoogleTracking>false</allowGoogleTracking>
-                </configuration>
-                <extensions>true</extensions>
-            </plugin>
-            <!-- PMD -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${pmd.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>de.chw</groupId>
-                        <artifactId>pmd.ruleset</artifactId>
-                        <version>0.0.1-SNAPSHOT</version>
-                        <scope>system</scope>
-                        <systemPath>${project.basedir}/../config/pmd/CustomPmdRules_1.0.0.201507080630.jar</systemPath>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <rulesets>
-                        <ruleset>${project.basedir}/../config/pmd-ruleset.xml</ruleset>
-                    </rulesets>
-                </configuration>
-            </plugin>
-            <!-- JAVADOC -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${javadoc.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-    <!-- <dependencyManagement> <dependencies> <dependency> <groupId>org.springframework.boot</groupId> 
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.8-atlassian-15</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Google Gson to convert classes to Json -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.7</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-jira-plugin</artifactId>
+				<version>${amps.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<productVersion>${jira.version}</productVersion>
+					<productDataVersion>${jira.version}</productDataVersion>
+					<enableFastdev>false</enableFastdev>
+					<enableQuickReload>true</enableQuickReload>
+					<systemPropertyVariables>
+						<atlassian.mail.senddisabled>false</atlassian.mail.senddisabled>
+					</systemPropertyVariables>
+					<systemProperties>
+						<property>
+							<name>atlassian.org.osgi.framework.bootdelegation</name>
+							<value>sun.*,com.sun.*,org.w3c.*,javax.*</value>
+						</property>
+					</systemProperties>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-amps-plugin</artifactId>
+				<version>${amps.version}</version>
+				<configuration>
+					<allowGoogleTracking>false</allowGoogleTracking>
+				</configuration>
+				<extensions>true</extensions>
+			</plugin>
+			<!-- PMD -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>${pmd.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>de.chw</groupId>
+						<artifactId>pmd.ruleset</artifactId>
+						<version>0.0.1-SNAPSHOT</version>
+						<scope>system</scope>
+						<systemPath>${project.basedir}/../config/pmd/CustomPmdRules_1.0.0.201507080630.jar</systemPath>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<rulesets>
+						<ruleset>${project.basedir}/../config/pmd-ruleset.xml</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>
+			<!-- JAVADOC -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${javadoc.version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<!-- <dependencyManagement> <dependencies> <dependency> <groupId>org.springframework.boot</groupId> 
 		<artifactId>spring-boot-dependencies</artifactId> <version>1.3.6.RELEASE</version> 
 		<type>pom</type> <scope>import</scope> </dependency> </dependencies> </dependencyManagement> -->
 </project>

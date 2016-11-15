@@ -15,12 +15,6 @@
  */
 package de.pubflow.common.entity;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
 public class JiraAttachment {
 	private String issueKey;
 	private String type;
@@ -68,5 +62,10 @@ public class JiraAttachment {
 
 	public void setData(byte[] data) {
 		this.data = data;
+	}
+
+	@Override
+	public String toString() {
+		return "JiraAttachment [issueKey=" + issueKey + ", type=" + type + ", filename=" + filename + "]";
 	}
 }

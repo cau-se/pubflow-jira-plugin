@@ -30,23 +30,27 @@ import de.pubflow.common.exceptions.PropertyNotSetException;
 public class PropLoader {
 
 	private static PropLoader propLoader;
-	private static final String CONF_FILE = System.getProperty("pubflow_home", System.getenv("HOME") + "/pubflow_home/Pubflow.conf");
-	
+	private static final String PUBFLOW_HOME_PATH = "/home/pubflow/pubflow_home/";
+	/**
+	 * Defines the path to the resource folder of PubFlow
+	 */
+	public static final String RESOURCES = PUBFLOW_HOME_PATH + "resources/";
+	private static final String CONF_FILE = PUBFLOW_HOME_PATH + "Pubflow.conf";
 	private Logger myLogger = LoggerFactory.getLogger(this.getClass());
 	private Properties properties = new Properties();
 
-	private PropLoader() {	
+	private PropLoader() {
 		initProp();
 	}
 
 	public static PropLoader getInstance() {
-		if(propLoader == null){
+		if (propLoader == null) {
 			propLoader = new PropLoader();
 		}
 		return propLoader;
 	}
 
-	private void initProp(){
+	private void initProp() {
 		FileInputStream fi = null;
 		try {
 			fi = new FileInputStream(CONF_FILE);
@@ -67,31 +71,34 @@ public class PropLoader {
 	public String getProperty(String key, Class clazz) {
 		String prop = properties.getProperty(clazz.getCanonicalName() + "#" + key);
 
-		if ((prop == null) || (prop.equals(""))){
+		if ((prop == null) || (prop.equals(""))) {
 			try {
 				prop = getDefaultProperty(key, clazz);
 			} catch (PropertyNotSetException e) {
 				prop = "";
 			}
-		}else{
-			//			myLogger.info("Getting property - " + clazz.getCanonicalName() + "#" + key + " = " + prop);
+		} else {
+			// myLogger.info("Getting property - " + clazz.getCanonicalName() +
+			// "#" + key + " = " + prop);
 		}
 		return prop;
 	}
 
-	public String getDefaultProperty(String key, Class clazz) throws PropertyNotSetException{
+	public String getDefaultProperty(String key, Class clazz) throws PropertyNotSetException {
 		String prop = properties.getProperty(clazz.getCanonicalName() + "#DEFAULT-" + key);
-		if ((prop == null) || (prop.equals(""))){
-			myLogger.warn("Property " + clazz.getCanonicalName() + "#" + key  + " doesn't have a default value!");
+		if ((prop == null) || (prop.equals(""))) {
+			myLogger.warn("Property " + clazz.getCanonicalName() + "#" + key + " doesn't have a default value!");
 			throw new PropertyNotSetException();
-		}else{
-			//			myLogger.info("Getting default property - " + clazz.getCanonicalName() + "#" + key + " = " + prop);
+		} else {
+			// myLogger.info("Getting default property - " +
+			// clazz.getCanonicalName() + "#" + key + " = " + prop);
 			return prop;
 		}
 	}
 
-	public void setProperty(String key, Class clazz, String prop){
-		//		myLogger.info("Updating property - " + clazz.getCanonicalName() + "#" + key);
+	public void setProperty(String key, Class clazz, String prop) {
+		// myLogger.info("Updating property - " + clazz.getCanonicalName() + "#"
+		// + key);
 		properties.setProperty(clazz.getCanonicalName() + "#" + key, prop);
 		saveProperties();
 	}
@@ -106,8 +113,8 @@ public class PropLoader {
 			e1.printStackTrace();
 		}
 		try {
-			properties.storeToXML(fs, "PubFlow properties file (last updated "
-					+ Calendar.getInstance().getTime().toLocaleString() + ")");
+			properties.storeToXML(fs,
+					"PubFlow properties file (last updated " + Calendar.getInstance().getTime().toLocaleString() + ")");
 
 		} catch (IOException e) {
 			e.printStackTrace();

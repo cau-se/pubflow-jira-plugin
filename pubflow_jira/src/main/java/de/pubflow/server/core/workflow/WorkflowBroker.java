@@ -25,16 +25,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.jira.accessors.JiraObjectGetter;
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.server.common.entity.workflow.ParameterType;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.exceptions.WFException;
 import de.pubflow.server.common.exceptions.WFRestException;
+import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
+import de.pubflow.server.core.rest.messages.ServiceCallData;
+import de.pubflow.server.core.rest.messages.WorkflowRestCall;
 import de.pubflow.server.core.restConnection.JiraRestConnector;
 import de.pubflow.server.core.restConnection.WorkflowSender;
-import de.pubflow.server.core.workflow.messages.ReceivedWorkflowAnswer;
-import de.pubflow.server.core.workflow.messages.ServiceCallData;
-import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
 import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 
 /**
@@ -217,7 +216,7 @@ public class WorkflowBroker {
 	 * @param workflow
 	 */
 	static public void addWorkflow(AbstractWorkflow workflow) {
-		registeredWorkflows.put(workflow.getWorkflowName()+Appendix.ISSUETYPE, workflow);
+		registeredWorkflows.put(workflow.getWorkflowName(), workflow);
 		myLogger.info("Registered Workflow: "+workflow.getWorkflowName() +" at the WorkflowBroker");
 	}
 }

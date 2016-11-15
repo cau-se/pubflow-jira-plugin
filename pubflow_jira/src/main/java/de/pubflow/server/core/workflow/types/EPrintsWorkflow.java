@@ -31,7 +31,7 @@ import de.pubflow.jira.misc.CustomFieldDefinition;
 public class EPrintsWorkflow extends AbstractWorkflow {
 
 	public EPrintsWorkflow() {
-		super("EPRINTS ", "de.pubflow.EPRINTS", "/EPRINTS.xml", "/workflow/EPrintsWorkflow");
+		super("EPRINTS", "de.pubflow.EPRINTS", "/EPRINTS.xml", "/workflow/EPrintsWorkflow");
 	}
 
 	@Override

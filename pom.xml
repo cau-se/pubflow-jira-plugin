@@ -64,9 +64,9 @@
 	</repositories>
 
 	<properties>
-		<amps.version>6.2.4</amps.version>
+		<amps.version>6.2.9</amps.version>
 		<!-- <jira.version>5.2.1</jira.version> -->
-		<jira.version>7.1.4</jira.version>
+		<jira.version>7.2.4</jira.version>
 		<common.version>1.0.0-SNAPSHOT</common.version>
 		<pubflow.jira.version>1.0.0-SNAPSHOT</pubflow.jira.version>
 		<java.version>1.8</java.version>

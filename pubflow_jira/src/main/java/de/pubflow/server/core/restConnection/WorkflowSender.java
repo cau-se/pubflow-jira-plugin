@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 import de.pubflow.server.common.exceptions.WFRestException;
-import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
+import de.pubflow.server.core.rest.messages.WorkflowRestCall;
 
 /**
  * The WorkflowSender is responsible for the outgoing communication with the
@@ -72,6 +72,11 @@ public class WorkflowSender {
 			myLogger.error("Could not deploy new Workflow with ID: " + wfCall.getID());
 			myLogger.error(e.toString());
 			throw new WFRestException("Workflow could not be started");
+		}
+		if (response.getStatusLine().getStatusCode() >= 300) {
+			throw new WFRestException(
+					"The called WorkflowService send status code: " + response.getStatusLine().getStatusCode()
+							+ " and error: " + response.getStatusLine().getReasonPhrase());
 		}
 
 	}

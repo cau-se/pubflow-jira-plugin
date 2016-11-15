@@ -56,8 +56,8 @@ import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.common.entity.workflow.WFParameter;
+import de.pubflow.server.core.rest.messages.ServiceCallData;
 import de.pubflow.server.core.workflow.WorkflowBroker;
-import de.pubflow.server.core.workflow.messages.ServiceCallData;
 
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
@@ -71,7 +71,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static EventPublisher eventPublisher;
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
 	public static StatusManager statusManager;
-	public static ApplicationUser user = JiraObjectGetter.getUserByName("PubFlow");
+	public static ApplicationUser user = JiraObjectGetter.getUserByName("root");
 	public static final SecureRandom secureRandom = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
 
@@ -151,11 +151,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 				// to enable mapping to the jira ticket
 				callData.setJiraKey(issue.getKey());
 				callData.setParameters(wfpm);
-				// TODO add workflow id (string), its necessary !
-				
-				// currently not working
-				// callData.setWorkflowID(issue.getIssueTypeObject().getPropertySet().getString("workflowID"));
-				
 
 				callData.setWorkflowID(JiraObjectGetter.getIssueTypeNamebyJiraKey(callData.getJiraKey()));
 				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
