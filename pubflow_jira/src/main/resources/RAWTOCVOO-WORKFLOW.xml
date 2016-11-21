@@ -43,11 +43,17 @@
                 <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
                 <arg name="group">scientists</arg>
               </condition>
-              <condition type="class">
+              <!--  <condition type="class">
                 <arg name="class.name">de.pubflow.jira.misc.IssueAttachmentCondition</arg>
-              </condition>
+              </condition>-->
             </conditions>
           </restrict-to>
+              <validators>
+	        <validator name="" type="class">
+	          <arg name="class.name">de.pubflow.jira.misc.IssueAttachmentValidator</arg>
+	          <arg name="issuetype">OCN</arg>
+	        </validator>
+	      </validators> 
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="2">
               <post-functions>

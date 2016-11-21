@@ -337,23 +337,23 @@ public class JiraManagerInitializer {
 		applicationProperties.setString(APKeys.JIRA_LF_LOGO_URL,
 				PropLoader.getInstance().getProperty("JIRA_LF_LOGO_URL", JiraManagerInitializer.class));
 
-		SMTPMailServerImpl smtp = new SMTPMailServerImpl();
-		smtp.setName("Mail Server");
-		smtp.setDescription("");
-		smtp.setDefaultFrom("pubflow@bough.de");
-		smtp.setPrefix("[pubflow]");
-		smtp.setPort("587");
-		smtp.setMailProtocol(MailProtocol.SMTP);
-		smtp.setHostname("mail.bough.de");
-		smtp.setUsername("wp10598327-pubflow");
-		smtp.setPassword("kidoD3l77");
-		smtp.setTlsRequired(true);
-		try {
-			ComponentAccessor.getMailServerManager().create(smtp);
-		} catch (MailException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		SMTPMailServerImpl smtp = new SMTPMailServerImpl();
+//		smtp.setName("Mail Server");
+//		smtp.setDescription("");
+//		smtp.setDefaultFrom("pubflow@bough.de");
+//		smtp.setPrefix("[pubflow]");
+//		smtp.setPort("587");
+//		smtp.setMailProtocol(MailProtocol.SMTP);
+//		smtp.setHostname("mail.bough.de");
+//		smtp.setUsername("wp10598327-pubflow");
+//		smtp.setPassword("kidoD3l77");
+//		smtp.setTlsRequired(true);
+//		try {
+//			ComponentAccessor.getMailServerManager().create(smtp);
+//		} catch (MailException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	/**
