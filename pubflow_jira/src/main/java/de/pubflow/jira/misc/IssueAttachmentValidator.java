@@ -26,33 +26,30 @@ import com.opensymphony.workflow.loader.ValidatorDescriptor;
 
 public class IssueAttachmentValidator implements Validator {
 
-  @SuppressWarnings ("unchecked")
-  public static ValidatorDescriptor makeDescriptor(final String issueType)
-  {
-      final ValidatorDescriptor issueAttachmentValidator = DescriptorFactory.getFactory().createValidatorDescriptor();
-      issueAttachmentValidator.setType("class");
-      issueAttachmentValidator.getArgs().put("class.name", IssueAttachmentValidator.class.getName());
-      issueAttachmentValidator.getArgs().put("issuetype", issueType);
-      return issueAttachmentValidator;
-  }
+	@SuppressWarnings("unchecked")
+	public static ValidatorDescriptor makeDescriptor(final String issueType) {
+		final ValidatorDescriptor issueAttachmentValidator = DescriptorFactory.getFactory().createValidatorDescriptor();
+		issueAttachmentValidator.setType("class");
+		issueAttachmentValidator.getArgs().put("class.name", IssueAttachmentValidator.class.getName());
+		issueAttachmentValidator.getArgs().put("issuetype", issueType);
+		return issueAttachmentValidator;
+	}
 
-  @Override
-  public void validate(final Map transientVars, final Map args, final PropertySet ps) throws InvalidInputException
-  {
-      hasAttachment(args, transientVars);
-  }
+	@Override
+	public void validate(final Map transientVars, final Map args, final PropertySet ps) throws InvalidInputException {
+		hasAttachment(args, transientVars);
+	}
 
-  public boolean hasAttachment(final Map args, final Map transientVars)
-          throws InvalidInputException {
+	public boolean hasAttachment(final Map args, final Map transientVars) throws InvalidInputException {
 
-      Issue issue = (Issue) transientVars.get("issue");
+		Issue issue = (Issue) transientVars.get("issue");
 
-      // Check Issue permission
-      if (issue.getAttachments().size() > 0) {
-        return true;
-      } else {
-        throw new InvalidInputException("This issue has no attachment.");
-      }
-  } 
-  
+		// Check Issue permission
+		if (issue.getAttachments().size() > 0) {
+			return true;
+		} else {
+			throw new InvalidInputException("This issue has no attachment.");
+		}
+	}
+
 }

@@ -71,7 +71,6 @@ import com.atlassian.jira.workflow.WorkflowUtil;
 import com.opensymphony.workflow.FactoryException;
 
 import de.pubflow.jira.JiraManagerPlugin;
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 
 public class JiraObjectCreator {
@@ -190,7 +189,7 @@ public class JiraObjectCreator {
 
 		if (fieldScreenScheme == null) {
 			fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager, null);
-			fieldScreenScheme.setName(fieldScreenSchemeName + Appendix.FIELDSCREENSCHEME);
+			fieldScreenScheme.setName(fieldScreenSchemeName);
 			fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);
 			fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemEdit);
 			fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemCreate);
@@ -263,7 +262,7 @@ public class JiraObjectCreator {
 		final Collection<String> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeIds();
 		FieldConfigScheme schemeExisting = issueTypeSchemeManager.getConfigScheme(project);
 		if (schemeExisting == issueTypeSchemeManager.getDefaultIssueTypeScheme()) {
-			schemeExisting = issueTypeSchemeManager.create(project.getKey() + Appendix.ISSUETYPESCHEME,
+			schemeExisting = issueTypeSchemeManager.create(project.getKey(),
 					"IssueType Scheme for " + project.getName(), (List<String>) issueTypes);
 		} else {
 			issueTypeSchemeManager.update(schemeExisting, issueTypes);
@@ -295,7 +294,6 @@ public class JiraObjectCreator {
 		} else {
 			log.debug("createIssueType: issueType " + issueType.getName() + " already exists");
 		}
-
 		return issueType;
 	}
 
@@ -317,10 +315,10 @@ public class JiraObjectCreator {
 			JiraWorkflow jiraWorkflow, String issueTypeName) {
 		final WorkflowSchemeManager workflowSchemeManger = ComponentAccessor.getWorkflowSchemeManager();
 		AssignableWorkflowScheme workflowScheme = workflowSchemeManger
-				.getWorkflowSchemeObj(projectKey + Appendix.WORKFLOWSCHEME);
+				.getWorkflowSchemeObj(projectKey);
 
 		if (workflowScheme == null) {
-			Scheme scheme = workflowSchemeManger.createSchemeObject(projectKey + Appendix.WORKFLOWSCHEME,
+			Scheme scheme = workflowSchemeManger.createSchemeObject(projectKey ,
 					"Workflow scheme for the Pubflow project");
 			workflowScheme = workflowSchemeManger.getWorkflowSchemeObj(scheme.getName()); // necessary
 																							// intermediate
@@ -329,7 +327,7 @@ public class JiraObjectCreator {
 			AssignableWorkflowScheme.Builder workflowSchemeBuilder = workflowScheme.builder();
 			IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
 
-			workflowSchemeBuilder.setName(projectKey + Appendix.WORKFLOWSCHEME);
+			workflowSchemeBuilder.setName(projectKey);
 			workflowSchemeBuilder.setDescription("Workflow scheme for Pubflow.");
 			// workflowSchemeBuilder.setDefaultWorkflow(jiraWorkflow.getName());
 			workflowSchemeBuilder.setMapping(ocnIssueType.getId(), jiraWorkflow.getName());
@@ -384,7 +382,7 @@ public class JiraObjectCreator {
 
 		FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager,
 				null);
-		fieldScreenScheme.setName(fieldScreenSchemeName + Appendix.FIELDSCREENSCHEME.getName());
+		fieldScreenScheme.setName(fieldScreenSchemeName );
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemEdit);
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemCreate);
@@ -483,7 +481,7 @@ public class JiraObjectCreator {
 	 */
 	public static JiraWorkflow addWorkflow(String projectKey, String workflowXML, ApplicationUser user,
 			String issueTypeName) {
-		String workflowName = issueTypeName + Appendix.WORKFLOW;
+		String workflowName = issueTypeName;
 		final WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager();
 		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(workflowName);
 

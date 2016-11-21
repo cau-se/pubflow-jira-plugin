@@ -35,7 +35,6 @@ import com.atlassian.jira.project.Project;
 import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.JiraManagerPlugin;
-import de.pubflow.jira.misc.Appendix;
 
 public class JiraObjectGetter {
 
@@ -181,7 +180,7 @@ public class JiraObjectGetter {
 
 	public static List<String> getStatusNames(String projectKey) {
 		List<Status> status = ComponentAccessor.getWorkflowManager()
-				.getWorkflow(projectKey + Appendix.WORKFLOW.getName()).getLinkedStatusObjects();
+				.getWorkflow(projectKey).getLinkedStatusObjects();
 		List<String> result = new ArrayList<String>();
 
 		for (Status statusItem : status) {

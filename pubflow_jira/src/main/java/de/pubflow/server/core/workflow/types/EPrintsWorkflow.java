@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 
 /**
@@ -39,9 +38,9 @@ public class EPrintsWorkflow extends AbstractWorkflow {
 		String issueTypeEprintsName = this.getWorkflowName();
 
 		List<String> screenNamesEprints = new ArrayList<String>();
-		screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionCreate");
-		screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionEdit");
-		screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionView");
+		screenNamesEprints.add(issueTypeEprintsName + "ActionCreate");
+		screenNamesEprints.add(issueTypeEprintsName + "ActionEdit");
+		screenNamesEprints.add(issueTypeEprintsName + "ActionView");
 
 		return screenNamesEprints;
 

@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 
 /**
  * This class represents the old OCN Workflow and is used for testing purposes
+ * 
  * @author mad
  *
  */
@@ -39,9 +39,9 @@ public class OldOCNWorkflow extends AbstractWorkflow {
 		String issueTypeName = this.getWorkflowName();
 
 		List<String> screenNames = new ArrayList<String>();
-		screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionCreate");
-		screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionEdit");
-		screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionView");
+		screenNames.add(issueTypeName + "ActionCreate");
+		screenNames.add(issueTypeName + "ActionEdit");
+		screenNames.add(issueTypeName + "ActionView");
 
 		return screenNames;
 	}
