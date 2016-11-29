@@ -52,9 +52,6 @@ import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowManager;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
-import com.atlassian.mail.MailException;
-import com.atlassian.mail.MailProtocol;
-import com.atlassian.mail.server.impl.SMTPMailServerImpl;
 import com.opensymphony.workflow.loader.ActionDescriptor;
 
 import de.pubflow.common.PropLoader;
@@ -65,7 +62,7 @@ import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 import de.pubflow.server.core.workflow.types.AbstractWorkflow;
-import de.pubflow.server.core.workflow.types.CVOOTo4DWorkflow;
+import de.pubflow.server.core.workflow.types.CVOOTo4DIDWorkflow;
 import de.pubflow.server.core.workflow.types.EPrintsWorkflow;
 import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
 
@@ -163,8 +160,17 @@ public class JiraManagerInitializer {
 		JiraObjectManipulator.addIssueTypeSchemeToProject(issueTypeScheme, project);
 	}
 
-	public static FieldScreenScheme initHumbleScreens(List<String> names, List<CustomFieldDefinition> customFields,
-			String issueTypeName, List<Long> customFieldIdsTest, Project project) throws Exception {
+	/**
+	 * 
+	 * @param customFields
+	 * @param issueTypeName
+	 * @param customFieldIdsTest
+	 * @param project
+	 * @return
+	 * @throws Exception
+	 */
+	public static FieldScreenScheme initHumbleScreens(List<CustomFieldDefinition> customFields, String issueTypeName,
+			List<Long> customFieldIdsTest, Project project) throws Exception {
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager()
 				.getWorkflow(issueTypeName + Appendix.WORKFLOW);
 		Map<String, LinkedList<CustomFieldDefinition>> availableActionFieldScreens = new HashMap<String, LinkedList<CustomFieldDefinition>>();
@@ -173,10 +179,13 @@ public class JiraManagerInitializer {
 
 		for (CustomFieldDefinition customFieldDefinition : customFields) {
 			for (String id : customFieldDefinition.getScreens()) {
+				// 'init' new screens, the id in the map represents the Screen
+				// (id)
 				if (availableActionFieldScreens.get(id) == null) {
 					LinkedList<CustomFieldDefinition> sameKeyDefs = new LinkedList<CustomFieldDefinition>();
 					sameKeyDefs.add(customFieldDefinition);
 					availableActionFieldScreens.put(id, sameKeyDefs);
+					// add to existing screens
 				} else {
 					availableActionFieldScreens.get(id).add(customFieldDefinition);
 				}
@@ -192,6 +201,7 @@ public class JiraManagerInitializer {
 		FieldScreen fieldScreenEdit = JiraObjectCreator
 				.createActionScreen(issueTypeName + Appendix.FIELDSCREEN + "ActionEdit");
 
+
 		for (Entry<String, LinkedList<CustomFieldDefinition>> e : availableActionFieldScreens.entrySet()) {
 			List<String> customFieldIds = new LinkedList<String>();
 
@@ -200,6 +210,7 @@ public class JiraManagerInitializer {
 						+ issueTypeName);
 				String l = customFieldManager.getCustomFieldObjectByName(c.getName() + "_" + issueTypeName).getId();
 
+				// should be created beforehand
 				if (l != null) {
 					customFieldIds.add(l);
 				} else {
@@ -222,11 +233,9 @@ public class JiraManagerInitializer {
 				jobTab = fieldScreen.addTab("Job");
 			}
 
-			FieldScreenTab fieldScreenTab = jobTab;
-
 			for (String s : customFieldIds) {
-				if (fieldScreenTab.getFieldScreenLayoutItem(s) == null) {
-					fieldScreenTab.addFieldScreenLayoutItem(s);
+				if (jobTab.getFieldScreenLayoutItem(s) == null) {
+					jobTab.addFieldScreenLayoutItem(s);
 				}
 			}
 
@@ -337,23 +346,23 @@ public class JiraManagerInitializer {
 		applicationProperties.setString(APKeys.JIRA_LF_LOGO_URL,
 				PropLoader.getInstance().getProperty("JIRA_LF_LOGO_URL", JiraManagerInitializer.class));
 
-//		SMTPMailServerImpl smtp = new SMTPMailServerImpl();
-//		smtp.setName("Mail Server");
-//		smtp.setDescription("");
-//		smtp.setDefaultFrom("pubflow@bough.de");
-//		smtp.setPrefix("[pubflow]");
-//		smtp.setPort("587");
-//		smtp.setMailProtocol(MailProtocol.SMTP);
-//		smtp.setHostname("mail.bough.de");
-//		smtp.setUsername("wp10598327-pubflow");
-//		smtp.setPassword("kidoD3l77");
-//		smtp.setTlsRequired(true);
-//		try {
-//			ComponentAccessor.getMailServerManager().create(smtp);
-//		} catch (MailException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		// SMTPMailServerImpl smtp = new SMTPMailServerImpl();
+		// smtp.setName("Mail Server");
+		// smtp.setDescription("");
+		// smtp.setDefaultFrom("pubflow@bough.de");
+		// smtp.setPrefix("[pubflow]");
+		// smtp.setPort("587");
+		// smtp.setMailProtocol(MailProtocol.SMTP);
+		// smtp.setHostname("mail.bough.de");
+		// smtp.setUsername("wp10598327-pubflow");
+		// smtp.setPassword("kidoD3l77");
+		// smtp.setTlsRequired(true);
+		// try {
+		// ComponentAccessor.getMailServerManager().create(smtp);
+		// } catch (MailException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 	}
 
 	/**
@@ -386,9 +395,9 @@ public class JiraManagerInitializer {
 
 		try {
 			if (project == null) {
-				
+
 				JiraDefaultUser defaultUserCreator = new JiraDefaultUser(project, projectKey);
-				//Add  users and return the project owner
+				// Add users and return the project owner
 				ApplicationUser owningUser = defaultUserCreator.addDefaultUser();
 
 				log.debug("initPubfowProject: created users and usergroups for PubFlow");
@@ -406,37 +415,44 @@ public class JiraManagerInitializer {
 			statuses.add("Open");
 
 			// Ready for Convertion by Data Management ID: 10000
-			//quickfix: 10100
+			// quickfix: 10100
 			statuses.add("Ready for Convertion by Data Management");
 			// Ready for OCN-Import already ID: 10001
-			//quickfix: 10101
+			// quickfix: 10101
 			statuses.add("Ready for OCN-Import");
 			// Prepare for PubFlow ID: 10002
-			//quickfix: 10102
+			// quickfix: 10102
 			statuses.add("Prepared for PubFlow");
 			// Data Processing by PubFlow ID: 10003
-			//quickfix: 10103
+			// quickfix: 10103
 			statuses.add("Data Processing by PubFlow");
 			// Ready for Pangaea-Import ID: 10004
-			//quickfix: 10104
+			// quickfix: 10104
 			statuses.add("Ready for Pangaea-Import");
 			// Data Needs Correction ID: 10005
-			//quickfix: 10105
+			// quickfix: 10105
 			statuses.add("Data Needs Correction");
 			// Waiting for DOI ID: 10006
-			//quickfix: 10106
+			// quickfix: 10106
 			statuses.add("Waiting for DOI");
 			// should already exist in Jira with ID=6
 			statuses.add("Closed");
 			// Done ID: 10007
-			//quickfix:10001
+			// quickfix:10001
 			statuses.add("Done");
 			// Rejected ID: 10008
-			//quickfix:  10107
+			// quickfix: 10107
 			statuses.add("Rejected");
 			// Pangaea Data Upload ID:10009
-			//quickfix: 10108
+			// quickfix: 10108
 			statuses.add("Pangaea Data Upload");
+			// should be (test it):
+			// Pangaea Data Upload ID:10010
+			// quickfix: 10109
+			statuses.add("Aquire ORCIDs");
+			// Pangaea Data Upload ID:10011
+			// quickfix: 10110
+			statuses.add("Add Authors");
 
 			// add new statuses at the end
 			// TODO is there a more generic solution?
@@ -454,12 +470,13 @@ public class JiraManagerInitializer {
 
 		List<AbstractWorkflow> workflowsToAdd = new LinkedList<>();
 		workflowsToAdd.add(new EPrintsWorkflow());
-//		workflowsToAdd.add(new OCNTo4DWorkflow());
-		workflowsToAdd.add(new CVOOTo4DWorkflow());
+		// workflowsToAdd.add(new OCNTo4DWorkflow());
+//		workflowsToAdd.add(new CVOOTo4DWorkflow());
+		workflowsToAdd.add(new CVOOTo4DIDWorkflow());
 		workflowsToAdd.add(new RawToOCNWorkflow());
 
 		// for testing purposes
-//		workflowsToAdd.add(new OldOCNWorkflow());
+		// workflowsToAdd.add(new OldOCNWorkflow());
 
 		// add the workflows one after another
 		for (AbstractWorkflow workflow : workflowsToAdd) {
@@ -492,13 +509,14 @@ public class JiraManagerInitializer {
 			initWorkflow(projectKey, JiraManagerPlugin.getTextResource(workflow.getJiraWorkflowXMLPath()), user,
 					issueTypeName);
 
-			List<String> screenNames = workflow.getScreenNames();
 			List<CustomFieldDefinition> customFields = workflow.getCustomFields();
 
 			List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, issueTypeName);
 
-			FieldScreenScheme fieldScreenScheme = initHumbleScreens(screenNames, customFields, issueTypeName,
-					customFieldIds, project);
+			// TODO use screenNames in initHumbleScreens
+			// List<String> screenNames = workflow.getScreenNames();
+			FieldScreenScheme fieldScreenScheme = initHumbleScreens(customFields, issueTypeName, customFieldIds,
+					project);
 
 			JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme,
 					JiraObjectGetter.getIssueTypeByName(issueTypeName));

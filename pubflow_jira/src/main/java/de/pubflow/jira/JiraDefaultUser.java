@@ -43,6 +43,8 @@ import de.pubflow.jira.accessors.JiraObjectRemover;
 public class JiraDefaultUser {
 	private Group groupDataManager = null;
 	private Group groupScientists = null;
+	private Group groupLibrarian = null;
+
 	Project project;
 	String projectKey;
 
@@ -70,6 +72,8 @@ public class JiraDefaultUser {
 			InvalidGroupException, GroupNotFoundException, UserNotFoundException, OperationFailedException {
 		groupDataManager = JiraObjectCreator.createGroup("datamanagers");
 		groupScientists = JiraObjectCreator.createGroup("scientists");
+		groupLibrarian = JiraObjectCreator.createGroup("librarian");
+
 		//
 		ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow",
 				new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
@@ -78,9 +82,11 @@ public class JiraDefaultUser {
 		JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-software-users");
 		JiraObjectManipulator.addUserToGroup(userPubFlow, groupScientists);
 		JiraObjectManipulator.addUserToGroup(userPubFlow, groupDataManager);
+		JiraObjectManipulator.addUserToGroup(userPubFlow, groupLibrarian);
+
 
 		
-//		this.createTestUsers();
+		this.createTestUsers();
 		
 		return userPubFlow;
 		// log.debug("initPubfowProject: created users and usergroups for
@@ -95,6 +101,8 @@ public class JiraDefaultUser {
 		JiraObjectManipulator.addUserToGroup(userRoot, groupDataManager);
 		JiraObjectManipulator.addUserToGroup(userRoot, groupScientists);
 		JiraObjectManipulator.addUserToGroup(userRoot, "jira-administrators");
+		JiraObjectManipulator.addUserToGroup(userRoot, groupLibrarian);
+
 
 		// The Group "jira-developers" does not exist in Jira 7.x.x. Use
 		// "jira-core-users"
