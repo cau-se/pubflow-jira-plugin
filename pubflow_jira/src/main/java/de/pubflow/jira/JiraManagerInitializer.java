@@ -208,7 +208,7 @@ public class JiraManagerInitializer {
 			for (CustomFieldDefinition c : e.getValue()) {
 				log.debug("initHumbleScreens: transition screen id loops / c.getName() : " + c.getName() + "_"
 						+ issueTypeName);
-				String l = customFieldManager.getCustomFieldObjectByName(c.getName() + "_" + issueTypeName).getId();
+				String l = customFieldManager.getCustomFieldObjectByName(c.getName()).getId();
 
 				// should be created beforehand
 				if (l != null) {

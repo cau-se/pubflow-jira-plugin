@@ -227,14 +227,14 @@ public class JiraObjectCreator {
 
 			// check if custom field already exists
 			CustomField customFieldObject = customFieldManager
-					.getCustomFieldObjectByName(e.getName() + "_" + issueTypeName);
+					.getCustomFieldObjectByName(e.getName());
 
 			if (customFieldObject == null) {
 				log.debug(
-						"newIssueType - customField search : " + e.getName() + "_" + issueTypeName + " null, creating");
+						"newIssueType - customField search : " + e.getName() + " null, creating");
 
 				// create custom field
-				customFieldObject = customFieldManager.createCustomField(e.getName() + "_" + issueTypeName,
+				customFieldObject = customFieldManager.createCustomField(e.getName(),
 						e.getName() + "-CustomField for " + issueTypeName,
 						customFieldManager.getCustomFieldType(e.getType()), null, contexts, issueTypesList);
 

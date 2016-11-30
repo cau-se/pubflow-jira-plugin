@@ -34,7 +34,7 @@
     <step id="1" name="Open">
       <meta name="jira.status.id">1</meta>
       <actions>
-        <action id="211" name="Gather Authors" view="fieldscreen">
+        <action id="211" name="Gather Authors and send to Librarian" view="fieldscreen">
           <meta name="jira.description"></meta>
           <meta name="jira.fieldscreen.id">10013</meta>
           <restrict-to>
@@ -46,7 +46,7 @@
             </conditions>
           </restrict-to>
           <results>
-            <unconditional-result old-status="null" status="null" step="14">
+            <unconditional-result old-status="null" status="null" step="13">
               <post-functions>
                 <function type="class">
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
@@ -405,45 +405,6 @@
           </restrict-to>
           <results>
             <unconditional-result old-status="null" status="null" step="12">
-              <post-functions>
-                <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
-                </function>
-                <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.misc.CreateCommentFunction</arg>
-                </function>
-                <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.GenerateChangeHistoryFunction</arg>
-                </function>
-                <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
-                </function>
-                <function type="class">
-                  <arg name="eventTypeId">13</arg>
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
-                </function>
-              </post-functions>
-            </unconditional-result>
-          </results>
-        </action>
-      </actions>
-    </step>
-    <step id="14" name="Add Authors">
-      <meta name="jira.status.id">10011</meta>
-      <actions>
-        <action id="181" name="Send to Librarian">
-          <meta name="jira.description"></meta>
-          <meta name="jira.fieldscreen.id"></meta>
-          <restrict-to>
-            <conditions>
-              <condition type="class">
-                <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">datamanagers</arg>
-              </condition>
-            </conditions>
-          </restrict-to>
-          <results>
-            <unconditional-result old-status="null" status="null" step="13">
               <post-functions>
                 <function type="class">
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>

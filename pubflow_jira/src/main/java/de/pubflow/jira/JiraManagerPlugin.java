@@ -53,7 +53,6 @@ import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
 import com.atlassian.sal.api.lifecycle.LifecycleAware;
@@ -188,8 +187,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 
 				String txtmsg = "Dear " + issueEvent.getUser().getName() + " (" + issueEvent.getUser().getName()
 						+ "),\n please append your raw data as an file attachment to this issue and provide the following information "
-						+ "about your data as a comment:\nTitle, Authors, Cruise\n\nAfter that you can start the processing by pressing the "
-						+ "\"Send to Data Management\" button. \nFor demonstration purposes an attachment has been added automatically."
+						+ "about your data if you are asked to do so:\n For example Title, Authors, Cruise and some others"
 						+ "\nThank you!";
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
 			} else {
@@ -197,10 +195,10 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 						.getIssueByCurrentKey(issueEvent.getIssue().getKey());
 				mutableIssue.setAssignee(issueEvent.getIssue().getReporter());
 			}
-		} else if (issueStatus.equals("Add Authors")) {
-			String commentText = this.addAuthorsAsComment(issue, msg.getValues());
+		} else if (issueStatus.equals("Aquire ORCIDs")) {
+			String commentText = this.getAuthorsAsComment(issue, msg.getValues());
 			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
-			JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire ORCIDs");
+//			JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire ORCIDs");
 
 		}
 	}
@@ -210,11 +208,13 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * 
 	 * @param issue
 	 */
-	private String addAuthorsAsComment(Issue issue, Map<String, String> parameters) {
-		String commentText = "";
+	private String getAuthorsAsComment(Issue issue, Map<String, String> parameters) {
+		String commentText = "For the following authors identification is needed";
 
 		for (Entry<String, String> e : parameters.entrySet()) {
-			commentText += e.getKey() + ": " + e.getValue();
+			if (e.getKey().contains("Author")) {
+				commentText += ": \n" + e.getValue();
+			}
 		}
 
 		return commentText;
