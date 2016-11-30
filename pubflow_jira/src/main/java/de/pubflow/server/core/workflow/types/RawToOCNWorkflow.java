@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 
@@ -41,9 +40,9 @@ public class RawToOCNWorkflow extends AbstractWorkflow {
 		String issueTypeRawToOCNName = this.getWorkflowName();
 
 		List<String> screenNamesRawToOCN = new ArrayList<String>();
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + Appendix.FIELDSCREEN + "ActionCreate");
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + Appendix.FIELDSCREEN + "ActionEdit");
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + Appendix.FIELDSCREEN + "ActionView");
+		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionCreate");
+		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionEdit");
+		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionView");
 
 		return screenNamesRawToOCN;
 	}

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 
@@ -44,9 +43,9 @@ public class CVOOTo4DWorkflow extends AbstractWorkflow {
 		String issueTypeCVOOTo4DName = this.getWorkflowName();
 
 		List<String> screenNamesCVOOTo4D = new ArrayList<String>();
-		screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionCreate");
-		screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionEdit");
-		screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionView");
+		screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + "ActionCreate");
+		screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + "ActionEdit");
+		screenNamesCVOOTo4D.add(issueTypeCVOOTo4DName + "ActionView");
 
 		return screenNamesCVOOTo4D;
 

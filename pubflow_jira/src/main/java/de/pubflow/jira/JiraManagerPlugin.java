@@ -221,7 +221,9 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * @param workflowXMLString
+	 * Returns the names of single 'steps' in a given XML.
+	 * 
+	 * @param workflowXMLString the path to the XML file
 	 * @return
 	 */
 	public static LinkedList<String> getSteps(String workflowXMLString) {
