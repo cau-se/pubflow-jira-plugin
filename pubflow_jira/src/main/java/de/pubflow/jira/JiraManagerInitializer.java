@@ -450,9 +450,7 @@ public class JiraManagerInitializer {
 			// Pangaea Data Upload ID:10010
 			// quickfix: 10109
 			statuses.add("Aquire ORCIDs");
-			// Pangaea Data Upload ID:10011
-			// quickfix: 10110
-			statuses.add("Add Authors");
+			
 
 			// add new statuses at the end
 			// TODO is there a more generic solution?

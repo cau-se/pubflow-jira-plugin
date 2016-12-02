@@ -174,7 +174,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 			// add users from groups to watchlist
 			WatcherManager watcherManager = ComponentAccessor.getWatcherManager();
 			Collection<String> watchingGroups = new HashSet<>();
-			watchingGroups.add("librarian");
+			watchingGroups.add("librarians");
 			watchingGroups.add("datamanagers");
 
 			SortedSet<ApplicationUser> watchingUsers = ComponentAccessor.getUserUtil()
