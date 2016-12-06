@@ -2,8 +2,8 @@
 <!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
 <workflow>
   <meta name="jira.description"></meta>
-  <meta name="jira.update.author.key">root</meta>
-  <meta name="jira.updated.date">1480345351592</meta>
+  <meta name="jira.update.author.key">pubflow</meta>
+  <meta name="jira.updated.date">1480952572554</meta>
   <initial-actions>
     <action id="1" name="Create">
       <validators>
@@ -48,6 +48,12 @@
           <results>
             <unconditional-result old-status="null" status="null" step="13">
               <post-functions>
+                <function type="class">
+                  <arg name="field.name">assignee</arg>
+                  <arg name="full.module.key">com.atlassian.jira.plugin.system.workflowupdate-issue-field-function</arg>
+                  <arg name="field.value">bschmidt@geomar.de</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueFieldFunction</arg>
+                </function>
                 <function type="class">
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
                 </function>
@@ -399,13 +405,19 @@
             <conditions>
               <condition type="class">
                 <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">librarians</arg>
+                <arg name="group">librarian</arg>
               </condition>
             </conditions>
           </restrict-to>
           <results>
             <unconditional-result old-status="null" status="null" step="12">
               <post-functions>
+                <function type="class">
+                  <arg name="field.name">assignee</arg>
+                  <arg name="full.module.key">com.atlassian.jira.plugin.system.workflowupdate-issue-field-function</arg>
+                  <arg name="field.value">hmehrtens@geomar.de</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueFieldFunction</arg>
+                </function>
                 <function type="class">
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
                 </function>

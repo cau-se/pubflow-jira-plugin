@@ -133,6 +133,7 @@ public class JiraManagerInitializer {
 					.withAvatarId(new Long(avatarId)).build();
 			project = projectManager.createProject(user, projectData);
 			permissionSchemeManager.addDefaultSchemeToProject(project);
+			ComponentAccessor.getNotificationSchemeManager().addDefaultSchemeToProject(project);
 			log.info("initProject: created a new project with projectKey " + projectKey);
 		} else {
 			log.debug("initProject: project with projectKey " + projectKey + " already exists");
