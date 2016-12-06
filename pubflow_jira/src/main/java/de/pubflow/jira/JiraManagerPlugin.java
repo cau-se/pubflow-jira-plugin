@@ -195,7 +195,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 						.getIssueByCurrentKey(issueEvent.getIssue().getKey());
 				mutableIssue.setAssignee(issueEvent.getIssue().getReporter());
 			}
-		} else if (issueStatus.equals("Aquire ORCIDs")) {
+		} else if (issueStatus.equals("Aquire ORCIDs") && issueEvent.getEventTypeId() == EventType.ISSUE_MOVED_ID) {
 			String commentText = this.getAuthorsAsComment(issue, msg.getValues());
 			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
 //			JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire ORCIDs");
