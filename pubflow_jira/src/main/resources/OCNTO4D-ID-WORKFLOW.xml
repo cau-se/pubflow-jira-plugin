@@ -2,8 +2,8 @@
 <!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
 <workflow>
   <meta name="jira.description"></meta>
-  <meta name="jira.update.author.key">root</meta>
-  <meta name="jira.updated.date">1480345351592</meta>
+  <meta name="jira.update.author.key">pubflow</meta>
+  <meta name="jira.updated.date">1480952572554</meta>
   <initial-actions>
     <action id="1" name="Create">
       <validators>
@@ -36,7 +36,7 @@
       <actions>
         <action id="211" name="Gather Authors and send to Librarian" view="fieldscreen">
           <meta name="jira.description"></meta>
-          <meta name="jira.fieldscreen.id">10013</meta>
+          <meta name="jira.fieldscreen.id">10107</meta>
           <restrict-to>
             <conditions>
               <condition type="class">
@@ -48,6 +48,12 @@
           <results>
             <unconditional-result old-status="null" status="null" step="13">
               <post-functions>
+                <function type="class">
+                  <arg name="field.name">assignee</arg>
+                  <arg name="full.module.key">com.atlassian.jira.plugin.system.workflowupdate-issue-field-function</arg>
+                  <arg name="field.value">bschmidt@geomar.de</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueFieldFunction</arg>
+                </function>
                 <function type="class">
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
                 </function>
@@ -71,7 +77,7 @@
       </actions>
     </step>
     <step id="4" name="Data Processing by PubFlow">
-      <meta name="jira.status.id">10003</meta>
+      <meta name="jira.status.id">10103</meta>
       <actions>
         <action id="41" name="Ready for Pangaea-Import">
           <meta name="jira.description"></meta>
@@ -142,7 +148,7 @@
       </actions>
     </step>
     <step id="5" name="Ready for Pangaea-Import">
-      <meta name="jira.status.id">10004</meta>
+      <meta name="jira.status.id">10104</meta>
       <actions>
         <action id="171" name="Add DOI">
           <meta name="jira.description"></meta>
@@ -176,7 +182,7 @@
       <meta name="jira.status.id">6</meta>
     </step>
     <step id="9" name="Done">
-      <meta name="jira.status.id">10007</meta>
+      <meta name="jira.status.id">10001</meta>
       <actions>
         <action id="71" name="Close">
           <meta name="jira.description"></meta>
@@ -214,7 +220,7 @@
       </actions>
     </step>
     <step id="10" name="Rejected">
-      <meta name="jira.status.id">10008</meta>
+      <meta name="jira.status.id">10107</meta>
       <actions>
         <action id="91" name="Close">
           <meta name="jira.description"></meta>
@@ -252,7 +258,7 @@
       </actions>
     </step>
     <step id="11" name="Data Needs Correction">
-      <meta name="jira.status.id">10005</meta>
+      <meta name="jira.status.id">10105</meta>
       <actions>
         <action id="111" name="Resend to PubFlow" view="fieldscreen">
           <meta name="jira.description"></meta>
@@ -325,7 +331,7 @@
       </actions>
     </step>
     <step id="12" name="Prepared for PubFlow">
-      <meta name="jira.status.id">10002</meta>
+      <meta name="jira.status.id">10102</meta>
       <actions>
         <action id="131" name="Send To PubFlow" view="fieldscreen">
           <meta name="jira.description"></meta>
@@ -390,7 +396,7 @@
       </actions>
     </step>
     <step id="13" name="Aquire ORCIDs">
-      <meta name="jira.status.id">10010</meta>
+      <meta name="jira.status.id">10109</meta>
       <actions>
         <action id="201" name="Prepare for PubFlow">
           <meta name="jira.description"></meta>
@@ -406,6 +412,12 @@
           <results>
             <unconditional-result old-status="null" status="null" step="12">
               <post-functions>
+                <function type="class">
+                  <arg name="field.name">assignee</arg>
+                  <arg name="full.module.key">com.atlassian.jira.plugin.system.workflowupdate-issue-field-function</arg>
+                  <arg name="field.value">hmehrtens@geomar.de</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueFieldFunction</arg>
+                </function>
                 <function type="class">
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
                 </function>

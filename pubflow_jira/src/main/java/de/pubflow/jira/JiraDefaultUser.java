@@ -72,7 +72,7 @@ public class JiraDefaultUser {
 			InvalidGroupException, GroupNotFoundException, UserNotFoundException, OperationFailedException {
 		groupDataManager = JiraObjectCreator.createGroup("datamanagers");
 		groupScientists = JiraObjectCreator.createGroup("scientists");
-		groupLibrarian = JiraObjectCreator.createGroup("librarian");
+		groupLibrarian = JiraObjectCreator.createGroup("librarians");
 
 		//
 		ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow",
@@ -86,7 +86,7 @@ public class JiraDefaultUser {
 
 
 		
-		this.createTestUsers();
+//		this.createTestUsers();
 		
 		return userPubFlow;
 		// log.debug("initPubfowProject: created users and usergroups for
