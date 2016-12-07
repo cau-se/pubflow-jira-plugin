@@ -86,7 +86,7 @@ public class JiraDefaultUser {
 
 
 		
-//		this.createTestUsers();
+		this.createTestUsers();
 		
 		return userPubFlow;
 		// log.debug("initPubfowProject: created users and usergroups for
