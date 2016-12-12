@@ -9,7 +9,10 @@ has to be set accordingly.
 ## Setup Pubflow
 [PubFlow] (http://www.pubflow.uni-kiel.de/en) is split into two packages. The Pubflow-Jira-Plugin and the [Workflow Provider](https://github.com/PubFlow/Workflow-Provider). Both packages need to be started separate from each other. 
 
-### Start Pubflow-Jira-Plugin (Unix)
+### Preliminaries
+To run the stand-alone version of the PubFlow-Jira-Plugin you need to install the [Atlassian SDK](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
+
+### Start Pubflow-Jira-Plugin stand-alone (Unix)
 
 ```bash
     cd path/to/pubflow/
