@@ -7,7 +7,7 @@ To start the plugin the [config](https://github.com/PubFlow/PubFlow-Config) in t
 has to be set accordingly.
 
 ## Setup Pubflow
-[PubFlow] (http://www.pubflow.uni-kiel.de/en) is split into two packages. The Pubflow-Jira-Plugin and the [Workflow Provider](https://github.com/PubFlow/Workflow-Provider). Both packages need to be started separate from each other. 
+[PubFlow] (http://www.pubflow.uni-kiel.de/en) is split into two packages,Pubflow-Jira-Plugin and [Workflow Provider](https://github.com/PubFlow/Workflow-Provider). Both packages need to be started separate from each other. 
 
 ### Preliminaries
 To run the stand-alone version of the PubFlow-Jira-Plugin you need to install the [Atlassian SDK](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
@@ -21,4 +21,15 @@ To run the stand-alone version of the PubFlow-Jira-Plugin you need to install th
     atlas-run
 ```
 
+#### Restart Pubflow-Jira-Plugin
+If you run the stand-alone version of PubFlow-Jira-Plugin you can restart the plugin by opening a new tab in your terminal and enter
+```bash
+    cd path/to/pubflow_jira/
+    atlas-package
+```
 ### Start Workflow-Service
+After you have starte PubFlow-Jira-Plugin you have to run the [Workflow Provider](https://github.com/PubFlow/Workflow-Provider).
+```bash
+    cd path/to/workflow-service
+    mvn run
+```
