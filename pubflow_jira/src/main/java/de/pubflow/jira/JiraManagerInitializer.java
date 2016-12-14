@@ -46,6 +46,7 @@ import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.permission.PermissionSchemeManager;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
+import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.JiraWorkflow;
@@ -54,7 +55,6 @@ import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.opensymphony.workflow.loader.ActionDescriptor;
 
-import de.pubflow.common.PropLoader;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
@@ -65,6 +65,7 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 import de.pubflow.server.core.workflow.types.CVOOTo4DIDWorkflow;
 import de.pubflow.server.core.workflow.types.EPrintsWorkflow;
 import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
+import src.main.java.de.pubflow.common.PropLoader;
 
 /**
  * 
@@ -134,6 +135,9 @@ public class JiraManagerInitializer {
 			project = projectManager.createProject(user, projectData);
 			permissionSchemeManager.addDefaultSchemeToProject(project);
 			ComponentAccessor.getNotificationSchemeManager().addDefaultSchemeToProject(project);
+			Scheme notificationScheme = ComponentAccessor.getNotificationSchemeManager().getSchemeFor(project);
+			
+	
 			log.info("initProject: created a new project with projectKey " + projectKey);
 		} else {
 			log.debug("initProject: project with projectKey " + projectKey + " already exists");
