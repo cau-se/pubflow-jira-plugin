@@ -43,20 +43,27 @@
                 <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
                 <arg name="group">scientists</arg>
               </condition>
-              <condition type="class">
+              <!--  <condition type="class">
                 <arg name="class.name">de.pubflow.jira.misc.IssueAttachmentCondition</arg>
-              </condition>
+              </condition>-->
             </conditions>
           </restrict-to>
+              <validators>
+	        <validator name="" type="class">
+	          <arg name="class.name">de.pubflow.jira.misc.IssueAttachmentValidator</arg>
+	          <arg name="issuetype">OCN</arg>
+	        </validator>
+	      </validators> 
           <results>
             <unconditional-result old-status="Not Done" status="Done" step="2">
               <post-functions>
-                <function type="class">
+             <!-- <function type="class">
                   <arg name="field.value">sampledatamanager</arg>
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueFieldFunction</arg>
                   <arg name="field.name">assignee</arg>
                   <arg name="full.module.key">com.atlassian.jira.plugin.system.workflowupdate-issue-field-function</arg>
                 </function>
+                 -->   
                 <function type="class">
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
                 </function>
@@ -80,7 +87,7 @@
       </actions>
     </step>
     <step id="2" name="Ready for Convertion by Data Management">
-      <meta name="jira.status.id">10001</meta>
+      <meta name="jira.status.id">10100</meta>
       <actions>
         <action id="21" name="Ready for OCN-Import">
           <meta name="jira.description"></meta>
@@ -185,7 +192,7 @@
       </actions>
     </step>
     <step id="3" name="Ready for OCN-Import">
-      <meta name="jira.status.id">10002</meta>
+      <meta name="jira.status.id">10101</meta>
       <actions>
         <action id="171" name="Done">
           <meta name="jira.description"></meta>
@@ -219,7 +226,7 @@
       <meta name="jira.status.id">6</meta>
     </step>
     <step id="9" name="Done">
-      <meta name="jira.status.id">10005</meta>
+      <meta name="jira.status.id">10001</meta>
       <actions>
         <action id="71" name="Close">
           <meta name="jira.description"></meta>
@@ -257,7 +264,7 @@
       </actions>
     </step>
     <step id="10" name="Rejected">
-      <meta name="jira.status.id">10006</meta>
+      <meta name="jira.status.id">10107</meta>
       <actions>
         <action id="91" name="Close">
           <meta name="jira.description"></meta>

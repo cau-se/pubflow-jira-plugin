@@ -16,6 +16,7 @@
 package de.pubflow.jira.accessors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +35,6 @@ import com.atlassian.jira.project.Project;
 import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.JiraManagerPlugin;
-import de.pubflow.jira.misc.Appendix;
 
 public class JiraObjectGetter {
 
@@ -75,6 +75,10 @@ public class JiraObjectGetter {
 	    }
 	    
 	    return issueType;
+	}
+	
+	public static String getIssueTypeNamebyJiraKey(String jiraKey){
+		return getIssueByJiraKey(jiraKey).getIssueType().getName();
 	}
 
 	/**
@@ -146,19 +150,23 @@ public class JiraObjectGetter {
 	 * @return
 	 */
 	public static Status getStatusByName(String projectKey, String statusName) {
-		// List<Status> statuses =
-		// ComponentAccessor.getWorkflowManager().getWorkflow(projectKey +
-		// WORKFLOW_APPENDIX).getLinkedStatusObjects();
 		Collection<Status> statuses = JiraManagerPlugin.statusManager.getStatuses();
+		log.info("getStatusByName - projectKey : " + projectKey);
+		log.info("getStatusByName - statusName : " + statusName);
+		log.info("getStatusByName - statuses.size : " + statuses.size());
 
 		for (Status statusItem : statuses) {
 			if (statusItem != null) {
-				if (statusItem.getName().equals(statusName)) {
+				
+				log.info("getStatusByName - status iteration 1:" + Arrays.toString(statusItem.getName().getBytes()));
+				log.info("getStatusByName - status iteration 2: " + Arrays.toString(statusName.getBytes()));
+				
+				if (statusItem.getName().equalsIgnoreCase(statusName)) {
 					return statusItem;
 				}
 			}
 		}
-		log.debug("getStatusByName: not status with name "+statusName+" was found.");
+		log.debug("getStatusByName: no status with name " + statusName + " was found.");
 		return null;
 	}
 
@@ -172,7 +180,7 @@ public class JiraObjectGetter {
 
 	public static List<String> getStatusNames(String projectKey) {
 		List<Status> status = ComponentAccessor.getWorkflowManager()
-				.getWorkflow(projectKey + Appendix.WORKFLOW.getName()).getLinkedStatusObjects();
+				.getWorkflow(projectKey).getLinkedStatusObjects();
 		List<String> result = new ArrayList<String>();
 
 		for (Status statusItem : status) {

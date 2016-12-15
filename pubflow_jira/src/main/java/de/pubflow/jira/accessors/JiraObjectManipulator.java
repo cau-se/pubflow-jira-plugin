@@ -56,16 +56,19 @@ import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.workflow.ConfigurableJiraWorkflow;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
+import com.atlassian.jira.workflow.WorkflowUtil;
+import com.opensymphony.workflow.FactoryException;
 
 import de.pubflow.jira.JiraManagerPlugin;
 
 public class JiraObjectManipulator {
 
 	private static Logger log = LoggerFactory.getLogger(JiraObjectManipulator.class);
-	
+
 	/**
 	 * @author abar
 	 * @param issueTypeScheme
@@ -126,8 +129,7 @@ public class JiraObjectManipulator {
 		issueTypeScreenScheme.addEntity(issueTypeScreenSchemeEntity);
 
 		return issueTypeScreenScheme;
-	} 
-
+	}
 
 	/**
 	 * Maps the workflow scheme of a given workflow to a given project.
@@ -141,11 +143,12 @@ public class JiraObjectManipulator {
 	public static void addWorkflowToProject(WorkflowScheme workflowScheme, Project project) {
 		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
 		Scheme scheme = workflowSchemeManager.getSchemeObject(workflowScheme.getId());
-		if(scheme != null && project != null) {
+		if (scheme != null && project != null) {
 			workflowSchemeManager.addSchemeToProject(project, scheme);
-			log.info("addWorkflowToProject: the workflowscheme "+scheme.getName()+" was added to the project "+ project.getName());
+			log.info("addWorkflowToProject: the workflowscheme " + scheme.getName() + " was added to the project "
+					+ project.getName());
 		} else {
-			log.debug("addWorkflowToProject: the project is already mapped to the scheme "+ scheme.getName());
+			log.debug("addWorkflowToProject: the project is already mapped to the scheme " + scheme.getName());
 		}
 	}
 
@@ -215,46 +218,51 @@ public class JiraObjectManipulator {
 		}
 	}
 
+	/**
+	 * Add a User to a group in Jira
+	 * 
+	 * @author abar
+	 * 
+	 * @param pubFlowUser
+	 *            : a user we want to a group
+	 * @param pGroup:
+	 *            the name of a group we want to add an user to
+	 * 
+	 */
+	public static void addUserToGroup(ApplicationUser pubflowUser, String pGroup)
+			throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
+			OperationNotPermittedException, OperationFailedException {
+		Group group = ComponentAccessor.getGroupManager().getGroup(pGroup);
+		if (pubflowUser != null && group != null) {
+			ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
+			log.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
+		} else {
+			log.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
+		}
+	}
 
 	/**
-	   * Add a User to a group in Jira
-	   * @author abar
-	   * 
-	   * @param pubFlowUser : a user we want to a group
-	   * @param pGroup: the name of a group we want to add an user to 
-	   * 
-	   */
-	  public static void addUserToGroup(ApplicationUser pubflowUser, String pGroup)
-	      throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
-	      OperationNotPermittedException, OperationFailedException {
-	    Group group = ComponentAccessor.getGroupManager().getGroup(pGroup);
-		  if(pubflowUser != null && group != null) {
-			  ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-			  log.info("addUserToGroup: added the user "+pubflowUser.getUsername()+" to group " +group.getName());
-		  } else {
-			  log.error("addUserToGroup: user "+ pubflowUser +" can't be added to group "+ group);
-		  }
-	  }
+	 * Add a User to a group in Jira
+	 * 
+	 * @author abar
+	 * 
+	 * @param pubFlowUser
+	 *            : a user we want to a group
+	 * @param group:
+	 *            the group we want to add an user to
+	 * 
+	 */
+	public static void addUserToGroup(ApplicationUser pubflowUser, Group group)
+			throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
+			OperationNotPermittedException, OperationFailedException {
+		if (pubflowUser != null && group != null) {
+			ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
+			log.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
+		} else {
+			log.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
+		}
 
-	  /**
-	   * Add a User to a group in Jira
-	   * @author abar
-	   * 
-	   * @param pubFlowUser : a user we want to a group
-	   * @param group: the group we want to add an user to 
-	   * 
-	   */
-	  public static void addUserToGroup(ApplicationUser pubflowUser, Group group)
-	      throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
-	      OperationNotPermittedException, OperationFailedException {
-		  if(pubflowUser != null && group != null) {
-			  ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-			  log.info("addUserToGroup: added the user "+pubflowUser.getUsername()+" to group " +group.getName());
-		  } else {
-			  log.error("addUserToGroup: user "+ pubflowUser +" can't be added to group "+ group);
-		  }
-		  
-	  }
+	}
 
 	/**
 	 * Changes the status of an issue

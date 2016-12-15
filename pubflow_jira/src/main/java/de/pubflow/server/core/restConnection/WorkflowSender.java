@@ -15,62 +15,27 @@
  */
 package de.pubflow.server.core.restConnection;
 
-import java.io.IOException;
-
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.springframework.web.client.RestClientException;
-//import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 
 import de.pubflow.server.common.exceptions.WFRestException;
-import de.pubflow.server.core.workflow.messages.WorkflowRestCall;
+import de.pubflow.server.core.rest.messages.WorkflowRestCall;
 
 /**
  * The WorkflowSender is responsible for the outgoing communication with the
- * Workflow engine. It is designed as a singleton.
+ * Workflow engine.
  * 
  * @author Marc Adolf
  *
  */
 public class WorkflowSender {
-	private static WorkflowSender instance;
-	private String targetURL;
-	private String urlAddition;
-	private Logger myLogger;
-
-	private WorkflowSender() throws WFRestException {
-		myLogger = LoggerFactory.getLogger(this.getClass());
-		// TODO load url from file /config
-		targetURL = "http://localhost:8080";
-		urlAddition = "/workflow";
-	}
-
-	/**
-	 * Accesses the singleton and initializes it if needed
-	 * 
-	 * @return the one and only {@link WorkflowSender}
-	 * @throws WFRestException
-	 */
-	synchronized public static WorkflowSender getInstance() throws WFRestException {
-		if (instance == null) {
-			try {
-				instance = new WorkflowSender();
-			} catch (WFRestException e) {
-				// TODO better exception handling
-				e.printStackTrace();
-				throw e;
-			}
-		}
-		return instance;
-	}
 
 	/**
 	 * Sends a post request to the Workflow engine to use a certain Workflow
@@ -85,11 +50,13 @@ public class WorkflowSender {
 	 *             if the connection responses with a HTTP response code other
 	 *             than 2xx
 	 */
-	public void initWorkflow(WorkflowRestCall wfCall, String workflowPath) throws WFRestException {
+	public static void initWorkflow(WorkflowRestCall wfCall, String workflowPath) throws WFRestException {
+		Logger myLogger = LoggerFactory.getLogger(WorkflowSender.class);
+
 		myLogger.info("Trying to use workflow on: " + workflowPath);
 		Gson gson = new Gson();
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost post = new HttpPost(targetURL + urlAddition + workflowPath);
+		HttpPost post = new HttpPost(workflowPath);
 		HttpResponse response = null;
 
 		try {
@@ -98,13 +65,18 @@ public class WorkflowSender {
 			post.setEntity(postingString);
 			post.setHeader("Content-type", "application/json");
 			response = httpClient.execute(post);
-System.out.println(post.getURI());
+			System.out.println(post.getURI());
 			myLogger.info("Http response: " + response.toString());
 
 		} catch (Exception e) {
 			myLogger.error("Could not deploy new Workflow with ID: " + wfCall.getID());
 			myLogger.error(e.toString());
 			throw new WFRestException("Workflow could not be started");
+		}
+		if (response.getStatusLine().getStatusCode() >= 300) {
+			throw new WFRestException(
+					"The called WorkflowService send status code: " + response.getStatusLine().getStatusCode()
+							+ " and error: " + response.getStatusLine().getReasonPhrase());
 		}
 
 	}

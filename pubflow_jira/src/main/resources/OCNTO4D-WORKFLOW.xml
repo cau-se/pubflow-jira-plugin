@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
 <workflow>
-  <meta name="jira.update.author.key">root</meta>
   <meta name="jira.description"></meta>
-  <meta name="jira.updated.date">1433945046496</meta>
+  <meta name="jira.update.author.key">root</meta>
+  <meta name="jira.updated.date">1477920799130</meta>
   <initial-actions>
     <action id="1" name="Create">
       <validators>
         <validator name="" type="class">
-          <arg name="class.name">com.atlassian.jira.workflow.validator.PermissionValidator</arg>
           <arg name="permission">Create Issue</arg>
+          <arg name="class.name">com.atlassian.jira.workflow.validator.PermissionValidator</arg>
         </validator>
       </validators>
       <results>
@@ -22,8 +22,8 @@
               <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
             </function>
             <function type="class">
-              <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
               <arg name="eventTypeId">1</arg>
+              <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
             </function>
           </post-functions>
         </unconditional-result>
@@ -53,8 +53,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
@@ -63,7 +63,7 @@
       </actions>
     </step>
     <step id="4" name="Data Processing by PubFlow">
-      <meta name="jira.status.id">10003</meta>
+      <meta name="jira.status.id">10103</meta>
       <actions>
         <action id="41" name="Ready for Pangaea-Import">
           <meta name="jira.description"></meta>
@@ -91,8 +91,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
@@ -124,8 +124,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
@@ -134,7 +134,7 @@
       </actions>
     </step>
     <step id="5" name="Ready for Pangaea-Import">
-      <meta name="jira.status.id">10004</meta>
+      <meta name="jira.status.id">10104</meta>
       <actions>
         <action id="171" name="Add DOI">
           <meta name="jira.description"></meta>
@@ -155,8 +155,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
@@ -168,7 +168,7 @@
       <meta name="jira.status.id">6</meta>
     </step>
     <step id="9" name="Done">
-      <meta name="jira.status.id">10005</meta>
+      <meta name="jira.status.id">10001</meta>
       <actions>
         <action id="71" name="Close">
           <meta name="jira.description"></meta>
@@ -196,8 +196,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
@@ -206,7 +206,7 @@
       </actions>
     </step>
     <step id="10" name="Rejected">
-      <meta name="jira.status.id">10006</meta>
+      <meta name="jira.status.id">10107</meta>
       <actions>
         <action id="91" name="Close">
           <meta name="jira.description"></meta>
@@ -234,8 +234,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
@@ -244,11 +244,11 @@
       </actions>
     </step>
     <step id="11" name="Data Needs Correction">
-      <meta name="jira.status.id">10007</meta>
+      <meta name="jira.status.id">10105</meta>
       <actions>
-        <action id="111" name="Resend to PubFlow">
+        <action id="111" name="Resend to PubFlow" view="fieldscreen">
           <meta name="jira.description"></meta>
-          <meta name="jira.fieldscreen.id">10006</meta>
+          <meta name="jira.fieldscreen.id">10011</meta>
           <restrict-to>
             <conditions>
               <condition type="class">
@@ -273,8 +273,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
@@ -307,8 +307,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
@@ -317,7 +317,7 @@
       </actions>
     </step>
     <step id="12" name="Prepared for PubFlow">
-      <meta name="jira.status.id">10008</meta>
+      <meta name="jira.status.id">10102</meta>
       <actions>
         <action id="131" name="Send To PubFlow">
           <meta name="jira.description"></meta>
@@ -345,16 +345,16 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>
           </results>
         </action>
-        <action id="191" name="Alter Parameters">
+        <action id="191" name="Alter Parameters" view="fieldscreen">
           <meta name="jira.description"></meta>
-          <meta name="jira.fieldscreen.id"></meta>
+          <meta name="jira.fieldscreen.id">10011</meta>
           <results>
             <unconditional-result old-status="null" status="null" step="12">
               <post-functions>
@@ -371,8 +371,8 @@
                   <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
                 </function>
                 <function type="class">
-                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                   <arg name="eventTypeId">13</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
                 </function>
               </post-functions>
             </unconditional-result>

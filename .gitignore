@@ -2,3 +2,5 @@
 .idea/
 .project
 .classpath
+.settings
+bin/

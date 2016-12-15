@@ -18,10 +18,8 @@ package de.pubflow.server.core.restConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,62 +28,75 @@ import javax.ws.rs.core.Response;
 
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 
-import de.pubflow.common.IJiraRestConnector;
+import de.pubflow.common.entity.JiraAttachment;
+import de.pubflow.common.entity.JiraIssue;
 import de.pubflow.server.core.jira.JiraEndpoint;
+import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
 import de.pubflow.server.core.workflow.WorkflowBroker;
-import de.pubflow.server.core.workflow.messages.ReceivedWorkflowAnswer;
 
 @Path(JiraRestConnector.basePath)
-public class JiraRestConnector implements IJiraRestConnector {
+public class JiraRestConnector  {
 
-	private static final String jiraRestPath = "/jira/rest/receiver/1.0";
+
+	private static final String jiraRestPath = "/rest/receiver/1.0";
 	static final String basePath = "/pubflow/issues";
 	private static final String answerPath = "/{issueKey}/result";
+//	private static final String port =":63922";
+	private static final String port =":80";
+
 
 	@POST
+	@AnonymousAllowed
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/status")
-	public Response changeStatus(@PathParam("issueKey") String issueKey, @FormParam("statusName") String statusName) {
-		JiraEndpoint.changeStatus(issueKey, statusName);
+	public Response changeStatus(@PathParam("issueKey") String issueKey, String statusName) {
+		JiraEndpoint.changeStatus(issueKey, statusName.substring(1, statusName.length() - 1));
 		try {
-			return Response.status(204).entity(null).build();
+			return Response.status(204).entity("").build();
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();
+			return Response.status(500).entity("").build();
 		}
 	}
 
 	@POST
+	@AnonymousAllowed
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/attachments")
-	public Response addAttachment(@PathParam("issueKey") String issueKey, @FormParam("barray") byte[] barray,
-			@FormParam("fileName") String fileName, @FormParam("type") String type) {
-		JiraEndpoint.addAttachment(issueKey, barray, fileName, type);
+	public Response addAttachment(@PathParam("issueKey") String issueKey, JiraAttachment attachment) {
+		JiraEndpoint.addAttachment(issueKey, attachment.getData(), attachment.getFilename(),
+				attachment.getType());
 		try {
-			return Response.status(204).entity(null).build();
+			return Response.status(204).entity("").build();
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();
+			return Response.status(500).entity("").build();
 		}
 	}
 
 	@POST
+	@AnonymousAllowed
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/comments")
-	public Response addIssueComment(@PathParam("issueKey") String issueKey, @FormParam("comment") String comment) {
+	public Response addIssueComment(@PathParam("issueKey") String issueKey, String comment) {
 		JiraEndpoint.addIssueComment(issueKey, comment);
 		try {
-			return Response.status(204).entity(null).build();
+			return Response.status(204).entity("").build();
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();
+			return Response.status(500).entity("").build();
 		}
 	}
 
 	@POST
+	@AnonymousAllowed
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response createIssue(@FormParam("issueTypeName") String issueTypeName, @FormParam("summary") String summary,
-			@FormParam("description") String description, @FormParam("parameters") HashMap<String, String> parameters,
-			@FormParam("reporter") String reporter) {
-		JiraEndpoint.createIssue(issueTypeName, summary, description, parameters, reporter);
-		try {
-			return Response.status(204).entity(null).build();
-		} catch (Exception e) {
-			return Response.status(500).entity(null).build();
+	public Response createIssue(JiraIssue issue) {
+		String newIssueKey = JiraEndpoint.createIssue(issue.getIssueTypeName(), issue.getSummary(),
+				issue.getDescription(), issue.getParameters(), issue.getReporter());
+		if (newIssueKey != null) {
+			return Response.status(201).entity(newIssueKey).build();
+		} else {
+			return Response.status(400).entity("").build();
+
 		}
 	}
 
@@ -94,7 +105,7 @@ public class JiraRestConnector implements IJiraRestConnector {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(answerPath)
 	public Response receiveWorkflowAnswer(@PathParam("issueKey") String issueKey, ReceivedWorkflowAnswer wfAnswer) {
-		new WorkflowBroker().receiveWorkflowAnswer(issueKey, wfAnswer);
+		WorkflowBroker.getInstance().receiveWorkflowAnswer(issueKey, wfAnswer);
 		return Response.ok().build();
 	}
 
@@ -109,7 +120,8 @@ public class JiraRestConnector implements IJiraRestConnector {
 		// TODO is this the right place for this?
 
 		// TODO set port dynamically (@ startup)
-		return "http://" + InetAddress.getLocalHost().getHostAddress().toString() + ":2990" + jiraRestPath + basePath
+		
+		return "http://" + InetAddress.getLocalHost().getHostAddress().toString() + port + jiraRestPath + basePath
 				+ answerPath;
 	}
 
