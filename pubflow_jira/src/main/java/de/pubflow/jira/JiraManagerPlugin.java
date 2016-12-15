@@ -58,6 +58,7 @@ import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
+import com.atlassian.oauth.serviceprovider.ServiceProviderConsumerStore;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
 import com.atlassian.sal.api.lifecycle.LifecycleAware;
 import com.atlassian.sal.api.message.I18nResolver;
@@ -66,10 +67,8 @@ import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.core.rest.messages.ServiceCallData;
 import de.pubflow.server.core.workflow.WorkflowBroker;
-
-import com.atlassian.oauth.serviceprovider.ServiceProviderConsumerStore;
+import de.pubflow.server.core.rest.messages.ServiceCallData;
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
  * plugin lifecycle integration.
@@ -83,7 +82,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
 	public static StatusManager statusManager;
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("root");
-	public static ApplicationUser user = JiraObjectGetter.getUserByName("PubFlow");
 	public static MutatingApplicationLinkService applicationLinkService;
 	public static TypeAccessor typeAccessor;
 	public static I18nResolver i18nResolver;

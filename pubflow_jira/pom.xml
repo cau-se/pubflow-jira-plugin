@@ -34,7 +34,7 @@
 	</repositories>
 
     <properties>
-    	<applinks.version>5.0.6</applinks.version>
+    	<applinks.version>5.2.4</applinks.version>
     </properties>
     
 	<developers>
@@ -103,7 +103,7 @@
 		        <dependency>
         	<groupId>com.atlassian.jira</groupId>
         	<artifactId>jira-oauth-service-provider-spi-plugin</artifactId>
-        	<version>7.1.4</version>
+        	<version>${jira.version}</version>
         	<scope>provided</scope>
         </dependency>
 		<dependency>

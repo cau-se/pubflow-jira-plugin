@@ -16,12 +16,14 @@
 package de.pubflow.jira;
 
 import java.io.IOException;
+import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -560,6 +562,25 @@ public class JiraManagerInitializer {
 				log.info("Could not add Workflow: " + workflow.getWorkflowName());
 				log.debug("", e);
 			}
+		}
+		
+		try {
+			createAppLinks();
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ManifestNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TypeNotInstalledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
