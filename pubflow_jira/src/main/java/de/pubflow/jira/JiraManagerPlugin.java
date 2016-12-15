@@ -37,6 +37,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.atlassian.applinks.spi.auth.AuthenticationConfigurationManager;
+import com.atlassian.applinks.spi.link.MutatingApplicationLinkService;
+import com.atlassian.applinks.spi.manifest.ManifestRetriever;
+import com.atlassian.applinks.spi.util.TypeAccessor;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -51,6 +55,7 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
 import com.atlassian.sal.api.lifecycle.LifecycleAware;
+import com.atlassian.sal.api.message.I18nResolver;
 
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
@@ -59,6 +64,7 @@ import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 import de.pubflow.server.core.workflow.messages.ServiceCallData;
 
+import com.atlassian.oauth.serviceprovider.ServiceProviderConsumerStore;
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
  * plugin lifecycle integration.
@@ -72,6 +78,12 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
 	public static StatusManager statusManager;
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("PubFlow");
+	public static MutatingApplicationLinkService applicationLinkService;
+	public static TypeAccessor typeAccessor;
+	public static I18nResolver i18nResolver;
+	public static ManifestRetriever manifestRetriever;
+	public static AuthenticationConfigurationManager authenticationConfigurationManager;
+	public static ServiceProviderConsumerStore serviceProviderConsumerStore;
 	public static final SecureRandom secureRandom = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
 
@@ -86,13 +98,21 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 */
 	public JiraManagerPlugin(EventPublisher eventPublisher, IssueTypeManager issueTypeManager,
 			FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager,
-			JiraManagerPluginJob jiraManagerPluginJob) {
+			JiraManagerPluginJob jiraManagerPluginJob, MutatingApplicationLinkService applicationLinkService, TypeAccessor typeAccessor,
+			I18nResolver i18nResolver, ServiceProviderConsumerStore serviceProviderConsumerStore) {
 		log.debug("Plugin started");
 
 		JiraManagerPlugin.issueTypeManager = issueTypeManager;
 		JiraManagerPlugin.fieldScreenSchemeManager = fieldScreenSchemeManager;
 		JiraManagerPlugin.statusManager = statusManager;
 		JiraManagerPlugin.eventPublisher = eventPublisher;
+		JiraManagerPlugin.applicationLinkService = applicationLinkService;
+		JiraManagerPlugin.typeAccessor = typeAccessor;
+		JiraManagerPlugin.i18nResolver = i18nResolver;
+		JiraManagerPlugin.manifestRetriever = manifestRetriever;
+		JiraManagerPlugin.authenticationConfigurationManager = authenticationConfigurationManager;
+		JiraManagerPlugin.serviceProviderConsumerStore = serviceProviderConsumerStore;
+//		JiraManagerPlugin.consumerTokenService = consumerTokenService;
 		this.jiraManagerPluginJob = jiraManagerPluginJob;
 	}
 
