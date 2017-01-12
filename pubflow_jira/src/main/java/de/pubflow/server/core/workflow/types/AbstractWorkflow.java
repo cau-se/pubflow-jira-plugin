@@ -113,6 +113,10 @@ abstract public class AbstractWorkflow {
 			handleWorkflowResults(jiraKey, answer);
 		}
 		
+		
+		//maybe the called service wants to add a comment
+		if(!answer.getCommentMessage().isEmpty())
+			JiraObjectManipulator.addIssueComment(jiraKey, answer.getCommentMessage(), JiraObjectGetter.getUserByName("PubFlow"));
 		//maybe the called service defines which status should be set next
 		if (answer.getNewStatus() != null) {
 			JiraObjectManipulator.changeStatus(jiraKey, answer.getNewStatus());

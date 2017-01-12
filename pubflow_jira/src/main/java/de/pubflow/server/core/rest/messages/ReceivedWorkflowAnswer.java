@@ -28,6 +28,7 @@ public class ReceivedWorkflowAnswer {
 	private String result;
 	private String errorMessage;
 	private String newStatus;
+	private String commentMessage;
 
 	public ReceivedWorkflowAnswer() {
 
@@ -55,6 +56,14 @@ public class ReceivedWorkflowAnswer {
 
 	public void setNewStatus(String newStatus) {
 		this.newStatus = newStatus;
+	}
+
+	public String getCommentMessage() {
+		return commentMessage;
+	}
+
+	public void setCommentMessage(String commentMessage) {
+		this.commentMessage = commentMessage;
 	}
 
 }
