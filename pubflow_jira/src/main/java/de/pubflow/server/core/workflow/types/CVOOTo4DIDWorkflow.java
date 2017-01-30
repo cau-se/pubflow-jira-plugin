@@ -58,21 +58,23 @@ public class CVOOTo4DIDWorkflow extends AbstractWorkflow {
 
 		LinkedList<CustomFieldDefinition> customFieldsCVOOTo4D = new LinkedList<CustomFieldDefinition>();
 		customFieldsCVOOTo4D
-				.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[] { "111", "131", "191"}));
+		.add(new CustomFieldDefinition("Notification Groups", CustomFieldType.MULTIGROUPPICKER, true, new String[] { "111", "191" }));
 		customFieldsCVOOTo4D
-				.add(new CustomFieldDefinition("PID", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[] { "111", "131", "191"}));
 		customFieldsCVOOTo4D
-				.add(new CustomFieldDefinition("Login", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		.add(new CustomFieldDefinition("PID", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
 		customFieldsCVOOTo4D
-				.add(new CustomFieldDefinition("Source", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
-//		customFieldsCVOOTo4D
-//				.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		.add(new CustomFieldDefinition("Login", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
 		customFieldsCVOOTo4D
-				.add(new CustomFieldDefinition("Project", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		.add(new CustomFieldDefinition("Source", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		//		customFieldsCVOOTo4D
+		//				.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
 		customFieldsCVOOTo4D
-				.add(new CustomFieldDefinition("Topology", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		.add(new CustomFieldDefinition("Project", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
 		customFieldsCVOOTo4D
-				.add(new CustomFieldDefinition("Status", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		.add(new CustomFieldDefinition("Topology", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		customFieldsCVOOTo4D
+		.add(new CustomFieldDefinition("Status", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
 		customFieldsCVOOTo4D.add(
 				new CustomFieldDefinition("Target Path", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
 		customFieldsCVOOTo4D.add(
@@ -84,7 +86,7 @@ public class CVOOTo4DIDWorkflow extends AbstractWorkflow {
 		customFieldsCVOOTo4D.add(
 				new CustomFieldDefinition("Quartz Cron", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
 		customFieldsCVOOTo4D
-				.add(new CustomFieldDefinition("DOI", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
+		.add(new CustomFieldDefinition("DOI", CustomFieldType.TEXT, false, new String[] { "111", "131", "191" }));
 		customFieldsCVOOTo4D.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false,
 				new String[] { "111", "131",  "191" }));
 		customFieldsCVOOTo4D.add(new CustomFieldDefinition("Author List", CustomFieldType.TEXTAREA, false,

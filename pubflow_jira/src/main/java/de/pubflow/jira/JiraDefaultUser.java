@@ -44,6 +44,8 @@ public class JiraDefaultUser {
 	private Group groupDataManager = null;
 	private Group groupScientists = null;
 	private Group groupLibrarian = null;
+	private Group groupDataManagersFn = null;
+	private Group groupLibrariansFn = null;
 
 	Project project;
 	String projectKey;
@@ -73,6 +75,8 @@ public class JiraDefaultUser {
 		groupDataManager = JiraObjectCreator.createGroup("datamanagers");
 		groupScientists = JiraObjectCreator.createGroup("scientists");
 		groupLibrarian = JiraObjectCreator.createGroup("librarians");
+		groupLibrariansFn = JiraObjectCreator.createGroup("librarian-notification");
+		groupDataManagersFn = JiraObjectCreator.createGroup("scientists-notification");
 
 		//
 		ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow",
@@ -84,10 +88,16 @@ public class JiraDefaultUser {
 		JiraObjectManipulator.addUserToGroup(userPubFlow, groupDataManager);
 		JiraObjectManipulator.addUserToGroup(userPubFlow, groupLibrarian);
 
+		ApplicationUser userLibrarianFn = JiraObjectCreator.createUser("Librarian - Functional Account",
+				new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
+		JiraObjectManipulator.addUserToGroup(userLibrarianFn, groupLibrariansFn);
 
-		
-//		this.createTestUsers();
-		
+		ApplicationUser userDatamanagerFn = JiraObjectCreator.createUser("DataManager - Functional Account",
+				new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));	
+		JiraObjectManipulator.addUserToGroup(userDatamanagerFn, groupDataManagersFn);
+
+		//this.createTestUsers();
+
 		return userPubFlow;
 		// log.debug("initPubfowProject: created users and usergroups for
 		// PubFlow");
@@ -96,7 +106,7 @@ public class JiraDefaultUser {
 
 	@SuppressWarnings("unused")
 	private void createTestUsers() throws GroupNotFoundException, UserNotFoundException, PermissionException,
-			AddException, OperationNotPermittedException, OperationFailedException, CreateException {
+	AddException, OperationNotPermittedException, OperationFailedException, CreateException {
 		ApplicationUser userRoot = JiraObjectCreator.createUser("root", "$Boogie3");
 		JiraObjectManipulator.addUserToGroup(userRoot, groupDataManager);
 		JiraObjectManipulator.addUserToGroup(userRoot, groupScientists);
