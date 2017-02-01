@@ -32,7 +32,7 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 public class RawToOCNWorkflow extends AbstractWorkflow {
 
 	public RawToOCNWorkflow() {
-		super("Publish Raw Cruise Data", "de.pubflow.RawToOCN", "/RAWTOCVOO-WORKFLOW.xml", "/workflow/DataToCVOOWorkflow");
+		super("Provide Cruise Data", "de.pubflow.RawToOCN", "/RAWTOCVOO-WORKFLOW.xml", "/workflow/DataToCVOOWorkflow");
 	}
 
 	@Override

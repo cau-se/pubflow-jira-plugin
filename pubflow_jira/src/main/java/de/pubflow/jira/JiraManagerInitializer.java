@@ -55,6 +55,7 @@ import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.opensymphony.workflow.loader.ActionDescriptor;
 
+import de.pubflow.common.PropLoader;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
@@ -65,7 +66,6 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 import de.pubflow.server.core.workflow.types.CVOOTo4DIDWorkflow;
 import de.pubflow.server.core.workflow.types.EPrintsWorkflow;
 import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
-import src.main.java.de.pubflow.common.PropLoader;
 
 /**
  * 
@@ -424,7 +424,7 @@ public class JiraManagerInitializer {
 			statuses.add("Ready for Convertion by Data Management");
 			// Ready for OCN-Import already ID: 10001
 			// quickfix: 10101
-			statuses.add("Ready for OCN-Import");
+			statuses.add("CVOO-Import");
 			// Prepare for PubFlow ID: 10002
 			// quickfix: 10102
 			statuses.add("Prepared for PubFlow");
