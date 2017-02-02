@@ -1,5 +1,7 @@
 # PubFlow-Jira-Plugin
-
+This projects contains the application parts of the [DFG] (http://www.dfg.de/) research project [PubFlow] (http://www.pubflow.uni-kiel.de/en).
+All presneted software is part of the a prototype project and may contain bugs and many things to improve.
+E.g. Improvements on a central config file oder service discorvery are possible.
 The main part of the user interaction in [PubFlow] (http://www.pubflow.uni-kiel.de/en) is written as a Jira plugin.
 The different issue types or workflows use the workflows given by the [Workflow Provider](https://github.com/PubFlow/Workflow-Provider)
 
