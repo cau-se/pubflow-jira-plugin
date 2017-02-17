@@ -36,21 +36,15 @@ import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericEntityException;
 
 import com.atlassian.applinks.api.ApplicationId;
-import com.atlassian.applinks.api.ApplicationLink;
 import com.atlassian.applinks.api.ApplicationType;
 import com.atlassian.applinks.api.TypeNotInstalledException;
 import com.atlassian.applinks.api.application.jira.JiraApplicationType;
-import com.atlassian.applinks.api.auth.AuthenticationProvider;
-import com.atlassian.applinks.api.auth.types.TwoLeggedOAuthAuthenticationProvider;
-import com.atlassian.applinks.spi.Manifest;
 import com.atlassian.applinks.spi.application.ApplicationIdUtil;
-import com.atlassian.applinks.spi.auth.AuthenticationConfigurationManager;
 import com.atlassian.applinks.spi.link.ApplicationLinkDetails;
 import com.atlassian.applinks.spi.link.MutableApplicationLink;
 import com.atlassian.applinks.spi.link.MutatingApplicationLinkService;
 import com.atlassian.applinks.spi.manifest.ManifestNotFoundException;
 import com.atlassian.applinks.spi.util.TypeAccessor;
-import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.jira.bc.project.ProjectCreationData;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
@@ -73,11 +67,9 @@ import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowManager;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
-import com.atlassian.mail.MailException;
-import com.atlassian.mail.MailProtocol;
-import com.atlassian.mail.server.impl.SMTPMailServerImpl;
 import com.atlassian.oauth.Consumer;
 import com.atlassian.oauth.Consumer.SignatureMethod;
+import com.atlassian.oauth.serviceprovider.ServiceProviderConsumerStore;
 import com.atlassian.oauth.util.RSAKeys;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.opensymphony.workflow.loader.ActionDescriptor;
@@ -93,7 +85,6 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
 import de.pubflow.server.core.workflow.types.CVOOTo4DIDWorkflow;
 import de.pubflow.server.core.workflow.types.EPrintsWorkflow;
 import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
-
 
 /**
  * 
@@ -327,9 +318,8 @@ public class JiraManagerInitializer {
 		final String TD_CONSUMER_PUBLIC_KEY = "pubflow.consumer.public.key";
 
 		final I18nResolver i18nResolver = JiraManagerPlugin.i18nResolver;
-
-		final TypeAccessor typeAccessor = JiraManagerPlugin.typeAccessor;
 		final MutatingApplicationLinkService appLinkService = JiraManagerPlugin.applicationLinkService;
+		final ServiceProviderConsumerStore serviceProviderConsumerStore = JiraManagerPlugin.serviceProviderConsumerStore;
 		URI linkUrl = URI.create(TD_APPLICATION_LINK_URL);
 		ApplicationId appId = ApplicationIdUtil.generate(URI.create(TD_APPLICATION_LINK_NAME));
 
@@ -337,20 +327,8 @@ public class JiraManagerInitializer {
 			ApplicationLinkDetails link = ApplicationLinkDetails.builder().name(appId.get()).displayUrl(linkUrl)
 					.rpcUrl(linkUrl).build();
 
-			Map<String, String> configMap = new HashMap<String, String>();
-			configMap.put("name", "Alex");
-			configMap.put("key", "Alexander");
-			configMap.put("sharedSecret", "fu");
-			configMap.put("auth.oauth.config.consumer.serviceprovider.token.url", "http://asf");
-			configMap.put("auth.oauth.config.consumer.serviceprovider.access.token.url", "http://asf");
-			configMap.put("auth.oauth.config.consumer.serviceprovider.authorize.url", "http://asf");
-			configMap.put("auth.oauth.config.consumer.key", "Alex");
-			configMap.put("auth.oauth.config.2lo.execute.as", "PubFlow");
-			configMap.put("auth.oauth.config.consumer.public.key", TD_CONSUMER_PUBLIC_KEY);
-			AuthenticationConfigurationManager authConfigManager = JiraManagerPlugin.authenticationConfigurationManager;
-
 			ApplicationType appType = findGenericApplicationType();
-			
+
 			MutableApplicationLink appLink = appLinkService.addApplicationLink(appId, appType, link);
 
 			String consumerKey = i18nResolver.getText(TD_CONSUMER_KEY);
@@ -358,10 +336,14 @@ public class JiraManagerInitializer {
 			String consumerPublicKey = i18nResolver.getText(TD_CONSUMER_PUBLIC_KEY);
 
 			PublicKey publicKey = RSAKeys.fromPemEncodingToPublicKey(consumerPublicKey);
-			 Consumer consumer =
-			 Consumer.key(consumerKey).name(consumerName).publicKey(publicKey).twoLOAllowed(true).twoLOImpersonationAllowed(true).executingTwoLOUser("PubFlow").signatureMethod(SignatureMethod.RSA_SHA1).build();
-			 JiraManagerPlugin.serviceProviderConsumerStore.put(consumer);
-				 appLink.putProperty("oauth.incoming.consumerkey", consumer.getKey());
+			Consumer consumer = 
+					Consumer.key(consumerKey)
+					.name(consumerName).publicKey(publicKey).twoLOAllowed(true)
+					.twoLOImpersonationAllowed(true).executingTwoLOUser("PubFlow")
+					.signatureMethod(SignatureMethod.RSA_SHA1).build();
+			
+			serviceProviderConsumerStore.put(consumer);
+			appLink.putProperty("oauth.incoming.consumerkey", consumer.getKey());
 		}
 
 	}
@@ -528,7 +510,6 @@ public class JiraManagerInitializer {
 			// Pangaea Data Upload ID:10010
 			// quickfix: 10109
 			statuses.add("Aquire ORCIDs");
-			
 
 			// add new statuses at the end
 			// TODO is there a more generic solution?
@@ -563,7 +544,7 @@ public class JiraManagerInitializer {
 				log.debug("", e);
 			}
 		}
-		
+
 		try {
 			createAppLinks();
 		} catch (InvalidKeySpecException e) {
@@ -627,7 +608,7 @@ public class JiraManagerInitializer {
 					+ " to the workflowscheme of the project: " + project.getName());
 			e.printStackTrace();
 		}
-		
+
 		List<CustomFieldDefinition> customFields = workflow.getCustomFields();
 		List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, workflowName);
 		// TODO use screenNames in initHumbleScreens

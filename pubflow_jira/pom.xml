@@ -100,12 +100,6 @@
 			<version>${jira.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		        <dependency>
-        	<groupId>com.atlassian.jira</groupId>
-        	<artifactId>jira-oauth-service-provider-spi-plugin</artifactId>
-        	<version>${jira.version}</version>
-        	<scope>provided</scope>
-        </dependency>
 		<dependency>
 			<groupId>com.atlassian.sal</groupId>
 			<artifactId>sal-api</artifactId>

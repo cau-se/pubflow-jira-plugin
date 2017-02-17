@@ -41,9 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import com.atlassian.applinks.spi.auth.AuthenticationConfigurationManager;
 import com.atlassian.applinks.spi.link.MutatingApplicationLinkService;
-import com.atlassian.applinks.spi.manifest.ManifestRetriever;
 import com.atlassian.applinks.spi.util.TypeAccessor;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
@@ -67,8 +65,8 @@ import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 import de.pubflow.jira.misc.InternalConverterMsg;
 import de.pubflow.server.common.entity.workflow.WFParameter;
-import de.pubflow.server.core.workflow.WorkflowBroker;
 import de.pubflow.server.core.rest.messages.ServiceCallData;
+import de.pubflow.server.core.workflow.WorkflowBroker;
 /**
  * Simple JIRA listener using the atlassian-event library and demonstrating
  * plugin lifecycle integration.
@@ -85,8 +83,6 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static MutatingApplicationLinkService applicationLinkService;
 	public static TypeAccessor typeAccessor;
 	public static I18nResolver i18nResolver;
-	public static ManifestRetriever manifestRetriever;
-	public static AuthenticationConfigurationManager authenticationConfigurationManager;
 	public static ServiceProviderConsumerStore serviceProviderConsumerStore;
 	public static final SecureRandom secureRandom = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
@@ -113,10 +109,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		JiraManagerPlugin.applicationLinkService = applicationLinkService;
 		JiraManagerPlugin.typeAccessor = typeAccessor;
 		JiraManagerPlugin.i18nResolver = i18nResolver;
-		JiraManagerPlugin.manifestRetriever = manifestRetriever;
-		JiraManagerPlugin.authenticationConfigurationManager = authenticationConfigurationManager;
 		JiraManagerPlugin.serviceProviderConsumerStore = serviceProviderConsumerStore;
-//		JiraManagerPlugin.consumerTokenService = consumerTokenService;
+
 		this.jiraManagerPluginJob = jiraManagerPluginJob;
 	}
 

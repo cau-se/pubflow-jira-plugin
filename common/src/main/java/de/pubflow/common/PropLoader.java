@@ -34,7 +34,7 @@ public class PropLoader {
 	// private static final String PUBFLOW_HOME_PATH =
 	// "/home/mad/pubflow_home/";
 	private static final String PUBFLOW_HOME_PATH = System.getProperty("pubflow_home",
-			System.getenv("HOME") + "/pubflow_home/");
+			System.getenv("HOME") + "/Uni/Informatik/Job/Workspace/pubflow/pubflow_home/");
 
 	/**
 	 * Defines the path to the resource folder of PubFlow
