@@ -29,10 +29,14 @@ public class CustomFieldDefinition {
 		SELECT("com.atlassian.jira.plugin.system.customfieldtypes:select"),
 		MULTISELECT("com.atlassian.jira.plugin.system.customfieldtypes:multiselect"),
 		MULTISELECTCHECKBOX("com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes"),
-		CASCADESELECT("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect");
-
-		private String type = "";
+		CASCADESELECT("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect"),
+		MULTIGROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker"),
+		LABEL("com.atlassian.jira.plugin.system.customfieldtypes:labels"),
+		RADIOBUTTONS("com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons"),
+		GROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:grouppicker");
 		
+		private String type = "";
+
 		CustomFieldType(String type) {
 			this.setType(type);
 		}
@@ -68,7 +72,7 @@ public class CustomFieldDefinition {
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -80,11 +84,11 @@ public class CustomFieldDefinition {
 	public void setType(CustomFieldType type) {
 		this.type = type;
 	}
-	
+
 	public boolean isRequired() {
 		return required;
 	}
-	
+
 	public void setRequired(boolean required) {
 		this.required = required;
 	}

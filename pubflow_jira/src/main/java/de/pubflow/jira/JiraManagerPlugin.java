@@ -195,12 +195,40 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 						.getIssueByCurrentKey(issueEvent.getIssue().getKey());
 				mutableIssue.setAssignee(issueEvent.getIssue().getReporter());
 			}
-		} else if (issueStatus.equals("Aquire ORCIDs") && issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
+		} else if (issueStatus.equals("Aquire ORCIDs")
+				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
 			String commentText = this.getAuthorsAsComment(issue, msg.getValues());
 			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
-//			JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire ORCIDs");
+			// JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire
+			// ORCIDs");
+
+		} else if (issueStatus.equals("CVOO-Import")
+				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
+			String commentText = "Sending data for import to the CVOO database.";
+			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
+			try {
+				ServiceCallData callData = new ServiceCallData();
+				List<WFParameter> wfpm = new LinkedList<WFParameter>();
+
+				for (Entry<String, String> e : msg.getValues().entrySet()) {
+					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
+					wfpm.add(wfp);
+				}
+				// to enable mapping to the jira ticket
+				callData.setJiraKey(issue.getKey());
+				callData.setParameters(wfpm);
+
+				callData.setWorkflowID(JiraObjectGetter.getIssueTypeNamebyJiraKey(callData.getJiraKey()));
+				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
+				wfBroker.receiveWFCall(callData);
+
+			} catch (Exception e) {
+				log.error(e.getLocalizedMessage() + " " + e.getCause());
+				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), "Error: " + e.getMessage(), user);
+			}
 
 		}
+
 	}
 
 	/**
@@ -223,7 +251,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	/**
 	 * Returns the names of single 'steps' in a given XML.
 	 * 
-	 * @param workflowXMLString the path to the XML file
+	 * @param workflowXMLString
+	 *            the path to the XML file
 	 * @return
 	 */
 	public static LinkedList<String> getSteps(String workflowXMLString) {

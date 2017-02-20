@@ -42,7 +42,8 @@ public class JiraRestConnector  {
 	static final String basePath = "/pubflow/issues";
 	private static final String answerPath = "/{issueKey}/result";
 //	private static final String port =":63922";
-	private static final String port =":80";
+//	private static final String port =":80";
+	private static final String port="";
 
 
 	@POST
@@ -121,7 +122,7 @@ public class JiraRestConnector  {
 
 		// TODO set port dynamically (@ startup)
 		
-		return "http://" + InetAddress.getLocalHost().getHostAddress().toString() + port + jiraRestPath + basePath
+		return "https://" + InetAddress.getLocalHost().getHostAddress().toString() + port + jiraRestPath + basePath
 				+ answerPath;
 	}
 

@@ -32,7 +32,7 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 public class RawToOCNWorkflow extends AbstractWorkflow {
 
 	public RawToOCNWorkflow() {
-		super("Publish Raw Cruise Data", "de.pubflow.RawToOCN", "/RAWTOCVOO-WORKFLOW.xml", "", "");
+		super("Provide Cruise Data", "de.pubflow.RawToOCN", "/RAWTOCVOO-WORKFLOW.xml", "/workflow/DataToCVOOWorkflow");
 	}
 
 	@Override
@@ -59,6 +59,14 @@ public class RawToOCNWorkflow extends AbstractWorkflow {
 				.add(new CustomFieldDefinition("Title", CustomFieldType.TEXT, false, new String[] { "11" }));
 		customFieldsRawToOCN
 				.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[] { "11" }));
+		customFieldsRawToOCN
+				.add(new CustomFieldDefinition("contact_email", CustomFieldType.TEXT, true, new String[] { "21" }));
+		customFieldsRawToOCN
+				.add(new CustomFieldDefinition("reference", CustomFieldType.TEXT, true, new String[] { "21" }));
+		customFieldsRawToOCN
+				.add(new CustomFieldDefinition("metadata_block", CustomFieldType.TEXT, true, new String[] { "21" }));
+		customFieldsRawToOCN
+				.add(new CustomFieldDefinition("data_block", CustomFieldType.TEXT, true, new String[] { "21" }));
 
 		return customFieldsRawToOCN;
 

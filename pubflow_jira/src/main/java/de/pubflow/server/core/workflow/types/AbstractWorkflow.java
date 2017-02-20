@@ -138,6 +138,10 @@ abstract public class AbstractWorkflow {
 			myLogger.info("Issue ' " + jiraKey + "' try to change status to: " + newStatus);
 			JiraObjectManipulator.changeStatus(jiraKey, newStatus);
 		}
+		String comment = answer.getResult();
+		if(!comment.isEmpty() ){
+			JiraObjectManipulator.addIssueComment(jiraKey, comment, null);
+		}
 	}
 
 	/**

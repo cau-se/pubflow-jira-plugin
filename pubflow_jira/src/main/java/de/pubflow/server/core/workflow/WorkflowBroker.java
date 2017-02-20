@@ -189,6 +189,7 @@ public class WorkflowBroker {
 	 * @throws WFRestException
 	 */
 	public void receiveWorkflowAnswer(String jiraKey, ReceivedWorkflowAnswer answer) {
+		myLogger.debug("Receveived answer to issue " +jiraKey +".");
 		// TODO a generic mapping for available Workflows, which tells what to
 		// do in certain events
 		if (JiraObjectGetter.getIssueByJiraKey(jiraKey) == null) {
