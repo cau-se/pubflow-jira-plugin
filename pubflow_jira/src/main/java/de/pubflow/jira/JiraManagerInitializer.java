@@ -48,6 +48,7 @@ import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.permission.PermissionSchemeManager;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
+import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.JiraWorkflow;
@@ -136,6 +137,9 @@ public class JiraManagerInitializer {
 			project = projectManager.createProject(user, projectData);
 			permissionSchemeManager.addDefaultSchemeToProject(project);
 			ComponentAccessor.getNotificationSchemeManager().addDefaultSchemeToProject(project);
+			Scheme notificationScheme = ComponentAccessor.getNotificationSchemeManager().getSchemeFor(project);
+			
+	
 			log.info("initProject: created a new project with projectKey " + projectKey);
 		} else {
 			log.debug("initProject: project with projectKey " + projectKey + " already exists");
@@ -404,7 +408,7 @@ public class JiraManagerInitializer {
 			statuses.add("Ready for Convertion by Data Management");
 			// Ready for OCN-Import already ID: 10001
 			// quickfix: 10101
-			statuses.add("Ready for OCN-Import");
+			statuses.add("CVOO-Import");
 			// Prepare for PubFlow ID: 10002
 			// quickfix: 10102
 			statuses.add("Prepared for PubFlow");

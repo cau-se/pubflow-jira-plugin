@@ -113,6 +113,10 @@ abstract public class AbstractWorkflow {
 			handleWorkflowResults(jiraKey, answer);
 		}
 		
+		
+		//maybe the called service wants to add a comment
+		if(!answer.getCommentMessage().isEmpty())
+			JiraObjectManipulator.addIssueComment(jiraKey, answer.getCommentMessage(), JiraObjectGetter.getUserByName("PubFlow"));
 		//maybe the called service defines which status should be set next
 		if (answer.getNewStatus() != null) {
 			JiraObjectManipulator.changeStatus(jiraKey, answer.getNewStatus());
@@ -133,6 +137,10 @@ abstract public class AbstractWorkflow {
 		if (newStatus != null && !newStatus.isEmpty()) {
 			myLogger.info("Issue ' " + jiraKey + "' try to change status to: " + newStatus);
 			JiraObjectManipulator.changeStatus(jiraKey, newStatus);
+		}
+		String comment = answer.getResult();
+		if(!comment.isEmpty() ){
+			JiraObjectManipulator.addIssueComment(jiraKey, comment, null);
 		}
 	}
 
