@@ -449,16 +449,15 @@ public class JiraObjectCreator {
 	 */
 	public static Map<String, String> addStatuses(String projectKey, List<String> statuses) {
 		final StatusManager statusManager = ComponentAccessor.getComponent(StatusManager.class);
-		final StatusCategoryManager statusManagerCategory = ComponentAccessor.getComponent(StatusCategoryManager.class);
-		final int catId = 2;
+//		final StatusCategoryManager statusManagerCategory = ComponentAccessor.getComponent(StatusCategoryManager.class);
+//		final int catId = 2;
 		Map<String, String> statusMap = new HashMap<String, String>();
 
 		for (String status : statuses) {
 			Status tempStatus = JiraObjectGetter.getStatusByName(projectKey, status);
 
 			if (tempStatus == null) {
-				tempStatus = statusManager.createStatus(status, "", "/images/icons/status_open.gif",
-						statusManagerCategory.getStatusCategory(new Long(catId)));
+				tempStatus = statusManager.createStatus(status, "", "/images/icons/statuses/generic.png");
 				log.info("addStatuses: status " + tempStatus.getName() + " was created with ID: " + tempStatus.getId());
 			} else {
 				log.debug("addStatuses: status " + tempStatus.getName() + " already exists with ID: "
@@ -469,7 +468,7 @@ public class JiraObjectCreator {
 
 		}
 		return statusMap;
-	}
+	}	
 
 	/**
 	 * Creates a new workflow in Jira

@@ -56,12 +56,9 @@ import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.workflow.ConfigurableJiraWorkflow;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
-import com.atlassian.jira.workflow.WorkflowUtil;
-import com.opensymphony.workflow.FactoryException;
 
 import de.pubflow.jira.JiraManagerPlugin;
 
