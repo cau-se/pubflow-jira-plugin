@@ -74,7 +74,7 @@ public class JiraDefaultUser {
 			InvalidGroupException, GroupNotFoundException, UserNotFoundException, OperationFailedException {
 		groupDataManager = JiraObjectCreator.createGroup("datamanagers");
 		groupScientists = JiraObjectCreator.createGroup("scientists");
-		groupLibrarian = JiraObjectCreator.createGroup("librarians");
+		groupLibrarian = JiraObjectCreator.createGroup("librarian");
 		groupLibrariansFn = JiraObjectCreator.createGroup("librarian-notification");
 		groupDataManagersFn = JiraObjectCreator.createGroup("scientists-notification");
 
