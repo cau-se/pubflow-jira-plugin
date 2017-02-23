@@ -44,7 +44,6 @@ import com.atlassian.jira.issue.fields.screen.FieldScreen;
 import com.atlassian.jira.issue.fields.screen.FieldScreenScheme;
 import com.atlassian.jira.issue.fields.screen.FieldScreenTab;
 import com.atlassian.jira.issue.issuetype.IssueType;
-import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.permission.PermissionSchemeManager;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
@@ -176,7 +175,7 @@ public class JiraManagerInitializer {
 	 * @return
 	 * @throws Exception
 	 */
-	public static FieldScreenScheme initHumbleScreens(List<CustomFieldDefinition> customFields, String issueTypeName,
+	public static void initHumbleScreens(List<CustomFieldDefinition> customFields, String issueTypeName,
 			List<Long> customFieldIdsTest, Project project) throws Exception {
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName);
 		Map<String, LinkedList<CustomFieldDefinition>> availableActionFieldScreens = new HashMap<String, LinkedList<CustomFieldDefinition>>();
@@ -200,21 +199,17 @@ public class JiraManagerInitializer {
 			}
 		}
 
-		FieldScreen fieldScreenCreate = JiraObjectCreator.createActionScreen(issueTypeName + "ActionCreate");
-		FieldScreen fieldScreenView = JiraObjectCreator.createActionScreen(issueTypeName + "ActionView");
-		FieldScreen fieldScreenEdit = JiraObjectCreator.createActionScreen(issueTypeName + "ActionEdit");
-
 		for (Entry<String, LinkedList<CustomFieldDefinition>> e : availableActionFieldScreens.entrySet()) {
 			List<String> customFieldIds = new LinkedList<String>();
 
 			for (CustomFieldDefinition c : e.getValue()) {
 				log.debug("initHumbleScreens: transition screen id loops / c.getName() : " + c.getName() + "_"
 						+ issueTypeName);
-				String l = customFieldManager.getCustomFieldObjectByName(c.getName()).getId();
+				Collection<CustomField> l = customFieldManager.getCustomFieldObjectsByName(c.getName());
 
 				// should be created beforehand
 				if (l != null) {
-					customFieldIds.add(l);
+					customFieldIds.add(l.iterator().next().getId());
 				} else {
 					log.error("initHumbleScreens: custom field is null / c.getName() : " + c.getName() + "_"
 							+ issueTypeName);
@@ -240,13 +235,6 @@ public class JiraManagerInitializer {
 				}
 			}
 
-			if (e.getKey().equals("Create")) {
-				fieldScreenCreate = fieldScreen;
-			} else if (e.getKey().equals("Edit")) {
-				fieldScreenEdit = fieldScreen;
-			} else if (e.getKey().equals("View")) {
-				fieldScreenView = fieldScreen;
-			} else {
 				Collection<ActionDescriptor> allActions = jiraWorkflow.getAllActions();
 				Map<String, String> metaAttributes = new HashMap<String, String>();
 				metaAttributes.put("jira.fieldscreen.id", Long.toString(fieldScreen.getId()));
@@ -260,11 +248,7 @@ public class JiraManagerInitializer {
 			}
 		}
 
-		FieldScreenScheme fieldScreenScheme = JiraObjectCreator.generateNewFieldScreenScheme(fieldScreenCreate,
-				fieldScreenView, fieldScreenEdit, issueTypeName);
-
-		return fieldScreenScheme;
-	}
+	
 
 	/**
 	 * Initializes the workflow, workflow scheme and maps them to a project
@@ -467,14 +451,12 @@ public class JiraManagerInitializer {
 
 		// add the workflows one after another
 		for (AbstractWorkflow workflow : workflowsToAdd) {
-			if(workflow == null) {
 				try {
 					addNewWorkflow(projectKey, workflow, project, user);
 				} catch (Exception e) {
 					log.info("Could not add Workflow: " + workflow.getWorkflowName());
 					log.debug("", e);
 				}
-			}
 		}
 
 	}
@@ -517,7 +499,9 @@ public class JiraManagerInitializer {
 		List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, workflowName);
 		// TODO use screenNames in initHumbleScreens
 		// List<String> screenNames = workflow.getScreenNames();
-		FieldScreenScheme fieldScreenScheme = initHumbleScreens(customFields, workflowName, customFieldIds, project);
+		FieldScreenScheme fieldScreenScheme = createBasicFieldScreens(workflow);
+//		FieldScreenScheme fieldScreenScheme = initHumbleScreens(customFields, workflowName, customFieldIds, project);
+		initHumbleScreens(customFields, workflowName, customFieldIds, project);
 
 		JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme, issueType);
 
@@ -596,13 +580,13 @@ public class JiraManagerInitializer {
 		return jiraWorkflow;
 	}
 	
-	private static void createFieldScreen(AbstractWorkflow workflow) {
+	private static FieldScreenScheme createBasicFieldScreens(AbstractWorkflow workflow) throws Exception {
 		FieldScreen fieldScreenCreate = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("create"));
 		FieldScreen fieldScreenView = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("view"));
 		FieldScreen fieldScreenEdit = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("edit"));
 	
 		FieldScreenScheme fieldScreenScheme = JiraObjectCreator.generateNewFieldScreenScheme(fieldScreenCreate,
-				fieldScreenView, fieldScreenEdit, workflow.get);
+				fieldScreenView, fieldScreenEdit, workflow.getWorkflowName());
 
 		return fieldScreenScheme;
 		
