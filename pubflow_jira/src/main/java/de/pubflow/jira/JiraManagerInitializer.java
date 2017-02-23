@@ -519,8 +519,7 @@ public class JiraManagerInitializer {
 		// List<String> screenNames = workflow.getScreenNames();
 		FieldScreenScheme fieldScreenScheme = initHumbleScreens(customFields, workflowName, customFieldIds, project);
 
-		JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme,
-				JiraObjectGetter.getIssueTypeByName(workflowName));
+		JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme, issueType);
 
 		// register Workflow with WorkflowBroker
 		// this should happen even if the Workflow is already saved by jira
@@ -595,6 +594,18 @@ public class JiraManagerInitializer {
 		JiraObjectManipulator.addWorkflowToProject(workflowScheme, projectManager.getProjectObjByKey(projectKey));
 
 		return jiraWorkflow;
+	}
+	
+	private static void createFieldScreen(AbstractWorkflow workflow) {
+		FieldScreen fieldScreenCreate = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("create"));
+		FieldScreen fieldScreenView = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("view"));
+		FieldScreen fieldScreenEdit = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("edit"));
+	
+		FieldScreenScheme fieldScreenScheme = JiraObjectCreator.generateNewFieldScreenScheme(fieldScreenCreate,
+				fieldScreenView, fieldScreenEdit, workflow.get);
+
+		return fieldScreenScheme;
+		
 	}
 	
 	@SuppressWarnings("unchecked")

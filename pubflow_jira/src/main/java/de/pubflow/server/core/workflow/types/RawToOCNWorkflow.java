@@ -15,9 +15,10 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
@@ -33,18 +34,6 @@ public class RawToOCNWorkflow extends AbstractWorkflow {
 
 	public RawToOCNWorkflow() {
 		super("Provide Cruise Data", "de.pubflow.RawToOCN", "/RAWTOCVOO-WORKFLOW.xml", "/workflow/DataToCVOOWorkflow");
-	}
-
-	@Override
-	public List<String> getScreenNames() {
-		String issueTypeRawToOCNName = this.getWorkflowName();
-
-		List<String> screenNamesRawToOCN = new ArrayList<String>();
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionCreate");
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionEdit");
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionView");
-
-		return screenNamesRawToOCN;
 	}
 
 	@Override

@@ -15,13 +15,16 @@
  */
 package de.pubflow.server.core.workflow.types;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
+import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
 
@@ -81,7 +84,16 @@ abstract public class AbstractWorkflow {
 		return workflowID;
 	}
 
-	abstract public List<String> getScreenNames();
+	public Map<String, String> getScreenNames() {
+		String issueType = this.getWorkflowName();
+
+		Map<String, String> basicScreens = new HashMap<String, String>();
+		basicScreens.put("create",issueType + Appendix.FIELDSCREEN + "ActionCreate");
+		basicScreens.put("edit", issueType + Appendix.FIELDSCREEN + "ActionEdit");
+		basicScreens.put("view", issueType + Appendix.FIELDSCREEN + "ActionView");
+
+		return basicScreens;
+	}
 
 	/**
 	 * Defines the Data fields of the Workflow
