@@ -11,8 +11,8 @@
 
 	<!-- all java rules; on each new pmd release, check whether there were added 
 		new rulesets that need to be added here -->
-	<rule ref="rulesets/java/android.xml" />
 	<rule ref="rulesets/java/basic.xml" />
+
 	<rule ref="rulesets/java/braces.xml" />
 	<rule ref="rulesets/java/clone.xml" />
 	<rule ref="rulesets/java/codesize.xml" />
@@ -39,7 +39,9 @@
 	<rule ref="rulesets/java/sunsecure.xml" />
 	<rule ref="rulesets/java/typeresolution.xml" />
 	<rule ref="rulesets/java/unnecessary.xml" />
-	<rule ref="rulesets/java/unusedcode.xml" />
+	<rule ref="rulesets/java/unusedcode.xml">
+		<exclude name="UnusedModifier"/>
+	</rule>
 
 
 	<!-- custom adaptations -->

@@ -86,6 +86,7 @@ import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
  *
  */
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public class JiraManagerInitializer {
 
 	public List<CustomField> customFieldsCache = new LinkedList<CustomField>();

@@ -53,7 +53,6 @@ import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
 import com.atlassian.sal.api.lifecycle.LifecycleAware;
 
@@ -68,6 +67,7 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
  * Simple JIRA listener using the atlassian-event library and demonstrating
  * plugin lifecycle integration.
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public class JiraManagerPlugin implements IJiraManagerPlugin, LifecycleAware, InitializingBean, DisposableBean {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraManagerPlugin.class);
 
