@@ -30,7 +30,7 @@ import com.atlassian.scheduler.JobRunnerResponse;
 
 public class JiraManagerPluginJobRunner implements JobRunner {
 	@Override
-	public JobRunnerResponse runJob(JobRunnerRequest request) {
+	public JobRunnerResponse runJob(final JobRunnerRequest request) {
 
 		try
 		{

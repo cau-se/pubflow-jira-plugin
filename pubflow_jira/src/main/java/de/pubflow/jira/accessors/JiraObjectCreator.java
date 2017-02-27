@@ -164,22 +164,22 @@ public class JiraObjectCreator {
 		}
 
 		FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
+				JiraManagerPlugin.getFieldScreenSchemeManager(), fieldScreenManager);
 		fieldScreenSchemeItemCreate.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
 		fieldScreenSchemeItemCreate.setFieldScreen(fieldScreenCreate);
 
 		FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
+				JiraManagerPlugin.getFieldScreenSchemeManager(), fieldScreenManager);
 		fieldScreenSchemeItemEdit.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
 		fieldScreenSchemeItemEdit.setFieldScreen(fieldScreenEdit);
 
 		FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
+				JiraManagerPlugin.getFieldScreenSchemeManager(), fieldScreenManager);
 		fieldScreenSchemeItemView.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
 		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
 
 		FieldScreenScheme fieldScreenScheme = null;
-		Collection<FieldScreenScheme> fieldScreenSchemes = JiraManagerPlugin.fieldScreenSchemeManager
+		Collection<FieldScreenScheme> fieldScreenSchemes = JiraManagerPlugin.getFieldScreenSchemeManager()
 				.getFieldScreenSchemes(fieldScreenCreate);
 
 		if (!fieldScreenSchemes.isEmpty()) {
@@ -187,7 +187,7 @@ public class JiraObjectCreator {
 		}
 
 		if (fieldScreenScheme == null) {
-			fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager, null);
+			fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.getFieldScreenSchemeManager(), null);
 			fieldScreenScheme.setName(fieldScreenSchemeName);
 			fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);
 			fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemEdit);
@@ -365,21 +365,21 @@ public class JiraObjectCreator {
 		}
 
 		FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
+				JiraManagerPlugin.getFieldScreenSchemeManager(), ComponentAccessor.getFieldScreenManager());
 		fieldScreenSchemeItemCreate.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
 		fieldScreenSchemeItemCreate.setFieldScreen(fieldScreenCreate);
 
 		FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
+				JiraManagerPlugin.getFieldScreenSchemeManager(), ComponentAccessor.getFieldScreenManager());
 		fieldScreenSchemeItemEdit.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
 		fieldScreenSchemeItemEdit.setFieldScreen(fieldScreenEdit);
 
 		FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
+				JiraManagerPlugin.getFieldScreenSchemeManager(), ComponentAccessor.getFieldScreenManager());
 		fieldScreenSchemeItemView.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
 		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
 
-		FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager,
+		FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.getFieldScreenSchemeManager(),
 				null);
 		fieldScreenScheme.setName(fieldScreenSchemeName );
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);

@@ -22,6 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.common.entity.JiraAttachment;
@@ -35,6 +36,7 @@ import de.pubflow.jira.accessors.JiraObjectManipulator;
 public class JiraEndpoint {
 
 	private static Logger myLogger = LoggerFactory.getLogger(JiraEndpoint.class);
+	private final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
 	/**
 	 * Creates a new Issue in Jira
@@ -46,8 +48,8 @@ public class JiraEndpoint {
 	 * @param reporter
 	 * @return
 	 */
-	public static String createIssue(String issueTypeName, String summary, String description,
-			HashMap<String, String> parameters, String reporter) {
+	public static String createIssue(final String issueTypeName, final String summary, final String description,
+			final HashMap<String, String> parameters, final String reporter) {
 		try {
 			ApplicationUser pubflowUser = JiraObjectGetter.getUserByName("PubFlow");
 			myLogger.info("Creating new issue with type: " + issueTypeName);
@@ -137,17 +139,17 @@ public class JiraEndpoint {
 	 * @return returns true if the new comment has been added successfully
 	 */
 
-	public static boolean addIssueComment(String issueKey, String comment) {
-		if (JiraObjectManipulator.addIssueComment(issueKey, comment, JiraManagerPlugin.user) == null) {
+	public boolean addIssueComment(String issueKey, String comment) {
+		if (JiraObjectManipulator.addIssueComment(issueKey, comment, jiraManagerPlugin.getUser()) == null) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	public static boolean addIssueComment(JiraComment comment) {
+	public boolean addIssueComment(JiraComment comment) {
 		if (JiraObjectManipulator.addIssueComment(comment.getIssueKey(), comment.getText(),
-				JiraManagerPlugin.user) == null) {
+				jiraManagerPlugin.getUser()) == null) {
 			return false;
 		} else {
 			return true;
@@ -209,15 +211,15 @@ public class JiraEndpoint {
 	 * @param type
 	 */
 
-	public static boolean addAttachment(String issueKey, byte[] barray, String fileName, String type) {
-		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, JiraManagerPlugin.user);
+	public boolean addAttachment(String issueKey, byte[] barray, String fileName, String type) {
+		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, jiraManagerPlugin.getUser());
 
 		return true;
 	}
 
-	public static boolean addAttachment(JiraAttachment attachment) {
+	public boolean addAttachment(JiraAttachment attachment) {
 		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(),
-				"", JiraManagerPlugin.user);
+				"", jiraManagerPlugin.getUser());
 
 		return true;
 	}

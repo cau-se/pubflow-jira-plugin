@@ -88,10 +88,11 @@ import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
 
 public class JiraManagerInitializer {
 
-	public static List<CustomField> customFieldsCache = new LinkedList<CustomField>();
-	private static Logger log = Logger.getLogger(JiraManagerInitializer.class);
-	private static final ProjectManager projectManager = ComponentAccessor.getProjectManager();
-
+	public List<CustomField> customFieldsCache = new LinkedList<CustomField>();
+	private static final Logger LOGGER = Logger.getLogger(JiraManagerInitializer.class);
+	private final ProjectManager projectManager = ComponentAccessor.getProjectManager();
+	private final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+	
 	/**
 	 * Creates a new Jira project
 	 * 
@@ -107,41 +108,41 @@ public class JiraManagerInitializer {
 	 * @throws Exception
 	 */
 
-	public static Project initProject(String projectName, String projectKey, ApplicationUser user, boolean kill)
+	public Project initProject(final String projectName, final String projectKey, final ApplicationUser user, final boolean kill)
 			throws Exception {
 
-		log.debug("initProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
+		LOGGER.debug("initProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
 		final PermissionSchemeManager permissionSchemeManager = ComponentAccessor.getPermissionSchemeManager();
 
 		if (user != null) {
-			log.debug("initProject - user : " + user.getUsername());
+			LOGGER.debug("initProject - user : " + user.getUsername());
 		} else {
-			log.error("initProject - user null");
+			LOGGER.error("initProject - user null");
 			throw new Exception("User is null");
 		}
 
 		if (projectKey.length() > 4) {
 			final String errorMsg = "initProject: error: project key length > 4 ! ";
-			log.error(errorMsg);
+			LOGGER.error(errorMsg);
 			throw new Exception(errorMsg);
 		}
 
-		Project project = projectManager.getProjectObjByKey(projectKey);
+		Project project = this.getProjectManager().getProjectObjByKey(projectKey);
 
 		if (project == null) {
-			int avatarId = 10100;
-			ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName).withLead(user)
+			final int avatarId = 10100;
+			final ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName).withLead(user)
 					.withKey(projectKey).withDescription("Data Pulication Workflows").withType("business")
 					.withAvatarId(new Long(avatarId)).build();
-			project = projectManager.createProject(user, projectData);
+			project = getProjectManager().createProject(user, projectData);
 			permissionSchemeManager.addDefaultSchemeToProject(project);
 			ComponentAccessor.getNotificationSchemeManager().addDefaultSchemeToProject(project);
-			Scheme notificationScheme = ComponentAccessor.getNotificationSchemeManager().getSchemeFor(project);
+			final Scheme notificationScheme = ComponentAccessor.getNotificationSchemeManager().getSchemeFor(project);
 			
 	
-			log.info("initProject: created a new project with projectKey " + projectKey);
+			LOGGER.info("initProject: created a new project with projectKey " + projectKey);
 		} else {
-			log.debug("initProject: project with projectKey " + projectKey + " already exists");
+			LOGGER.debug("initProject: project with projectKey " + projectKey + " already exists");
 
 		}
 
@@ -157,9 +158,9 @@ public class JiraManagerInitializer {
 	 * @param issueTypeName
 	 *            : the name of the issue type we want to create
 	 */
-	public static void initIssueManagement(String projectKey, String issueTypeName, String workflowID)
+	public void initIssueManagement(final String projectKey, final String issueTypeName, final String workflowID)
 			throws CreateException {
-		final Project project = projectManager.getProjectObjByKey(projectKey);
+		final Project project = getProjectManager().getProjectObjByKey(projectKey);
 		JiraObjectCreator.createIssueType(project, issueTypeName, workflowID);
 		final FieldConfigScheme issueTypeScheme = JiraObjectCreator.createIssueTypeScheme(project);
 
@@ -175,51 +176,51 @@ public class JiraManagerInitializer {
 	 * @return
 	 * @throws Exception
 	 */
-	public static void initHumbleScreens(List<CustomFieldDefinition> customFields, String issueTypeName,
-			List<Long> customFieldIdsTest, Project project) throws Exception {
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName);
-		Map<String, LinkedList<CustomFieldDefinition>> availableActionFieldScreens = new HashMap<String, LinkedList<CustomFieldDefinition>>();
+	public void initHumbleScreens(final List<CustomFieldDefinition> customFields, final String issueTypeName,
+			final List<Long> customFieldIdsTest, final Project project) throws Exception {
+		final JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName);
+		final Map<String, LinkedList<CustomFieldDefinition>> availableActionFieldScreens = new HashMap<String, LinkedList<CustomFieldDefinition>>();
 
 		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 
-		for (CustomFieldDefinition customFieldDefinition : customFields) {
-			for (String id : customFieldDefinition.getScreens()) {
+		for (final CustomFieldDefinition customFieldDefinition : customFields) {
+			for (final String id : customFieldDefinition.getScreens()) {
 				// 'init' new screens, the id in the map represents the Screen
 				// (id)
 				if (availableActionFieldScreens.get(id) == null) {
-					LinkedList<CustomFieldDefinition> sameKeyDefs = new LinkedList<CustomFieldDefinition>();
+					final LinkedList<CustomFieldDefinition> sameKeyDefs = new LinkedList<CustomFieldDefinition>();
 					sameKeyDefs.add(customFieldDefinition);
 					availableActionFieldScreens.put(id, sameKeyDefs);
 					// add to existing screens
 				} else {
 					availableActionFieldScreens.get(id).add(customFieldDefinition);
 				}
-				log.debug("initHumbleScreens: transition screen grouping loops / id : " + id + " / name : "
+				LOGGER.debug("initHumbleScreens: transition screen grouping loops / id : " + id + " / name : "
 						+ customFieldDefinition.getName());
 			}
 		}
 
-		for (Entry<String, LinkedList<CustomFieldDefinition>> e : availableActionFieldScreens.entrySet()) {
-			List<String> customFieldIds = new LinkedList<String>();
+		for (final Entry<String, LinkedList<CustomFieldDefinition>> e : availableActionFieldScreens.entrySet()) {
+			final List<String> customFieldIds = new LinkedList<String>();
 
-			for (CustomFieldDefinition c : e.getValue()) {
-				log.debug("initHumbleScreens: transition screen id loops / c.getName() : " + c.getName() + "_"
+			for (final CustomFieldDefinition c : e.getValue()) {
+				LOGGER.debug("initHumbleScreens: transition screen id loops / c.getName() : " + c.getName() + "_"
 						+ issueTypeName);
-				Collection<CustomField> l = customFieldManager.getCustomFieldObjectsByName(c.getName());
+				final Collection<CustomField> l = customFieldManager.getCustomFieldObjectsByName(c.getName());
 
 				// should be created beforehand
 				if (l != null) {
 					customFieldIds.add(l.iterator().next().getId());
 				} else {
-					log.error("initHumbleScreens: custom field is null / c.getName() : " + c.getName() + "_"
+					LOGGER.error("initHumbleScreens: custom field is null / c.getName() : " + c.getName() + "_"
 							+ issueTypeName);
 				}
 			}
 
-			FieldScreen fieldScreen = JiraObjectCreator.createActionScreen(issueTypeName + "Action" + e.getKey());
-			List<FieldScreenTab> fieldScreenTabs = fieldScreen.getTabs();
+			final FieldScreen fieldScreen = JiraObjectCreator.createActionScreen(issueTypeName + "Action" + e.getKey());
+			final List<FieldScreenTab> fieldScreenTabs = fieldScreen.getTabs();
 			FieldScreenTab jobTab = null;
-			for (FieldScreenTab fieldScreenTab : fieldScreenTabs) {
+			for (final FieldScreenTab fieldScreenTab : fieldScreenTabs) {
 				if (fieldScreenTab.getName().equals("Job")) {
 					jobTab = fieldScreenTab;
 				}
@@ -229,16 +230,16 @@ public class JiraManagerInitializer {
 				jobTab = fieldScreen.addTab("Job");
 			}
 
-			for (String s : customFieldIds) {
+			for (final String s : customFieldIds) {
 				if (jobTab.getFieldScreenLayoutItem(s) == null) {
 					jobTab.addFieldScreenLayoutItem(s);
 				}
 			}
 
-				Collection<ActionDescriptor> allActions = jiraWorkflow.getAllActions();
-				Map<String, String> metaAttributes = new HashMap<String, String>();
+				final Collection<ActionDescriptor> allActions = jiraWorkflow.getAllActions();
+				final Map<String, String> metaAttributes = new HashMap<String, String>();
 				metaAttributes.put("jira.fieldscreen.id", Long.toString(fieldScreen.getId()));
-				for (ActionDescriptor aActions : allActions) {
+				for (final ActionDescriptor aActions : allActions) {
 					if (aActions.getId() == Integer.parseInt(e.getKey())) {
 						aActions.setView(fieldScreen.getName());
 						aActions.setMetaAttributes(metaAttributes);
@@ -262,18 +263,18 @@ public class JiraManagerInitializer {
 	 *            : the ApplicationUser that can create a workflow
 	 *            (administrator in general)
 	 */
-	private static JiraWorkflow initWorkflow(String projectKey, String workflowXML, ApplicationUser user,
-			String issueTypeName) {
+	private JiraWorkflow initWorkflow(final String projectKey, final String workflowXML, final ApplicationUser user,
+			final String issueTypeName) {
 		if (user != null) {
-			log.debug("initWorkflow: user : " + user.getUsername());
+			LOGGER.debug("initWorkflow: user : " + user.getUsername());
 		} else {
-			log.error("initWorkflow: user is null");
+			LOGGER.error("initWorkflow: user is null");
 		}
 
-		JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user, issueTypeName);
-		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
+		final JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user, issueTypeName);
+		final WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
 				issueTypeName);
-		JiraObjectManipulator.addWorkflowToProject(workflowScheme, projectManager.getProjectObjByKey(projectKey));
+		JiraObjectManipulator.addWorkflowToProject(workflowScheme, getProjectManager().getProjectObjByKey(projectKey));
 
 		return jiraWorkflow;
 
@@ -282,7 +283,7 @@ public class JiraManagerInitializer {
 	/**
 	 * Initializes the Look&Feel
 	 */
-	public static void initJiraSettings() {
+	public void initJiraSettings() {
 		final ApplicationProperties applicationProperties = ComponentAccessor.getApplicationProperties();
 		applicationProperties.setString(APKeys.JIRA_BASEURL,
 				PropLoader.getInstance().getProperty("JIRA_BASEURL", JiraManagerInitializer.class));
@@ -353,7 +354,7 @@ public class JiraManagerInitializer {
 	 * @author arl, abar
 	 * 
 	 */
-	public static void initPubFlowProject() throws GenericEntityException, KeyManagementException,
+	public void initPubFlowProject() throws GenericEntityException, KeyManagementException,
 			UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
 		final ApplicationProperties applicationPropertiesManager = ComponentAccessor.getApplicationProperties();
 		final UserManager userManager = ComponentAccessor.getUserManager();
@@ -364,21 +365,21 @@ public class JiraManagerInitializer {
 		initJiraSettings();
 
 		final String projectKey = "PUB";
-		Project project = projectManager.getProjectObjByName("PubFlow");
+		Project project = getProjectManager().getProjectObjByName("PubFlow");
 
 		try {
 			if (project == null) {
 
-				JiraDefaultUser defaultUserCreator = new JiraDefaultUser(project, projectKey);
+				final JiraDefaultUser defaultUserCreator = new JiraDefaultUser();
 				// Add users and return the project owner
-				ApplicationUser owningUser = defaultUserCreator.addDefaultUser();
+				final ApplicationUser owningUser = defaultUserCreator.addDefaultUser();
 
-				log.debug("initPubfowProject: created users and usergroups for PubFlow");
+				LOGGER.debug("initPubfowProject: created users and usergroups for PubFlow");
 
 				project = initProject("PubFlow", projectKey, owningUser, false);
 			}
 
-			List<String> statuses = new LinkedList<String>();
+			final List<String> statuses = new LinkedList<String>();
 
 			// the order of the statuses is important for the id
 			// the id has to be the same as in the xml for jira
@@ -430,16 +431,16 @@ public class JiraManagerInitializer {
 
 			JiraObjectCreator.addStatuses(projectKey, statuses);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return;
 		}
 
-		ApplicationUser user = userManager.getUserByName("PubFlow");
+		final ApplicationUser user = userManager.getUserByName("PubFlow");
 
 		// add workflows
 
-		List<AbstractWorkflow> workflowsToAdd = new LinkedList<>();
+		final List<AbstractWorkflow> workflowsToAdd = new LinkedList<>();
 		workflowsToAdd.add(new EPrintsWorkflow());
 		// workflowsToAdd.add(new OCNTo4DWorkflow());
 		// workflowsToAdd.add(new CVOOTo4DWorkflow());
@@ -450,56 +451,56 @@ public class JiraManagerInitializer {
 		// workflowsToAdd.add(new OldOCNWorkflow());
 
 		// add the workflows one after another
-		for (AbstractWorkflow workflow : workflowsToAdd) {
+		for (final AbstractWorkflow workflow : workflowsToAdd) {
 				try {
 					addNewWorkflow(projectKey, workflow, project, user);
-				} catch (Exception e) {
-					log.info("Could not add Workflow: " + workflow.getWorkflowName());
-					log.debug("", e);
+				} catch (final Exception e) {
+					LOGGER.info("Could not add Workflow: " + workflow.getWorkflowName());
+					LOGGER.debug("", e);
 				}
 		}
 
 	}
 
-	private static void addNewWorkflow(String projectKey, AbstractWorkflow workflow, Project project,
-			ApplicationUser user) throws Exception {
-		log.info("Adding Worklow: " + workflow.getWorkflowName() + "to project key: " + projectKey);
-		log.info("Using XML file located at: " + workflow.getJiraWorkflowXMLPath());
+	private void addNewWorkflow(final String projectKey, final AbstractWorkflow workflow, Project project,
+			final ApplicationUser user) throws Exception {
+		LOGGER.info("Adding Worklow: " + workflow.getWorkflowName() + "to project key: " + projectKey);
+		LOGGER.info("Using XML file located at: " + workflow.getJiraWorkflowXMLPath());
 
 		if (project == null) {
-			project = projectManager.getProjectObjByKey(projectKey);
+			project = getProjectManager().getProjectObjByKey(projectKey);
 		}
 
-		String workflowName = workflow.getWorkflowName();
+		final String workflowName = workflow.getWorkflowName();
 		final WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager();
 		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(workflowName);
 
-		String workflowXMLString = JiraManagerPlugin.getTextResource(workflow.getJiraWorkflowXMLPath());
+		final String workflowXMLString = jiraManagerPlugin.getTextResource(workflow.getJiraWorkflowXMLPath());
 		initIssueManagement(projectKey, workflowName, workflow.getWorkflowID());
 
 		// TODO verify if this step does the right thing
 		jiraWorkflow = createWorkflowAndMapIssueTypeIDs(projectKey, workflow, user, workflowXMLString);
 
-		IssueType issueType = JiraObjectGetter.getIssueTypeByName(workflowName);
-		WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
+		final IssueType issueType = JiraObjectGetter.getIssueTypeByName(workflowName);
+		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
 
 		try {
 			workflowSchemeManager.addWorkflowToScheme(workflowSchemeManager.getWorkflowScheme(project),
 					jiraWorkflow.getName(), issueType.getId());
-			log.info("initWorkflow: added the workflow: " + jiraWorkflow.getName()
+			LOGGER.info("initWorkflow: added the workflow: " + jiraWorkflow.getName()
 					+ " to the workflowscheme of the project: " + project.getName());
-		} catch (GenericEntityException e) {
+		} catch (final GenericEntityException e) {
 			// TODO Auto-generated catch block
-			log.error("initWorkflow: Couldn't  add the workflow: " + jiraWorkflow.getName()
+			LOGGER.error("initWorkflow: Couldn't  add the workflow: " + jiraWorkflow.getName()
 					+ " to the workflowscheme of the project: " + project.getName());
 			e.printStackTrace();
 		}
 		
-		List<CustomFieldDefinition> customFields = workflow.getCustomFields();
-		List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, workflowName);
+		final List<CustomFieldDefinition> customFields = workflow.getCustomFields();
+		final List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, workflowName);
 		// TODO use screenNames in initHumbleScreens
 		// List<String> screenNames = workflow.getScreenNames();
-		FieldScreenScheme fieldScreenScheme = createBasicFieldScreens(workflow);
+		final FieldScreenScheme fieldScreenScheme = createBasicFieldScreens(workflow);
 //		FieldScreenScheme fieldScreenScheme = initHumbleScreens(customFields, workflowName, customFieldIds, project);
 		initHumbleScreens(customFields, workflowName, customFieldIds, project);
 
@@ -521,18 +522,18 @@ public class JiraManagerInitializer {
 	 * @param workflowXMLString
 	 */
 	@SuppressWarnings("unchecked")
-	private static JiraWorkflow createWorkflowAndMapIssueTypeIDs(String projectKey, AbstractWorkflow workflow,
-			ApplicationUser user, String workflowXMLString) {
+	private JiraWorkflow createWorkflowAndMapIssueTypeIDs(final String projectKey, final AbstractWorkflow workflow,
+			final ApplicationUser user, final String workflowXMLString) {
 
-		String issueTypeName = workflow.getWorkflowName();
+		final String issueTypeName = workflow.getWorkflowName();
 
-		LinkedList<String> statuses = JiraManagerPlugin.getSteps(workflowXMLString);
+		final List<String> statuses = jiraManagerPlugin.getSteps(workflowXMLString);
 
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName);
 
 		// only create workflow, if it doesn't exist
 		if (jiraWorkflow != null) {
-			log.info("Issuetype ID mapping: " + issueTypeName + " expected, but doesnt exist");
+			LOGGER.info("Issuetype ID mapping: " + issueTypeName + " expected, but doesnt exist");
 			return jiraWorkflow;
 
 		}
@@ -541,51 +542,51 @@ public class JiraManagerInitializer {
 		// issueTypeName);
 		jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXMLString, user, issueTypeName);
 
-		log.debug("Issuetype ID mapping:  " + issueTypeName);
+		LOGGER.debug("Issuetype ID mapping:  " + issueTypeName);
 
-		Map<String, String> statusMap = JiraObjectCreator.addStatuses(projectKey, statuses);
+		final Map<String, String> statusMap = JiraObjectCreator.addStatuses(projectKey, statuses);
 
 		// Map Steps to Statuses
 		// for each defined step lookup the meta attributes and update the
 		// jira.status.id accordingly
-		for (StepDescriptor step : (List<StepDescriptor>) jiraWorkflow.getDescriptor().getSteps()) {
-			log.info("newIssueType - step : " + step.getId() + " / " + step.getName());
-			String stepName = step.getName();
+		for (final StepDescriptor step : (List<StepDescriptor>) jiraWorkflow.getDescriptor().getSteps()) {
+			LOGGER.info("newIssueType - step : " + step.getId() + " / " + step.getName());
+			final String stepName = step.getName();
 			String id = "";
 
 			if (statuses.contains(stepName)) {
 				id = statusMap.get(stepName);
-				log.info("newIssueType - step : workflow contains step " + stepName);
+				LOGGER.info("newIssueType - step : workflow contains step " + stepName);
 			}
 			// TODO can harm be done if some status exists here and no id is
 			// there?
-			for (Entry<String, String> entry : (Set<Entry<String, String>>) step.getMetaAttributes().entrySet()) {
+			for (final Entry<String, String> entry : (Set<Entry<String, String>>) step.getMetaAttributes().entrySet()) {
 				if (entry.getKey().equals("jira.status.id")) {
 					step.getMetaAttributes().put("jira.status.id", id);
-					log.info("newIssueType - setting jira.status.id : " + id + " in step");
+					LOGGER.info("newIssueType - setting jira.status.id : " + id + " in step");
 				}
 			}
 
 			// ComponentAccessor.getWorkflowManager().updateWorkflow(issueTypeName
 			// + WORKFLOW_APPENDIX, jiraWorkflow);
-			log.info("newIssueType - updating workflow " + jiraWorkflow.getName() + " / user : " + user.getName());
+			LOGGER.info("newIssueType - updating workflow " + jiraWorkflow.getName() + " / user : " + user.getName());
 			ComponentAccessor.getWorkflowManager().updateWorkflow(user, jiraWorkflow);
 			mapScreensAndActions(step);
 		}
 
-		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
+		final WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
 				issueTypeName);
-		JiraObjectManipulator.addWorkflowToProject(workflowScheme, projectManager.getProjectObjByKey(projectKey));
+		JiraObjectManipulator.addWorkflowToProject(workflowScheme, getProjectManager().getProjectObjByKey(projectKey));
 
 		return jiraWorkflow;
 	}
 	
-	private static FieldScreenScheme createBasicFieldScreens(AbstractWorkflow workflow) throws Exception {
-		FieldScreen fieldScreenCreate = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("create"));
-		FieldScreen fieldScreenView = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("view"));
-		FieldScreen fieldScreenEdit = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("edit"));
+	private FieldScreenScheme createBasicFieldScreens(final AbstractWorkflow workflow) throws Exception {
+		final FieldScreen fieldScreenCreate = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("create"));
+		final FieldScreen fieldScreenView = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("view"));
+		final FieldScreen fieldScreenEdit = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("edit"));
 	
-		FieldScreenScheme fieldScreenScheme = JiraObjectCreator.generateNewFieldScreenScheme(fieldScreenCreate,
+		final FieldScreenScheme fieldScreenScheme = JiraObjectCreator.generateNewFieldScreenScheme(fieldScreenCreate,
 				fieldScreenView, fieldScreenEdit, workflow.getWorkflowName());
 
 		return fieldScreenScheme;
@@ -593,16 +594,16 @@ public class JiraManagerInitializer {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static void mapScreensAndActions(StepDescriptor stepDescriptor) {
+	private void mapScreensAndActions(final StepDescriptor stepDescriptor) {
 		
-		List<ActionDescriptor> oActions = stepDescriptor.getActions();
+		final List<ActionDescriptor> oActions = stepDescriptor.getActions();
 		
 		
-		for(ActionDescriptor oAction : oActions)
+		for(final ActionDescriptor oAction : oActions)
 		{
 		    if(oAction.getView().equals("fieldscreen"))
 		    {
-		       log.info("vllt");
+		       LOGGER.info("vllt");
 		    	// do things with oAction.GetId()...
 		    }
 		}
@@ -612,6 +613,13 @@ public class JiraManagerInitializer {
 		// actionDescriptor.getMetaAttributes().put("jira.fieldscreen.id",
 		// fieldScreen.getId());
 		// }
+	}
+
+	/**
+	 * @return the projectManager
+	 */
+	public ProjectManager getProjectManager() {
+		return projectManager;
 	}
 	
 }

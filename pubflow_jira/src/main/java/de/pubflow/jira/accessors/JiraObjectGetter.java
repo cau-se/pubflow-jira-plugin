@@ -150,7 +150,7 @@ public class JiraObjectGetter {
 	 * @return
 	 */
 	public static Status getStatusByName(String projectKey, String statusName) {
-		Collection<Status> statuses = JiraManagerPlugin.statusManager.getStatuses();
+		Collection<Status> statuses = JiraManagerPlugin.getStatusManager().getStatuses();
 		log.info("getStatusByName - projectKey : " + projectKey);
 		log.info("getStatusByName - statusName : " + statusName);
 		log.info("getStatusByName - statuses.size : " + statuses.size());
@@ -237,7 +237,7 @@ public class JiraObjectGetter {
 
 		// iterate through all available issue types and check for equality of
 		// names
-		for (IssueType it : JiraManagerPlugin.issueTypeManager.getIssueTypes()) {
+		for (IssueType it : JiraManagerPlugin.getIssueTypeManager().getIssueTypes()) {
 			if (it.getName().equals(name)) {
 				counter++;
 				result = it;

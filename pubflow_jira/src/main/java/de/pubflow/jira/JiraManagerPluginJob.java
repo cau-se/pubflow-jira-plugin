@@ -32,23 +32,23 @@ public class JiraManagerPluginJob {
 	private static final JobRunnerKey JOB_RUNNER_KEY = JobRunnerKey
 			.of(JiraManagerPluginJobRunner.class.getName());
 	private static final JobId JOB_ID = JobId.of(JiraManagerPluginJobRunner.class.getName());
-	private static final Logger log = LoggerFactory.getLogger(JiraManagerPluginJobRunner.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JiraManagerPluginJobRunner.class);
 	private final SchedulerService schedulerService;
 
-	public JiraManagerPluginJob(SchedulerService schedulerService) {
+	public JiraManagerPluginJob(final SchedulerService schedulerService) {
 		this.schedulerService = schedulerService;
 	}
 
 	public void init() {
-		JiraManagerPluginJobRunner jobRunner = new JiraManagerPluginJobRunner();
+		final JiraManagerPluginJobRunner jobRunner = new JiraManagerPluginJobRunner();
 		schedulerService.registerJobRunner(JOB_RUNNER_KEY, jobRunner);
-		log.info("here");
+
 		try {
 			schedulerService.scheduleJob(JOB_ID,
 					JobConfig.forJobRunnerKey(JOB_RUNNER_KEY).withRunMode(RunMode.RUN_LOCALLY)
 					.withSchedule(Schedule.runOnce(new Date(System.currentTimeMillis() + 2000))));
 		} catch (SchedulerServiceException se) {
-			log.warn("nö " + se);
+			LOGGER.warn("Error: " + se);
 		}
 	}
 

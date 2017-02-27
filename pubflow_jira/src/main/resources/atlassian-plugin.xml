@@ -14,8 +14,9 @@
   <component key="jiraManagerPluginJob" class="de.pubflow.jira.JiraManagerPluginJob">
     <description>Creates this plugin's example data</description>
   </component>
-  <component key="PubFlow Event Handler" class="de.pubflow.jira.JiraManagerPlugin">
+  <component key="PubFlow Event Handler" class="de.pubflow.jira.JiraManagerPlugin" public="true">
     <description>Processes the incoming JIRA issue events.</description>
+    <interface>de.pubflow.jira.IJiraManagerPlugin</interface>
   </component>
   <!-- Note: This MUST be public and registered under the LifecycleAware interface to work! -->
   <component key="jiraManagerPlugin" class="de.pubflow.jira.JiraManagerPlugin" public="true">

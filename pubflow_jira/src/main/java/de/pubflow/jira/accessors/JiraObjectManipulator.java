@@ -119,7 +119,7 @@ public class JiraObjectManipulator {
 
 		// compose
 		IssueTypeScreenSchemeEntity issueTypeScreenSchemeEntity = new IssueTypeScreenSchemeEntityImpl(
-				issueTypeScreenSchemeManager, (GenericValue) null, JiraManagerPlugin.fieldScreenSchemeManager,
+				issueTypeScreenSchemeManager, (GenericValue) null, JiraManagerPlugin.getFieldScreenSchemeManager(),
 				ComponentAccessor.getConstantsManager());
 		issueTypeScreenSchemeEntity.setIssueTypeId(issueType.getId());
 		issueTypeScreenSchemeEntity.setFieldScreenScheme(fieldScreenScheme);
@@ -166,7 +166,7 @@ public class JiraObjectManipulator {
 			MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 
 			// TODO : path os?
-			String filePath = "/tmp/pubflow_tmp" + new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32);
+			String filePath = "/tmp/pubflow_tmp" + new BigInteger(130, JiraManagerPlugin.getSecureRandom()).toString(32);
 			FileOutputStream stream = new FileOutputStream(filePath);
 
 			stream.write(barray);
