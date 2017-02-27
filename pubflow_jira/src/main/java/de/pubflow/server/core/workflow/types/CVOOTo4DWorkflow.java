@@ -15,10 +15,8 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
@@ -41,7 +39,7 @@ public class CVOOTo4DWorkflow extends AbstractWorkflow {
 	@Override
 	public List<CustomFieldDefinition> getCustomFields() {
 
-		LinkedList<CustomFieldDefinition> customFieldsCVOOTo4D = new LinkedList<CustomFieldDefinition>();
+		final List<CustomFieldDefinition> customFieldsCVOOTo4D = new LinkedList<CustomFieldDefinition>();
 		customFieldsCVOOTo4D
 				.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[] { "111", "181", "191"}));
 		customFieldsCVOOTo4D

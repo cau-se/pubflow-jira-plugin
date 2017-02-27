@@ -67,7 +67,7 @@ public class WorkflowBroker {
 	 * @param callData
 	 * @throws WFException
 	 */
-	public void receiveWFCall(ServiceCallData callData) throws WFException {
+	public void receiveWFCall(final ServiceCallData callData) throws WFException {
 
 		// TODO Save Workflows in DB and load from it on startup
 
@@ -76,14 +76,14 @@ public class WorkflowBroker {
 			return;
 		}
 		myLogger.info("Creating new Instance of the '" + callData.getWorkflowID() + "' Workflow");
-		WorkflowRestCall wfRestCall = new WorkflowRestCall();
+		final WorkflowRestCall wfRestCall = new WorkflowRestCall();
 
 		wfRestCall.setID(callData.getJiraKey());
 
 		// add Callback address to the REST call
 		try {
 			wfRestCall.setCallbackAddress(JiraRestConnector.getCallbackAddress());
-		} catch (UnknownHostException e) {
+		} catch (final UnknownHostException e) {
 			myLogger.error("Could not set callback address for the REST call");
 			throw new WFException("  Could not set callback address");
 		}
@@ -94,30 +94,30 @@ public class WorkflowBroker {
 		wfRestCall.setWorkflowParameters(computeParameter(callData));
 
 		// lookup the URL
-		AbstractWorkflow workflow = registeredWorkflows.get(callData.getWorkflowID());
+		final AbstractWorkflow workflow = registeredWorkflows.get(callData.getWorkflowID());
 		if (workflow == null) {
 			myLogger.error(callData.getWorkflowID() + " was not found by the WorkflowBroker");
 			throw new WFException("Workflow not found/registered");
 		}
-		String workflowURL = workflow.getCompleteServiceURL();
+		final String workflowURL = workflow.getCompleteServiceURL();
 		myLogger.info("Using REST-API: " + workflowURL);
 		try {
 			WorkflowSender.initWorkflow(wfRestCall, workflowURL);
 			myLogger.info("Workflow deployed");
-		} catch (WFRestException e) {
+		} catch (final WFRestException e) {
 			myLogger.error("Could not deploy workflow");
 			throw e;
 		}
 	}
 
-	private List<WFParameter> computeParameter(ServiceCallData data) {
+	private List<WFParameter> computeParameter(final ServiceCallData data) {
 
-		List<WFParameter> parameters = data.getParameters();
-		List<WFParameter> filteredParameters = new LinkedList<WFParameter>();
+		final List<WFParameter> parameters = data.getParameters();
+		final List<WFParameter> filteredParameters = new LinkedList<WFParameter>();
 
-		for (WFParameter parameter : parameters) {
+		for (final WFParameter parameter : parameters) {
 			myLogger.info(parameter.getKey() + " : " + parameter.getValue());
-			String key = parameter.getKey();
+			final String key = parameter.getKey();
 
 			if (parameter.getPayloadClazz().equals(ParameterType.STRING)) {
 
@@ -152,7 +152,7 @@ public class WorkflowBroker {
 						parameter.setKey(key);
 						filteredParameters.add(parameter);
 						// }
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						myLogger.error(e.getCause().toString() + " : " + e.getMessage());
 					}
 
@@ -188,7 +188,7 @@ public class WorkflowBroker {
 	 * 
 	 * @throws WFRestException
 	 */
-	public void receiveWorkflowAnswer(String jiraKey, ReceivedWorkflowAnswer answer) {
+	public void receiveWorkflowAnswer(final String jiraKey, final ReceivedWorkflowAnswer answer) {
 		myLogger.debug("Receveived answer to issue " +jiraKey +".");
 		// TODO a generic mapping for available Workflows, which tells what to
 		// do in certain events
@@ -198,9 +198,9 @@ public class WorkflowBroker {
 			return;
 		}
 
-		String workflowName = JiraObjectGetter.getIssueTypeNamebyJiraKey(jiraKey);
+		final String workflowName = JiraObjectGetter.getIssueTypeNamebyJiraKey(jiraKey);
 
-		AbstractWorkflow workflow = registeredWorkflows.get(workflowName);
+		final AbstractWorkflow workflow = registeredWorkflows.get(workflowName);
 
 		if (workflow == null) {
 			myLogger.info("Got answer to issue with key " + jiraKey + " but the issue type is not registered.");
@@ -216,7 +216,7 @@ public class WorkflowBroker {
 	 * 
 	 * @param workflow
 	 */
-	static public void addWorkflow(AbstractWorkflow workflow) {
+	static public void addWorkflow(final AbstractWorkflow workflow) {
 		registeredWorkflows.put(workflow.getWorkflowName(), workflow);
 		myLogger.info("Registered Workflow: "+workflow.getWorkflowName() +" at the WorkflowBroker");
 	}

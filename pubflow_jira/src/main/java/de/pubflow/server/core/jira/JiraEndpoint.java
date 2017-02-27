@@ -36,7 +36,6 @@ import de.pubflow.jira.accessors.JiraObjectManipulator;
 public class JiraEndpoint {
 
 	private static Logger myLogger = LoggerFactory.getLogger(JiraEndpoint.class);
-	private final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
 	/**
 	 * Creates a new Issue in Jira
@@ -139,7 +138,9 @@ public class JiraEndpoint {
 	 * @return returns true if the new comment has been added successfully
 	 */
 
-	public boolean addIssueComment(String issueKey, String comment) {
+	public static boolean addIssueComment(String issueKey, String comment) {
+		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+
 		if (JiraObjectManipulator.addIssueComment(issueKey, comment, jiraManagerPlugin.getUser()) == null) {
 			return false;
 		} else {
@@ -147,7 +148,9 @@ public class JiraEndpoint {
 		}
 	}
 
-	public boolean addIssueComment(JiraComment comment) {
+	public static boolean addIssueComment(JiraComment comment) {
+		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+
 		if (JiraObjectManipulator.addIssueComment(comment.getIssueKey(), comment.getText(),
 				jiraManagerPlugin.getUser()) == null) {
 			return false;
@@ -211,13 +214,17 @@ public class JiraEndpoint {
 	 * @param type
 	 */
 
-	public boolean addAttachment(String issueKey, byte[] barray, String fileName, String type) {
+	public static boolean addAttachment(String issueKey, byte[] barray, String fileName, String type) {
+		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+
 		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, jiraManagerPlugin.getUser());
 
 		return true;
 	}
 
-	public boolean addAttachment(JiraAttachment attachment) {
+	public static boolean addAttachment(JiraAttachment attachment) {
+		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+
 		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(),
 				"", jiraManagerPlugin.getUser());
 

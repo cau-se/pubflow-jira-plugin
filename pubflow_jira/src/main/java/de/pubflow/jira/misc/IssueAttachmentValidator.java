@@ -42,7 +42,7 @@ public class IssueAttachmentValidator implements Validator {
 
 	public boolean hasAttachment(final Map args, final Map transientVars) throws InvalidInputException {
 
-		Issue issue = (Issue) transientVars.get("issue");
+		final Issue issue = (Issue) transientVars.get("issue");
 
 		// Check Issue permission
 		if (issue.getAttachments().size() > 0) {

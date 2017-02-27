@@ -34,7 +34,7 @@ public class JiraObjectRemover {
 	 * @param userToDelete
 	 *            : the name of the user that shall be removed
 	 */
-	public static void deleteUser(ApplicationUser loggedUser, String userToDelete) {
+	public static void deleteUser(final ApplicationUser loggedUser, final String userToDelete) {
 		if (userToDelete != null) {
 			ComponentAccessor.getUserUtil().removeUser(loggedUser,
 					ComponentAccessor.getUserManager().getUserByName(userToDelete));
@@ -45,13 +45,13 @@ public class JiraObjectRemover {
 	 * @param issueKey
 	 * @return
 	 */
-	public static boolean removeIssue(String issueKey) {
+	public static boolean removeIssue(final String issueKey) {
 		try {
-			Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
+			final Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 			ComponentAccessor.getIssueManager().deleteIssueNoEvent(issue);
 			return true;
 
-		} catch (RemoveException e) {
+		} catch (final RemoveException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
@@ -64,12 +64,12 @@ public class JiraObjectRemover {
 	 * @param attachmentId
 	 * @return
 	 */
-	public static boolean removeAttachment(long attachmentId) {
+	public static boolean removeAttachment(final long attachmentId) {
 		try {
-			Attachment attachment = ComponentAccessor.getAttachmentManager().getAttachment(attachmentId);
+			final Attachment attachment = ComponentAccessor.getAttachmentManager().getAttachment(attachmentId);
 			ComponentAccessor.getAttachmentManager().deleteAttachment(attachment);
 			return true;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return false;
 		}

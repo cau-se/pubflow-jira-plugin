@@ -44,11 +44,11 @@ public class JiraObjectGetter {
 	 * @author abar
 	 * 
 	 */
-	static FieldScreen findFieldScreenByName(String name) {
+	static FieldScreen findFieldScreenByName(final String name) {
 		final FieldScreenManager fieldScreenManager = ComponentAccessor.getFieldScreenManager();
-		Collection<FieldScreen> fieldScreens = fieldScreenManager.getFieldScreens();
+		final Collection<FieldScreen> fieldScreens = fieldScreenManager.getFieldScreens();
 
-		for (FieldScreen fieldScreen : fieldScreens) {
+		for (final FieldScreen fieldScreen : fieldScreens) {
 			if (fieldScreen.getName().equals(name)) {
 				return fieldScreen;
 			}
@@ -63,12 +63,12 @@ public class JiraObjectGetter {
 	 *            The issue type we want to look up
 	 * @return the issueType we looked for (null if it does not exist)
 	 */
-	public static IssueType getIssueTypeByName(String issueTypeName) {
-	    IssueType issueType = null;
+	public static IssueType getIssueTypeByName(final String issueTypeName) {
+	    final IssueType issueType = null;
 	    
-	    Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
+	    final Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
 	    
-	    for(IssueType tempIssueType : issueTypes) {
+	    for(final IssueType tempIssueType : issueTypes) {
 	      if(tempIssueType.getName().equals(issueTypeName)) {
 	        return tempIssueType;
 	      }
@@ -77,7 +77,7 @@ public class JiraObjectGetter {
 	    return issueType;
 	}
 	
-	public static String getIssueTypeNamebyJiraKey(String jiraKey){
+	public static String getIssueTypeNamebyJiraKey(final String jiraKey){
 		return getIssueByJiraKey(jiraKey).getIssueType().getName();
 	}
 
@@ -86,14 +86,14 @@ public class JiraObjectGetter {
 	 * @return
 	 * @throws GenericEntityException
 	 */
-	public static boolean lookupIssue(String name) throws GenericEntityException {
-		long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
-		Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
-		List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
+	public static boolean lookupIssue(final String name) throws GenericEntityException {
+		final long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
+		final Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
+		final List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
 
 		log.info("lookupIssue - name : " + name);
 
-		for (Issue issue : issues) {
+		for (final Issue issue : issues) {
 			if (issue.getSummary().equals(name)) {
 				log.info("lookupIssue - return true");
 				return true;
@@ -109,22 +109,22 @@ public class JiraObjectGetter {
 	 * @param id
 	 * @return
 	 */
-	public static String getIssueKeyById(long id) {
-		String key = ComponentAccessor.getIssueManager().getIssueObject(id).getKey();
+	public static String getIssueKeyById(final long id) {
+		final String key = ComponentAccessor.getIssueManager().getIssueObject(id).getKey();
 		log.info("getIssueKeyById - id : " + id);
 		log.info("getIssueKeyById - return " + key);
 
 		return key;
 	}
 
-	public static List<String> getAllIssueSummariesBySummaryContains(String snippet) throws GenericEntityException {
-		long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
-		Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
-		List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
+	public static List<String> getAllIssueSummariesBySummaryContains(final String snippet) throws GenericEntityException {
+		final long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
+		final Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
+		final List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
 		log.info("getAllIssueSummariesBySummaryContains - snippet : " + snippet);
 
-		List<String> resultList = new LinkedList<String>();
-		for (Issue issue : issues) {
+		final List<String> resultList = new LinkedList<String>();
+		for (final Issue issue : issues) {
 			if (issue.getSummary().contains(snippet)) {
 				resultList.add(issue.getSummary());
 			}
@@ -136,8 +136,8 @@ public class JiraObjectGetter {
 	 * @param key
 	 * @return
 	 */
-	public static long getIssueIdByKey(String key) {
-		long id = ComponentAccessor.getIssueManager().getIssueObject(key).getId();
+	public static long getIssueIdByKey(final String key) {
+		final long id = ComponentAccessor.getIssueManager().getIssueObject(key).getId();
 		log.info("getIssueIdByKey - id : " + id);
 		log.info("getIssueIdByKey - return " + key);
 
@@ -149,13 +149,14 @@ public class JiraObjectGetter {
 	 * @param statusName
 	 * @return
 	 */
-	public static Status getStatusByName(String projectKey, String statusName) {
-		Collection<Status> statuses = JiraManagerPlugin.getStatusManager().getStatuses();
+	public static Status getStatusByName(final String projectKey, final String statusName) {
+		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+		final Collection<Status> statuses = jiraManagerPlugin.getStatusManager().getStatuses();
 		log.info("getStatusByName - projectKey : " + projectKey);
 		log.info("getStatusByName - statusName : " + statusName);
 		log.info("getStatusByName - statuses.size : " + statuses.size());
 
-		for (Status statusItem : statuses) {
+		for (final Status statusItem : statuses) {
 			if (statusItem != null) {
 				
 				log.info("getStatusByName - status iteration 1:" + Arrays.toString(statusItem.getName().getBytes()));
@@ -178,19 +179,19 @@ public class JiraObjectGetter {
 	 * @return returns a string array of all available status names
 	 */
 
-	public static List<String> getStatusNames(String projectKey) {
-		List<Status> status = ComponentAccessor.getWorkflowManager()
+	public static List<String> getStatusNames(final String projectKey) {
+		final List<Status> status = ComponentAccessor.getWorkflowManager()
 				.getWorkflow(projectKey).getLinkedStatusObjects();
-		List<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<String>();
 
-		for (Status statusItem : status) {
+		for (final Status statusItem : status) {
 			result.add(statusItem.getName());
 		}
 
 		return result;
 	}
 
-	public static ApplicationUser getUserByName(String userName) {
+	public static ApplicationUser getUserByName(final String userName) {
 		return ComponentAccessor.getUserManager().getUserByName(userName);
 	}
 
@@ -205,11 +206,11 @@ public class JiraObjectGetter {
 	   * 
 	   */
 
-	  public static IssueType findIssueTypeByName(Project project, String name) {
+	  public static IssueType findIssueTypeByName(final Project project, final String name) {
 	    log.debug("findIssueTypeByName - name : " + name);
-	    Collection<IssueType> issueTypes = project.getIssueTypes();
+	    final Collection<IssueType> issueTypes = project.getIssueTypes();
 
-	    for (IssueType issueType : issueTypes) {
+	    for (final IssueType issueType : issueTypes) {
 	      if (issueType.getName().equals(name)) {
 	        return issueType;
 	      }
@@ -229,15 +230,16 @@ public class JiraObjectGetter {
 	 *         issue type with the provided name has been found
 	 */
 
-	public static IssueType findIssueTypeByName(String name) {
+	public static IssueType findIssueTypeByName(final String name) {
 		int counter = 0;
 		IssueType result = null;
+		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
 		log.info("findIssueTypeByName - name : " + name);
 
 		// iterate through all available issue types and check for equality of
 		// names
-		for (IssueType it : JiraManagerPlugin.getIssueTypeManager().getIssueTypes()) {
+		for (final IssueType it : jiraManagerPlugin.getIssueTypeManager().getIssueTypes()) {
 			if (it.getName().equals(name)) {
 				counter++;
 				result = it;
@@ -259,7 +261,7 @@ public class JiraObjectGetter {
 	 * @param issueKey
 	 * @return
 	 */
-	public static Issue getIssueByJiraKey(String issueKey) {
+	public static Issue getIssueByJiraKey(final String issueKey) {
 		return ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 	}
 

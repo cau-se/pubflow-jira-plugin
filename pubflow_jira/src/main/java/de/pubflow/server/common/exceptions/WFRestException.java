@@ -32,7 +32,7 @@ public class WFRestException extends WFException {
 	/**
 	 * @param string
 	 */
-	public WFRestException(String string) {
+	public WFRestException(final String string) {
 		super(string);
 	}
 

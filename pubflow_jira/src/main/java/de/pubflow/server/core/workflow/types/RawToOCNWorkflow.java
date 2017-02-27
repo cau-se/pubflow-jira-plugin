@@ -15,10 +15,8 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
@@ -39,7 +37,7 @@ public class RawToOCNWorkflow extends AbstractWorkflow {
 	@Override
 	public List<CustomFieldDefinition> getCustomFields() {
 
-		LinkedList<CustomFieldDefinition> customFieldsRawToOCN = new LinkedList<CustomFieldDefinition>();
+		final List<CustomFieldDefinition> customFieldsRawToOCN = new LinkedList<CustomFieldDefinition>();
 		customFieldsRawToOCN
 				.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[] { "11" }));
 		customFieldsRawToOCN

@@ -38,7 +38,7 @@ public class ReceivedWorkflowAnswer {
 		return result;
 	}
 
-	public void setResult(String result) {
+	public void setResult(final String result) {
 		this.result = result;
 	}
 
@@ -46,7 +46,7 @@ public class ReceivedWorkflowAnswer {
 		return errorMessage;
 	}
 
-	public void setErrorMessage(String errorMessage) {
+	public void setErrorMessage(final String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
@@ -54,7 +54,7 @@ public class ReceivedWorkflowAnswer {
 		return newStatus;
 	}
 
-	public void setNewStatus(String newStatus) {
+	public void setNewStatus(final String newStatus) {
 		this.newStatus = newStatus;
 	}
 
@@ -62,7 +62,7 @@ public class ReceivedWorkflowAnswer {
 		return commentMessage;
 	}
 
-	public void setCommentMessage(String commentMessage) {
+	public void setCommentMessage(final String commentMessage) {
 		this.commentMessage = commentMessage;
 	}
 

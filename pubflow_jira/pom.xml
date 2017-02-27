@@ -275,7 +275,7 @@
 					<rulesets>
 						<ruleset>${project.basedir}/../config/pmd-ruleset.xml</ruleset>
 					</rulesets>
-					<failurePriority>2</failurePriority>
+					<failurePriority>1</failurePriority>
 					<failOnViolation>true</failOnViolation>
 				</configuration>
 				 <executions>

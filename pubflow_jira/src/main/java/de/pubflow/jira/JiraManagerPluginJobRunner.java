@@ -43,8 +43,8 @@ public class JiraManagerPluginJobRunner implements JobRunner {
 	}
 
 	private String initPubflow() throws KeyManagementException, UnrecoverableKeyException, GenericEntityException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
-
-		JiraManagerInitializer.initPubFlowProject();
+		final JiraManagerInitializer jiraManagerInitializer = new JiraManagerInitializer();
+		jiraManagerInitializer.initPubFlowProject();
 		return "Initilizing pubflow.";
 	}
 }

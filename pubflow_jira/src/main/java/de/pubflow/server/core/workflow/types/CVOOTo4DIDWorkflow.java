@@ -42,9 +42,9 @@ public class CVOOTo4DIDWorkflow extends AbstractWorkflow {
 	@Override
 	public Map<String, String> getScreenNames() {
 
-		String issueTypeCVOOTo4DName = this.getWorkflowName();
+		final String issueTypeCVOOTo4DName = this.getWorkflowName();
 
-		Map<String, String> screenNamesCVOOTo4D = new HashMap<String, String>();
+		final Map<String, String> screenNamesCVOOTo4D = new HashMap<String, String>();
 		screenNamesCVOOTo4D.put("create",issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionCreate");
 		screenNamesCVOOTo4D.put("edit", issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionEdit");
 		screenNamesCVOOTo4D.put("view", issueTypeCVOOTo4DName + Appendix.FIELDSCREEN + "ActionView");
@@ -57,7 +57,7 @@ public class CVOOTo4DIDWorkflow extends AbstractWorkflow {
 	@Override
 	public List<CustomFieldDefinition> getCustomFields() {
 
-		LinkedList<CustomFieldDefinition> customFieldsCVOOTo4D = new LinkedList<CustomFieldDefinition>();
+		final List<CustomFieldDefinition> customFieldsCVOOTo4D = new LinkedList<CustomFieldDefinition>();
 		customFieldsCVOOTo4D
 		.add(new CustomFieldDefinition("Notification Groups", CustomFieldType.MULTIGROUPPICKER, true, new String[] { "111", "191" }));
 		customFieldsCVOOTo4D

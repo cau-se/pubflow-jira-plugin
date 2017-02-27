@@ -15,10 +15,8 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import de.pubflow.jira.misc.CustomFieldDefinition;
 

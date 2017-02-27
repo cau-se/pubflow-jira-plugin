@@ -48,7 +48,7 @@ public class WFParameter implements Serializable{
 		return value;
 	}
 	
-	private void setValue(Object value) {
+	private void setValue(final Object value) {
 		this.value = value;
 	}
 	
@@ -56,7 +56,7 @@ public class WFParameter implements Serializable{
 		return payloadClazz;
 	}
 	
-	private void setPayloadClazz(ParameterType payloadClazz) {
+	private void setPayloadClazz(final ParameterType payloadClazz) {
 		this.payloadClazz = payloadClazz;
 	}
 
@@ -64,7 +64,7 @@ public class WFParameter implements Serializable{
 		return key;
 	}
 	
-	public void setKey(String key) {
+	public void setKey(final String key) {
 		this.key = key;
 	}
 

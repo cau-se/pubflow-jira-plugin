@@ -22,7 +22,7 @@ public class WFException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public WFException(String string) {
+	public WFException(final String string) {
 		super(string);
 	}
 

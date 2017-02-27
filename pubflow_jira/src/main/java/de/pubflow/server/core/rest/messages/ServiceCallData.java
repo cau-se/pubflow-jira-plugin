@@ -53,7 +53,7 @@ public class ServiceCallData implements Serializable {
 	 * @param workflowID
 	 *            the workflowID to set
 	 */
-	public synchronized void setWorkflowID(String workflowID) {
+	public synchronized void setWorkflowID(final String workflowID) {
 		this.workflowID = workflowID;
 	}
 
@@ -69,7 +69,7 @@ public class ServiceCallData implements Serializable {
 	 * @param wftype
 	 *            the wftype to set
 	 */
-	public synchronized void setType(WFType wftype) {
+	public synchronized void setType(final WFType wftype) {
 		this.type = wftype;
 	}
 
@@ -86,7 +86,7 @@ public class ServiceCallData implements Serializable {
 	 * @param parameters
 	 *            the wfparams to set
 	 */
-	public synchronized void setParameters(List<WFParameter> parameters) {
+	public synchronized void setParameters(final List<WFParameter> parameters) {
 		this.parameters = parameters;
 	}
 
@@ -99,7 +99,7 @@ public class ServiceCallData implements Serializable {
 		return jiraKey;
 	}
 
-	public void setJiraKey(String jiraKey) {
+	public void setJiraKey(final String jiraKey) {
 		this.jiraKey = jiraKey;
 	}
 

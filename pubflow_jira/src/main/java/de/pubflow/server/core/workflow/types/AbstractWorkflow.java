@@ -46,8 +46,8 @@ abstract public class AbstractWorkflow {
 	private String baseWebserviceURL = "http://localhost:8080";
 	private String webServiceAPI;
 
-	public AbstractWorkflow(String workflowName, String workflowID, String jiraWorkflowXMLPath, String webServiceAPI,
-			String baseWebserviceURL) {
+	public AbstractWorkflow(final String workflowName, final String workflowID, final String jiraWorkflowXMLPath, final String webServiceAPI,
+			final String baseWebserviceURL) {
 		this(workflowName, workflowID, jiraWorkflowXMLPath, webServiceAPI);
 		this.baseWebserviceURL = baseWebserviceURL;
 
@@ -112,7 +112,7 @@ abstract public class AbstractWorkflow {
 	 * @param jiraKey
 	 * @param answer
 	 */
-	public void handleWorkflowAnswer(String jiraKey, ReceivedWorkflowAnswer answer) {
+	public void handleWorkflowAnswer(final String jiraKey, final ReceivedWorkflowAnswer answer) {
 
 		if (answer.getResult().toLowerCase().contains("error")) {
 			myLogger.error("Workflow with id " + jiraKey + " failed, with message: '" + answer.getErrorMessage() + "'");

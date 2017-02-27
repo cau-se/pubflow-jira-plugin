@@ -58,7 +58,7 @@ public class WorkflowRestCall {
 		return workflowParameters;
 	}
 
-	public void setWorkflowParameters(List<WFParameter> workflowParameters) {
+	public void setWorkflowParameters(final List<WFParameter> workflowParameters) {
 		this.workflowParameters = workflowParameters;
 	}
 
@@ -66,7 +66,7 @@ public class WorkflowRestCall {
 		return callbackAddress;
 	}
 
-	public void setCallbackAddress(String callbackAddress) {
+	public void setCallbackAddress(final String callbackAddress) {
 		this.callbackAddress = callbackAddress;
 	}
 

@@ -25,7 +25,7 @@ public enum Appendix{
 
 	private String name = "";
 
-	Appendix (String type) {
+	Appendix (final String type) {
 		this.getType(type);
 	}
 
@@ -33,7 +33,7 @@ public enum Appendix{
 		return name;
 	}
 
-	public void getType(String type) {
+	public void getType(final String type) {
 		this.name = type;
 	}
 }

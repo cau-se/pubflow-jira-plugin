@@ -44,7 +44,7 @@ public class InternalConverterMsg {
 	/**
 	 * @param issueEvent
 	 */
-	public InternalConverterMsg(IssueEvent issueEvent) {
+	public InternalConverterMsg(final IssueEvent issueEvent) {
 
 		eventType = issueEvent.getEventTypeId();
 		date = issueEvent.getTime();
