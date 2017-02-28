@@ -31,7 +31,7 @@ public interface IJiraManagerPlugin {
 	public FieldScreenSchemeManager getFieldScreenSchemeManager();
 	public StatusManager getStatusManager();
 	public SecureRandom getSecureRandom();
-	public BufferedReader getIn();
-	public void setIn(final BufferedReader in);
+	public BufferedReader getInreader();
+	public void setInreader(final BufferedReader inreader);
 	public ApplicationUser getUser();
 }

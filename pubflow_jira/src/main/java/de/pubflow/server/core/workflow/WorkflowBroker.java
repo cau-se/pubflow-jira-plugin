@@ -44,10 +44,9 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
  * @author Marc Adolf, Peer Brauer
  *
  */
-public class WorkflowBroker {
+public final class WorkflowBroker {
 	static private Logger myLogger;
 
-	static private final WorkflowBroker instance = new WorkflowBroker();
 	static private Map<String, AbstractWorkflow> registeredWorkflows = new HashMap<String, AbstractWorkflow>();
 
 	private WorkflowBroker() {
@@ -56,7 +55,7 @@ public class WorkflowBroker {
 	}
 
 	static public WorkflowBroker getInstance() {
-		return instance;
+		return new WorkflowBroker();
 	}
 
 	/**

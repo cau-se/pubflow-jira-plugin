@@ -43,14 +43,12 @@ public class WorkflowRestCall {
 	 */
 	private List<WFParameter> workflowParameters;
 
-	public WorkflowRestCall() {
-	}
 
 	public String getID() {
-		return id;
+		return this.id;
 	}
 
-	public void setID(String id) {
+	public void setID(final String id) {
 		this.id = id;
 	}
 

@@ -28,7 +28,7 @@ public class PubFlowCoreTest
 {
 	public static Test suite()
 	  {
-	    TestSuite mySuite = new TestSuite( "PubFlow Testsuite" );
+	    final TestSuite mySuite = new TestSuite( "PubFlow Testsuite" );
 	    // Add your tests here
 	    // >>>
 	    // mySuite.addTestSuite( MsgBus_Test.class ); TODO fix me

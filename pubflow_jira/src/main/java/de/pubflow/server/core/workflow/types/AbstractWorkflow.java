@@ -39,12 +39,12 @@ import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
 abstract public class AbstractWorkflow {
 
 	protected Logger myLogger = LoggerFactory.getLogger(this.getClass());
-	private String workflowName;
-	private String workflowID;
-	private String jiraWorkflowXMLPath;
+	private final String workflowName;
+	private final String workflowID;
+	private final String jiraWorkflowXMLPath;
 	// TODO this should be filled in a more dynamic way
 	private String baseWebserviceURL = "http://localhost:8080";
-	private String webServiceAPI;
+	private final String webServiceAPI;
 
 	public AbstractWorkflow(final String workflowName, final String workflowID, final String jiraWorkflowXMLPath, final String webServiceAPI,
 			final String baseWebserviceURL) {
@@ -53,7 +53,7 @@ abstract public class AbstractWorkflow {
 
 	}
 
-	public AbstractWorkflow(String workflowName, String workflowID, String jiraWorkflowXMLPath, String webServiceAPI) {
+	public AbstractWorkflow(final String workflowName, final String workflowID, final String jiraWorkflowXMLPath, final String webServiceAPI) {
 		this.webServiceAPI = webServiceAPI;
 		this.workflowID = workflowID;
 		this.workflowName = workflowName;
@@ -85,9 +85,9 @@ abstract public class AbstractWorkflow {
 	}
 
 	public Map<String, String> getScreenNames() {
-		String issueType = this.getWorkflowName();
+		final String issueType = this.getWorkflowName();
 
-		Map<String, String> basicScreens = new HashMap<String, String>();
+		final Map<String, String> basicScreens = new HashMap<String, String>();
 		basicScreens.put("create",issueType + Appendix.FIELDSCREEN + "ActionCreate");
 		basicScreens.put("edit", issueType + Appendix.FIELDSCREEN + "ActionEdit");
 		basicScreens.put("view", issueType + Appendix.FIELDSCREEN + "ActionView");
@@ -142,15 +142,15 @@ abstract public class AbstractWorkflow {
 	 * @param answer
 	 */
 
-	protected void handleWorkflowResults(String jiraKey, ReceivedWorkflowAnswer answer) {
+	protected void handleWorkflowResults(final String jiraKey, final ReceivedWorkflowAnswer answer) {
 		// default is to do nothing, since the current workflows call the
 		// JiraRestConnector by themselves
-		String newStatus = answer.getNewStatus();
+		final String newStatus = answer.getNewStatus();
 		if (newStatus != null && !newStatus.isEmpty()) {
 			myLogger.info("Issue ' " + jiraKey + "' try to change status to: " + newStatus);
 			JiraObjectManipulator.changeStatus(jiraKey, newStatus);
 		}
-		String comment = answer.getResult();
+		final String comment = answer.getResult();
 		if(!comment.isEmpty() ){
 			JiraObjectManipulator.addIssueComment(jiraKey, comment, null);
 		}
@@ -163,7 +163,7 @@ abstract public class AbstractWorkflow {
 	 * @param jiraKey
 	 * @param answer
 	 */
-	protected void handleWorkflowError(String jiraKey, ReceivedWorkflowAnswer answer) {
+	protected void handleWorkflowError(final String jiraKey, final ReceivedWorkflowAnswer answer) {
 		JiraObjectManipulator.addIssueComment(jiraKey, "Workflow  failed due to: '" + answer.getErrorMessage() + "'",
 				JiraObjectGetter.getUserByName("PubFlow"));
 	}

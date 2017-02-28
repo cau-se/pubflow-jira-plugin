@@ -24,7 +24,7 @@ public class WFParameter implements Serializable{
 	private ParameterType payloadClazz;
 	private Object value;
 
-	public WFParameter(String key, Object o) throws Exception{
+	public WFParameter(final String key, final Object o) throws Exception{
 		setKey(key);
 		setValue(o);
 		

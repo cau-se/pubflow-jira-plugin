@@ -518,14 +518,9 @@ public class JiraObjectCreator {
 	 * @throws Exception
 	 */
 	public static String createIssue(final String projectKey, final String issueTypeName, final String summary, final String description,
-			final ApplicationUser reporter, final ApplicationUser user, final HashMap<String, String> parameters) throws Exception {
+			final ApplicationUser reporter, final ApplicationUser user, final Map<String, String> parameters) throws Exception {
 
-		System.out.println(projectKey);
-		System.out.println(issueTypeName);
-		System.out.println(summary);
-		System.out.println(description);
-		System.out.println(reporter);
-		System.out.println(user);
+
 		// create
 		final MutableIssue newIssue = createNewMutableIssue(projectKey, summary, description, reporter, user, issueTypeName);
 		// add custom fields from parameter
@@ -543,7 +538,7 @@ public class JiraObjectCreator {
 	 * @param issue
 	 * @param parameters
 	 */
-	private static void fillCustomFields(final MutableIssue issue, final HashMap<String, String> parameters) {
+	private static void fillCustomFields(final MutableIssue issue, final Map<String, String> parameters) {
 		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 		for (final String entryKey : parameters.keySet()) {
 			final CustomField currentField = customFieldManager.getCustomFieldObject(entryKey);

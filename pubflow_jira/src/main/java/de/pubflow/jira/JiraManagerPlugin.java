@@ -82,7 +82,7 @@ public class JiraManagerPlugin implements IJiraManagerPlugin, LifecycleAware, In
 	@GuardedBy("this")
 	private final Set<LifecycleEvent> lifecycleEvents = EnumSet.noneOf(LifecycleEvent.class);
 
-	private BufferedReader in;
+	private BufferedReader inreader;
 
 	/**
 	 * Constructor.
@@ -111,18 +111,18 @@ public class JiraManagerPlugin implements IJiraManagerPlugin, LifecycleAware, In
 
 		try {
 			String line;
-			final InputStream rs = JiraManagerPlugin.class.getResourceAsStream(resourceName);
-			setIn(new BufferedReader(new InputStreamReader(rs, "UTF-8")));
-			while ((line = getIn().readLine()) != null) {
+			final InputStream resourceStream = JiraManagerPlugin.class.getResourceAsStream(resourceName);
+			setInreader(new BufferedReader(new InputStreamReader(resourceStream, "UTF-8")));
+			while (!((line = getInreader().readLine()) == null)) {
 				content.append(line).append("\n");
 			}
-			getIn().close();
+			getInreader().close();
 
 		} catch (final Exception e) {
 			LOGGER.error(e.getLocalizedMessage() + " " + e.getCause());
 			e.printStackTrace();
-		} finally {
-		}
+		} 
+		
 		return content.toString();
 	}
 
@@ -142,26 +142,7 @@ public class JiraManagerPlugin implements IJiraManagerPlugin, LifecycleAware, In
 		final String issueStatus = issue.getStatus().getName();
 		if (issueStatus.equals("Data Processing by PubFlow")) {
 
-			try {
-				final ServiceCallData callData = new ServiceCallData();
-				final List<WFParameter> wfpm = new LinkedList<WFParameter>();
-
-				for (final Entry<String, String> e : msg.getValues().entrySet()) {
-					final WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
-					wfpm.add(wfp);
-				}
-				// to enable mapping to the jira ticket
-				callData.setJiraKey(issue.getKey());
-				callData.setParameters(wfpm);
-
-				callData.setWorkflowID(JiraObjectGetter.getIssueTypeNamebyJiraKey(callData.getJiraKey()));
-				final WorkflowBroker wfBroker = WorkflowBroker.getInstance();
-				wfBroker.receiveWFCall(callData);
-
-			} catch (final Exception e) {
-				LOGGER.error(e.getLocalizedMessage() + " " + e.getCause());
-				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), "Error: " + e.getMessage(), user);
-			}
+			this.callWf(issueEvent);
 
 		} else if (issueEvent.getEventTypeId().equals(EventType.ISSUE_UPDATED_ID)) {
 			// TODO
@@ -204,26 +185,8 @@ public class JiraManagerPlugin implements IJiraManagerPlugin, LifecycleAware, In
 				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
 			final String commentText = "Sending data for import to the CVOO database.";
 			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
-			try {
-				final ServiceCallData callData = new ServiceCallData();
-				final List<WFParameter> wfpm = new LinkedList<WFParameter>();
-
-				for (final Entry<String, String> e : msg.getValues().entrySet()) {
-					final WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
-					wfpm.add(wfp);
-				}
-				// to enable mapping to the jira ticket
-				callData.setJiraKey(issue.getKey());
-				callData.setParameters(wfpm);
-
-				callData.setWorkflowID(JiraObjectGetter.getIssueTypeNamebyJiraKey(callData.getJiraKey()));
-				final WorkflowBroker wfBroker = WorkflowBroker.getInstance();
-				wfBroker.receiveWFCall(callData);
-
-			} catch (final Exception e) {
-				LOGGER.error(e.getLocalizedMessage() + " " + e.getCause());
-				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), "Error: " + e.getMessage(), user);
-			}
+			
+			this.callWf(issueEvent);
 
 		}
 
@@ -340,7 +303,6 @@ public class JiraManagerPlugin implements IJiraManagerPlugin, LifecycleAware, In
 	 * is completed before we call {@code launch()}.
 	 */
 	private void onLifecycleEvent(final LifecycleEvent event) {
-		LOGGER.info("onLifecycleEvent: " + event);
 		if (isLifecycleReady(event)) {
 			LOGGER.info("Got the last lifecycle event... Time to get started!");
 			unregisterListener();
@@ -353,10 +315,38 @@ public class JiraManagerPlugin implements IJiraManagerPlugin, LifecycleAware, In
 		}
 	}
 
+	@SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
 	synchronized private boolean isLifecycleReady(final LifecycleEvent event) {
 		return lifecycleEvents.add(event) && lifecycleEvents.size() == LifecycleEvent.values().length;
 	}
+	
+	private void callWf(final IssueEvent issueEvent) {
+		final InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
 
+		final Issue issue = issueEvent.getIssue();
+		
+		try {
+			final ServiceCallData callData = new ServiceCallData();
+			final List<WFParameter> wfpm = new LinkedList<WFParameter>();
+
+			for (final Entry<String, String> e : msg.getValues().entrySet()) {
+				final WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
+				wfpm.add(wfp);
+			}
+			// to enable mapping to the jira ticket
+			callData.setJiraKey(issue.getKey());
+			callData.setParameters(wfpm);
+
+			callData.setWorkflowID(JiraObjectGetter.getIssueTypeNamebyJiraKey(callData.getJiraKey()));
+			final WorkflowBroker wfBroker = WorkflowBroker.getInstance();
+			wfBroker.receiveWFCall(callData);
+
+		} catch (final Exception e) {
+			LOGGER.error(e.getLocalizedMessage() + " " + e.getCause());
+			JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), "Error: " + e.getMessage(), user);
+		}
+	}
+	
 	/**
 	 * Do all the things we can't do before the system is fully up.
 	 */
@@ -424,15 +414,15 @@ public class JiraManagerPlugin implements IJiraManagerPlugin, LifecycleAware, In
 	/**
 	 * @return the in
 	 */
-	public BufferedReader getIn() {
-		return in;
+	public BufferedReader getInreader() {
+		return inreader;
 	}
 
 	/**
 	 * @param in the in to set
 	 */
-	public void setIn(final BufferedReader in) {
-		this.in = in;
+	public void setInreader(final BufferedReader inreader) {
+		this.inreader = inreader;
 	}
 	
 	public ApplicationUser getUser() {

@@ -50,11 +50,11 @@ public class JiraRestConnector  {
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/status")
-	public Response changeStatus(@PathParam("issueKey") String issueKey, String statusName) {
+	public Response changeStatus(@PathParam("issueKey") final String issueKey, final String statusName) {
 		JiraEndpoint.changeStatus(issueKey, statusName.substring(1, statusName.length() - 1));
 		try {
 			return Response.status(204).entity("").build();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return Response.status(500).entity("").build();
 		}
 	}
@@ -63,12 +63,12 @@ public class JiraRestConnector  {
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/attachments")
-	public Response addAttachment(@PathParam("issueKey") String issueKey, JiraAttachment attachment) {
+	public Response addAttachment(@PathParam("issueKey") final String issueKey, final JiraAttachment attachment) {
 		JiraEndpoint.addAttachment(issueKey, attachment.getData(), attachment.getFilename(),
 				attachment.getType());
 		try {
 			return Response.status(204).entity("").build();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return Response.status(500).entity("").build();
 		}
 	}
@@ -77,11 +77,11 @@ public class JiraRestConnector  {
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/comments")
-	public Response addIssueComment(@PathParam("issueKey") String issueKey, String comment) {
+	public Response addIssueComment(@PathParam("issueKey") final String issueKey, final String comment) {
 		JiraEndpoint.addIssueComment(issueKey, comment);
 		try {
 			return Response.status(204).entity("").build();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return Response.status(500).entity("").build();
 		}
 	}
@@ -90,8 +90,8 @@ public class JiraRestConnector  {
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response createIssue(JiraIssue issue) {
-		String newIssueKey = JiraEndpoint.createIssue(issue.getIssueTypeName(), issue.getSummary(),
+	public Response createIssue(final JiraIssue issue) {
+		final String newIssueKey = JiraEndpoint.createIssue(issue.getIssueTypeName(), issue.getSummary(),
 				issue.getDescription(), issue.getParameters(), issue.getReporter());
 		if (newIssueKey != null) {
 			return Response.status(201).entity(newIssueKey).build();
@@ -105,7 +105,7 @@ public class JiraRestConnector  {
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(answerPath)
-	public Response receiveWorkflowAnswer(@PathParam("issueKey") String issueKey, ReceivedWorkflowAnswer wfAnswer) {
+	public Response receiveWorkflowAnswer(@PathParam("issueKey") final String issueKey, final ReceivedWorkflowAnswer wfAnswer) {
 		WorkflowBroker.getInstance().receiveWorkflowAnswer(issueKey, wfAnswer);
 		return Response.ok().build();
 	}

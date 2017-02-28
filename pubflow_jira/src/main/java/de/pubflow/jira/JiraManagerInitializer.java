@@ -177,10 +177,11 @@ public class JiraManagerInitializer {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 	public void initHumbleScreens(final List<CustomFieldDefinition> customFields, final String issueTypeName,
 			final List<Long> customFieldIdsTest, final Project project) throws Exception {
 		final JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName);
-		final Map<String, LinkedList<CustomFieldDefinition>> availableActionFieldScreens = new HashMap<String, LinkedList<CustomFieldDefinition>>();
+		final Map<String, List<CustomFieldDefinition>> availableActionFieldScreens = new HashMap<String, List<CustomFieldDefinition>>();
 
 		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 
@@ -189,7 +190,7 @@ public class JiraManagerInitializer {
 				// 'init' new screens, the id in the map represents the Screen
 				// (id)
 				if (availableActionFieldScreens.get(id) == null) {
-					final LinkedList<CustomFieldDefinition> sameKeyDefs = new LinkedList<CustomFieldDefinition>();
+					final List<CustomFieldDefinition> sameKeyDefs = new LinkedList<CustomFieldDefinition>();
 					sameKeyDefs.add(customFieldDefinition);
 					availableActionFieldScreens.put(id, sameKeyDefs);
 					// add to existing screens
@@ -201,7 +202,7 @@ public class JiraManagerInitializer {
 			}
 		}
 
-		for (final Entry<String, LinkedList<CustomFieldDefinition>> e : availableActionFieldScreens.entrySet()) {
+		for (final Entry<String, List<CustomFieldDefinition>> e : availableActionFieldScreens.entrySet()) {
 			final List<String> customFieldIds = new LinkedList<String>();
 
 			for (final CustomFieldDefinition c : e.getValue()) {
@@ -358,7 +359,6 @@ public class JiraManagerInitializer {
 	public void initPubFlowProject() throws GenericEntityException, KeyManagementException,
 			UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
 		final ApplicationProperties applicationPropertiesManager = ComponentAccessor.getApplicationProperties();
-		final UserManager userManager = ComponentAccessor.getUserManager();
 		applicationPropertiesManager.setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		applicationPropertiesManager.setString(APKeys.JIRA_MODE, "Private");
 		applicationPropertiesManager.setString(APKeys.JIRA_BASEURL, "http://maui.informatik.uni-kiel.de:2990/jira/");
@@ -436,7 +436,8 @@ public class JiraManagerInitializer {
 			e.printStackTrace();
 			return;
 		}
-
+		
+		final UserManager userManager = ComponentAccessor.getUserManager();
 		final ApplicationUser user = userManager.getUserByName("PubFlow");
 
 		// add workflows
@@ -528,15 +529,12 @@ public class JiraManagerInitializer {
 
 		final String issueTypeName = workflow.getWorkflowName();
 
-		final List<String> statuses = jiraManagerPlugin.getSteps(workflowXMLString);
-
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName);
 
 		// only create workflow, if it doesn't exist
 		if (jiraWorkflow != null) {
 			LOGGER.info("Issuetype ID mapping: " + issueTypeName + " expected, but doesnt exist");
 			return jiraWorkflow;
-
 		}
 
 		// jiraWorkflow = initWorkflow(projectKey, workflowXMLString, user,
@@ -544,6 +542,8 @@ public class JiraManagerInitializer {
 		jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXMLString, user, issueTypeName);
 
 		LOGGER.debug("Issuetype ID mapping:  " + issueTypeName);
+		
+		final List<String> statuses = jiraManagerPlugin.getSteps(workflowXMLString);
 
 		final Map<String, String> statusMap = JiraObjectCreator.addStatuses(projectKey, statuses);
 

@@ -46,40 +46,40 @@ public class InternalConverterMsg {
 	 */
 	public InternalConverterMsg(final IssueEvent issueEvent) {
 
-		eventType = issueEvent.getEventTypeId();
-		date = issueEvent.getTime();
+		this.setEventType(issueEvent.getEventTypeId());
+		this.setDate(issueEvent.getTime());
 
-		Issue issue = issueEvent.getIssue();
-		issueTypeName = issue.getIssueType().getName();
+		final Issue issue = issueEvent.getIssue();
+		this.setIssueTypeName(issue.getIssueType().getName());
 
-		values.put("reporter", issue.getReporterId());
-		values.put("assignee", issue.getAssigneeId());
-		values.put("workflowName", issueTypeName);
-		values.put("issueKey", issue.getKey() + "");
-		values.put("eventType", eventType + "");
-		values.put("date", date.getTime() + "");
-		values.put("status", issue.getStatus().getName());
+		getValues().put("reporter", issue.getReporterId());
+		getValues().put("assignee", issue.getAssigneeId());
+		getValues().put("workflowName", getIssueTypeName());
+		getValues().put("issueKey", issue.getKey() + "");
+		getValues().put("eventType", getEventType() + "");
+		getValues().put("date", getDate().getTime() + "");
+		getValues().put("status", issue.getStatus().getName());
 
-		List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
+		final List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
 
-		for (CustomField customField : customFields) {
+		for (final CustomField customField : customFields) {
 			if (customField != null && customField.getName() != null && issue.getCustomFieldValue(customField) != null) {
 
-				String customFieldName = customField.getName();
+				final String customFieldName = customField.getName();
 
 				if (customField.getCustomFieldType() instanceof DateTimeCFType) {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+					final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 					Date date;
 					try {
 						date = formatter.parse(issue.getCustomFieldValue(customField).toString());
-						values.put("quartzMillis", date.getTime() + "");
+						getValues().put("quartzMillis", date.getTime() + "");
 					} catch (ParseException e) {
 						e.printStackTrace();
-						values.put(customFieldName, null);
+						getValues().put(customFieldName, null);
 					}
 
 				} else {
-					values.put(customFieldName, issue.getCustomFieldValue(customField).toString());
+					getValues().put(customFieldName, issue.getCustomFieldValue(customField).toString());
 				}
 			}
 		}
@@ -99,5 +99,33 @@ public class InternalConverterMsg {
 
 	public Map<String, String> getValues() {
 		return values;
+	}
+
+	/**
+	 * @param values the values to set
+	 */
+	public void setValues(final Map<String, String> values) {
+		this.values = values;
+	}
+
+	/**
+	 * @param issueTypeName the issueTypeName to set
+	 */
+	public void setIssueTypeName(final String issueTypeName) {
+		this.issueTypeName = issueTypeName;
+	}
+
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(final Date date) {
+		this.date = date;
+	}
+
+	/**
+	 * @param eventType the eventType to set
+	 */
+	public void setEventType(final long eventType) {
+		this.eventType = eventType;
 	}
 }

@@ -47,7 +47,7 @@ public class JiraDefaultUser {
 	private final Group groupDataManagersFn;
 	private final Group groupLibrariansFn;
 	private final String jirasoftwareusers = "jira-software-users";
-	private final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+	private final IJiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getComponentOfType(JiraManagerPlugin.class);
 
 	public JiraDefaultUser() throws OperationNotPermittedException, InvalidGroupException {
 

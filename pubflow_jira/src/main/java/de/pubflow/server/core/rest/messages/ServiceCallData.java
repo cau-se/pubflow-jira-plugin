@@ -34,12 +34,9 @@ public class ServiceCallData implements Serializable {
 	 */
 	private String workflowID = "";
 	
-	private WFType type = null;
-	private List<WFParameter> parameters = null;
+	private WFType type;
+	private List<WFParameter> parameters;
 	private String jiraKey;
-
-	public ServiceCallData() {
-	}
 
 	/**
 	 * @return the workflowID
