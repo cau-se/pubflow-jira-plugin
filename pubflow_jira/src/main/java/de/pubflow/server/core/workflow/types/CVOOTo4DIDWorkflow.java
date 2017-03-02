@@ -91,7 +91,7 @@ public class CVOOTo4DIDWorkflow extends AbstractWorkflow {
 		customFieldsCVOOTo4D.add(new CustomFieldDefinition("Start Time (QUARTZ)", CustomFieldType.DATETIME, false,
 				new String[] { "111", "131",  "191" }));
 		customFieldsCVOOTo4D.add(new CustomFieldDefinition("Author List", CustomFieldType.TEXTAREA, false,
-				new String[] { "211" }));
+				new String[] { "211", "201" }));
 
 		return customFieldsCVOOTo4D;
 	}

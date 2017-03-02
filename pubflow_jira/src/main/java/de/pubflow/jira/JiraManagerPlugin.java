@@ -76,7 +76,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static EventPublisher eventPublisher;
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
 	public static StatusManager statusManager;
-	public static ApplicationUser user = JiraObjectGetter.getUserByName("root");
+	public static ApplicationUser user = JiraObjectGetter.getUserByName("pubflow");
 	public static final SecureRandom secureRandom = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
 
@@ -186,9 +186,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 			if (ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0) {
 
 				String txtmsg = "Dear " + issueEvent.getUser().getName() + " (" + issueEvent.getUser().getName()
-						+ "),\n please append your raw data as an file attachment to this issue and provide the following information "
-						+ "about your data if you are asked to do so:\n For example Title, Authors, Cruise and some others"
-						+ "\nThank you!";
+						+ "),\n please provide the following information "
+						+ "about your data:\n  Title, Authors, Cruise" + "\n Thank you!";
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
 			} else {
 				MutableIssue mutableIssue = ComponentAccessor.getIssueManager()
@@ -197,7 +196,16 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 			}
 		} else if (issueStatus.equals("Aquire ORCIDs")
 				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
-			String commentText = this.getAuthorsAsComment(issue, msg.getValues());
+			String commentText = "For the following authors identification is needed: " + "\n";
+			commentText += this.getParamterFieldAsComment(issue, "Author", msg.getValues());
+			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
+			// JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire
+			// ORCIDs");
+
+		} else if (issueStatus.equals("Prepared for PubFlow")
+				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
+			String commentText = "Results of the Identification " + "\n";
+			commentText += this.getParamterFieldAsComment(issue, "Author", msg.getValues());
 			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
 			// JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire
 			// ORCIDs");
@@ -232,16 +240,15 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * Writes the given valuen in the {@link Issue} as a comment to it.
+	 * Writes the given values in the {@link Issue} as a String for comments.
 	 * 
 	 * @param issue
 	 */
-	private String getAuthorsAsComment(Issue issue, Map<String, String> parameters) {
-		String commentText = "For the following authors identification is needed";
-
+	private String getParamterFieldAsComment(Issue issue, String paramterKey, Map<String, String> parameters) {
+		String commentText = "";
 		for (Entry<String, String> e : parameters.entrySet()) {
-			if (e.getKey().contains("Author")) {
-				commentText += ": \n" + e.getValue();
+			if (e.getKey().contains(paramterKey)) {
+				commentText += e.getValue() + ": \n";
 			}
 		}
 
