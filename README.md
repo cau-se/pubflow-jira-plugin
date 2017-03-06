@@ -33,5 +33,5 @@ If you run the stand-alone version of PubFlow-Jira-Plugin you can restart the pl
 After you have starte PubFlow-Jira-Plugin you have to run the [Workflow Provider](https://github.com/PubFlow/Workflow-Provider).
 ```bash
     cd path/to/workflow-service
-    mvn run
+    mvn spring-boot:run
 ```
