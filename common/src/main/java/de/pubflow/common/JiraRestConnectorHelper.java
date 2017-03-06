@@ -59,7 +59,7 @@ public class JiraRestConnectorHelper{
 			mapper.configure(Feature.AUTO_CLOSE_SOURCE, true);
 			mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	
-			System.out.println("Request url : " + urlString);
+			System.out.println("Request url : " + baseUrl + urlString);
 
 			mapper.writeValue(out, data);
 			out.close();
