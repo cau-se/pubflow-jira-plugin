@@ -15,16 +15,17 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 
 /**
  * This class represents the old OCN Workflow and is used for testing purposes
+ * 
  * @author mad
  *
  */
@@ -32,18 +33,6 @@ public class OldOCNWorkflow extends AbstractWorkflow {
 
 	public OldOCNWorkflow() {
 		super("Old OCN Workflow", "de.pubflow.oldOCN", "/PubFlow.xml", "/workflow/TestWorkflow");
-	}
-
-	@Override
-	public List<String> getScreenNames() {
-		String issueTypeName = this.getWorkflowName();
-
-		List<String> screenNames = new ArrayList<String>();
-		screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionCreate");
-		screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionEdit");
-		screenNames.add(issueTypeName + Appendix.FIELDSCREEN + "ActionView");
-
-		return screenNames;
 	}
 
 	@Override

@@ -30,7 +30,12 @@ import de.pubflow.common.exceptions.PropertyNotSetException;
 public class PropLoader {
 
 	private static PropLoader propLoader;
-	private static final String PUBFLOW_HOME_PATH = "/home/pubflow/pubflow_home/";
+
+	// private static final String PUBFLOW_HOME_PATH =
+	// "/home/mad/pubflow_home/";
+	private static final String PUBFLOW_HOME_PATH = System.getProperty("pubflow_home",
+			System.getenv("HOME") + "/pubflow_home/");
+
 	/**
 	 * Defines the path to the resource folder of PubFlow
 	 */

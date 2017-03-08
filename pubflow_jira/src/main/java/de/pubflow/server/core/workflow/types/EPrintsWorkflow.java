@@ -15,11 +15,11 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 
 /**
@@ -32,19 +32,6 @@ public class EPrintsWorkflow extends AbstractWorkflow {
 
 	public EPrintsWorkflow() {
 		super("EPRINTS", "de.pubflow.EPRINTS", "/EPRINTS.xml", "/workflow/EPrintsWorkflow");
-	}
-
-	@Override
-	public List<String> getScreenNames() {
-		String issueTypeEprintsName = this.getWorkflowName();
-
-		List<String> screenNamesEprints = new ArrayList<String>();
-		screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionCreate");
-		screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionEdit");
-		screenNamesEprints.add(issueTypeEprintsName + Appendix.FIELDSCREEN + "ActionView");
-
-		return screenNamesEprints;
-
 	}
 
 	@Override

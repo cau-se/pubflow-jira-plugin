@@ -15,11 +15,11 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import de.pubflow.jira.misc.Appendix;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
 
@@ -36,19 +36,6 @@ public class OCNTo4DWorkflow extends AbstractWorkflow {
 	public OCNTo4DWorkflow() {
 		// TODO OCN and CVOO use currently the same XML file for Jira
 		super("Export Data (OCN) to PANGAEA", "de.pubflow.OCN", "/OCNTO4D-WORKFLOW.xml", "/workflow/OCNWorkflow");
-	}
-
-	@Override
-	public List<String> getScreenNames() {
-		String issueTypeOCNTo4DName = this.getWorkflowName();
-
-		List<String> screenNamesOCNTo4D = new ArrayList<String>();
-		screenNamesOCNTo4D.add(issueTypeOCNTo4DName + Appendix.FIELDSCREEN + "ActionCreate");
-		screenNamesOCNTo4D.add(issueTypeOCNTo4DName + Appendix.FIELDSCREEN + "ActionEdit");
-		screenNamesOCNTo4D.add(issueTypeOCNTo4DName + Appendix.FIELDSCREEN + "ActionView");
-
-		return screenNamesOCNTo4D;
-
 	}
 
 	@Override

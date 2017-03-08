@@ -18,6 +18,7 @@ package de.pubflow.server.core.restConnection;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
@@ -60,10 +61,10 @@ public class WorkflowSender {
 		HttpResponse response = null;
 
 		try {
-			StringEntity postingString = new StringEntity(gson.toJson(wfCall));
+			StringEntity postingString = new StringEntity(gson.toJson(wfCall),ContentType.APPLICATION_JSON);
 
 			post.setEntity(postingString);
-			post.setHeader("Content-type", "application/json");
+			post.setHeader("Content-type", "application/json;charset=utf-8");
 			response = httpClient.execute(post);
 			System.out.println(post.getURI());
 			myLogger.info("Http response: " + response.toString());
