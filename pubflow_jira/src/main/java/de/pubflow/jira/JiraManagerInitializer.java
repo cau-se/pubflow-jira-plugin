@@ -92,8 +92,9 @@ public class JiraManagerInitializer {
 	public List<CustomField> customFieldsCache = new LinkedList<CustomField>();
 	private static final Logger LOGGER = Logger.getLogger(JiraManagerInitializer.class);
 	private final ProjectManager projectManager = ComponentAccessor.getProjectManager();
-	private final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
-	
+	private final JiraManagerPlugin JiraManagerPlugin = ComponentAccessor
+			.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+
 	/**
 	 * Creates a new Jira project
 	 * 
@@ -109,10 +110,11 @@ public class JiraManagerInitializer {
 	 * @throws Exception
 	 */
 
-	public Project initProject(final String projectName, final String projectKey, final ApplicationUser user, final boolean kill)
-			throws Exception {
+	public Project initProject(final String projectName, final String projectKey, final ApplicationUser user,
+			final boolean kill) throws Exception {
 
-		LOGGER.debug("initProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
+		LOGGER.debug(
+				"initProject - projectName : " + projectName + " / projectKey : " + projectKey + " / kill : " + kill);
 		final PermissionSchemeManager permissionSchemeManager = ComponentAccessor.getPermissionSchemeManager();
 
 		if (user != null) {
@@ -132,15 +134,14 @@ public class JiraManagerInitializer {
 
 		if (project == null) {
 			final int avatarId = 10100;
-			final ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName).withLead(user)
-					.withKey(projectKey).withDescription("Data Pulication Workflows").withType("business")
-					.withAvatarId(new Long(avatarId)).build();
+			final ProjectCreationData projectData = new ProjectCreationData.Builder().withName(projectName)
+					.withLead(user).withKey(projectKey).withDescription("Data Pulication Workflows")
+					.withType("business").withAvatarId(new Long(avatarId)).build();
 			project = getProjectManager().createProject(user, projectData);
 			permissionSchemeManager.addDefaultSchemeToProject(project);
 			ComponentAccessor.getNotificationSchemeManager().addDefaultSchemeToProject(project);
 			final Scheme notificationScheme = ComponentAccessor.getNotificationSchemeManager().getSchemeFor(project);
-			
-	
+
 			LOGGER.info("initProject: created a new project with projectKey " + projectKey);
 		} else {
 			LOGGER.debug("initProject: project with projectKey " + projectKey + " already exists");
@@ -238,48 +239,17 @@ public class JiraManagerInitializer {
 				}
 			}
 
-				final Collection<ActionDescriptor> allActions = jiraWorkflow.getAllActions();
-				final Map<String, String> metaAttributes = new HashMap<String, String>();
-				metaAttributes.put("jira.fieldscreen.id", Long.toString(fieldScreen.getId()));
-				for (final ActionDescriptor aActions : allActions) {
-					if (aActions.getId() == Integer.parseInt(e.getKey())) {
-						aActions.setView(fieldScreen.getName());
-						aActions.setMetaAttributes(metaAttributes);
-					}
+			final Collection<ActionDescriptor> allActions = jiraWorkflow.getAllActions();
+			final Map<String, String> metaAttributes = new HashMap<String, String>();
+			metaAttributes.put("jira.fieldscreen.id", Long.toString(fieldScreen.getId()));
+			for (final ActionDescriptor aActions : allActions) {
+				if (aActions.getId() == Integer.parseInt(e.getKey())) {
+					aActions.setView(fieldScreen.getName());
+					aActions.setMetaAttributes(metaAttributes);
 				}
-
 			}
+
 		}
-
-	
-
-	/**
-	 * Initializes the workflow, workflow scheme and maps them to a project
-	 *
-	 * @author abar
-	 * @param projectKey
-	 *            : the project's key we add the issue type and scheme to
-	 * @param workflowXML
-	 *            : the path to a XML that defines the workflow
-	 * @param user
-	 *            : the ApplicationUser that can create a workflow
-	 *            (administrator in general)
-	 */
-	private JiraWorkflow initWorkflow(final String projectKey, final String workflowXML, final ApplicationUser user,
-			final String issueTypeName) {
-		if (user != null) {
-			LOGGER.debug("initWorkflow: user : " + user.getUsername());
-		} else {
-			LOGGER.error("initWorkflow: user is null");
-		}
-
-		final JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user, issueTypeName);
-		final WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
-				issueTypeName);
-		JiraObjectManipulator.addWorkflowToProject(workflowScheme, getProjectManager().getProjectObjByKey(projectKey));
-
-		return jiraWorkflow;
-
 	}
 
 	/**
@@ -356,8 +326,8 @@ public class JiraManagerInitializer {
 	 * @author arl, abar
 	 * 
 	 */
-	public void initPubFlowProject() throws GenericEntityException, KeyManagementException,
-			UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+	public void initPubFlowProject() throws GenericEntityException, KeyManagementException, UnrecoverableKeyException,
+			NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
 		final ApplicationProperties applicationPropertiesManager = ComponentAccessor.getApplicationProperties();
 		applicationPropertiesManager.setString(APKeys.JIRA_TITLE, "PubFlow Jira");
 		applicationPropertiesManager.setString(APKeys.JIRA_MODE, "Private");
@@ -425,7 +395,6 @@ public class JiraManagerInitializer {
 			// Pangaea Data Upload ID:10010
 			// quickfix: 10109
 			statuses.add("Aquire ORCIDs");
-			
 
 			// add new statuses at the end
 			// TODO is there a more generic solution?
@@ -436,7 +405,7 @@ public class JiraManagerInitializer {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		final UserManager userManager = ComponentAccessor.getUserManager();
 		final ApplicationUser user = userManager.getUserByName("PubFlow");
 
@@ -454,12 +423,12 @@ public class JiraManagerInitializer {
 
 		// add the workflows one after another
 		for (final AbstractWorkflow workflow : workflowsToAdd) {
-				try {
-					addNewWorkflow(projectKey, workflow, project, user);
-				} catch (final Exception e) {
-					LOGGER.info("Could not add Workflow: " + workflow.getWorkflowName());
-					LOGGER.debug("", e);
-				}
+			try {
+				addNewWorkflow(projectKey, workflow, project, user);
+			} catch (final Exception e) {
+				LOGGER.info("Could not add Workflow: " + workflow.getWorkflowName());
+				LOGGER.debug("", e);
+			}
 		}
 
 	}
@@ -477,7 +446,7 @@ public class JiraManagerInitializer {
 		final WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager();
 		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(workflowName);
 
-		final String workflowXMLString = jiraManagerPlugin.getTextResource(workflow.getJiraWorkflowXMLPath());
+		final String workflowXMLString = JiraManagerPlugin.getTextResource(workflow.getJiraWorkflowXMLPath());
 		initIssueManagement(projectKey, workflowName, workflow.getWorkflowID());
 
 		// TODO verify if this step does the right thing
@@ -497,13 +466,14 @@ public class JiraManagerInitializer {
 					+ " to the workflowscheme of the project: " + project.getName());
 			e.printStackTrace();
 		}
-		
+
 		final List<CustomFieldDefinition> customFields = workflow.getCustomFields();
 		final List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, workflowName);
 		// TODO use screenNames in initHumbleScreens
 		// List<String> screenNames = workflow.getScreenNames();
 		final FieldScreenScheme fieldScreenScheme = createBasicFieldScreens(workflow);
-//		FieldScreenScheme fieldScreenScheme = initHumbleScreens(customFields, workflowName, customFieldIds, project);
+		// FieldScreenScheme fieldScreenScheme = initHumbleScreens(customFields,
+		// workflowName, customFieldIds, project);
 		initHumbleScreens(customFields, workflowName, customFieldIds, project);
 
 		JiraObjectManipulator.addIssueTypeScreenSchemeToProject(project, fieldScreenScheme, issueType);
@@ -542,8 +512,8 @@ public class JiraManagerInitializer {
 		jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXMLString, user, issueTypeName);
 
 		LOGGER.debug("Issuetype ID mapping:  " + issueTypeName);
-		
-		final List<String> statuses = jiraManagerPlugin.getSteps(workflowXMLString);
+
+		final List<String> statuses = JiraManagerPlugin.getSteps(workflowXMLString);
 
 		final Map<String, String> statusMap = JiraObjectCreator.addStatuses(projectKey, statuses);
 
@@ -581,32 +551,30 @@ public class JiraManagerInitializer {
 
 		return jiraWorkflow;
 	}
-	
+
 	private FieldScreenScheme createBasicFieldScreens(final AbstractWorkflow workflow) throws Exception {
-		final FieldScreen fieldScreenCreate = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("create"));
+		final FieldScreen fieldScreenCreate = JiraObjectCreator
+				.createActionScreen(workflow.getScreenNames().get("create"));
 		final FieldScreen fieldScreenView = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("view"));
 		final FieldScreen fieldScreenEdit = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("edit"));
-	
+
 		final FieldScreenScheme fieldScreenScheme = JiraObjectCreator.generateNewFieldScreenScheme(fieldScreenCreate,
 				fieldScreenView, fieldScreenEdit, workflow.getWorkflowName());
 
 		return fieldScreenScheme;
-		
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void mapScreensAndActions(final StepDescriptor stepDescriptor) {
-		
+
 		final List<ActionDescriptor> oActions = stepDescriptor.getActions();
-		
-		
-		for(final ActionDescriptor oAction : oActions)
-		{
-		    if(oAction.getView().equals("fieldscreen"))
-		    {
-		       LOGGER.info("vllt");
-		    	// do things with oAction.GetId()...
-		    }
+
+		for (final ActionDescriptor oAction : oActions) {
+			if (oAction.getView().equals("fieldscreen")) {
+				LOGGER.info("vllt");
+				// do things with oAction.GetId()...
+			}
 		}
 		// ActionDescriptor actionDescriptor =
 		// jiraWorkflow.getDescriptor().getAction(Integer.parseInt(e.getKey()));
@@ -622,5 +590,5 @@ public class JiraManagerInitializer {
 	public ProjectManager getProjectManager() {
 		return projectManager;
 	}
-	
+
 }

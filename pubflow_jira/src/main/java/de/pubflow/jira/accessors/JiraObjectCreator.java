@@ -75,7 +75,6 @@ import de.pubflow.jira.misc.CustomFieldDefinition;
 public class JiraObjectCreator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraObjectCreator.class);
-	private final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
 	/**
 	 * Create a new User in Jira
@@ -160,29 +159,29 @@ public class JiraObjectCreator {
 	public static FieldScreenScheme generateNewFieldScreenScheme(final FieldScreen fieldScreenCreate,
 			final FieldScreen fieldScreenEdit, final FieldScreen fieldScreenView, final String fieldScreenSchemeName) throws Exception {
 		final FieldScreenManager fieldScreenManager = ComponentAccessor.getFieldScreenManager();
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+		final JiraManagerPlugin JiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 		
 		if (fieldScreenCreate == null || fieldScreenEdit == null || fieldScreenView == null) {
 			throw new Exception("generateNewFieldScreenScheme: One or more field screens are null");
 		}
 
 		final FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
-				jiraManagerPlugin.getFieldScreenSchemeManager(), fieldScreenManager);
+				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
 		fieldScreenSchemeItemCreate.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
 		fieldScreenSchemeItemCreate.setFieldScreen(fieldScreenCreate);
 
 		final FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
-				jiraManagerPlugin.getFieldScreenSchemeManager(), fieldScreenManager);
+				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
 		fieldScreenSchemeItemEdit.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
 		fieldScreenSchemeItemEdit.setFieldScreen(fieldScreenEdit);
 
 		final FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
-				jiraManagerPlugin.getFieldScreenSchemeManager(), fieldScreenManager);
+				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
 		fieldScreenSchemeItemView.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
 		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
 
 		FieldScreenScheme fieldScreenScheme = null;
-		final Collection<FieldScreenScheme> fieldScreenSchemes = jiraManagerPlugin.getFieldScreenSchemeManager()
+		final Collection<FieldScreenScheme> fieldScreenSchemes = JiraManagerPlugin.fieldScreenSchemeManager
 				.getFieldScreenSchemes(fieldScreenCreate);
 
 		if (!fieldScreenSchemes.isEmpty()) {
@@ -190,7 +189,7 @@ public class JiraObjectCreator {
 		}
 
 		if (fieldScreenScheme == null) {
-			fieldScreenScheme = new FieldScreenSchemeImpl(jiraManagerPlugin.getFieldScreenSchemeManager(), null);
+			fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager, null);
 			fieldScreenScheme.setName(fieldScreenSchemeName);
 			fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);
 			fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemEdit);
@@ -368,21 +367,21 @@ public class JiraObjectCreator {
 		}
 
 		final FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
-				jiraManagerPlugin.getFieldScreenSchemeManager(), ComponentAccessor.getFieldScreenManager());
+				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
 		fieldScreenSchemeItemCreate.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
 		fieldScreenSchemeItemCreate.setFieldScreen(fieldScreenCreate);
 
 		final FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
-				jiraManagerPlugin.getFieldScreenSchemeManager(), ComponentAccessor.getFieldScreenManager());
+				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
 		fieldScreenSchemeItemEdit.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
 		fieldScreenSchemeItemEdit.setFieldScreen(fieldScreenEdit);
 
 		final FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
-				jiraManagerPlugin.getFieldScreenSchemeManager(), ComponentAccessor.getFieldScreenManager());
+				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
 		fieldScreenSchemeItemView.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
 		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
 
-		final FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(jiraManagerPlugin.getFieldScreenSchemeManager(),
+		final FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager,
 				null);
 		fieldScreenScheme.setName(fieldScreenSchemeName );
 		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);

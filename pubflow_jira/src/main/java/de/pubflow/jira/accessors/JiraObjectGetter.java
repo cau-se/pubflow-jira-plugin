@@ -150,8 +150,7 @@ public class JiraObjectGetter {
 	 * @return
 	 */
 	public static Status getStatusByName(final String projectKey, final String statusName) {
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
-		final Collection<Status> statuses = jiraManagerPlugin.getStatusManager().getStatuses();
+		final Collection<Status> statuses = JiraManagerPlugin.statusManager.getStatuses();
 		log.info("getStatusByName - projectKey : " + projectKey);
 		log.info("getStatusByName - statusName : " + statusName);
 		log.info("getStatusByName - statuses.size : " + statuses.size());
@@ -233,13 +232,12 @@ public class JiraObjectGetter {
 	public static IssueType findIssueTypeByName(final String name) {
 		int counter = 0;
 		IssueType result = null;
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
 		log.info("findIssueTypeByName - name : " + name);
 
 		// iterate through all available issue types and check for equality of
 		// names
-		for (final IssueType it : jiraManagerPlugin.getIssueTypeManager().getIssueTypes()) {
+		for (final IssueType it : JiraManagerPlugin.issueTypeManager.getIssueTypes()) {
 			if (it.getName().equals(name)) {
 				counter++;
 				result = it;

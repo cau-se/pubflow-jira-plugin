@@ -106,7 +106,6 @@ public class JiraObjectManipulator {
 	 */
 	public static IssueTypeScreenScheme addIssueTypeScreenSchemeToProject(final Project project,
 			final FieldScreenScheme fieldScreenScheme, final IssueType issueType) {
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
 		final IssueTypeScreenSchemeManager issueTypeScreenSchemeManager = ComponentAccessor
 				.getIssueTypeScreenSchemeManager();
@@ -120,7 +119,7 @@ public class JiraObjectManipulator {
 
 		// compose
 		final IssueTypeScreenSchemeEntity issueTypeScreenSchemeEntity = new IssueTypeScreenSchemeEntityImpl(
-				issueTypeScreenSchemeManager, (GenericValue) null, jiraManagerPlugin.getFieldScreenSchemeManager(),
+				issueTypeScreenSchemeManager, (GenericValue) null, JiraManagerPlugin.fieldScreenSchemeManager,
 				ComponentAccessor.getConstantsManager());
 		issueTypeScreenSchemeEntity.setIssueTypeId(issueType.getId());
 		issueTypeScreenSchemeEntity.setFieldScreenScheme(fieldScreenScheme);
@@ -162,13 +161,12 @@ public class JiraObjectManipulator {
 	 */
 	public static long addAttachment(final String issueKey, final byte[] barray, final String fileName, final String type,
 			final ApplicationUser user) {
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
 		try {
 			final MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 
 			// TODO : path os?
-			final String filePath = "/tmp/pubflow_tmp" + new BigInteger(130, jiraManagerPlugin.getSecureRandom()).toString(32);
+			final String filePath = "/tmp/pubflow_tmp" + new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32);
 			final FileOutputStream stream = new FileOutputStream(filePath);
 
 			stream.write(barray);

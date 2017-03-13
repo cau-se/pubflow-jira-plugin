@@ -138,9 +138,7 @@ public class JiraEndpoint {
 	 */
 
 	public static boolean addIssueComment(final String issueKey, final String comment) {
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
-
-		if (JiraObjectManipulator.addIssueComment(issueKey, comment, jiraManagerPlugin.getUser()) == null) {
+		if (JiraObjectManipulator.addIssueComment(issueKey, comment, JiraManagerPlugin.user) == null) {
 			return false;
 		} else {
 			return true;
@@ -148,10 +146,8 @@ public class JiraEndpoint {
 	}
 
 	public static boolean addIssueComment(final JiraComment comment) {
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
-
 		if (JiraObjectManipulator.addIssueComment(comment.getIssueKey(), comment.getText(),
-				jiraManagerPlugin.getUser()) == null) {
+				JiraManagerPlugin.user) == null) {
 			return false;
 		} else {
 			return true;
@@ -214,18 +210,15 @@ public class JiraEndpoint {
 	 */
 
 	public static boolean addAttachment(final String issueKey, final byte[] barray, final String fileName, final String type) {
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
-		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, jiraManagerPlugin.getUser());
+		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, JiraManagerPlugin.user);
 
 		return true;
 	}
 
 	public static boolean addAttachment(final JiraAttachment attachment) {
-		final JiraManagerPlugin jiraManagerPlugin = ComponentAccessor.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
-
 		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(),
-				"", jiraManagerPlugin.getUser());
+				"", JiraManagerPlugin.user);
 
 		return true;
 	}
