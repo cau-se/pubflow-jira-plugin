@@ -29,6 +29,11 @@ import com.atlassian.scheduler.JobRunnerRequest;
 import com.atlassian.scheduler.JobRunnerResponse;
 
 public class JiraManagerPluginJobRunner implements JobRunner {
+
+	public JiraManagerPluginJobRunner() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public JobRunnerResponse runJob(final JobRunnerRequest request) {
 

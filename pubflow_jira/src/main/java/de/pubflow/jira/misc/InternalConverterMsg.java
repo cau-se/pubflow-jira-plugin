@@ -30,8 +30,7 @@ import com.atlassian.jira.issue.customfields.impl.DateTimeCFType;
 import com.atlassian.jira.issue.fields.CustomField;
 
 /**
- * @author arl
- *	This class extracts relevant information from an issueEvent
+ * @author arl This class extracts relevant information from an issueEvent
  */
 
 public class InternalConverterMsg {
@@ -63,7 +62,8 @@ public class InternalConverterMsg {
 		final List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
 
 		for (final CustomField customField : customFields) {
-			if (customField != null && customField.getName() != null && issue.getCustomFieldValue(customField) != null) {
+			if (customField != null && customField.getName() != null
+					&& issue.getCustomFieldValue(customField) != null) {
 
 				final String customFieldName = customField.getName();
 
@@ -102,28 +102,32 @@ public class InternalConverterMsg {
 	}
 
 	/**
-	 * @param values the values to set
+	 * @param values
+	 *            the values to set
 	 */
 	public void setValues(final Map<String, String> values) {
 		this.values = values;
 	}
 
 	/**
-	 * @param issueTypeName the issueTypeName to set
+	 * @param issueTypeName
+	 *            the issueTypeName to set
 	 */
 	public void setIssueTypeName(final String issueTypeName) {
 		this.issueTypeName = issueTypeName;
 	}
 
 	/**
-	 * @param date the date to set
+	 * @param date
+	 *            the date to set
 	 */
 	public void setDate(final Date date) {
 		this.date = date;
 	}
 
 	/**
-	 * @param eventType the eventType to set
+	 * @param eventType
+	 *            the eventType to set
 	 */
 	public void setEventType(final long eventType) {
 		this.eventType = eventType;

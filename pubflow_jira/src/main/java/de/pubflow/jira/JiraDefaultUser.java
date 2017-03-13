@@ -23,7 +23,6 @@ import com.atlassian.crowd.exception.OperationFailedException;
 import com.atlassian.crowd.exception.OperationNotPermittedException;
 import com.atlassian.crowd.exception.UserNotFoundException;
 import com.atlassian.crowd.exception.embedded.InvalidGroupException;
-import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.exception.AddException;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;

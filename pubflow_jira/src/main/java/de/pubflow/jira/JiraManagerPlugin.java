@@ -106,16 +106,17 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * @param resourceName
 	 * @return
 	 */
+	@SuppressWarnings("PMD.AssignmentInOperand")
 	public static String getTextResource(final String resourceName) {
 		final StringBuffer content = new StringBuffer();
 		try {
 			String line;
-			final InputStream rs = JiraManagerPlugin.class.getResourceAsStream(resourceName);
-			final BufferedReader in = new BufferedReader(new InputStreamReader(rs, "UTF-8"));
-			while ((line = in.readLine()) != null) {
+			final InputStream resourceStream = JiraManagerPlugin.class.getResourceAsStream(resourceName);
+			final BufferedReader inputReader = new BufferedReader(new InputStreamReader(resourceStream, "UTF-8"));
+			while ((line = inputReader.readLine()) != null) {
 				content.append(line).append("\n");
 			}
-			in.close();
+			inputReader.close();
 		} catch (final Exception e) {
 			LOGGER.error(e.getLocalizedMessage() + " " + e.getCause());
 			e.printStackTrace();
@@ -135,11 +136,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		final InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
 		final Issue issue = issueEvent.getIssue();
 		final String issueStatus = issue.getStatus().getName();
-		if (
-		// (issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) &&
-		// ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName()
-		// != "jira") ||
-		issueStatus.equals("Data Processing by PubFlow")) {
+		if (issueStatus.equals("Data Processing by PubFlow")) {
 			this.callWf(issueEvent);
 		} else if (issueEvent.getEventTypeId().equals(EventType.ISSUE_UPDATED_ID)) {
 			// TODO

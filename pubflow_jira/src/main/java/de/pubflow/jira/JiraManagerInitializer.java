@@ -140,8 +140,6 @@ public class JiraManagerInitializer {
 			project = getProjectManager().createProject(user, projectData);
 			permissionSchemeManager.addDefaultSchemeToProject(project);
 			ComponentAccessor.getNotificationSchemeManager().addDefaultSchemeToProject(project);
-			final Scheme notificationScheme = ComponentAccessor.getNotificationSchemeManager().getSchemeFor(project);
-
 			LOGGER.info("initProject: created a new project with projectKey " + projectKey);
 		} else {
 			LOGGER.debug("initProject: project with projectKey " + projectKey + " already exists");
@@ -178,7 +176,6 @@ public class JiraManagerInitializer {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 	public void initHumbleScreens(final List<CustomFieldDefinition> customFields, final String issueTypeName,
 			final List<Long> customFieldIdsTest, final Project project) throws Exception {
 		final JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName);
@@ -248,7 +245,6 @@ public class JiraManagerInitializer {
 					aActions.setMetaAttributes(metaAttributes);
 				}
 			}
-
 		}
 	}
 
