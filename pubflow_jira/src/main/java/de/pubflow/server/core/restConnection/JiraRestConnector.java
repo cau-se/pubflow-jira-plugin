@@ -35,16 +35,18 @@ import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 
 @Path(JiraRestConnector.basePath)
-public class JiraRestConnector  {
-
+public final class JiraRestConnector {
 
 	private static final String jiraRestPath = "/rest/receiver/1.0";
 	static final String basePath = "/pubflow/issues";
 	private static final String answerPath = "/{issueKey}/result";
-//	private static final String port =":63922";
-//	private static final String port =":80";
-	private static final String port="";
+	// private static final String port =":63922";
+	// private static final String port =":80";
+	private static final String port = "";
 
+	private JiraRestConnector() {
+	
+	}
 
 	@POST
 	@AnonymousAllowed
@@ -64,8 +66,7 @@ public class JiraRestConnector  {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{issueKey}/attachments")
 	public Response addAttachment(@PathParam("issueKey") final String issueKey, final JiraAttachment attachment) {
-		JiraEndpoint.addAttachment(issueKey, attachment.getData(), attachment.getFilename(),
-				attachment.getType());
+		JiraEndpoint.addAttachment(issueKey, attachment.getData(), attachment.getFilename(), attachment.getType());
 		try {
 			return Response.status(204).entity("").build();
 		} catch (final Exception e) {
@@ -105,7 +106,8 @@ public class JiraRestConnector  {
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path(answerPath)
-	public Response receiveWorkflowAnswer(@PathParam("issueKey") final String issueKey, final ReceivedWorkflowAnswer wfAnswer) {
+	public Response receiveWorkflowAnswer(@PathParam("issueKey") final String issueKey,
+			final ReceivedWorkflowAnswer wfAnswer) {
 		WorkflowBroker.getInstance().receiveWorkflowAnswer(issueKey, wfAnswer);
 		return Response.ok().build();
 	}
@@ -121,7 +123,7 @@ public class JiraRestConnector  {
 		// TODO is this the right place for this?
 
 		// TODO set port dynamically (@ startup)
-		
+
 		return "https://" + InetAddress.getLocalHost().getHostAddress().toString() + port + jiraRestPath + basePath
 				+ answerPath;
 	}

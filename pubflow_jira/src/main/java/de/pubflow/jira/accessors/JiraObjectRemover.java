@@ -21,8 +21,12 @@ import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.attachment.Attachment;
 import com.atlassian.jira.user.ApplicationUser;
 
-public class JiraObjectRemover {
+public final class JiraObjectRemover {
 
+	private JiraObjectRemover() {
+		
+	}
+	
 	/**
 	 * Removes an User in Jira
 	 * 

@@ -29,8 +29,7 @@ import com.atlassian.scheduler.config.RunMode;
 import com.atlassian.scheduler.config.Schedule;
 
 public class JiraManagerPluginJob {
-	private static final JobRunnerKey JOB_RUNNER_KEY = JobRunnerKey
-			.of(JiraManagerPluginJobRunner.class.getName());
+	private static final JobRunnerKey JOB_RUNNER_KEY = JobRunnerKey.of(JiraManagerPluginJobRunner.class.getName());
 	private static final JobId JOB_ID = JobId.of(JiraManagerPluginJobRunner.class.getName());
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraManagerPluginJobRunner.class);
 	private final SchedulerService schedulerService;
@@ -46,7 +45,7 @@ public class JiraManagerPluginJob {
 		try {
 			schedulerService.scheduleJob(JOB_ID,
 					JobConfig.forJobRunnerKey(JOB_RUNNER_KEY).withRunMode(RunMode.RUN_LOCALLY)
-					.withSchedule(Schedule.runOnce(new Date(System.currentTimeMillis() + 2000))));
+							.withSchedule(Schedule.runOnce(new Date(System.currentTimeMillis() + 2000))));
 		} catch (SchedulerServiceException se) {
 			LOGGER.warn("Error: " + se);
 		}

@@ -33,10 +33,14 @@ import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 
-public class JiraEndpoint {
+public final class JiraEndpoint {
 
 	private static final Logger myLogger = LoggerFactory.getLogger(JiraEndpoint.class);
 
+	private JiraEndpoint() {
+		
+	}
+	
 	/**
 	 * Creates a new Issue in Jira
 	 *

@@ -36,9 +36,13 @@ import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.JiraManagerPlugin;
 
-public class JiraObjectGetter {
+public final class JiraObjectGetter {
 
 	private static Logger log = LoggerFactory.getLogger(JiraObjectGetter.class);
+
+	private JiraObjectGetter() {
+
+	}
 
 	/**
 	 * @author abar
@@ -64,20 +68,20 @@ public class JiraObjectGetter {
 	 * @return the issueType we looked for (null if it does not exist)
 	 */
 	public static IssueType getIssueTypeByName(final String issueTypeName) {
-	    final IssueType issueType = null;
-	    
-	    final Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
-	    
-	    for(final IssueType tempIssueType : issueTypes) {
-	      if(tempIssueType.getName().equals(issueTypeName)) {
-	        return tempIssueType;
-	      }
-	    }
-	    
-	    return issueType;
+		final IssueType issueType = null;
+
+		final Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
+
+		for (final IssueType tempIssueType : issueTypes) {
+			if (tempIssueType.getName().equals(issueTypeName)) {
+				return tempIssueType;
+			}
+		}
+
+		return issueType;
 	}
-	
-	public static String getIssueTypeNamebyJiraKey(final String jiraKey){
+
+	public static String getIssueTypeNamebyJiraKey(final String jiraKey) {
 		return getIssueByJiraKey(jiraKey).getIssueType().getName();
 	}
 
@@ -117,7 +121,8 @@ public class JiraObjectGetter {
 		return key;
 	}
 
-	public static List<String> getAllIssueSummariesBySummaryContains(final String snippet) throws GenericEntityException {
+	public static List<String> getAllIssueSummariesBySummaryContains(final String snippet)
+			throws GenericEntityException {
 		final long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
 		final Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
 		final List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
@@ -157,10 +162,10 @@ public class JiraObjectGetter {
 
 		for (final Status statusItem : statuses) {
 			if (statusItem != null) {
-				
+
 				log.info("getStatusByName - status iteration 1:" + Arrays.toString(statusItem.getName().getBytes()));
 				log.info("getStatusByName - status iteration 2: " + Arrays.toString(statusName.getBytes()));
-				
+
 				if (statusItem.getName().equalsIgnoreCase(statusName)) {
 					return statusItem;
 				}
@@ -179,8 +184,8 @@ public class JiraObjectGetter {
 	 */
 
 	public static List<String> getStatusNames(final String projectKey) {
-		final List<Status> status = ComponentAccessor.getWorkflowManager()
-				.getWorkflow(projectKey).getLinkedStatusObjects();
+		final List<Status> status = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey)
+				.getLinkedStatusObjects();
 		final List<String> result = new ArrayList<String>();
 
 		for (final Status statusItem : status) {
@@ -195,30 +200,29 @@ public class JiraObjectGetter {
 	}
 
 	/**
-	   * searches for an issue type by its name quite expensive
-	   * 
-	   * @param name
-	   *          : the issue type's name
-	   * 
-	   * @return returns the issue type id returns null if no or more than one issue type with the
-	   *         provided name has been found
-	   * 
-	   */
+	 * searches for an issue type by its name quite expensive
+	 * 
+	 * @param name
+	 *            : the issue type's name
+	 * 
+	 * @return returns the issue type id returns null if no or more than one
+	 *         issue type with the provided name has been found
+	 * 
+	 */
 
-	  public static IssueType findIssueTypeByName(final Project project, final String name) {
-	    log.debug("findIssueTypeByName - name : " + name);
-	    final Collection<IssueType> issueTypes = project.getIssueTypes();
+	public static IssueType findIssueTypeByName(final Project project, final String name) {
+		log.debug("findIssueTypeByName - name : " + name);
+		final Collection<IssueType> issueTypes = project.getIssueTypes();
 
-	    for (final IssueType issueType : issueTypes) {
-	      if (issueType.getName().equals(name)) {
-	        return issueType;
-	      }
-	    }
-	    
-	    log.debug("findIssueTypeByName: no issueType named "+name+" was found.");
-	    return null;
-	  }
-	
+		for (final IssueType issueType : issueTypes) {
+			if (issueType.getName().equals(name)) {
+				return issueType;
+			}
+		}
+
+		log.debug("findIssueTypeByName: no issueType named " + name + " was found.");
+		return null;
+	}
 
 	/**
 	 * searches for an issue type by its name quite expensive
@@ -252,7 +256,7 @@ public class JiraObjectGetter {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Looks up the issue to the given key.
 	 * 

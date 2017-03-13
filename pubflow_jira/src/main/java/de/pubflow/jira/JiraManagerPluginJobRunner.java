@@ -32,17 +32,15 @@ public class JiraManagerPluginJobRunner implements JobRunner {
 	@Override
 	public JobRunnerResponse runJob(final JobRunnerRequest request) {
 
-		try
-		{
+		try {
 			return JobRunnerResponse.success(initPubflow());
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return JobRunnerResponse.failed(e);
 		}
 	}
 
-	private String initPubflow() throws KeyManagementException, UnrecoverableKeyException, GenericEntityException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+	private String initPubflow() throws KeyManagementException, UnrecoverableKeyException, GenericEntityException,
+			NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
 		final JiraManagerInitializer jiraManagerInitializer = new JiraManagerInitializer();
 		jiraManagerInitializer.initPubFlowProject();
 		return "Initilizing pubflow.";
