@@ -38,9 +38,9 @@ import de.pubflow.server.core.rest.messages.WorkflowRestCall;
 public final class WorkflowSender {
 
 	private WorkflowSender() {
-		
+
 	}
-	
+
 	/**
 	 * Sends a post request to the Workflow engine to use a certain Workflow
 	 * specified through the given path.

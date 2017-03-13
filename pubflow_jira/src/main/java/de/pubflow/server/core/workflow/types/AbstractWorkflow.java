@@ -38,11 +38,10 @@ import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
  */
 abstract public class AbstractWorkflow {
 
-	protected Logger myLogger = LoggerFactory.getLogger(this.getClass());
+	protected final Logger myLogger = LoggerFactory.getLogger(this.getClass());
 	private final String workflowName;
 	private final String workflowID;
 	private final String jiraWorkflowXMLPath;
-	// TODO this should be filled in a more dynamic way
 	private String baseWebserviceURL = "http://localhost:8080";
 	private final String webServiceAPI;
 

@@ -45,9 +45,9 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
  *
  */
 public final class WorkflowBroker {
-	static private Logger myLogger;
+	private static Logger myLogger;
 
-	static private Map<String, AbstractWorkflow> registeredWorkflows = new HashMap<String, AbstractWorkflow>();
+	private static final Map<String, AbstractWorkflow> registeredWorkflows = new HashMap<String, AbstractWorkflow>();
 
 	private WorkflowBroker() {
 		myLogger = LoggerFactory.getLogger(this.getClass());
@@ -60,8 +60,8 @@ public final class WorkflowBroker {
 
 	/**
 	 * Handles new Workflow calls for PubFlow. They will be saved and send to
-	 * the Workflow Microservice.
-	 * Works only if a Workflow service should be called. 
+	 * the Workflow Microservice. Works only if a Workflow service should be
+	 * called.
 	 * 
 	 * @param callData
 	 * @throws WFException
@@ -158,24 +158,6 @@ public final class WorkflowBroker {
 				}
 			}
 		}
-		// TODO the case of scheduled Workflows is not considered in the moment
-		// and may be needed in the future (?)
-
-		// msg.setParameters(filteredParameters);
-		//
-		// if(!quartzCron.equals("")){
-		// myLogger.info("Scheduling new job");
-		// final ServiceCallData schedulerMsg = msg;
-		// Scheduler s = new Scheduler();
-		//
-		// s.schedule(quartzCron, new Runnable() {
-		// public void run() {
-		// PubFlowJob.execute(schedulerMsg);
-		// }
-		// });
-		// s.start();
-		//
-		// }
 
 		return filteredParameters;
 	}
@@ -188,9 +170,8 @@ public final class WorkflowBroker {
 	 * @throws WFRestException
 	 */
 	public void receiveWorkflowAnswer(final String jiraKey, final ReceivedWorkflowAnswer answer) {
-		myLogger.debug("Receveived answer to issue " +jiraKey +".");
-		// TODO a generic mapping for available Workflows, which tells what to
-		// do in certain events
+		myLogger.debug("Receveived answer to issue " + jiraKey + ".");
+
 		if (JiraObjectGetter.getIssueByJiraKey(jiraKey) == null) {
 			myLogger.info("Got answer to non-existing issue  with key: " + jiraKey + " with message: ");
 			myLogger.info(answer.toString());
@@ -217,6 +198,6 @@ public final class WorkflowBroker {
 	 */
 	static public void addWorkflow(final AbstractWorkflow workflow) {
 		registeredWorkflows.put(workflow.getWorkflowName(), workflow);
-		myLogger.info("Registered Workflow: "+workflow.getWorkflowName() +" at the WorkflowBroker");
+		myLogger.info("Registered Workflow: " + workflow.getWorkflowName() + " at the WorkflowBroker");
 	}
 }

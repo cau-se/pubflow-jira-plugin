@@ -38,9 +38,9 @@ public final class JiraEndpoint {
 	private static final Logger myLogger = LoggerFactory.getLogger(JiraEndpoint.class);
 
 	private JiraEndpoint() {
-		
+
 	}
-	
+
 	/**
 	 * Creates a new Issue in Jira
 	 *
@@ -109,7 +109,8 @@ public final class JiraEndpoint {
 	 * @return returns the issue type id
 	 */
 
-	public static String createIssueType(final String projectKey, final String issueTypeName, final Map<String, String> parameters) {
+	public static String createIssueType(final String projectKey, final String issueTypeName,
+			final Map<String, String> parameters) {
 
 		final String id = null;
 		// id = JiraObjectCreator.createIssueType(projectKey, issueTypeName,
@@ -213,7 +214,8 @@ public final class JiraEndpoint {
 	 * @param type
 	 */
 
-	public static boolean addAttachment(final String issueKey, final byte[] barray, final String fileName, final String type) {
+	public static boolean addAttachment(final String issueKey, final byte[] barray, final String fileName,
+			final String type) {
 
 		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, JiraManagerPlugin.user);
 

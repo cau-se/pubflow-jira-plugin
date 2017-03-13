@@ -65,10 +65,10 @@ import de.pubflow.jira.JiraManagerPlugin;
 public final class JiraObjectManipulator {
 
 	private JiraObjectManipulator() {
-		
+
 	}
-	
-	private static Logger log = LoggerFactory.getLogger(JiraObjectManipulator.class);
+
+	private final static Logger log = LoggerFactory.getLogger(JiraObjectManipulator.class);
 
 	/**
 	 * @author abar
@@ -89,8 +89,8 @@ public final class JiraObjectManipulator {
 			log.debug("projectIds: $projectIds");
 			final Long[] ids = new Long[projectIds.size()];
 
-			final List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true, projectIds.toArray(ids),
-					ComponentAccessor.getProjectManager());
+			final List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true,
+					projectIds.toArray(ids), ComponentAccessor.getProjectManager());
 			fieldConfigSchemeManager.updateFieldConfigScheme(issueTypeScheme, contexts,
 					fieldManager.getConfigurableField(IssueFieldConstants.ISSUE_TYPE));
 		}
@@ -163,14 +163,15 @@ public final class JiraObjectManipulator {
 	 * @param user
 	 * @return
 	 */
-	public static long addAttachment(final String issueKey, final byte[] barray, final String fileName, final String type,
-			final ApplicationUser user) {
+	public static long addAttachment(final String issueKey, final byte[] barray, final String fileName,
+			final String type, final ApplicationUser user) {
 
 		try {
 			final MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 
 			// TODO : path os?
-			final String filePath = "/tmp/pubflow_tmp" + new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32);
+			final String filePath = "/tmp/pubflow_tmp"
+					+ new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32);
 			final FileOutputStream stream = new FileOutputStream(filePath);
 
 			stream.write(barray);

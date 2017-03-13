@@ -234,7 +234,7 @@ public final class JiraObjectCreator {
 			// check if custom field already exists
 			final Collection<CustomField> foundCustomFields = customFieldManager.getCustomFieldObjectsByName(customField.getName());
 
-			if (foundCustomFields.size() == 0) {
+			if (foundCustomFields.isEmpty()) {
 				LOGGER.debug("newIssueType - customField search : " + customField.getName() + " null, creating");
 
 				// create custom field

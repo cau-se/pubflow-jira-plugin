@@ -38,7 +38,7 @@ import de.pubflow.jira.JiraManagerPlugin;
 
 public final class JiraObjectGetter {
 
-	private static Logger log = LoggerFactory.getLogger(JiraObjectGetter.class);
+	private static final Logger log = LoggerFactory.getLogger(JiraObjectGetter.class);
 
 	private JiraObjectGetter() {
 

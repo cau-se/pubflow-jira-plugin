@@ -38,7 +38,7 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
 public final class JiraRestConnector {
 
 	private static final String jiraRestPath = "/rest/receiver/1.0";
-	static final String basePath = "/pubflow/issues";
+	public static final String basePath = "/pubflow/issues";
 	private static final String answerPath = "/{issueKey}/result";
 	// private static final String port =":63922";
 	// private static final String port =":80";
