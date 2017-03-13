@@ -34,15 +34,15 @@ import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 
-@Path(JiraRestConnector.basePath)
+@Path(JiraRestConnector.BASEPATH)
 public final class JiraRestConnector {
 
-	private static final String jiraRestPath = "/rest/receiver/1.0";
-	public static final String basePath = "/pubflow/issues";
-	private static final String answerPath = "/{issueKey}/result";
+	private static final String JIRARESTPATH = "/rest/receiver/1.0";
+	public static final String BASEPATH = "/pubflow/issues";
+	private static final String ANSWERPATH = "/{issueKey}/result";
 	// private static final String port =":63922";
 	// private static final String port =":80";
-	private static final String port = "";
+	private static final String PORT = "";
 
 	private JiraRestConnector() {
 	
@@ -56,7 +56,7 @@ public final class JiraRestConnector {
 		JiraEndpoint.changeStatus(issueKey, statusName.substring(1, statusName.length() - 1));
 		try {
 			return Response.status(204).entity("").build();
-		} catch (final Exception e) {
+		} catch (final Exception exception) {
 			return Response.status(500).entity("").build();
 		}
 	}
@@ -69,7 +69,7 @@ public final class JiraRestConnector {
 		JiraEndpoint.addAttachment(issueKey, attachment.getData(), attachment.getFilename(), attachment.getType());
 		try {
 			return Response.status(204).entity("").build();
-		} catch (final Exception e) {
+		} catch (final Exception exception) {
 			return Response.status(500).entity("").build();
 		}
 	}
@@ -82,7 +82,7 @@ public final class JiraRestConnector {
 		JiraEndpoint.addIssueComment(issueKey, comment);
 		try {
 			return Response.status(204).entity("").build();
-		} catch (final Exception e) {
+		} catch (final Exception exception) {
 			return Response.status(500).entity("").build();
 		}
 	}
@@ -105,7 +105,7 @@ public final class JiraRestConnector {
 	@POST
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path(answerPath)
+	@Path(ANSWERPATH)
 	public Response receiveWorkflowAnswer(@PathParam("issueKey") final String issueKey,
 			final ReceivedWorkflowAnswer wfAnswer) {
 		WorkflowBroker.getInstance().receiveWorkflowAnswer(issueKey, wfAnswer);
@@ -124,8 +124,8 @@ public final class JiraRestConnector {
 
 		// TODO set port dynamically (@ startup)
 
-		return "https://" + InetAddress.getLocalHost().getHostAddress().toString() + port + jiraRestPath + basePath
-				+ answerPath;
+		return "https://" + InetAddress.getLocalHost().getHostAddress().toString() + PORT + JIRARESTPATH + BASEPATH
+				+ ANSWERPATH;
 	}
 
 }

@@ -68,7 +68,7 @@ public final class JiraObjectManipulator {
 
 	}
 
-	private final static Logger log = LoggerFactory.getLogger(JiraObjectManipulator.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(JiraObjectManipulator.class);
 
 	/**
 	 * @author abar
@@ -86,7 +86,7 @@ public final class JiraObjectManipulator {
 		if (issueTypeScheme != issueTypeSchemeManager.getDefaultIssueTypeScheme()) {
 			final List<Long> projectIds = new ArrayList<Long>();
 			projectIds.add(project.getId());
-			log.debug("projectIds: $projectIds");
+			LOGGER.debug("projectIds: $projectIds");
 			final Long[] ids = new Long[projectIds.size()];
 
 			final List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true,
@@ -144,12 +144,12 @@ public final class JiraObjectManipulator {
 	public static void addWorkflowToProject(final WorkflowScheme workflowScheme, final Project project) {
 		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
 		final Scheme scheme = workflowSchemeManager.getSchemeObject(workflowScheme.getId());
-		if (scheme != null && project != null) {
+		if (!(scheme == null || project == null)) {
 			workflowSchemeManager.addSchemeToProject(project, scheme);
-			log.info("addWorkflowToProject: the workflowscheme " + scheme.getName() + " was added to the project "
+			LOGGER.info("addWorkflowToProject: the workflowscheme " + scheme.getName() + " was added to the project "
 					+ project.getName());
 		} else {
-			log.debug("addWorkflowToProject: the project is already mapped to the scheme " + scheme.getName());
+			LOGGER.debug("addWorkflowToProject: the project is already mapped to the scheme " + scheme.getName());
 		}
 	}
 
@@ -171,7 +171,7 @@ public final class JiraObjectManipulator {
 
 			// TODO : path os?
 			final String filePath = "/tmp/pubflow_tmp"
-					+ new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32);
+					+ new BigInteger(130, JiraManagerPlugin.SECURERANDOM).toString(32);
 			final FileOutputStream stream = new FileOutputStream(filePath);
 
 			stream.write(barray);
@@ -184,8 +184,8 @@ public final class JiraObjectManipulator {
 			// TODO: no id?
 			return 0L;
 
-		} catch (final Exception e) {
-			e.printStackTrace();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 			return 0L;
 		}
 	}
@@ -200,22 +200,22 @@ public final class JiraObjectManipulator {
 	 */
 
 	public static Comment addIssueComment(final String issueKey, final String comment, final ApplicationUser user) {
-		log.info("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
+		LOGGER.info("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
 
 		if (user != null) {
-			log.info("addIssueComment - user : " + user.getName());
+			LOGGER.info("addIssueComment - user : " + user.getName());
 		} else {
-			log.info("addIssueComment - user : null");
+			LOGGER.info("addIssueComment - user : null");
 		}
 
 		final Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 		final Comment commentObject = ComponentAccessor.getCommentManager().create(issue, user, comment, false);
 
 		if (commentObject != null) {
-			log.info("addIssueComment - return commentObject");
+			LOGGER.info("addIssueComment - return commentObject");
 			return commentObject;
 		} else {
-			log.info("addIssueComment - return null");
+			LOGGER.info("addIssueComment - return null");
 			return null;
 		}
 	}
@@ -237,9 +237,9 @@ public final class JiraObjectManipulator {
 		final Group group = ComponentAccessor.getGroupManager().getGroup(pGroup);
 		if (pubflowUser != null && group != null) {
 			ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-			log.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
+			LOGGER.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
 		} else {
-			log.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
+			LOGGER.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
 		}
 	}
 
@@ -257,11 +257,11 @@ public final class JiraObjectManipulator {
 	public static void addUserToGroup(final ApplicationUser pubflowUser, final Group group)
 			throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
 			OperationNotPermittedException, OperationFailedException {
-		if (pubflowUser != null && group != null) {
+		if (!(pubflowUser == null || group == null)) {
 			ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-			log.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
+			LOGGER.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
 		} else {
-			log.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
+			LOGGER.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
 		}
 
 	}
@@ -284,11 +284,11 @@ public final class JiraObjectManipulator {
 		final Status nextStatus = JiraObjectGetter.getStatusByName(issue.getProjectObject().getKey(), statusName);
 
 		if (issue == null || jiraWorkflow == null || nextStatus == null) {
-			log.debug("changeStatus: issue, jiraworklfow, or nextStatus is null.");
+			LOGGER.debug("changeStatus: issue, jiraworklfow, or nextStatus is null.");
 			return false;
 		} else {
 			ComponentAccessor.getWorkflowManager().migrateIssueToWorkflow(issue, jiraWorkflow, nextStatus);
-			log.info("changeStatus: successfully changed current status of an issue to next status.");
+			LOGGER.info("changeStatus: successfully changed current status of an issue to next status.");
 			return true;
 		}
 	}

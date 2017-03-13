@@ -77,7 +77,7 @@ public class JiraDefaultUser {
 
 		//
 		final ApplicationUser userPubFlow = JiraObjectCreator.createUser("PubFlow",
-				new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
+				new BigInteger(130, JiraManagerPlugin.SECURERANDOM).toString(32));
 		JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-administrators");
 		JiraObjectManipulator.addUserToGroup(userPubFlow, "jira-core-users");
 		JiraObjectManipulator.addUserToGroup(userPubFlow, jirasoftwareusers);
@@ -86,11 +86,11 @@ public class JiraDefaultUser {
 		JiraObjectManipulator.addUserToGroup(userPubFlow, groupLibrarian);
 
 		final ApplicationUser userLibrarianFn = JiraObjectCreator.createUser("Librarian - Functional Account",
-				new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
+				new BigInteger(130, JiraManagerPlugin.SECURERANDOM).toString(32));
 		JiraObjectManipulator.addUserToGroup(userLibrarianFn, groupLibrariansFn);
 
 		final ApplicationUser userDatamanagerFn = JiraObjectCreator.createUser("DataManager - Functional Account",
-				new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32));
+				new BigInteger(130, JiraManagerPlugin.SECURERANDOM).toString(32));
 		JiraObjectManipulator.addUserToGroup(userDatamanagerFn, groupDataManagersFn);
 
 		// this.createTestUsers();

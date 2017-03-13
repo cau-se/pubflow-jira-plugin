@@ -33,7 +33,7 @@ public class WorkflowRestCall {
 	/**
 	 * Used to map the workflow to other services, events and responses.
 	 */
-	private String id;
+	private String workflowID;
 	/**
 	 * Url to response to
 	 */
@@ -45,11 +45,11 @@ public class WorkflowRestCall {
 
 
 	public String getID() {
-		return this.id;
+		return this.workflowID;
 	}
 
-	public void setID(final String id) {
-		this.id = id;
+	public void setID(final String workflowID) {
+		this.workflowID = workflowID;
 	}
 
 	public List<WFParameter> getWorkflowParameters() {

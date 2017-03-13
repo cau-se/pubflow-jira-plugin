@@ -39,7 +39,7 @@ public final class JiraObjectRemover {
 	 *            : the name of the user that shall be removed
 	 */
 	public static void deleteUser(final ApplicationUser loggedUser, final String userToDelete) {
-		if (userToDelete != null) {
+		if (!(userToDelete == null)) {
 			ComponentAccessor.getUserUtil().removeUser(loggedUser,
 					ComponentAccessor.getUserManager().getUserByName(userToDelete));
 		}
@@ -73,8 +73,8 @@ public final class JiraObjectRemover {
 			final Attachment attachment = ComponentAccessor.getAttachmentManager().getAttachment(attachmentId);
 			ComponentAccessor.getAttachmentManager().deleteAttachment(attachment);
 			return true;
-		} catch (final Exception e) {
-			e.printStackTrace();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 			return false;
 		}
 	}

@@ -80,7 +80,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	public static StatusManager statusManager;
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("root");
 	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
-	public static final SecureRandom secureRandom = new SecureRandom();
+	public static final SecureRandom SECURERANDOM = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
 	@GuardedBy("this")
 	private final Set<LifecycleEvent> lifecycleEvents = EnumSet.noneOf(LifecycleEvent.class);
@@ -91,6 +91,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * @param eventPublisher
 	 *            injected {@code EventPublisher} implementation.
 	 */
+	@SuppressWarnings("PMD.LongVariable")
 	public JiraManagerPlugin(final EventPublisher eventPublisher, final IssueTypeManager issueTypeManager,
 			final FieldScreenSchemeManager fieldScreenSchemeManager, final StatusManager statusManager,
 			final JiraManagerPluginJob jiraManagerPluginJob) {

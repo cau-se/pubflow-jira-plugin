@@ -46,7 +46,7 @@
 	<rule ref="rulesets/java/typeresolution.xml" />
 	<rule ref="rulesets/java/unnecessary.xml" />
 	<rule ref="rulesets/java/unusedcode.xml">
-		<exclude name="UnusedModifier" />
+
 	</rule>
 
 
@@ -57,7 +57,6 @@
 	</rule>
 
 	<rule ref="rulesets/java/comments.xml">
-		<exclude name="CommentRequired" />
 		<exclude name="CommentSize" />
 	</rule>
 
@@ -93,12 +92,11 @@
 	</rule>
 
 	<rule ref="rulesets/java/naming.xml">
-		<exclude name="LongVariable" />
 		<exclude name="PackageCase" />
 	</rule>
 
 	<rule ref="rulesets/java/naming.xml/VariableNamingConventions">
-		<priority>5</priority>
+	
 	</rule>
 
 	<rule ref="rulesets/java/optimizations.xml">
@@ -107,7 +105,6 @@
 		<exclude name="AvoidInstantiatingObjectsInLoops" />
 		<exclude name="UseStringBufferForStringAppends" />
 		<exclude name="PrematureDeclaration" />
-		<exclude name="AddEmptyString" />
 	</rule>
 	
 </ruleset>

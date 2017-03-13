@@ -38,7 +38,7 @@ import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
  */
 abstract public class AbstractWorkflow {
 
-	protected final Logger myLogger = LoggerFactory.getLogger(this.getClass());
+	protected final static Logger LOGGER= LoggerFactory.getLogger(AbstractWorkflow.class);
 	private final String workflowName;
 	private final String workflowID;
 	private final String jiraWorkflowXMLPath;
@@ -114,20 +114,22 @@ abstract public class AbstractWorkflow {
 	public void handleWorkflowAnswer(final String jiraKey, final ReceivedWorkflowAnswer answer) {
 
 		if (answer.getResult().toLowerCase().contains("error")) {
-			myLogger.error("Workflow with id " + jiraKey + " failed, with message: '" + answer.getErrorMessage() + "'");
+			LOGGER.error("Workflow with id " + jiraKey + " failed, with message: '" + answer.getErrorMessage() + "'");
 
 			handleWorkflowError(jiraKey, answer);
 
 		} else {
-			myLogger.info("Workflow with id " + jiraKey + " returned valid result: '" + answer.getResult() + "'");
+			LOGGER.info("Workflow with id " + jiraKey + " returned valid result: '" + answer.getResult() + "'");
 
 			handleWorkflowResults(jiraKey, answer);
 		}
 		
 		
 		//maybe the called service wants to add a comment
-		if(!answer.getCommentMessage().isEmpty())
+		if(!answer.getCommentMessage().isEmpty()) {
 			JiraObjectManipulator.addIssueComment(jiraKey, answer.getCommentMessage(), JiraObjectGetter.getUserByName("PubFlow"));
+		
+		}
 		//maybe the called service defines which status should be set next
 		if (answer.getNewStatus() != null) {
 			JiraObjectManipulator.changeStatus(jiraKey, answer.getNewStatus());
@@ -146,7 +148,7 @@ abstract public class AbstractWorkflow {
 		// JiraRestConnector by themselves
 		final String newStatus = answer.getNewStatus();
 		if (newStatus != null && !newStatus.isEmpty()) {
-			myLogger.info("Issue ' " + jiraKey + "' try to change status to: " + newStatus);
+			LOGGER.info("Issue ' " + jiraKey + "' try to change status to: " + newStatus);
 			JiraObjectManipulator.changeStatus(jiraKey, newStatus);
 		}
 		final String comment = answer.getResult();

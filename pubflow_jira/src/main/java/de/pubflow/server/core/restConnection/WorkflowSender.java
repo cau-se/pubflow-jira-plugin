@@ -36,7 +36,7 @@ import de.pubflow.server.core.rest.messages.WorkflowRestCall;
  *
  */
 public final class WorkflowSender {
-
+	private final static Logger LOGGER = LoggerFactory.getLogger(WorkflowSender.class);
 	private WorkflowSender() {
 
 	}
@@ -55,13 +55,12 @@ public final class WorkflowSender {
 	 *             than 2xx
 	 */
 	public static void initWorkflow(final WorkflowRestCall wfCall, final String workflowPath) throws WFRestException {
-		final Logger myLogger = LoggerFactory.getLogger(WorkflowSender.class);
 
-		myLogger.info("Trying to use workflow on: " + workflowPath);
+		LOGGER.info("Trying to use workflow on: " + workflowPath);
 		final Gson gson = new Gson();
 		final HttpClient httpClient = HttpClientBuilder.create().build();
 		final HttpPost post = new HttpPost(workflowPath);
-		HttpResponse response = null;
+		HttpResponse response;
 
 		try {
 			final StringEntity postingString = new StringEntity(gson.toJson(wfCall));
@@ -70,11 +69,11 @@ public final class WorkflowSender {
 			post.setHeader("Content-type", "application/json");
 			response = httpClient.execute(post);
 			System.out.println(post.getURI());
-			myLogger.info("Http response: " + response.toString());
+			LOGGER.info("Http response: " + response.toString());
 
-		} catch (final Exception e) {
-			myLogger.error("Could not deploy new Workflow with ID: " + wfCall.getID());
-			myLogger.error(e.toString());
+		} catch (final Exception exception) {
+			LOGGER.error("Could not deploy new Workflow with ID: " + wfCall.getID());
+			LOGGER.error(exception.toString());
 			throw new WFRestException("Workflow could not be started");
 		}
 		if (response.getStatusLine().getStatusCode() >= 300) {

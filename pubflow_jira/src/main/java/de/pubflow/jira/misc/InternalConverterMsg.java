@@ -35,28 +35,29 @@ import com.atlassian.jira.issue.fields.CustomField;
 
 public class InternalConverterMsg {
 
-	private long eventType;
-	private Date date;
-	private String issueTypeName;
-	private Map<String, String> values = new HashMap<String, String>();
+	private static final String EMPTY_STRING = "";
+	private final long eventType;
+	private final Date date;
+	private final String issueTypeName;
+	private final Map<String, String> values = new HashMap<String, String>();
 
 	/**
 	 * @param issueEvent
 	 */
 	public InternalConverterMsg(final IssueEvent issueEvent) {
 
-		this.setEventType(issueEvent.getEventTypeId());
-		this.setDate(issueEvent.getTime());
+		this.eventType = issueEvent.getEventTypeId();
+		this.date = issueEvent.getTime();
 
 		final Issue issue = issueEvent.getIssue();
-		this.setIssueTypeName(issue.getIssueType().getName());
+		this.issueTypeName = issue.getIssueType().getName();
 
 		getValues().put("reporter", issue.getReporterId());
 		getValues().put("assignee", issue.getAssigneeId());
 		getValues().put("workflowName", getIssueTypeName());
-		getValues().put("issueKey", issue.getKey() + "");
-		getValues().put("eventType", getEventType() + "");
-		getValues().put("date", getDate().getTime() + "");
+		getValues().put("issueKey", issue.getKey() + EMPTY_STRING);
+		getValues().put("eventType", getEventType() + EMPTY_STRING);
+		getValues().put("date", getDate().getTime() + EMPTY_STRING);
 		getValues().put("status", issue.getStatus().getName());
 
 		final List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
@@ -72,7 +73,7 @@ public class InternalConverterMsg {
 					Date date;
 					try {
 						date = formatter.parse(issue.getCustomFieldValue(customField).toString());
-						getValues().put("quartzMillis", date.getTime() + "");
+						getValues().put("quartzMillis", date.getTime() + EMPTY_STRING);
 					} catch (ParseException e) {
 						e.printStackTrace();
 						getValues().put(customFieldName, null);
@@ -99,37 +100,5 @@ public class InternalConverterMsg {
 
 	public Map<String, String> getValues() {
 		return values;
-	}
-
-	/**
-	 * @param values
-	 *            the values to set
-	 */
-	public void setValues(final Map<String, String> values) {
-		this.values = values;
-	}
-
-	/**
-	 * @param issueTypeName
-	 *            the issueTypeName to set
-	 */
-	public void setIssueTypeName(final String issueTypeName) {
-		this.issueTypeName = issueTypeName;
-	}
-
-	/**
-	 * @param date
-	 *            the date to set
-	 */
-	public void setDate(final Date date) {
-		this.date = date;
-	}
-
-	/**
-	 * @param eventType
-	 *            the eventType to set
-	 */
-	public void setEventType(final long eventType) {
-		this.eventType = eventType;
 	}
 }

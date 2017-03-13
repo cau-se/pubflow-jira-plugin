@@ -50,10 +50,10 @@ public class CustomFieldDefinition {
 		}
 	}
 
-	private String name;
-	private CustomFieldType type;
-	private boolean required;
-	private String[] screens;
+	private final String name;
+	private final CustomFieldType type;
+	private final boolean required;
+	private final String[] screens;
 
 	/**
 	 * @param name
@@ -73,31 +73,15 @@ public class CustomFieldDefinition {
 		return name;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 	public String getType() {
 		return type.getType();
-	}
-
-	public void setType(final CustomFieldType type) {
-		this.type = type;
 	}
 
 	public boolean isRequired() {
 		return required;
 	}
 
-	public void setRequired(final boolean required) {
-		this.required = required;
-	}
-
 	public String[] getScreens() {
 		return screens;
-	}
-
-	public void setScreens(final String[] screens) {
-		this.screens = screens;
 	}
 }

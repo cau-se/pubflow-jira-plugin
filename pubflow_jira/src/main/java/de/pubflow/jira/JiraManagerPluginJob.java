@@ -46,8 +46,8 @@ public class JiraManagerPluginJob {
 			schedulerService.scheduleJob(JOB_ID,
 					JobConfig.forJobRunnerKey(JOB_RUNNER_KEY).withRunMode(RunMode.RUN_LOCALLY)
 							.withSchedule(Schedule.runOnce(new Date(System.currentTimeMillis() + 2000))));
-		} catch (SchedulerServiceException se) {
-			LOGGER.warn("Error: " + se);
+		} catch (SchedulerServiceException schedulerException) {
+			LOGGER.warn("Error: " + schedulerException);
 		}
 	}
 

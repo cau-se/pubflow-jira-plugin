@@ -39,8 +39,8 @@ public class JiraManagerPluginJobRunner implements JobRunner {
 
 		try {
 			return JobRunnerResponse.success(initPubflow());
-		} catch (Exception e) {
-			return JobRunnerResponse.failed(e);
+		} catch (Exception exception) {
+			return JobRunnerResponse.failed(exception);
 		}
 	}
 

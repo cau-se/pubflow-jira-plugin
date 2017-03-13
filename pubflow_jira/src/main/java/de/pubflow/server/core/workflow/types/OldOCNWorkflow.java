@@ -34,6 +34,7 @@ public class OldOCNWorkflow extends AbstractWorkflow {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 	public List<CustomFieldDefinition> getCustomFields() {
 
 		final List<CustomFieldDefinition> customFields = new LinkedList<CustomFieldDefinition>();

@@ -344,57 +344,6 @@ public final class JiraObjectCreator {
 		return workflowScheme;
 	}
 
-	@SuppressWarnings("unused")
-	private static FieldScreen createHumbleFieldScreen(final String name) {
-		LOGGER.info("generateHumbleFieldScreen - name : " + name);
-
-		final FieldScreen fieldScreen = new FieldScreenImpl(ComponentAccessor.getFieldScreenManager());
-		fieldScreen.setName(name);
-		final FieldScreenTab fieldScreenTab = fieldScreen.addTab("Job");
-		fieldScreenTab.setPosition(0);
-		fieldScreenTab.addFieldScreenLayoutItem(
-				ComponentAccessor.getFieldManager().getField(IssueFieldConstants.REPORTER).getId());
-		fieldScreenTab.addFieldScreenLayoutItem(
-				ComponentAccessor.getFieldManager().getField(IssueFieldConstants.SUMMARY).getId());
-
-		return fieldScreen;
-	}
-
-	@SuppressWarnings("unused")
-	private FieldScreenScheme createNewFieldScreenScheme(final FieldScreen fieldScreenCreate,
-			final FieldScreen fieldScreenEdit, final FieldScreen fieldScreenView, final String fieldScreenSchemeName)
-			throws Exception {
-		LOGGER.info("createNewFieldScreenScheme - fieldScreenSchemeName : " + fieldScreenSchemeName);
-
-		if (fieldScreenCreate == null || fieldScreenEdit == null || fieldScreenView == null) {
-			throw new Exception("One or more field screens are null");
-		}
-
-		final FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemCreate.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
-		fieldScreenSchemeItemCreate.setFieldScreen(fieldScreenCreate);
-
-		final FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemEdit.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
-		fieldScreenSchemeItemEdit.setFieldScreen(fieldScreenEdit);
-
-		final FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemView.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
-		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
-
-		final FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, null);
-		fieldScreenScheme.setName(fieldScreenSchemeName);
-		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);
-		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemEdit);
-		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemCreate);
-
-		return fieldScreenScheme;
-	}
-
 	private static MutableIssue createNewMutableIssue(final String projectKey, final String summary,
 			final String description, final ApplicationUser reporter, final ApplicationUser user,
 			final String issueTypeName) throws Exception {
@@ -409,7 +358,7 @@ public final class JiraObjectCreator {
 
 		final MutableIssue newIssue = ComponentAccessor.getIssueFactory().getIssue();
 		newIssue.setProjectObject(ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
-		newIssue.setIssueTypeObject(JiraObjectGetter.findIssueTypeByName(issueTypeName));
+		newIssue.setIssueTypeObject(JiraObjectGetter.getIssueTypeByName(issueTypeName));
 		newIssue.setSummary(issueTypeName + " / " + summary);
 		newIssue.setDescription(description);
 		// Assignment for an entire group would be nicer

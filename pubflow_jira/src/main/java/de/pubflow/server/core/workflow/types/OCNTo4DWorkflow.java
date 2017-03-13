@@ -37,6 +37,7 @@ public class OCNTo4DWorkflow extends AbstractWorkflow {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 	public List<CustomFieldDefinition> getCustomFields() {
 
 		final List<CustomFieldDefinition> customFieldsOCNTo4D = new LinkedList<CustomFieldDefinition>();

@@ -35,7 +35,7 @@ import de.pubflow.jira.accessors.JiraObjectManipulator;
 
 public final class JiraEndpoint {
 
-	private static final Logger myLogger = LoggerFactory.getLogger(JiraEndpoint.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JiraEndpoint.class);
 
 	private JiraEndpoint() {
 
@@ -55,11 +55,11 @@ public final class JiraEndpoint {
 			final Map<String, String> parameters, final String reporter) {
 		try {
 			final ApplicationUser pubflowUser = JiraObjectGetter.getUserByName("PubFlow");
-			myLogger.info("Creating new issue with type: " + issueTypeName);
+			LOGGER.info("Creating new issue with type: " + issueTypeName);
 			return JiraObjectCreator.createIssue("PUB", issueTypeName, summary, description, pubflowUser, pubflowUser,
 					parameters);
-		} catch (final Exception e) {
-			myLogger.warn("Failed to create new Issue through PubFlow", e);
+		} catch (final Exception exception) {
+			LOGGER.warn("Failed to create new Issue through PubFlow", exception);
 			return null;
 		}
 	}
@@ -67,9 +67,9 @@ public final class JiraEndpoint {
 	public static List<String> getAllIssuesBySummaryContains(final String snippet) {
 		try {
 			return JiraObjectGetter.getAllIssueSummariesBySummaryContains(snippet);
-		} catch (final Exception e) {
+		} catch (final Exception exception) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
 		return null;
 	}
@@ -77,46 +77,11 @@ public final class JiraEndpoint {
 	public static boolean lookupIssue(final String name) {
 		try {
 			return JiraObjectGetter.lookupIssue(name);
-		} catch (final Exception e) {
+		} catch (final Exception exception) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
 		return false;
-	}
-
-	public static String createIssue(final JiraIssue issue) {
-		try {
-			// return JiraObjectCreator.createIssue("PUB",
-			// issue.getIssueTypeName(), issue.getSummary(),
-			// issue.getDescription(), issue.getReporter(),
-			// JiraManagerPlugin.user, issue.getParameters());
-
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
-
-	/**
-	 * Creates a new IssueType in Jira
-	 * 
-	 * @param projectKey
-	 *            : the projects key
-	 * @param issueTypeName
-	 *            :
-	 * @param parameters
-	 *            : list of custom fields (name : default value)
-	 * @return returns the issue type id
-	 */
-
-	public static String createIssueType(final String projectKey, final String issueTypeName,
-			final Map<String, String> parameters) {
-
-		final String id = null;
-		// id = JiraObjectCreator.createIssueType(projectKey, issueTypeName,
-		// parameters);
-
-		return id;
 	}
 
 	/**
@@ -167,9 +132,9 @@ public final class JiraEndpoint {
 	 * @return returns a string array of all available status names
 	 */
 
-	public static LinkedList<String> getStatusNames(final String projectKey) {
+	public static List<String> getStatusNames(final String projectKey) {
 		final List<String> statusNames = JiraObjectGetter.getStatusNames(projectKey);
-		final LinkedList<String> namesList = new LinkedList<String>();
+		final List<String> namesList = new LinkedList<String>();
 
 		namesList.addAll(statusNames);
 
@@ -192,14 +157,14 @@ public final class JiraEndpoint {
 	 */
 
 	public static boolean createProject(final String projectName, final String projectKey, final String workflowXML,
-			final LinkedList<String> steps) {
+			final List<String> steps) {
 		try {
 			// JiraObjectCreator.createProject(projectName, projectKey,
 			// JiraManagerPlugin.user, false);
 
 			return true;
-		} catch (final Exception e) {
-			e.printStackTrace();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 		}
 
 		return true;

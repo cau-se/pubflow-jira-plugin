@@ -30,10 +30,6 @@ public class ReceivedWorkflowAnswer {
 	private String newStatus;
 	private String commentMessage;
 
-	public ReceivedWorkflowAnswer() {
-
-	}
-
 	public String getResult() {
 		return result;
 	}

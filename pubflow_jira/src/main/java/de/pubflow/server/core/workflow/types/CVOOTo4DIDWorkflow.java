@@ -55,6 +55,7 @@ public class CVOOTo4DIDWorkflow extends AbstractWorkflow {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 	public List<CustomFieldDefinition> getCustomFields() {
 
 		final List<CustomFieldDefinition> customFieldsCVOOTo4D = new LinkedList<CustomFieldDefinition>();
