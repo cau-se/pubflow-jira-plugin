@@ -28,16 +28,40 @@ import com.atlassian.scheduler.config.JobRunnerKey;
 import com.atlassian.scheduler.config.RunMode;
 import com.atlassian.scheduler.config.Schedule;
 
+/**
+ * 
+ * @author abar
+ *
+ */
 public class JiraManagerPluginJob {
+	/**
+	 * 
+	 */
 	private static final JobRunnerKey JOB_RUNNER_KEY = JobRunnerKey.of(JiraManagerPluginJobRunner.class.getName());
+	/**
+	 * 
+	 */
 	private static final JobId JOB_ID = JobId.of(JiraManagerPluginJobRunner.class.getName());
+	/**
+	 * 
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraManagerPluginJobRunner.class);
+	/**
+	 * 
+	 */
 	private final SchedulerService schedulerService;
 
+	/**
+	 * 
+	 * @param schedulerService
+	 */
 	public JiraManagerPluginJob(final SchedulerService schedulerService) {
 		this.schedulerService = schedulerService;
 	}
 
+	/**
+	 * Start the job that runs pubflow
+	 */
 	public void init() {
 		final JiraManagerPluginJobRunner jobRunner = new JiraManagerPluginJobRunner();
 		schedulerService.registerJobRunner(JOB_RUNNER_KEY, jobRunner);
@@ -51,6 +75,9 @@ public class JiraManagerPluginJob {
 		}
 	}
 
+	/**
+	 * Shut down the job.
+	 */
 	public void destroy() {
 		schedulerService.unregisterJobRunner(JOB_RUNNER_KEY);
 	}

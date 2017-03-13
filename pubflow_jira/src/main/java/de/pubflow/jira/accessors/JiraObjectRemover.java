@@ -17,10 +17,15 @@ package de.pubflow.jira.accessors;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.exception.RemoveException;
+import com.atlassian.jira.issue.AttachmentManager;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.attachment.Attachment;
 import com.atlassian.jira.user.ApplicationUser;
 
+/**
+ * 
+ *
+ */
 public final class JiraObjectRemover {
 
 	private JiraObjectRemover() {
@@ -39,7 +44,7 @@ public final class JiraObjectRemover {
 	 *            : the name of the user that shall be removed
 	 */
 	public static void deleteUser(final ApplicationUser loggedUser, final String userToDelete) {
-		if (!(userToDelete == null)) {
+		if (userToDelete != null) {
 			ComponentAccessor.getUserUtil().removeUser(loggedUser,
 					ComponentAccessor.getUserManager().getUserByName(userToDelete));
 		}
@@ -70,8 +75,9 @@ public final class JiraObjectRemover {
 	 */
 	public static boolean removeAttachment(final long attachmentId) {
 		try {
-			final Attachment attachment = ComponentAccessor.getAttachmentManager().getAttachment(attachmentId);
-			ComponentAccessor.getAttachmentManager().deleteAttachment(attachment);
+			final AttachmentManager attachmentManager = ComponentAccessor.getAttachmentManager();
+			final Attachment attachment = attachmentManager.getAttachment(attachmentId);
+			attachmentManager.deleteAttachment(attachment);
 			return true;
 		} catch (final Exception exception) {
 			exception.printStackTrace();

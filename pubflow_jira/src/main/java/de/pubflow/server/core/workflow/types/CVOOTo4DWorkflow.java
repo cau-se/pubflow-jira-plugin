@@ -31,11 +31,17 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
  */
 public class CVOOTo4DWorkflow extends AbstractWorkflow {
 
+	/**
+	 * 
+	 */
 	public CVOOTo4DWorkflow() {
 		// TODO OCN and CVOO use currently the same XML file for Jira
 		super("Export Data (CVOO) to PANGAEA", "de.pubflow.CVOO", "/OCNTO4D-WORKFLOW.xml", "/workflow/CVOOWorkflow");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 	public List<CustomFieldDefinition> getCustomFields() {

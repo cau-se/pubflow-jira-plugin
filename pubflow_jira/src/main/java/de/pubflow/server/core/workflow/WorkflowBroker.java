@@ -45,14 +45,24 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
  *
  */
 public final class WorkflowBroker {
+	/**
+	 * 
+	 */
 	private final static Logger LOGGER = LoggerFactory.getLogger(WorkflowBroker.class);
-
+	
+	/**
+	 * 
+	 */
 	private static final Map<String, AbstractWorkflow> REGISTEREDWORKFLOWS = new HashMap<String, AbstractWorkflow>();
 
 	private WorkflowBroker() {
 		LOGGER.info("Starting WorkflowBroker");
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	static public WorkflowBroker getInstance() {
 		return new WorkflowBroker();
 	}
@@ -108,6 +118,11 @@ public final class WorkflowBroker {
 		}
 	}
 
+	/**
+	 * 
+	 * @param data
+	 * @return
+	 */
 	private List<WFParameter> computeParameter(final ServiceCallData data) {
 
 		final List<WFParameter> parameters = data.getParameters();

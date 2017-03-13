@@ -43,27 +43,50 @@ public class WorkflowRestCall {
 	 */
 	private List<WFParameter> workflowParameters;
 
-
+	/**
+	 * 
+	 * @return
+	 */
 	public String getID() {
 		return this.workflowID;
 	}
 
+	/**
+	 * 
+	 * @param workflowID
+	 */
 	public void setID(final String workflowID) {
 		this.workflowID = workflowID;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public List<WFParameter> getWorkflowParameters() {
 		return workflowParameters;
 	}
 
+	/**
+	 * 
+	 * @param workflowParameters
+	 */
 	public void setWorkflowParameters(final List<WFParameter> workflowParameters) {
 		this.workflowParameters = workflowParameters;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getCallbackAddress() {
 		return callbackAddress;
 	}
 
+	/**
+	 * 
+	 * @param callbackAddress
+	 */
 	public void setCallbackAddress(final String callbackAddress) {
 		this.callbackAddress = callbackAddress;
 	}

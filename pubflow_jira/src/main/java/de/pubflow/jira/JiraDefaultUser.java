@@ -40,13 +40,38 @@ import de.pubflow.jira.accessors.JiraObjectRemover;
  *
  */
 public class JiraDefaultUser {
+	/**
+	 * The data manager group in Jira
+	 */
 	private final Group groupDataManager;
+	/**
+	 * The scientists group in Jira
+	 */
 	private final Group groupScientists;
+	/**
+	 * The librarian group in Jira
+	 */
 	private final Group groupLibrarian;
+	/**
+	 * The data manager notification group in Jira
+	 */
 	private final Group groupDataManagersFn;
+	/**
+	 * The librarian notification group in Jira
+	 */
 	private final Group groupLibrariansFn;
+	/**
+	 * The software users group in Jira
+	 */
 	private final String jirasoftwareusers = "jira-software-users";
 
+	/**
+	 * Pubflow uses different user groups and a special pubflow user. This class creates this groups.
+	 * 
+	 * @throws OperationNotPermittedException
+	 * @throws InvalidGroupException
+	 */
+	
 	public JiraDefaultUser() throws OperationNotPermittedException, InvalidGroupException {
 
 		groupDataManager = JiraObjectCreator.createGroup("datamanagers");
@@ -103,6 +128,16 @@ public class JiraDefaultUser {
 
 	}
 
+	/**
+	 * 
+	 * @throws GroupNotFoundException
+	 * @throws UserNotFoundException
+	 * @throws PermissionException
+	 * @throws AddException
+	 * @throws OperationNotPermittedException
+	 * @throws OperationFailedException
+	 * @throws CreateException
+	 */
 	private void createTestUsers() throws GroupNotFoundException, UserNotFoundException, PermissionException,
 			AddException, OperationNotPermittedException, OperationFailedException, CreateException {
 		final ApplicationUser userRoot = JiraObjectCreator.createUser("root", "$Boogie3");

@@ -37,57 +37,118 @@ import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
  *
  */
 abstract public class AbstractWorkflow {
-
-	protected final static Logger LOGGER= LoggerFactory.getLogger(AbstractWorkflow.class);
+	/**
+	 * 
+	 */
+	protected final static Logger LOGGER = LoggerFactory.getLogger(AbstractWorkflow.class);
+	/**
+	 * 
+	 */
 	private final String workflowName;
+	/**
+	 * 
+	 */
 	private final String workflowID;
+	/**
+	 * 
+	 */
 	private final String jiraWorkflowXMLPath;
+	/**
+	 * 
+	 */
 	private String baseWebserviceURL = "http://localhost:8080";
+	/**
+	 * 
+	 */
 	private final String webServiceAPI;
 
-	public AbstractWorkflow(final String workflowName, final String workflowID, final String jiraWorkflowXMLPath, final String webServiceAPI,
-			final String baseWebserviceURL) {
+	/**
+	 * 
+	 * @param workflowName
+	 * @param workflowID
+	 * @param jiraWorkflowXMLPath
+	 * @param webServiceAPI
+	 * @param baseWebserviceURL
+	 */
+	public AbstractWorkflow(final String workflowName, final String workflowID, final String jiraWorkflowXMLPath,
+			final String webServiceAPI, final String baseWebserviceURL) {
 		this(workflowName, workflowID, jiraWorkflowXMLPath, webServiceAPI);
 		this.baseWebserviceURL = baseWebserviceURL;
 
 	}
 
-	public AbstractWorkflow(final String workflowName, final String workflowID, final String jiraWorkflowXMLPath, final String webServiceAPI) {
+	/**
+	 * 
+	 * @param workflowName
+	 * @param workflowID
+	 * @param jiraWorkflowXMLPath
+	 * @param webServiceAPI
+	 */
+	public AbstractWorkflow(final String workflowName, final String workflowID, final String jiraWorkflowXMLPath,
+			final String webServiceAPI) {
 		this.webServiceAPI = webServiceAPI;
 		this.workflowID = workflowID;
 		this.workflowName = workflowName;
 		this.jiraWorkflowXMLPath = jiraWorkflowXMLPath;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public final String getWorkflowName() {
 		return workflowName;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public final String getJiraWorkflowXMLPath() {
 		return jiraWorkflowXMLPath;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public final String getBaseWebserviceURL() {
 		return baseWebserviceURL;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public final String getWebServiceAPI() {
 		return webServiceAPI;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public final String getCompleteServiceURL() {
 		return baseWebserviceURL + webServiceAPI;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public final String getWorkflowID() {
 		return workflowID;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Map<String, String> getScreenNames() {
 		final String issueType = this.getWorkflowName();
 
 		final Map<String, String> basicScreens = new HashMap<String, String>();
-		basicScreens.put("create",issueType + Appendix.FIELDSCREEN + "ActionCreate");
+		basicScreens.put("create", issueType + Appendix.FIELDSCREEN + "ActionCreate");
 		basicScreens.put("edit", issueType + Appendix.FIELDSCREEN + "ActionEdit");
 		basicScreens.put("view", issueType + Appendix.FIELDSCREEN + "ActionView");
 
@@ -123,14 +184,14 @@ abstract public class AbstractWorkflow {
 
 			handleWorkflowResults(jiraKey, answer);
 		}
-		
-		
-		//maybe the called service wants to add a comment
-		if(!answer.getCommentMessage().isEmpty()) {
-			JiraObjectManipulator.addIssueComment(jiraKey, answer.getCommentMessage(), JiraObjectGetter.getUserByName("PubFlow"));
-		
+
+		// maybe the called service wants to add a comment
+		if (!answer.getCommentMessage().isEmpty()) {
+			JiraObjectManipulator.addIssueComment(jiraKey, answer.getCommentMessage(),
+					JiraObjectGetter.getUserByName("PubFlow"));
+
 		}
-		//maybe the called service defines which status should be set next
+		// maybe the called service defines which status should be set next
 		if (answer.getNewStatus() != null) {
 			JiraObjectManipulator.changeStatus(jiraKey, answer.getNewStatus());
 		}
@@ -152,7 +213,7 @@ abstract public class AbstractWorkflow {
 			JiraObjectManipulator.changeStatus(jiraKey, newStatus);
 		}
 		final String comment = answer.getResult();
-		if(!comment.isEmpty() ){
+		if (!comment.isEmpty()) {
 			JiraObjectManipulator.addIssueComment(jiraKey, comment, null);
 		}
 	}

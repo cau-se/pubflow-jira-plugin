@@ -62,13 +62,19 @@ import com.atlassian.jira.workflow.WorkflowSchemeManager;
 
 import de.pubflow.jira.JiraManagerPlugin;
 
+/**
+ * A utility class to manipulate objects of Jira
+ *
+ */
 public final class JiraObjectManipulator {
+	/**
+	 * Logger from debuging and info message.
+	 */
+	private final static Logger LOGGER = LoggerFactory.getLogger(JiraObjectManipulator.class);
 
 	private JiraObjectManipulator() {
 
 	}
-
-	private final static Logger LOGGER = LoggerFactory.getLogger(JiraObjectManipulator.class);
 
 	/**
 	 * @author abar

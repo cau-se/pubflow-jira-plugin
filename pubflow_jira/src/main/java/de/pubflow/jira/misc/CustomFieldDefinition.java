@@ -15,9 +15,16 @@
  */
 package de.pubflow.jira.misc;
 
-
+/**
+ * 
+ *
+ */
 public class CustomFieldDefinition {
 
+	/**
+	 * 
+	 *
+	 */
 	public enum CustomFieldType{
 		TEXT("com.atlassian.jira.plugin.system.customfieldtypes:textfield"),
 		TEXTAREA("com.atlassian.jira.plugin.system.customfieldtypes:textarea"),
@@ -35,24 +42,50 @@ public class CustomFieldDefinition {
 		RADIOBUTTONS("com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons"),
 		GROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:grouppicker");
 		
+		/**
+		 * 
+		 */
 		private String type = "";
 
 		CustomFieldType(final String type) {
 			this.setType(type);
 		}
 
+		/**
+		 * 
+		 * @return
+		 */
 		public String getType() {
 			return type;
 		}
 
+		/**
+		 * 
+		 * @param type
+		 */
 		public void setType(final String type) {
 			this.type = type;
 		}
 	}
 
+	/**
+	 * The Name of the custom field.
+	 */
 	private final String name;
+	
+	/**
+	 * The type of the custom field.
+	 */
 	private final CustomFieldType type;
+	
+	/**
+	 * If the field is required of not
+	 */
 	private final boolean required;
+	
+	/**
+	 * The screens the field is mapped to.
+	 */
 	private final String[] screens;
 
 	/**
@@ -69,19 +102,35 @@ public class CustomFieldDefinition {
 
 	}
 
+	/**
+	 * 
+	 * @return String the name of the custom field.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * 
+	 * @return String the type of the custom field.
+	 */
 	public String getType() {
 		return type.getType();
 	}
 
+	/**
+	 * 
+	 * @return boolean if the field is required or not
+	 */
 	public boolean isRequired() {
-		return required;
+		return this.required;
 	}
 
+	/**
+	 * 
+	 * @return String[] the field screens the custom field is mapped to.
+	 */
 	public String[] getScreens() {
-		return screens;
+		return this.screens;
 	}
 }

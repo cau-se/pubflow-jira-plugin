@@ -69,19 +69,49 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public class JiraManagerPlugin implements LifecycleAware, InitializingBean, DisposableBean {
+	/**
+	 * 
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraManagerPlugin.class);
+	/**
+	 * 
+	 */
 	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
 	public static IssueTypeManager issueTypeManager;
+	/**
+	 * 
+	 */
 	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
+	/**
+	 * 
+	 */
 	public static EventPublisher eventPublisher;
+	/**
+	 * 
+	 */
 	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
+	/**
+	 * 
+	 */
 	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
 	public static StatusManager statusManager;
+	/**
+	 * 
+	 */
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("root");
+	/**
+	 * 
+	 */
 	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
 	public static final SecureRandom SECURERANDOM = new SecureRandom();
+	/**
+	 * 
+	 */
 	private final JiraManagerPluginJob jiraManagerPluginJob;
+	/**
+	 * 
+	 */
 	@GuardedBy("this")
 	private final Set<LifecycleEvent> lifecycleEvents = EnumSet.noneOf(LifecycleEvent.class);
 
@@ -294,6 +324,11 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		}
 	}
 
+	/**
+	 * 
+	 * @param event
+	 * @return
+	 */
 	synchronized private boolean isLifecycleReady(final LifecycleEvent event) {
 		return lifecycleEvents.add(event) && lifecycleEvents.size() == LifecycleEvent.values().length;
 	}
@@ -307,11 +342,17 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		LOGGER.info("launched successfully");
 	}
 
+	/**
+	 * 
+	 */
 	private void registerListener() {
 		LOGGER.info("registerListeners");
 		eventPublisher.register(this);
 	}
 
+	/**
+	 * 
+	 */
 	private void unregisterListener() {
 		LOGGER.info("unregisterListeners");
 		eventPublisher.unregister(this);
@@ -327,11 +368,18 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		AFTER_PROPERTIES_SET, PLUGIN_ENABLED, LIFECYCLE_AWARE_ON_START
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void onStop() {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * 
+	 * @param issueEvent
+	 */
 	private void callWf(final IssueEvent issueEvent) {
 		final InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
 

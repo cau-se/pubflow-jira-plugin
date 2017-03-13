@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.fields.screen.FieldScreen;
-import com.atlassian.jira.issue.fields.screen.FieldScreenManager;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
@@ -36,8 +35,14 @@ import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.JiraManagerPlugin;
 
+/**
+ * A Utility class to retrieve objects from jira.
+ *
+ */
 public final class JiraObjectGetter {
-
+	/**
+	 * Logger from debuging and info message.
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraObjectGetter.class);
 
 	private JiraObjectGetter() {
@@ -52,7 +57,7 @@ public final class JiraObjectGetter {
 	 * @param name
 	 *            the name of a Fieldscreen to look for
 	 */
-	static FieldScreen findFieldScreenByName(final String name) {		
+	static FieldScreen findFieldScreenByName(final String name) {
 		final Collection<FieldScreen> fieldScreens = ComponentAccessor.getFieldScreenManager().getFieldScreens();
 
 		for (final FieldScreen fieldScreen : fieldScreens) {
@@ -82,6 +87,11 @@ public final class JiraObjectGetter {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param jiraKey
+	 * @return
+	 */
 	public static String getIssueTypeNamebyJiraKey(final String jiraKey) {
 		return getIssueByJiraKey(jiraKey).getIssueType().getName();
 	}
@@ -206,6 +216,11 @@ public final class JiraObjectGetter {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param userName
+	 * @return
+	 */
 	public static ApplicationUser getUserByName(final String userName) {
 		return ComponentAccessor.getUserManager().getUserByName(userName);
 	}

@@ -36,7 +36,11 @@ import de.pubflow.server.core.rest.messages.WorkflowRestCall;
  *
  */
 public final class WorkflowSender {
+	/**
+	 * 
+	 */
 	private final static Logger LOGGER = LoggerFactory.getLogger(WorkflowSender.class);
+	
 	private WorkflowSender() {
 
 	}

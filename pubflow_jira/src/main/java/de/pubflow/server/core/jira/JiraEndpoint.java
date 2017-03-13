@@ -22,19 +22,24 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.common.entity.JiraAttachment;
 import de.pubflow.common.entity.JiraComment;
-import de.pubflow.common.entity.JiraIssue;
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 
+/**
+ * 
+ *
+ */
 public final class JiraEndpoint {
 
+	/**
+	 * 
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraEndpoint.class);
 
 	private JiraEndpoint() {
@@ -64,6 +69,11 @@ public final class JiraEndpoint {
 		}
 	}
 
+	/**
+	 * 
+	 * @param snippet
+	 * @return
+	 */
 	public static List<String> getAllIssuesBySummaryContains(final String snippet) {
 		try {
 			return JiraObjectGetter.getAllIssueSummariesBySummaryContains(snippet);
@@ -74,6 +84,11 @@ public final class JiraEndpoint {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static boolean lookupIssue(final String name) {
 		try {
 			return JiraObjectGetter.lookupIssue(name);
@@ -115,6 +130,11 @@ public final class JiraEndpoint {
 		}
 	}
 
+	/**
+	 * 
+	 * @param comment
+	 * @return
+	 */
 	public static boolean addIssueComment(final JiraComment comment) {
 		if (JiraObjectManipulator.addIssueComment(comment.getIssueKey(), comment.getText(),
 				JiraManagerPlugin.user) == null) {
@@ -187,6 +207,11 @@ public final class JiraEndpoint {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param attachment
+	 * @return
+	 */
 	public static boolean addAttachment(final JiraAttachment attachment) {
 		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(),
 				"", JiraManagerPlugin.user);

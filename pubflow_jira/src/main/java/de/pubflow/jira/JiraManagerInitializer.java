@@ -87,12 +87,21 @@ import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class JiraManagerInitializer {
-
-	public final List<CustomField> customFieldsCache = new LinkedList<CustomField>();
+	/**
+	 * Logger for this class
+	 */
 	private static final Logger LOGGER = Logger.getLogger(JiraManagerInitializer.class);
+
+	/**
+	 * the custom fields that should be created on start up of the pubflow addon
+	 */
+	public final List<CustomField> customFieldsCache = new LinkedList<CustomField>();
+
+	/**
+	 * The project Manager is used very often an is bound to a variable instead
+	 * of calling the ComponentAccessor all the time
+	 */
 	private final ProjectManager projectManager = ComponentAccessor.getProjectManager();
-	private final JiraManagerPlugin JiraManagerPlugin = ComponentAccessor
-			.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
 
 	/**
 	 * Creates a new Jira project
@@ -136,7 +145,6 @@ public class JiraManagerInitializer {
 			LOGGER.info("initProject: created a new project with projectKey " + projectKey);
 		} else {
 			LOGGER.debug("initProject: project with projectKey " + projectKey + " already exists");
-
 		}
 
 		return project;
@@ -177,18 +185,18 @@ public class JiraManagerInitializer {
 		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 
 		for (final CustomFieldDefinition customFieldDefinition : customFields) {
-			for (final String id : customFieldDefinition.getScreens()) {
+			for (final String customFieldID : customFieldDefinition.getScreens()) {
 				// 'init' new screens, the id in the map represents the Screen
 				// (id)
-				if (availableActionFieldScreens.get(id) == null) {
+				if (availableActionFieldScreens.get(customFieldID) == null) {
 					final List<CustomFieldDefinition> sameKeyDefs = new LinkedList<CustomFieldDefinition>();
 					sameKeyDefs.add(customFieldDefinition);
-					availableActionFieldScreens.put(id, sameKeyDefs);
+					availableActionFieldScreens.put(customFieldID, sameKeyDefs);
 					// add to existing screens
 				} else {
-					availableActionFieldScreens.get(id).add(customFieldDefinition);
+					availableActionFieldScreens.get(customFieldID).add(customFieldDefinition);
 				}
-				LOGGER.debug("initFieldScreens: transition screen grouping loops / id : " + id + " / name : "
+				LOGGER.debug("initFieldScreens: transition screen grouping loops / id : " + customFieldID + " / name : "
 						+ customFieldDefinition.getName());
 			}
 		}
@@ -213,10 +221,12 @@ public class JiraManagerInitializer {
 
 			final FieldScreen fieldScreen = JiraObjectCreator.createActionScreen(issueTypeName + "Action" + e.getKey());
 			final List<FieldScreenTab> fieldScreenTabs = fieldScreen.getTabs();
+
 			FieldScreenTab jobTab = null;
 			for (final FieldScreenTab fieldScreenTab : fieldScreenTabs) {
 				if (fieldScreenTab.getName().equals("Job")) {
 					jobTab = fieldScreenTab;
+					break;
 				}
 			}
 
@@ -224,9 +234,9 @@ public class JiraManagerInitializer {
 				jobTab = fieldScreen.addTab("Job");
 			}
 
-			for (final String s : customFieldIds) {
-				if (jobTab.getFieldScreenLayoutItem(s) == null) {
-					jobTab.addFieldScreenLayoutItem(s);
+			for (final String customFieldId : customFieldIds) {
+				if (jobTab.getFieldScreenLayoutItem(customFieldId) == null) {
+					jobTab.addFieldScreenLayoutItem(customFieldId);
 				}
 			}
 
@@ -391,8 +401,8 @@ public class JiraManagerInitializer {
 
 			JiraObjectCreator.addStatuses(projectKey, statuses);
 
-		} catch (final Exception e) {
-			e.printStackTrace();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 			return;
 		}
 
@@ -415,14 +425,21 @@ public class JiraManagerInitializer {
 		for (final AbstractWorkflow workflow : workflowsToAdd) {
 			try {
 				addNewWorkflow(workflow, project, user);
-			} catch (final Exception e) {
+			} catch (final Exception exception) {
 				LOGGER.info("Could not add Workflow: " + workflow.getWorkflowName());
-				LOGGER.debug("", e);
+				LOGGER.debug("", exception);
 			}
 		}
 
 	}
 
+	/**
+	 * 
+	 * @param workflow
+	 * @param project
+	 * @param user
+	 * @throws Exception
+	 */
 	private void addNewWorkflow(final AbstractWorkflow workflow, final Project project, final ApplicationUser user)
 			throws Exception {
 		LOGGER.info("Adding Worklow: " + workflow.getWorkflowName() + "to project key: " + project.getKey());
@@ -488,7 +505,7 @@ public class JiraManagerInitializer {
 		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issueTypeName);
 
 		// only create workflow, if it doesn't exist
-		if (!(jiraWorkflow == null)) {
+		if (jiraWorkflow != null) {
 			LOGGER.info("Issuetype ID mapping: " + issueTypeName + " expected, but doesnt exist");
 			return jiraWorkflow;
 		}
@@ -541,6 +558,12 @@ public class JiraManagerInitializer {
 		return jiraWorkflow;
 	}
 
+	/**
+	 * 
+	 * @param workflow
+	 * @return
+	 * @throws Exception
+	 */
 	private FieldScreenScheme createBasicFieldScreens(final AbstractWorkflow workflow) throws Exception {
 		final FieldScreen fieldScreenCreate = JiraObjectCreator
 				.createActionScreen(workflow.getScreenNames().get("create"));
@@ -554,6 +577,10 @@ public class JiraManagerInitializer {
 
 	}
 
+	/**
+	 * 
+	 * @param stepDescriptor
+	 */
 	@SuppressWarnings("unchecked")
 	private void mapScreensAndActions(final StepDescriptor stepDescriptor) {
 

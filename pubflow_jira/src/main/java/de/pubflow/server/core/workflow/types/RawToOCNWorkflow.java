@@ -30,10 +30,16 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
  */
 public class RawToOCNWorkflow extends AbstractWorkflow {
 
+	/**
+	 * 
+	 */
 	public RawToOCNWorkflow() {
 		super("Provide Cruise Data", "de.pubflow.RawToOCN", "/RAWTOCVOO-WORKFLOW.xml", "/workflow/DataToCVOOWorkflow");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<CustomFieldDefinition> getCustomFields() {
 

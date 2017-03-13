@@ -57,6 +57,7 @@
 	</rule>
 
 	<rule ref="rulesets/java/comments.xml">
+		<priority>1</priority>
 		<exclude name="CommentSize" />
 	</rule>
 

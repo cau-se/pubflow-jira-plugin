@@ -24,18 +24,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
 
+/**
+ * 
+ * @author alexanderbarbie
+ *
+ */
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
 public class ServiceCallData implements Serializable {
-
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = -4931074023209271264L;
 
 	/**
 	 * The id used to get the (bpmn) workflow
 	 */
 	private String workflowID = "";
-	
+
+	/**
+	 * 
+	 */
 	private WFType type;
+	
+	/**
+	 * 
+	 */
 	private List<WFParameter> parameters;
+	
+	/**
+	 * 
+	 */
 	private String jiraKey;
 
 	/**
@@ -70,7 +88,6 @@ public class ServiceCallData implements Serializable {
 		this.type = wftype;
 	}
 
-
 	/**
 	 * @return the wfparams
 	 */
@@ -87,22 +104,37 @@ public class ServiceCallData implements Serializable {
 		this.parameters = parameters;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isValid() {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getJiraKey() {
 		return jiraKey;
 	}
 
+	/**
+	 * 
+	 * @param jiraKey
+	 */
 	public void setJiraKey(final String jiraKey) {
 		this.jiraKey = jiraKey;
 	}
 
-
+	/**
+	 * 
+	 * @return
+	 */
 	public WFType getType() {
 		return type;
 	}
-	
+
 }

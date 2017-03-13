@@ -34,20 +34,44 @@ import de.pubflow.server.core.jira.JiraEndpoint;
 import de.pubflow.server.core.rest.messages.ReceivedWorkflowAnswer;
 import de.pubflow.server.core.workflow.WorkflowBroker;
 
+/**
+ * 
+ * @author alexanderbarbie
+ *
+ */
 @Path(JiraRestConnector.BASEPATH)
 public final class JiraRestConnector {
-
+	/**
+	 * 
+	 */
 	private static final String JIRARESTPATH = "/rest/receiver/1.0";
+
+	/**
+	 * 
+	 */
 	public static final String BASEPATH = "/pubflow/issues";
+
+	/**
+	 * 
+	 */
 	private static final String ANSWERPATH = "/{issueKey}/result";
 	// private static final String port =":63922";
 	// private static final String port =":80";
+	/**
+	 * 
+	 */
 	private static final String PORT = "";
 
 	private JiraRestConnector() {
-	
+
 	}
 
+	/**
+	 * 
+	 * @param issueKey
+	 * @param statusName
+	 * @return
+	 */
 	@POST
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -61,6 +85,12 @@ public final class JiraRestConnector {
 		}
 	}
 
+	/**
+	 * 
+	 * @param issueKey
+	 * @param attachment
+	 * @return
+	 */
 	@POST
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -74,6 +104,12 @@ public final class JiraRestConnector {
 		}
 	}
 
+	/**
+	 * 
+	 * @param issueKey
+	 * @param comment
+	 * @return
+	 */
 	@POST
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -87,6 +123,11 @@ public final class JiraRestConnector {
 		}
 	}
 
+	/**
+	 * 
+	 * @param issue
+	 * @return
+	 */
 	@POST
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -102,6 +143,12 @@ public final class JiraRestConnector {
 		}
 	}
 
+	/**
+	 * 
+	 * @param issueKey
+	 * @param wfAnswer
+	 * @return
+	 */
 	@POST
 	@AnonymousAllowed
 	@Consumes(MediaType.APPLICATION_JSON)

@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.atlassian.jira.component.ComponentAccessor;
@@ -35,10 +36,29 @@ import com.atlassian.jira.issue.fields.CustomField;
 
 public class InternalConverterMsg {
 
+	/**
+	 * Placeholder for an empty string
+	 */
 	private static final String EMPTY_STRING = "";
+	
+	/**
+	 * The type of the entity
+	 */
 	private final long eventType;
+	
+	/**
+	 * The date it was created.
+	 */
 	private final Date date;
+	
+	/**
+	 * the corresponding issuetype name
+	 */
 	private final String issueTypeName;
+	
+	/**
+	 * 
+	 */
 	private final Map<String, String> values = new HashMap<String, String>();
 
 	/**
@@ -69,7 +89,7 @@ public class InternalConverterMsg {
 				final String customFieldName = customField.getName();
 
 				if (customField.getCustomFieldType() instanceof DateTimeCFType) {
-					final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+					final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
 					Date date;
 					try {
 						date = formatter.parse(issue.getCustomFieldValue(customField).toString());
@@ -86,18 +106,34 @@ public class InternalConverterMsg {
 		}
 	}
 
+	/**
+	 * 
+	 * @return long the type of the event.
+	 */
 	public long getEventType() {
 		return eventType;
 	}
 
+	/**
+	 * 
+	 * @return Date the date the entity were created.
+	 */
 	public Date getDate() {
 		return date;
 	}
 
+	/**
+	 * 
+	 * @return String the issuetype the event is corresponding to
+	 */
 	public String getIssueTypeName() {
 		return issueTypeName;
 	}
 
+	/**
+	 * 
+	 * @return Map<String, String> values that are mapped to the entity.
+	 */
 	public Map<String, String> getValues() {
 		return values;
 	}

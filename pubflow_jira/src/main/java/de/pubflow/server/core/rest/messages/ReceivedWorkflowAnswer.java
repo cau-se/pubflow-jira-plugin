@@ -25,39 +25,86 @@ package de.pubflow.server.core.rest.messages;
  */
 public class ReceivedWorkflowAnswer {
 
+	/**
+	 * 
+	 */
 	private String result;
+
+	/**
+	 * 
+	 */
 	private String errorMessage;
+
+	/**
+	 * 
+	 */
 	private String newStatus;
+
+	/**
+	 * 
+	 */
 	private String commentMessage;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getResult() {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param result
+	 */
 	public void setResult(final String result) {
 		this.result = result;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 
+	/**
+	 * 
+	 * @param errorMessage
+	 */
 	public void setErrorMessage(final String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getNewStatus() {
 		return newStatus;
 	}
 
+	/**
+	 * 
+	 * @param newStatus
+	 */
 	public void setNewStatus(final String newStatus) {
 		this.newStatus = newStatus;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getCommentMessage() {
 		return commentMessage;
 	}
 
+	/**
+	 * 
+	 * @param commentMessage
+	 */
 	public void setCommentMessage(final String commentMessage) {
 		this.commentMessage = commentMessage;
 	}

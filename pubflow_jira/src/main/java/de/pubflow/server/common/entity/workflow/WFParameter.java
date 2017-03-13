@@ -17,13 +17,37 @@ package de.pubflow.server.common.entity.workflow;
 
 import java.io.Serializable;
 
+/**
+ * 
+ *
+ */
 public class WFParameter implements Serializable{
-	
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = -7467369540437772314L;
+	
+	/**
+	 * 
+	 */
 	private String key;
+	
+	/**
+	 * 
+	 */
 	private ParameterType payloadClazz;
+	
+	/**
+	 * 
+	 */
 	private Object value;
 
+	/**
+	 * 
+	 * @param key
+	 * @param o
+	 * @throws Exception
+	 */
 	public WFParameter(final String key, final Object o) throws Exception{
 		setKey(key);
 		setValue(o);
@@ -44,30 +68,57 @@ public class WFParameter implements Serializable{
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Object getValue() {
 		return value;
 	}
 	
+	/**
+	 * 
+	 * @param value
+	 */
 	private void setValue(final Object value) {
 		this.value = value;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public ParameterType getPayloadClazz() {
 		return payloadClazz;
 	}
 	
+	/**
+	 * 
+	 * @param payloadClazz
+	 */
 	private void setPayloadClazz(final ParameterType payloadClazz) {
 		this.payloadClazz = payloadClazz;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getKey() {
 		return key;
 	}
 	
+	/**
+	 * 
+	 * @param key
+	 */
 	public void setKey(final String key) {
 		this.key = key;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return "WFParameter [key=" + key + ", payloadClazz=" + payloadClazz

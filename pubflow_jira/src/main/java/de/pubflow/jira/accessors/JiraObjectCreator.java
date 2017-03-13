@@ -72,7 +72,14 @@ import com.opensymphony.workflow.FactoryException;
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 
+/**
+ * 
+ *
+ */
 public final class JiraObjectCreator {
+	/**
+	 * 
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraObjectCreator.class);
 
 	private JiraObjectCreator() {
@@ -344,6 +351,17 @@ public final class JiraObjectCreator {
 		return workflowScheme;
 	}
 
+	/**
+	 * 
+	 * @param projectKey
+	 * @param summary
+	 * @param description
+	 * @param reporter
+	 * @param user
+	 * @param issueTypeName
+	 * @return
+	 * @throws Exception
+	 */
 	private static MutableIssue createNewMutableIssue(final String projectKey, final String summary,
 			final String description, final ApplicationUser reporter, final ApplicationUser user,
 			final String issueTypeName) throws Exception {

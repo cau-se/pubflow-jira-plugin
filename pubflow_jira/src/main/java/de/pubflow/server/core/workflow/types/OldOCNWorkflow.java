@@ -29,10 +29,16 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
  */
 public class OldOCNWorkflow extends AbstractWorkflow {
 
+	/**
+	 * 
+	 */
 	public OldOCNWorkflow() {
 		super("Old OCN Workflow", "de.pubflow.oldOCN", "/PubFlow.xml", "/workflow/TestWorkflow");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 	public List<CustomFieldDefinition> getCustomFields() {
