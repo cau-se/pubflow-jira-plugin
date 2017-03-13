@@ -206,11 +206,11 @@ public class JiraManagerInitializer {
 			for (final CustomFieldDefinition c : e.getValue()) {
 				LOGGER.debug("initHumbleScreens: transition screen id loops / c.getName() : " + c.getName() + "_"
 						+ issueTypeName);
-				final Collection<CustomField> l = customFieldManager.getCustomFieldObjectsByName(c.getName());
+				final Collection<CustomField> foundCustomFields = customFieldManager.getCustomFieldObjectsByName(c.getName());
 
 				// should be created beforehand
-				if (l != null) {
-					customFieldIds.add(l.iterator().next().getId());
+				if (foundCustomFields != null) {
+					customFieldIds.add(foundCustomFields.iterator().next().getId());
 				} else {
 					LOGGER.error("initHumbleScreens: custom field is null / c.getName() : " + c.getName() + "_"
 							+ issueTypeName);

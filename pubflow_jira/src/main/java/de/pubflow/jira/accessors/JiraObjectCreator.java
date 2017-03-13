@@ -229,20 +229,20 @@ public final class JiraObjectCreator {
 		final List<JiraContextNode> contexts = new ArrayList<JiraContextNode>();
 		contexts.add(GlobalIssueContext.getInstance());
 		final List<Long> customFieldIds = new ArrayList<Long>();
-		for (final CustomFieldDefinition e : customFields) {
+		for (final CustomFieldDefinition customField : customFields) {
 
 			// check if custom field already exists
-			CustomField customFieldObject = customFieldManager.getCustomFieldObjectByName(e.getName());
+			final Collection<CustomField> foundCustomFields = customFieldManager.getCustomFieldObjectsByName(customField.getName());
 
-			if (customFieldObject == null) {
-				LOGGER.debug("newIssueType - customField search : " + e.getName() + " null, creating");
+			if (foundCustomFields.size() == 0) {
+				LOGGER.debug("newIssueType - customField search : " + customField.getName() + " null, creating");
 
 				// create custom field
-				customFieldObject = customFieldManager.createCustomField(e.getName(),
-						e.getName() + "-CustomField for " + issueTypeName,
-						customFieldManager.getCustomFieldType(e.getType()), null, contexts, issueTypesList);
+				final CustomField newCustomFieldObject = customFieldManager.createCustomField(customField.getName(),
+						customField.getName() + "-CustomField for " + issueTypeName,
+						customFieldManager.getCustomFieldType(customField.getType()), null, contexts, issueTypesList);
 
-				customFieldIds.add(customFieldObject.getIdAsLong());
+				customFieldIds.add(newCustomFieldObject.getIdAsLong());
 			}
 		}
 
