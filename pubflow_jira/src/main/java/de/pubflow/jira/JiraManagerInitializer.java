@@ -272,25 +272,8 @@ public class JiraManagerInitializer {
 	/**
 	 * Initializes the Look&Feel.
 	 */
-<<<<<<< .merge_file_yl9831
-	private static JiraWorkflow initWorkflow(String projectKey, String workflowXML, ApplicationUser user,
-			String issueTypeName) {
-		if (user != null) {
-			log.debug("initWorkflow: user : " + user.getUsername());
-		} else {
-			log.error("initWorkflow: user is null");
-		}
 
-		JiraWorkflow jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXML, user, issueTypeName);
-		WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
-				issueTypeName);
-		JiraObjectManipulator.addWorkflowToProject(workflowScheme, projectManager.getProjectObjByKey(projectKey));
-
-		return jiraWorkflow;
-
-	}
-
-	private static void createAppLinks() throws ManifestNotFoundException, NoSuchAlgorithmException,
+	private void createAppLinks() throws ManifestNotFoundException, NoSuchAlgorithmException,
 			InvalidKeySpecException, InstantiationException, IllegalAccessException, TypeNotInstalledException {
 		final String TD_APPLICATION_LINK_URL = "pubflow.application.link.url";
 		final String TD_APPLICATION_LINK_NAME = "pubflow.application.link.name";
@@ -301,23 +284,23 @@ public class JiraManagerInitializer {
 		final I18nResolver i18nResolver = JiraManagerPlugin.i18nResolver;
 		final MutatingApplicationLinkService appLinkService = JiraManagerPlugin.applicationLinkService;
 		final ServiceProviderConsumerStore serviceProviderConsumerStore = JiraManagerPlugin.serviceProviderConsumerStore;
-		URI linkUrl = URI.create(TD_APPLICATION_LINK_URL);
-		ApplicationId appId = ApplicationIdUtil.generate(URI.create(TD_APPLICATION_LINK_NAME));
+		final URI linkUrl = URI.create(TD_APPLICATION_LINK_URL);
+		final ApplicationId appId = ApplicationIdUtil.generate(URI.create(TD_APPLICATION_LINK_NAME));
 
 		if (appLinkService.getApplicationLink(appId) == null) {
-			ApplicationLinkDetails link = ApplicationLinkDetails.builder().name(appId.get()).displayUrl(linkUrl)
+			final ApplicationLinkDetails link = ApplicationLinkDetails.builder().name(appId.get()).displayUrl(linkUrl)
 					.rpcUrl(linkUrl).build();
 
-			ApplicationType appType = findGenericApplicationType();
+			final ApplicationType appType = findGenericApplicationType();
 
-			MutableApplicationLink appLink = appLinkService.addApplicationLink(appId, appType, link);
+			final MutableApplicationLink appLink = appLinkService.addApplicationLink(appId, appType, link);
 
-			String consumerKey = i18nResolver.getText(TD_CONSUMER_KEY);
-			String consumerName = i18nResolver.getText(TD_CONSUMER_NAME);
-			String consumerPublicKey = i18nResolver.getText(TD_CONSUMER_PUBLIC_KEY);
+			final String consumerKey = i18nResolver.getText(TD_CONSUMER_KEY);
+			final String consumerName = i18nResolver.getText(TD_CONSUMER_NAME);
+			final String consumerPublicKey = i18nResolver.getText(TD_CONSUMER_PUBLIC_KEY);
 
-			PublicKey publicKey = RSAKeys.fromPemEncodingToPublicKey(consumerPublicKey);
-			Consumer consumer = 
+			final PublicKey publicKey = RSAKeys.fromPemEncodingToPublicKey(consumerPublicKey);
+			final Consumer consumer = 
 					Consumer.key(consumerKey)
 					.name(consumerName).publicKey(publicKey).twoLOAllowed(true)
 					.twoLOImpersonationAllowed(true).executingTwoLOUser("PubFlow")
@@ -329,7 +312,7 @@ public class JiraManagerInitializer {
 
 	}
 
-	private static ApplicationType findGenericApplicationType() {
+	private ApplicationType findGenericApplicationType() {
 		// need GenericApplicationType but can not to use
 		// typeAccessor.getApplicationType(GenericApplicationType.class) because
 		// API bug
@@ -337,7 +320,7 @@ public class JiraManagerInitializer {
 		ApplicationType applicationType = typeAccessor.getApplicationType(JiraApplicationType.class);
 
 		// find GenericApplicationType from all enable application types
-		for (ApplicationType enabledApplicationType : typeAccessor.getEnabledApplicationTypes()) {
+		for (final ApplicationType enabledApplicationType : typeAccessor.getEnabledApplicationTypes()) {
 			if (enabledApplicationType.getClass().getName().contains("GenericApplicationType")) {
 				applicationType = enabledApplicationType;
 				break;
@@ -350,10 +333,8 @@ public class JiraManagerInitializer {
 	/**
 	 * Initializes the Look&Feel
 	 */
-	public static void initJiraSettings() {
-=======
+
 	public void initJiraSettings() {
->>>>>>> .merge_file_lYzWMn
 		final ApplicationProperties applicationProperties = ComponentAccessor.getApplicationProperties();
 		applicationProperties.setString(APKeys.JIRA_BASEURL,
 				PropLoader.getInstance().getProperty("JIRA_BASEURL", JiraManagerInitializer.class));
@@ -586,13 +567,10 @@ public class JiraManagerInitializer {
 			e.printStackTrace();
 		}
 
-<<<<<<< .merge_file_yl9831
-		List<CustomFieldDefinition> customFields = workflow.getCustomFields();
-		List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, workflowName);
-=======
+
 		final List<CustomFieldDefinition> customFields = workflow.getCustomFields();
 		final List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, workflowName);
->>>>>>> .merge_file_lYzWMn
+
 		// TODO use screenNames in initHumbleScreens
 		// List<String> screenNames = workflow.getScreenNames();
 		final FieldScreenScheme fieldScreenScheme = createBasicFieldScreens(workflow);

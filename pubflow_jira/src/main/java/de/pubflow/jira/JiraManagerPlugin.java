@@ -101,12 +101,35 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * The manager to handle statuses.
 	 */
 	public static StatusManager statusManager;
+	/**
+	 * 
+	 */
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("root");
+	/**
+	 * 
+	 */
 	public static MutatingApplicationLinkService applicationLinkService;
+	/**
+	 * 
+	 */
 	public static TypeAccessor typeAccessor;
+	/**
+	 * 
+	 */
 	public static I18nResolver i18nResolver;
+	/**
+	 * 
+	 */
 	public static ServiceProviderConsumerStore serviceProviderConsumerStore;
-	public static final SecureRandom secureRandom = new SecureRandom();
+	
+	/**
+	 * 
+	 */
+	public static final SecureRandom SECURERANDOM = new SecureRandom();
+	
+	/**
+	 * 
+	 */
 	private final JiraManagerPluginJob jiraManagerPluginJob;
 
 	/**
@@ -121,11 +144,11 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * @param eventPublisher
 	 *            injected {@code EventPublisher} implementation.
 	 */
-	public JiraManagerPlugin(EventPublisher eventPublisher, IssueTypeManager issueTypeManager,
-			FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager,
-			JiraManagerPluginJob jiraManagerPluginJob, MutatingApplicationLinkService applicationLinkService, TypeAccessor typeAccessor,
-			I18nResolver i18nResolver, ServiceProviderConsumerStore serviceProviderConsumerStore) {
-		log.debug("Plugin started");
+	public JiraManagerPlugin(final EventPublisher eventPublisher, final IssueTypeManager issueTypeManager,
+			final FieldScreenSchemeManager fieldScreenSchemeManager, final StatusManager statusManager,
+			final JiraManagerPluginJob jiraManagerPluginJob, final MutatingApplicationLinkService applicationLinkService, final TypeAccessor typeAccessor,
+			final I18nResolver i18nResolver, final ServiceProviderConsumerStore serviceProviderConsumerStore) {
+		LOGGER.debug("Plugin started");
 
 		JiraManagerPlugin.issueTypeManager = issueTypeManager;
 		JiraManagerPlugin.fieldScreenSchemeManager = fieldScreenSchemeManager;
@@ -404,7 +427,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void onStop() {
