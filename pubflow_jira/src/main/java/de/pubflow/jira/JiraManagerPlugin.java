@@ -70,58 +70,60 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
  */
 public class JiraManagerPlugin implements LifecycleAware, InitializingBean, DisposableBean {
 	/**
-	 * 
+	 * Logger for debuging and info messages.
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraManagerPlugin.class);
 
 	/**
-	 * 
+	 * The manager to handle workflow schemes.
 	 */
 	public static WorkflowSchemeManager workflowSchemeManager;
-	
+
 	/**
-	 * 
+	 * The manager to handle issue types.
 	 */
 	public static IssueTypeManager issueTypeManager;
-	
+
 	/**
-	 * 
+	 * A publisher to handle events.
 	 */
 	public static EventPublisher eventPublisher;
-	
+
 	/**
-	 * 
+	 * The manager to handle field screens schemes.
 	 */
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
-	
+
 	/**
-	 * 
+	 * The manager to handle statuses.
 	 */
 	public static StatusManager statusManager;
-	
+
 	/**
-	 * 
+	 * A user that has admin permissions for pubflow
 	 */
 	public static ApplicationUser user = JiraObjectGetter.getUserByName("pubflow");
-	
+
 	/**
-	 * 
+	 * A secure random value.
 	 */
 	public static final SecureRandom SECURERANDOM = new SecureRandom();
-	
+
 	/**
-	 * 
+	 * The job that start the whole PubFlow project. Is required to create a
+	 * proper lifecycle. Without some manager are not loaded while plugin start,
+	 * because of lazy loading in Jira.
 	 */
 	private final JiraManagerPluginJob jiraManagerPluginJob;
 
 	/**
-	 * 
+	 * Lifecycle events to ensure all managers are loaded before PubFlow is initialized.
 	 */
 	@GuardedBy("this")
 	private final Set<LifecycleEvent> lifecycleEvents = EnumSet.noneOf(LifecycleEvent.class);
 
 	/**
-	 * Constructor.
+	 * Create and load the PubFlow plugin.
 	 * 
 	 * @param eventPublisher
 	 *            injected {@code EventPublisher} implementation.
@@ -225,7 +227,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
 			final String commentText = "Sending data for import to the CVOO database.";
 			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
-			
+
 			this.callWf(issueEvent);
 
 		}
@@ -237,7 +239,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * 
 	 * @param issue
 	 */
-	private String getParamterFieldAsComment(final Issue issue, final String paramterKey, final Map<String, String> parameters) {
+	private String getParamterFieldAsComment(final Issue issue, final String paramterKey,
+			final Map<String, String> parameters) {
 		String commentText = "";
 		for (final Entry<String, String> e : parameters.entrySet()) {
 			if (e.getKey().contains(paramterKey)) {
@@ -357,6 +360,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 
 	/**
 	 * 
+	 * Ensure Jira is ready, before loading the Pubflow plugin.
+	 * 
 	 * @param event
 	 * @return
 	 */
@@ -374,7 +379,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * 
+	 * Let Jira know the plugin is start.
 	 */
 	private void registerListener() {
 		LOGGER.info("registerListeners");
@@ -382,7 +387,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	}
 
 	/**
-	 * 
+	 * Unregister the PubFlow plugin.
 	 */
 	private void unregisterListener() {
 		LOGGER.info("unregisterListeners");
@@ -407,7 +412,7 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	/**
 	 * 
 	 * @param issueEvent

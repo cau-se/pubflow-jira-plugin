@@ -73,12 +73,12 @@ import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 
 /**
- * 
+ * A utility class to create different objects in Jira.
  *
  */
 public final class JiraObjectCreator {
 	/**
-	 * 
+	 * Logger for debuging and info messages.
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraObjectCreator.class);
 
@@ -88,12 +88,12 @@ public final class JiraObjectCreator {
 	
 
 	/**
-	 * Create a new User in Jira
+	 * Create a new user in Jira
 	 * 
 	 * @author abar
 	 * 
 	 * @param userName:
-	 *            the name of the user we want to add
+	 *            the name of the user to be created
 	 * @param passwort:
 	 *            the user's passwort
 	 * 
@@ -116,8 +116,11 @@ public final class JiraObjectCreator {
 	}
 
 	/**
+	 * Create action screens in Jira.
+	 * 
 	 * @author arl, abar
 	 * 
+	 * @param name the name of the action screen to be created
 	 */
 	public static FieldScreen createActionScreen(final String name) {
 		FieldScreen fieldScreenAction = JiraObjectGetter.findFieldScreenByName(name);
@@ -134,11 +137,10 @@ public final class JiraObjectCreator {
 
 	/**
 	 * @author abar
-	 * @param name
-	 *            : the name of the field screen that shall be created
+	 * @param name the name of the field screen
 	 * @return the created FieldScreen Object
 	 */
-	public static FieldScreen createFieldScreen(final String name) {
+	private static FieldScreen createFieldScreen(final String name) {
 		final FieldManager fieldManager = ComponentAccessor.getFieldManager();
 		final FieldScreen fieldScreen = new FieldScreenImpl(ComponentAccessor.getFieldScreenManager());
 		fieldScreen.setName(name);
@@ -152,22 +154,20 @@ public final class JiraObjectCreator {
 	}
 
 	/**
-	 * Creates a FieldScreenScheme in Jira. The name will be
-	 * fieldScreenSchemeName + FIELDSCREENSCHEME_APPENDIX (e.g.
-	 * "OCN_FIELDSCREEN_SCHEME", if "OCN" is the fieldScreenSchemeName)
+	 * Creates a FieldScreenScheme in Jira with the three basic field screens for creation, editing and view of issues.
 	 * 
 	 * @author abar
 	 * @param fieldScreenCreate
-	 *            : the FieldScreen for the creating process of a ticket
+	 *            : the FieldScreen for the creation process of a ticket
 	 * @param fieldScreenEdit
 	 *            : the FieldScreen for the editing process of a ticket
 	 * @param fieldScreenView
 	 *            : the FieldScreen for the view of a ticket
 	 * @param fieldScreenSchemeName
-	 *            : the FieldScreen for the creating process of a ticket
+	 *            : the scheme the field screen will be mapped to
 	 * @return the FieldScreenScheme object
 	 */
-	public static FieldScreenScheme generateNewFieldScreenScheme(final FieldScreen fieldScreenCreate,
+	public static FieldScreenScheme createNewFieldScreenScheme(final FieldScreen fieldScreenCreate,
 			final FieldScreen fieldScreenEdit, final FieldScreen fieldScreenView, final String fieldScreenSchemeName)
 			throws Exception {
 		final FieldScreenManager fieldScreenManager = ComponentAccessor.getFieldScreenManager();
@@ -258,16 +258,14 @@ public final class JiraObjectCreator {
 	}
 
 	/**
-	 * Creates a new scheme for an issue type in Jira. The name will be
-	 * issueTypeName + ISSUETYPENSCHEME_APPENDIX (e.g. "OCN_ISSUETYPE_SCHEME",
-	 * if "OCN" is the issueTypeName)
+	 * Creates a new scheme for an issue type in Jira.
 	 * 
 	 * @author abar
 	 * @param projectKey
 	 *            : the projectKey which uses the issueType
 	 * @param issueTypeName
-	 *            : the name of the issue type we add a scheme for
-	 * @return The issue type scheme which was created
+	 *            : the name of the issue type to add the scheme to
+	 * @return The newly created issue type scheme
 	 */
 	public static FieldConfigScheme createIssueTypeScheme(final Project project) {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
@@ -284,15 +282,12 @@ public final class JiraObjectCreator {
 	}
 
 	/**
-	 * Creates a new IssueType in Jira. The name will be projectKey +
-	 * ISSUETYPE_APPENDIX (e.g. "OCN_ISSUETYPE", if "OCN" is the issueTypeName)
+	 * Creates a new IssueType in Jira.
 	 * 
 	 * @author abar
-	 * @param issueTypeName
-	 *            : the issueTypeName we add to our Jira configuration
-	 * @param project
-	 *            : the project which uses the issueType
-	 * @return The issue type which was created
+	 * @param issueTypeName the name of the issueType to be added to jira.
+	 * @param project the project which uses the issueType
+	 * @return The newly created issue type
 	 */
 	public static IssueType createIssueType(final Project project, final String issueTypeName, final String workflowID)
 			throws CreateException {
@@ -310,16 +305,12 @@ public final class JiraObjectCreator {
 	}
 
 	/**
-	 * Creates a new workflow scheme in Jira. The name will be projectKey +
-	 * WorkflowAppendix (e.g. "PUB_WorkflowScheme", if "PUB" is the projectKey)
+	 * Creates a new workflow scheme in Jira.
 	 * 
 	 * @author abar
-	 * @param projectKey
-	 *            : the workflow-scheme's name
-	 * @param user
-	 *            : Admin-User to add the workflow-scheme (ApplicationUser)
-	 * @param jiraWorkflow
-	 *            : the default workflow we add to the scheme
+	 * @param projectKey the project's key
+	 * @param user a user with permission to create a new workflow scheme
+	 * @param jiraWorkflow the workflow to be added to the scheme
 	 * @return returns WorkflowScheme
 	 */
 
@@ -387,14 +378,13 @@ public final class JiraObjectCreator {
 	}
 
 	/**
-	 * Add a User to a group in Jira
+	 * Create a new user group for Jira.
 	 * 
 	 * @author abar
 	 * 
-	 * @param name:
-	 *            the name of the group we want to creat
+	 * @param name the name of the group to be created
 	 * 
-	 * @return returns the created Group object
+	 * @return returns the created group
 	 */
 	public static Group createGroup(final String name) throws OperationNotPermittedException, InvalidGroupException {
 		final GroupManager groupManager = ComponentAccessor.getGroupManager();
@@ -413,11 +403,8 @@ public final class JiraObjectCreator {
 	 * Add custom statuses to Jira
 	 * 
 	 * @author abar
-	 * @param statuses
-	 *            : a list of all statuses we want to add to our Jira
-	 *            configuration
-	 * @param projectKey
-	 *            : the project we add the statuses to
+	 * @param statuses a list of all statuses to be added to Jira
+	 * @param projectKey the project to map the statuses to
 	 * @return A Map of statuses and their ids
 	 */
 	public static Map<String, String> addStatuses(final String projectKey, final List<String> statuses) {
@@ -449,9 +436,10 @@ public final class JiraObjectCreator {
 	 * Creates a new workflow in Jira
 	 * 
 	 * @author arl, abar
-	 * @param projectKey
-	 * @param workflowXML
-	 * @return returns the created JiraWorkflow object
+	 * @param projectKey the project's key to add a workflow to
+	 * @param workflowXML the xml file of the workflow to add
+	 * 
+	 * @return returns the newly created JiraWorkflow
 	 */
 	public static JiraWorkflow addWorkflow(final String projectKey, final String workflowXML,
 			final ApplicationUser user, final String issueTypeName) {

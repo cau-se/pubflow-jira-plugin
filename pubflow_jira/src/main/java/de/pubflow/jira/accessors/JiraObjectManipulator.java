@@ -68,7 +68,7 @@ import de.pubflow.jira.JiraManagerPlugin;
  */
 public final class JiraObjectManipulator {
 	/**
-	 * Logger from debuging and info message.
+	 * Logger for debuging and info messages.
 	 */
 	private final static Logger LOGGER = LoggerFactory.getLogger(JiraObjectManipulator.class);
 
@@ -77,9 +77,11 @@ public final class JiraObjectManipulator {
 	}
 
 	/**
+	 * Map an issue type scheme to a project
+	 * 
 	 * @author abar
 	 * @param issueTypeScheme
-	 *            : the issue type Scheme we map to the project
+	 *            : the issue type Scheme to map to the a project
 	 */
 	public static void addIssueTypeSchemeToProject(final FieldConfigScheme issueTypeScheme, final Project project) {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
@@ -109,7 +111,7 @@ public final class JiraObjectManipulator {
 	 * @param project
 	 *            : the project which uses the issueType
 	 * @param issueTypeScheme
-	 *            : the issue type scheme that will be used
+	 *            : the issue type scheme to use
 	 * @param issueType
 	 *            : the issue type which will be used
 	 * @return The issue type screen scheme which was created
@@ -143,7 +145,7 @@ public final class JiraObjectManipulator {
 	 * 
 	 * @author abar
 	 * @param workflow:
-	 *            the workflow we take to map its scheme to a project
+	 *            the workflow to map its scheme to a project
 	 * @param project:
 	 *            the project we add the given workflow scheme to
 	 */
@@ -227,14 +229,14 @@ public final class JiraObjectManipulator {
 	}
 
 	/**
-	 * Add a User to a group in Jira
+	 * Add a user to a group in Jira
 	 * 
 	 * @author abar
 	 * 
 	 * @param pubFlowUser
-	 *            : a user we want to a group
+	 *            : a user to add to a group
 	 * @param pGroup:
-	 *            the name of a group we want to add an user to
+	 *            the name of a group to add a user to
 	 * 
 	 */
 	public static void addUserToGroup(final ApplicationUser pubflowUser, final String pGroup)
@@ -255,15 +257,15 @@ public final class JiraObjectManipulator {
 	 * @author abar
 	 * 
 	 * @param pubFlowUser
-	 *            : a user we want to a group
-	 * @param group:
+	 *            a user to add to a group
+	 * @param group
 	 *            the group we want to add an user to
 	 * 
 	 */
 	public static void addUserToGroup(final ApplicationUser pubflowUser, final Group group)
 			throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
 			OperationNotPermittedException, OperationFailedException {
-		if (!(pubflowUser == null || group == null)) {
+		if (pubflowUser != null || group != null) {
 			ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
 			LOGGER.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
 		} else {
@@ -276,10 +278,9 @@ public final class JiraObjectManipulator {
 	 * Changes the status of an issue
 	 * 
 	 * @param issueKey
-	 *            : issue key
+	 *             issue key
 	 * @param statusName
-	 *            : has to be a preexisiting status name, eg. provided by
-	 *            getStatusNames(..)
+	 * 
 	 * @return returns true if the change has been processed successfully
 	 */
 

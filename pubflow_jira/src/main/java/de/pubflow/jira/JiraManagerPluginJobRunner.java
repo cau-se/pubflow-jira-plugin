@@ -29,6 +29,7 @@ import com.atlassian.scheduler.JobRunnerRequest;
 import com.atlassian.scheduler.JobRunnerResponse;
 
 /**
+ * Run the job that starts PubFlow.
  * 
  * @author abar
  *
@@ -56,7 +57,8 @@ public class JiraManagerPluginJobRunner implements JobRunner {
 	}
 
 	/**
-	 * Initilize Pubflow on start up.
+	 * Initialize PubFlow on start up.
+	 * 
 	 * @return
 	 * @throws KeyManagementException
 	 * @throws UnrecoverableKeyException

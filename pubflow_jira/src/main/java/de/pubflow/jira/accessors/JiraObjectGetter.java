@@ -41,7 +41,7 @@ import de.pubflow.jira.JiraManagerPlugin;
  */
 public final class JiraObjectGetter {
 	/**
-	 * Logger from debuging and info message.
+	 * Logger for debuging and info messages.
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(JiraObjectGetter.class);
 
@@ -55,7 +55,9 @@ public final class JiraObjectGetter {
 	 * @author abar
 	 * 
 	 * @param name
-	 *            the name of a Fieldscreen to look for
+	 *            the name of a fieldscreen to search for
+	 *            
+	 * @return the found fieldscreen
 	 */
 	static FieldScreen findFieldScreenByName(final String name) {
 		final Collection<FieldScreen> fieldScreens = ComponentAccessor.getFieldScreenManager().getFieldScreens();
@@ -70,10 +72,13 @@ public final class JiraObjectGetter {
 	}
 
 	/**
+	 * Get an issuetype with a given name.
+	 * 
 	 * @author abar
+	 * 
 	 * @param issueTypeName
-	 *            The issue type we want to look up
-	 * @return the issueType we looked for (null if it does not exist)
+	 *            The issue type to search for
+	 * @return the found issuetype
 	 */
 	public static IssueType getIssueTypeByName(final String issueTypeName) {
 		final Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
@@ -97,8 +102,11 @@ public final class JiraObjectGetter {
 	}
 
 	/**
-	 * @param id
-	 * @return
+	 * Find an issue for a given name.
+	 * 
+	 * @param name the name of an issue
+	 * @return if an issue with the name exists.
+	 * 
 	 * @throws GenericEntityException
 	 */
 	public static boolean lookupIssue(final String name) throws GenericEntityException {
@@ -121,6 +129,8 @@ public final class JiraObjectGetter {
 	}
 
 	/**
+	 * Get the issue key for a given id.
+	 * 
 	 * @param issueID
 	 *            the id of an issue
 	 * 
@@ -159,8 +169,10 @@ public final class JiraObjectGetter {
 	}
 
 	/**
-	 * @param key
-	 * @return
+	 * Find an issue for a given key.
+	 * 
+	 * @param key the key of an issue
+	 * @return the ID of the searched issue
 	 */
 	public static long getIssueIdByKey(final String key) {
 		final long issueID = ComponentAccessor.getIssueManager().getIssueObject(key).getId();
@@ -171,9 +183,12 @@ public final class JiraObjectGetter {
 	}
 
 	/**
-	 * @param projectKey
-	 * @param statusName
-	 * @return
+	 * Find a status with a given name.
+	 * 
+	 * @param projectKey the project containing the searched status
+	 * @param statusName the name of the searched status
+	 * 
+	 * @return the status object of a searched status
 	 */
 	public static Status getStatusByName(final String projectKey, final String statusName) {
 		final Collection<Status> statuses = JiraManagerPlugin.statusManager.getStatuses();
@@ -199,8 +214,7 @@ public final class JiraObjectGetter {
 	/**
 	 * Get available status names
 	 * 
-	 * @param projectKey
-	 *            : the projects key
+	 * @param projectKey the project's key
 	 * @return returns a string array of all available status names
 	 */
 
@@ -217,9 +231,10 @@ public final class JiraObjectGetter {
 	}
 
 	/**
+	 * Find a user with a given name
 	 * 
-	 * @param userName
-	 * @return
+	 * @param userName the name of the searched user
+	 * @return the searched user
 	 */
 	public static ApplicationUser getUserByName(final String userName) {
 		return ComponentAccessor.getUserManager().getUserByName(userName);
@@ -251,7 +266,7 @@ public final class JiraObjectGetter {
 	}
 
 	/**
-	 * Looks up the issue to the given key.
+	 * Looks up the issue for the given key.
 	 * 
 	 * @param issueKey
 	 * @return

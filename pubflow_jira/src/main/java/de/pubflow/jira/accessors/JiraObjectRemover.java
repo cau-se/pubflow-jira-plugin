@@ -23,8 +23,7 @@ import com.atlassian.jira.issue.attachment.Attachment;
 import com.atlassian.jira.user.ApplicationUser;
 
 /**
- * 
- *
+ * A utility class to delete objects in Jira.
  */
 public final class JiraObjectRemover {
 
@@ -33,13 +32,12 @@ public final class JiraObjectRemover {
 	}
 
 	/**
-	 * Removes an User in Jira
+	 * Deletes an user account in Jira.
 	 * 
 	 * @author abar
 	 * 
 	 * @param loggedUser
-	 *            : An user that can remove another user (Administrator in
-	 *            general)
+	 *            : An user with permissions that can remove another user
 	 * @param userToDelete
 	 *            : the name of the user that shall be removed
 	 */
@@ -51,7 +49,10 @@ public final class JiraObjectRemover {
 	}
 
 	/**
+	 * Removes and issue in Jira.
+	 * 
 	 * @param issueKey
+	 *            the key of an issue to be removed.
 	 * @return
 	 */
 	public static boolean removeIssue(final String issueKey) {
@@ -68,9 +69,10 @@ public final class JiraObjectRemover {
 	}
 
 	/**
-	 * removes an attachment
+	 * Removes an attachment.
 	 * 
 	 * @param attachmentId
+	 *            the id of an attachment to be removed.
 	 * @return
 	 */
 	public static boolean removeAttachment(final long attachmentId) {

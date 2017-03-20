@@ -71,7 +71,8 @@ import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
  * 
  * @author arl
  *
- *         Jira Manager Core
+ *         Jira Manager Core. The initializer creates on startup all for PubFlow
+ *         required features, projects and workflows.
  * 
  *         Still some work to do: - add some more features - proper exception
  *         handling
@@ -88,17 +89,17 @@ import de.pubflow.server.core.workflow.types.RawToOCNWorkflow;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class JiraManagerInitializer {
 	/**
-	 * Logger for this class
+	 * Logger for debuging and info messages.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(JiraManagerInitializer.class);
 
 	/**
-	 * the custom fields that should be created on start up of the pubflow addon
+	 * the custom fields to create on start up of the pubflow plugin
 	 */
 	public final List<CustomField> customFieldsCache = new LinkedList<CustomField>();
 
 	/**
-	 * The project Manager is used very often an is bound to a variable instead
+	 * The project Manager is used very often and is bound to a variable instead
 	 * of calling the ComponentAccessor all the time
 	 */
 	private final ProjectManager projectManager = ComponentAccessor.getProjectManager();
@@ -106,12 +107,9 @@ public class JiraManagerInitializer {
 	/**
 	 * Creates a new Jira project
 	 * 
-	 * @param projectName
-	 *            : the name of the new project
-	 * @param projectKey
-	 *            : the project's key
-	 * @param user
-	 *            : the ApplicationUser that holds the project (lead of the
+	 * @param projectName the name of the new project
+	 * @param projectKey the project's key
+	 * @param user the ApplicationUser that holds the project (lead of the
 	 *            project)
 	 * 
 	 * @return returns the created project object
@@ -154,10 +152,8 @@ public class JiraManagerInitializer {
 	 * Initializes the issue types, issue type scheme and maps them to a project
 	 *
 	 * @author abar
-	 * @param projectKey
-	 *            : the project's key we add the issue type and scheme to
-	 * @param issueTypeName
-	 *            : the name of the issue type we want to create
+	 * @param projectKey the project's key to add the issue type and scheme to
+	 * @param issueTypeName the name of the issue type to create
 	 */
 	public void initIssueManagement(final String projectKey, final String issueTypeName, final String workflowID)
 			throws CreateException {
@@ -169,6 +165,9 @@ public class JiraManagerInitializer {
 	}
 
 	/**
+	 * 
+	 * Creates all fieldscreens that will be mapped to the corresponding IDs in
+	 * the workflows used by PubFlow.
 	 * 
 	 * @param customFields
 	 * @param issueTypeName
@@ -253,7 +252,7 @@ public class JiraManagerInitializer {
 	}
 
 	/**
-	 * Initializes the Look&Feel
+	 * Initializes the Look&Feel.
 	 */
 	public void initJiraSettings() {
 		final ApplicationProperties applicationProperties = ComponentAccessor.getApplicationProperties();
@@ -314,14 +313,11 @@ public class JiraManagerInitializer {
 	/**
 	 * Initializes the whole PubFlow project.
 	 * 
-	 * Set application properties v "PubFlow" project will be initialized. v
-	 * User groups "datamanager" and "scientists" are created v Users "PubFlow"
-	 * and "root" will created and added to all user groups. v Statuses will be
-	 * created v IssueTypes and Schemes will be created (need statuses) v Create
-	 * Workflow and Scheme (needs statuses, project, and issue types) v Create
-	 * CustomField v Create all Screens (needs screen names, issue types, custom
-	 * fields, and a project) v Map screen schemes to a given project (needs the
-	 * project, the issue type, and the screen for the issue type)
+	 * Set application properties. "PubFlow" project will be initialized. First,
+	 * all required user groups, statuses, IssueTypes, workflows, schemes,
+	 * custom fields and fieldscreens are created. Afterwards all the status,
+	 * issue types, workflows and custom fields are mapped to their screens and
+	 * schemes.
 	 * 
 	 * @author arl, abar
 	 * 
@@ -434,10 +430,12 @@ public class JiraManagerInitializer {
 	}
 
 	/**
+	 * Create a new workflow in PubFlow
 	 * 
-	 * @param workflow
-	 * @param project
-	 * @param user
+	 * @param workflow an abstract workflow
+	 * @param project the project the workflow to add the workflow to
+	 * @param user a user with the permission to create a workflow
+	 * 
 	 * @throws Exception
 	 */
 	private void addNewWorkflow(final AbstractWorkflow workflow, final Project project, final ApplicationUser user)
@@ -491,10 +489,11 @@ public class JiraManagerInitializer {
 	 * Gathers the steps defined in the Workflow XML files and maps the id's of
 	 * the status accordingly
 	 * 
-	 * @param projectKey
-	 * @param workflow
-	 * @param user
+	 * @param projectKey the project's key of to add a workflow to
+	 * @param workflow the workflow to be mapped to the project
+	 * @param user a user with the permission to map a workflow to a project
 	 * @param workflowXMLString
+	 *            the XML that defines the workflow
 	 */
 	@SuppressWarnings("unchecked")
 	private JiraWorkflow createWorkflowAndMapIssueTypeIDs(final String projectKey, final AbstractWorkflow workflow,
@@ -510,8 +509,6 @@ public class JiraManagerInitializer {
 			return jiraWorkflow;
 		}
 
-		// jiraWorkflow = initWorkflow(projectKey, workflowXMLString, user,
-		// issueTypeName);
 		jiraWorkflow = JiraObjectCreator.addWorkflow(projectKey, workflowXMLString, user, issueTypeName);
 
 		LOGGER.debug("Issuetype ID mapping:  " + issueTypeName);
@@ -548,7 +545,6 @@ public class JiraManagerInitializer {
 			// + WORKFLOW_APPENDIX, jiraWorkflow);
 			LOGGER.info("newIssueType - updating workflow " + jiraWorkflow.getName() + " / user : " + user.getName());
 			ComponentAccessor.getWorkflowManager().updateWorkflow(user, jiraWorkflow);
-			mapScreensAndActions(step);
 		}
 
 		final WorkflowScheme workflowScheme = JiraObjectCreator.createWorkflowScheme(projectKey, user, jiraWorkflow,
@@ -559,9 +555,14 @@ public class JiraManagerInitializer {
 	}
 
 	/**
+	 * Creates the fieldscreen to create, edit and delete a workflow. This
+	 * fieldscreens can take default mappings from Jira.
 	 * 
-	 * @param workflow
-	 * @return
+	 * @param workflow the workflow to add the fieldscreens to
+	 * 
+	 * @return FieldScreenScheme with the fieldscreens to create, edit and
+	 *         view an issue for a workflow
+	 * 
 	 * @throws Exception
 	 */
 	private FieldScreenScheme createBasicFieldScreens(final AbstractWorkflow workflow) throws Exception {
@@ -570,34 +571,10 @@ public class JiraManagerInitializer {
 		final FieldScreen fieldScreenView = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("view"));
 		final FieldScreen fieldScreenEdit = JiraObjectCreator.createActionScreen(workflow.getScreenNames().get("edit"));
 
-		final FieldScreenScheme fieldScreenScheme = JiraObjectCreator.generateNewFieldScreenScheme(fieldScreenCreate,
+		final FieldScreenScheme fieldScreenScheme = JiraObjectCreator.createNewFieldScreenScheme(fieldScreenCreate,
 				fieldScreenView, fieldScreenEdit, workflow.getWorkflowName());
 
 		return fieldScreenScheme;
 
 	}
-
-	/**
-	 * 
-	 * @param stepDescriptor
-	 */
-	@SuppressWarnings("unchecked")
-	private void mapScreensAndActions(final StepDescriptor stepDescriptor) {
-
-		final List<ActionDescriptor> oActions = stepDescriptor.getActions();
-
-		for (final ActionDescriptor oAction : oActions) {
-			if (oAction.getView().equals("fieldscreen")) {
-				LOGGER.info("vllt");
-				// do things with oAction.GetId()...
-			}
-		}
-		// ActionDescriptor actionDescriptor =
-		// jiraWorkflow.getDescriptor().getAction(Integer.parseInt(e.getKey()));
-		// actionDescriptor.setView(fieldScreen.getName());
-		// actionDescriptor.getMetaAttributes().put("jira.fieldscreen.id",
-		// fieldScreen.getId());
-		// }
-	}
-
 }

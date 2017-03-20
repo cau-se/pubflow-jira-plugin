@@ -26,7 +26,6 @@ import com.atlassian.crowd.exception.embedded.InvalidGroupException;
 import com.atlassian.jira.exception.AddException;
 import com.atlassian.jira.exception.CreateException;
 import com.atlassian.jira.exception.PermissionException;
-import com.atlassian.jira.project.Project;
 import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.accessors.JiraObjectCreator;
@@ -118,6 +117,8 @@ public class JiraDefaultUser {
 	}
 
 	/**
+	 * Creates a default user and allows a tester to login in Jira.
+	 * 
 	 * 
 	 * @throws GroupNotFoundException
 	 * @throws UserNotFoundException
