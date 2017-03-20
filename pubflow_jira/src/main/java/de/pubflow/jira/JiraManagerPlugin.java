@@ -53,6 +53,7 @@ import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
 import com.atlassian.sal.api.lifecycle.LifecycleAware;
 
@@ -67,51 +68,18 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
  * Simple JIRA listener using the atlassian-event library and demonstrating
  * plugin lifecycle integration.
  */
-@SuppressWarnings("PMD.ExcessiveImports")
 public class JiraManagerPlugin implements LifecycleAware, InitializingBean, DisposableBean {
-	/**
-	 * 
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(JiraManagerPlugin.class);
-	/**
-	 * 
-	 */
-	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
+	private static final Logger log = LoggerFactory.getLogger(JiraManagerPlugin.class);
+
+	public static WorkflowSchemeManager workflowSchemeManager;
 	public static IssueTypeManager issueTypeManager;
-	/**
-	 * 
-	 */
-	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
-	/**
-	 * 
-	 */
 	public static EventPublisher eventPublisher;
-	/**
-	 * 
-	 */
-	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
 	public static FieldScreenSchemeManager fieldScreenSchemeManager;
-	/**
-	 * 
-	 */
-	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
 	public static StatusManager statusManager;
-	/**
-	 * 
-	 */
-	public static ApplicationUser user = JiraObjectGetter.getUserByName("root");
-	/**
-	 * 
-	 */
-	@SuppressWarnings("PMD.AssignmentToNonFinalStatic")
-	public static final SecureRandom SECURERANDOM = new SecureRandom();
-	/**
-	 * 
-	 */
+	public static ApplicationUser user = JiraObjectGetter.getUserByName("pubflow");
+	public static final SecureRandom secureRandom = new SecureRandom();
 	private final JiraManagerPluginJob jiraManagerPluginJob;
-	/**
-	 * 
-	 */
+
 	@GuardedBy("this")
 	private final Set<LifecycleEvent> lifecycleEvents = EnumSet.noneOf(LifecycleEvent.class);
 
@@ -121,11 +89,11 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * @param eventPublisher
 	 *            injected {@code EventPublisher} implementation.
 	 */
-	@SuppressWarnings("PMD.LongVariable")
-	public JiraManagerPlugin(final EventPublisher eventPublisher, final IssueTypeManager issueTypeManager,
-			final FieldScreenSchemeManager fieldScreenSchemeManager, final StatusManager statusManager,
-			final JiraManagerPluginJob jiraManagerPluginJob) {
-		LOGGER.debug("Plugin started");
+	public JiraManagerPlugin(EventPublisher eventPublisher, IssueTypeManager issueTypeManager,
+			FieldScreenSchemeManager fieldScreenSchemeManager, StatusManager statusManager,
+			JiraManagerPluginJob jiraManagerPluginJob) {
+		log.debug("Plugin started");
+
 		JiraManagerPlugin.issueTypeManager = issueTypeManager;
 		JiraManagerPlugin.fieldScreenSchemeManager = fieldScreenSchemeManager;
 		JiraManagerPlugin.statusManager = statusManager;
@@ -137,19 +105,20 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * @param resourceName
 	 * @return
 	 */
-	@SuppressWarnings("PMD.AssignmentInOperand")
-	public static String getTextResource(final String resourceName) {
-		final StringBuffer content = new StringBuffer();
+	public static String getTextResource(String resourceName) {
+		StringBuffer content = new StringBuffer();
+
 		try {
 			String line;
-			final InputStream resourceStream = JiraManagerPlugin.class.getResourceAsStream(resourceName);
-			final BufferedReader inputReader = new BufferedReader(new InputStreamReader(resourceStream, "UTF-8"));
-			while ((line = inputReader.readLine()) != null) {
+			InputStream rs = JiraManagerPlugin.class.getResourceAsStream(resourceName);
+			BufferedReader in = new BufferedReader(new InputStreamReader(rs, "UTF-8"));
+			while ((line = in.readLine()) != null) {
 				content.append(line).append("\n");
 			}
-			inputReader.close();
-		} catch (final Exception e) {
-			LOGGER.error(e.getLocalizedMessage() + " " + e.getCause());
+			in.close();
+
+		} catch (Exception e) {
+			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			e.printStackTrace();
 		}
 		return content.toString();
@@ -162,64 +131,127 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * @param issueEvent
 	 *            the IssueEvent passed to us
 	 */
+
 	@EventListener
-	public void onIssueEvent(final IssueEvent issueEvent) {
-		final InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
-		final Issue issue = issueEvent.getIssue();
-		final String issueStatus = issue.getStatus().getName();
-		if (issueStatus.equals("Data Processing by PubFlow")) {
-			this.callWf(issueEvent);
+	public void onIssueEvent(IssueEvent issueEvent) {
+		InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
+
+		Issue issue = issueEvent.getIssue();
+		String issueStatus = issue.getStatus().getName();
+		if (
+		// (issueEvent.getEventTypeId().equals( EventType.ISSUE_CREATED_ID) &&
+		// ComponentAccessor.getWorkflowManager().getWorkflow(issueEvent.getIssue()).getName()
+		// != "jira") ||
+		issueStatus.equals("Data Processing by PubFlow")) {
+
+			try {
+				ServiceCallData callData = new ServiceCallData();
+				List<WFParameter> wfpm = new LinkedList<WFParameter>();
+
+				for (Entry<String, String> e : msg.getValues().entrySet()) {
+					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
+					wfpm.add(wfp);
+				}
+				// to enable mapping to the jira ticket
+				callData.setJiraKey(issue.getKey());
+				callData.setParameters(wfpm);
+
+				callData.setWorkflowID(JiraObjectGetter.getIssueTypeNamebyJiraKey(callData.getJiraKey()));
+				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
+				wfBroker.receiveWFCall(callData);
+
+			} catch (Exception e) {
+				log.error(e.getLocalizedMessage() + " " + e.getCause());
+				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), "Error: " + e.getMessage(), user);
+			}
+
 		} else if (issueEvent.getEventTypeId().equals(EventType.ISSUE_UPDATED_ID)) {
 			// TODO
+
 		} else if (issueEvent.getIssue().getStatus().getName().equals("Open")
 				&& !issueEvent.getEventTypeId().equals(EventType.ISSUE_DELETED_ID)) {
+
 			// add users from groups to watchlist
-			final WatcherManager watcherManager = ComponentAccessor.getWatcherManager();
-			final Collection<String> watchingGroups = new HashSet<>();
+			WatcherManager watcherManager = ComponentAccessor.getWatcherManager();
+			Collection<String> watchingGroups = new HashSet<>();
 			watchingGroups.add("librarians");
 			watchingGroups.add("datamanagers");
-			final SortedSet<ApplicationUser> watchingUsers = ComponentAccessor.getUserUtil()
+
+			SortedSet<ApplicationUser> watchingUsers = ComponentAccessor.getUserUtil()
 					.getAllUsersInGroupNames(watchingGroups);
-			for (final ApplicationUser user : watchingUsers) {
+			for (ApplicationUser user : watchingUsers) {
 				watcherManager.startWatching(user, issue);
 			}
+
 			if (ComponentAccessor.getCommentManager().getComments(issueEvent.getIssue()).size() == 0) {
-				final String txtmsg = "Dear " + issueEvent.getUser().getName() + " (" + issueEvent.getUser().getName()
-						+ "),\n please append your raw data as an file attachment to this issue and provide the following information "
-						+ "about your data if you are asked to do so:\n For example Title, Authors, Cruise and some others"
-						+ "\nThank you!";
+
+				String txtmsg = "Dear " + issueEvent.getUser().getName() + " (" + issueEvent.getUser().getName()
+						+ "),\n please provide the following information "
+						+ "about your data:\n  Title, Authors, Cruise" + "\n Thank you!";
 				ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, txtmsg, false);
 			} else {
-				final MutableIssue mutableIssue = ComponentAccessor.getIssueManager()
+				MutableIssue mutableIssue = ComponentAccessor.getIssueManager()
 						.getIssueByCurrentKey(issueEvent.getIssue().getKey());
 				mutableIssue.setAssignee(issueEvent.getIssue().getReporter());
 			}
 		} else if (issueStatus.equals("Aquire ORCIDs")
 				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
-			final String commentText = this.getAuthorsAsComment(issue, msg.getValues());
+			String commentText = "For the following authors identification is needed: " + "\n";
+			commentText += this.getParamterFieldAsComment(issue, "Author", msg.getValues());
 			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
 			// JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire
 			// ORCIDs");
+
+		} else if (issueStatus.equals("Prepared for PubFlow")
+				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
+			String commentText = "Results of the Identification " + "\n";
+			commentText += this.getParamterFieldAsComment(issue, "Author", msg.getValues());
+			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
+			// JiraObjectManipulator.changeStatus(issue.getKey(), "Aquire
+			// ORCIDs");
+
 		} else if (issueStatus.equals("CVOO-Import")
 				&& issueEvent.getEventTypeId().equals(EventType.ISSUE_GENERICEVENT_ID)) {
-			final String commentText = "Sending data for import to the CVOO database.";
+			String commentText = "Sending data for import to the CVOO database.";
 			ComponentAccessor.getCommentManager().create(issueEvent.getIssue(), user, commentText, false);
-			this.callWf(issueEvent);
+			try {
+				ServiceCallData callData = new ServiceCallData();
+				List<WFParameter> wfpm = new LinkedList<WFParameter>();
+
+				for (Entry<String, String> e : msg.getValues().entrySet()) {
+					WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
+					wfpm.add(wfp);
+				}
+				// to enable mapping to the jira ticket
+				callData.setJiraKey(issue.getKey());
+				callData.setParameters(wfpm);
+
+				callData.setWorkflowID(JiraObjectGetter.getIssueTypeNamebyJiraKey(callData.getJiraKey()));
+				WorkflowBroker wfBroker = WorkflowBroker.getInstance();
+				wfBroker.receiveWFCall(callData);
+
+			} catch (Exception e) {
+				log.error(e.getLocalizedMessage() + " " + e.getCause());
+				JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), "Error: " + e.getMessage(), user);
+			}
+
 		}
+
 	}
 
 	/**
-	 * Writes the given valuen in the {@link Issue} as a comment to it.
+	 * Writes the given values in the {@link Issue} as a String for comments.
 	 * 
 	 * @param issue
 	 */
-	private String getAuthorsAsComment(final Issue issue, final Map<String, String> parameters) {
-		String commentText = "For the following authors identification is needed";
-		for (final Entry<String, String> e : parameters.entrySet()) {
-			if (e.getKey().contains("Author")) {
-				commentText += ": \n" + e.getValue();
+	private String getParamterFieldAsComment(Issue issue, String paramterKey, Map<String, String> parameters) {
+		String commentText = "";
+		for (Entry<String, String> e : parameters.entrySet()) {
+			if (e.getKey().contains(paramterKey)) {
+				commentText += e.getValue() + ": \n";
 			}
 		}
+
 		return commentText;
 	}
 
@@ -230,23 +262,27 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 *            the path to the XML file
 	 * @return
 	 */
-	public static LinkedList<String> getSteps(final String workflowXMLString) {
-		final StringReader sw = new StringReader(workflowXMLString);
-		final LinkedList<String> steps = new LinkedList<String>();
+	public static LinkedList<String> getSteps(String workflowXMLString) {
+		StringReader sw = new StringReader(workflowXMLString);
+
+		LinkedList<String> steps = new LinkedList<String>();
+
 		try {
-			final XMLInputFactory xmlif = XMLInputFactory.newInstance();
+			XMLInputFactory xmlif = XMLInputFactory.newInstance();
 			xmlif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-			final XMLEventReader xmler = xmlif.createXMLEventReader(sw);
+
+			XMLEventReader xmler = xmlif.createXMLEventReader(sw);
+
 			while (xmler.hasNext()) {
-				final XMLEvent event = xmler.nextEvent();
+				XMLEvent event = xmler.nextEvent();
 				if (event.isStartElement()) {
-					final String localPart = event.asStartElement().getName().getLocalPart();
+					String localPart = event.asStartElement().getName().getLocalPart();
 					switch (localPart) {
 					case "step":
 						try {
 							steps.add(event.asStartElement().getAttributeByName(new QName("name")).getValue());
-						} catch (final NullPointerException e1) {
-							LOGGER.error(e1.getLocalizedMessage() + " " + e1.getCause());
+						} catch (NullPointerException e1) {
+							log.error(e1.getLocalizedMessage() + " " + e1.getCause());
 							e1.printStackTrace();
 						}
 						break;
@@ -255,8 +291,8 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 					}
 				}
 			}
-		} catch (final Exception e) {
-			LOGGER.error(e.getLocalizedMessage() + " " + e.getCause());
+		} catch (Exception e) {
+			log.error(e.getLocalizedMessage() + " " + e.getCause());
 			e.printStackTrace();
 		}
 		return steps;
@@ -291,9 +327,10 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * received.
 	 */
 	@EventListener
-	public void onPluginEnabled(final PluginEnabledEvent event) {
-		LOGGER.info("I AM HERE");
+	public void onPluginEnabled(PluginEnabledEvent event) {
+		log.info("I AM HERE");
 		onLifecycleEvent(LifecycleEvent.PLUGIN_ENABLED);
+
 	}
 
 	/**
@@ -311,25 +348,21 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * The latch which ensures all of the plugin/application lifecycle progress
 	 * is completed before we call {@code launch()}.
 	 */
-	private void onLifecycleEvent(final LifecycleEvent event) {
-		LOGGER.info("onLifecycleEvent: " + event);
+	private void onLifecycleEvent(LifecycleEvent event) {
+		log.info("onLifecycleEvent: " + event);
 		if (isLifecycleReady(event)) {
-			LOGGER.info("Got the last lifecycle event... Time to get started!");
+			log.info("Got the last lifecycle event... Time to get started!");
 			unregisterListener();
+
 			try {
 				launch();
-			} catch (final Exception ex) {
-				LOGGER.error("Unexpected error during launch", ex);
+			} catch (Exception ex) {
+				log.error("Unexpected error during launch", ex);
 			}
 		}
 	}
 
-	/**
-	 * 
-	 * @param event
-	 * @return
-	 */
-	synchronized private boolean isLifecycleReady(final LifecycleEvent event) {
+	synchronized private boolean isLifecycleReady(LifecycleEvent event) {
 		return lifecycleEvents.add(event) && lifecycleEvents.size() == LifecycleEvent.values().length;
 	}
 
@@ -337,24 +370,18 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 	 * Do all the things we can't do before the system is fully up.
 	 */
 	private void launch() throws Exception {
-		LOGGER.info("LAUNCH!");
+		log.info("LAUNCH!");
 		jiraManagerPluginJob.init();
-		LOGGER.info("launched successfully");
+		log.info("launched successfully");
 	}
 
-	/**
-	 * 
-	 */
 	private void registerListener() {
-		LOGGER.info("registerListeners");
+		log.info("registerListeners");
 		eventPublisher.register(this);
 	}
 
-	/**
-	 * 
-	 */
 	private void unregisterListener() {
-		LOGGER.info("unregisterListeners");
+		log.info("unregisterListeners");
 		eventPublisher.unregister(this);
 	}
 
@@ -368,43 +395,9 @@ public class JiraManagerPlugin implements LifecycleAware, InitializingBean, Disp
 		AFTER_PROPERTIES_SET, PLUGIN_ENABLED, LIFECYCLE_AWARE_ON_START
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public void onStop() {
 		// TODO Auto-generated method stub
+
 	}
-
-	/**
-	 * 
-	 * @param issueEvent
-	 */
-	private void callWf(final IssueEvent issueEvent) {
-		final InternalConverterMsg msg = new InternalConverterMsg(issueEvent);
-
-		final Issue issue = issueEvent.getIssue();
-
-		try {
-			final ServiceCallData callData = new ServiceCallData();
-			final List<WFParameter> wfpm = new LinkedList<WFParameter>();
-
-			for (final Entry<String, String> e : msg.getValues().entrySet()) {
-				final WFParameter wfp = new WFParameter(e.getKey(), e.getValue());
-				wfpm.add(wfp);
-			}
-			// to enable mapping to the jira ticket
-			callData.setJiraKey(issue.getKey());
-			callData.setParameters(wfpm);
-
-			callData.setWorkflowID(JiraObjectGetter.getIssueTypeNamebyJiraKey(callData.getJiraKey()));
-			final WorkflowBroker wfBroker = WorkflowBroker.getInstance();
-			wfBroker.receiveWFCall(callData);
-
-		} catch (final Exception e) {
-			LOGGER.error(e.getLocalizedMessage() + " " + e.getCause());
-			JiraObjectManipulator.addIssueComment(issueEvent.getIssue().getKey(), "Error: " + e.getMessage(), user);
-		}
-	}
-
 }

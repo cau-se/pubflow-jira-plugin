@@ -59,7 +59,7 @@ public class JiraRestConnectorHelper{
 			mapper.configure(Feature.AUTO_CLOSE_SOURCE, true);
 			mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	
-			System.out.println("Request url : " + urlString);
+			System.out.println("Request url : " + baseUrl + urlString);
 
 			mapper.writeValue(out, data);
 			out.close();
@@ -145,7 +145,7 @@ public class JiraRestConnectorHelper{
 	public Integer changeStatus(String issueKey, String statusName) {
 		String urlString = String.format("/pubflow/issues/%s/status", issueKey);
 		Integer responseCode = (Integer) getDocumentContent(urlString, statusName, Integer.class);
-		System.out.println("changeStatus : " + statusName);
+		System.out.println("changeStatus : " + statusName + " - Response: " + responseCode);
 		return responseCode;
 	}
 
@@ -157,14 +157,14 @@ public class JiraRestConnectorHelper{
 		attachment.setFilename(fileName);
 		attachment.setIssueKey(issueKey);
 		Integer responseCode = (Integer) getDocumentContent(urlString, attachment, Integer.class);
-		System.out.println("addAttachment : " + attachment.toString());
+		System.out.println("addAttachment : " + attachment.toString() + " - Response: " + responseCode);
 		return responseCode;
 	}
 
 	public Integer addIssueComment(String issueKey, String comment) {
 		String urlString = String.format("/pubflow/issues/%s/comments", issueKey);
 		Integer responseCode = (Integer) getDocumentContent(urlString, comment, Integer.class);
-		System.out.println("addIssueComment : " + comment);
+		System.out.println("addIssueComment : " + comment + " - Response: " + responseCode);
 		return responseCode;
 	}
 
@@ -177,7 +177,7 @@ public class JiraRestConnectorHelper{
 		issue.setIssueTypeName(issueTypeName);
 		issue.setParameters(parameters);
 		String responseCode = (String) getDocumentContent(urlString, issue, String.class);
-		System.out.println("createIssue : " + urlString);
+		System.out.println("createIssue : " + urlString + " - Response: " + responseCode);
 		return responseCode;
 	}
 }
