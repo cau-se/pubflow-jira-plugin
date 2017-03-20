@@ -15,7 +15,6 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,26 +29,21 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
  */
 public class OldOCNWorkflow extends AbstractWorkflow {
 
+	/**
+	 * 
+	 */
 	public OldOCNWorkflow() {
 		super("Old OCN Workflow", "de.pubflow.oldOCN", "/PubFlow.xml", "/workflow/TestWorkflow");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public List<String> getScreenNames() {
-		String issueTypeName = this.getWorkflowName();
-
-		List<String> screenNames = new ArrayList<String>();
-		screenNames.add(issueTypeName + "ActionCreate");
-		screenNames.add(issueTypeName + "ActionEdit");
-		screenNames.add(issueTypeName + "ActionView");
-
-		return screenNames;
-	}
-
-	@Override
+	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 	public List<CustomFieldDefinition> getCustomFields() {
 
-		LinkedList<CustomFieldDefinition> customFields = new LinkedList<CustomFieldDefinition>();
+		final List<CustomFieldDefinition> customFields = new LinkedList<CustomFieldDefinition>();
 		customFields
 				.add(new CustomFieldDefinition("Leg ID", CustomFieldType.TEXT, true, new String[] { "141", "111" }));
 		customFields.add(new CustomFieldDefinition("PID", CustomFieldType.TEXT, false, new String[] { "141", "111" }));

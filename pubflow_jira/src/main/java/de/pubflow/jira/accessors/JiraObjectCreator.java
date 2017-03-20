@@ -29,7 +29,6 @@ import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.exception.OperationNotPermittedException;
 import com.atlassian.crowd.exception.embedded.InvalidGroupException;
 import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.config.StatusCategoryManager;
 import com.atlassian.jira.config.StatusManager;
 import com.atlassian.jira.exception.AddException;
 import com.atlassian.jira.exception.CreateException;
@@ -73,23 +72,34 @@ import com.opensymphony.workflow.FactoryException;
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.misc.CustomFieldDefinition;
 
-public class JiraObjectCreator {
+/**
+ * A utility class to create different objects in Jira.
+ *
+ */
+public final class JiraObjectCreator {
+	/**
+	 * Logger for debuging and info messages.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(JiraObjectCreator.class);
 
-	private static Logger log = LoggerFactory.getLogger(JiraObjectCreator.class);
+	private JiraObjectCreator() {
+		
+	}
+	
 
 	/**
-	 * Create a new User in Jira
+	 * Create a new user in Jira
 	 * 
 	 * @author abar
 	 * 
 	 * @param userName:
-	 *            the name of the user we want to add
+	 *            the name of the user to be created
 	 * @param passwort:
 	 *            the user's passwort
 	 * 
 	 * @return return the created ApplicationUser object
 	 */
-	public static ApplicationUser createUser(String userName, String password)
+	public static ApplicationUser createUser(final String userName, final String password)
 			throws PermissionException, CreateException, AddException {
 		final UserManager userManager = ComponentAccessor.getUserManager();
 		ApplicationUser pubflowUser = userManager.getUserByName(userName);
@@ -98,25 +108,28 @@ public class JiraObjectCreator {
 			UserDetails pubflowUserData = new UserDetails(userName, userName);
 			pubflowUserData = pubflowUserData.withPassword(password);
 			pubflowUser = userManager.createUser(pubflowUserData);
-			log.info("createUser: created new user " + pubflowUser.getUsername());
+			LOGGER.info("createUser: created new user " + pubflowUser.getUsername());
 		} else {
-			log.debug("createUser: user " + pubflowUser.getUsername() + " already exists");
+			LOGGER.debug("createUser: user " + pubflowUser.getUsername() + " already exists");
 		}
 		return pubflowUser;
 	}
 
 	/**
+	 * Create action screens in Jira.
+	 * 
 	 * @author arl, abar
 	 * 
+	 * @param name the name of the action screen to be created
 	 */
-	public static FieldScreen createActionScreen(String name) {
+	public static FieldScreen createActionScreen(final String name) {
 		FieldScreen fieldScreenAction = JiraObjectGetter.findFieldScreenByName(name);
 
 		if (fieldScreenAction == null) {
 			fieldScreenAction = createFieldScreen(name);
-			log.info("createActionScreen: created new ActionScreen " + fieldScreenAction.getName());
+			LOGGER.info("createActionScreen: created new ActionScreen " + fieldScreenAction.getName());
 		} else {
-			log.debug("createActionScreen: ActionScreen " + fieldScreenAction.getName() + " already exists.");
+			LOGGER.debug("createActionScreen: ActionScreen " + fieldScreenAction.getName() + " already exists.");
 		}
 
 		return fieldScreenAction;
@@ -124,63 +137,64 @@ public class JiraObjectCreator {
 
 	/**
 	 * @author abar
-	 * @param name
-	 *            : the name of the field screen that shall be created
+	 * @param name the name of the field screen
 	 * @return the created FieldScreen Object
 	 */
-	public static FieldScreen createFieldScreen(String name) {
+	private static FieldScreen createFieldScreen(final String name) {
 		final FieldManager fieldManager = ComponentAccessor.getFieldManager();
-		FieldScreen fieldScreen = new FieldScreenImpl(ComponentAccessor.getFieldScreenManager());
+		final FieldScreen fieldScreen = new FieldScreenImpl(ComponentAccessor.getFieldScreenManager());
 		fieldScreen.setName(name);
-		FieldScreenTab fieldScreenTab = fieldScreen.addTab("Job");
+		final FieldScreenTab fieldScreenTab = fieldScreen.addTab("Job");
 		fieldScreenTab.setPosition(0);
 		fieldScreenTab.addFieldScreenLayoutItem(fieldManager.getField(IssueFieldConstants.REPORTER).getId());
 		fieldScreenTab.addFieldScreenLayoutItem(fieldManager.getField(IssueFieldConstants.SUMMARY).getId());
 
-		log.debug("createFieldScreen: created new FieldScreen " + fieldScreen.getName());
+		LOGGER.debug("createFieldScreen: created new FieldScreen " + fieldScreen.getName());
 		return fieldScreen;
 	}
 
 	/**
-	 * Creates a FieldScreenScheme in Jira. The name will be
-	 * fieldScreenSchemeName + FIELDSCREENSCHEME_APPENDIX (e.g.
-	 * "OCN_FIELDSCREEN_SCHEME", if "OCN" is the fieldScreenSchemeName)
+	 * Creates a FieldScreenScheme in Jira with the three basic field screens for creation, editing and view of issues.
 	 * 
 	 * @author abar
 	 * @param fieldScreenCreate
-	 *            : the FieldScreen for the creating process of a ticket
+	 *            : the FieldScreen for the creation process of a ticket
 	 * @param fieldScreenEdit
 	 *            : the FieldScreen for the editing process of a ticket
 	 * @param fieldScreenView
 	 *            : the FieldScreen for the view of a ticket
 	 * @param fieldScreenSchemeName
-	 *            : the FieldScreen for the creating process of a ticket
+	 *            : the scheme the field screen will be mapped to
 	 * @return the FieldScreenScheme object
 	 */
-	public static FieldScreenScheme generateNewFieldScreenScheme(FieldScreen fieldScreenCreate,
-			FieldScreen fieldScreenEdit, FieldScreen fieldScreenView, String fieldScreenSchemeName) throws Exception {
+	public static FieldScreenScheme createNewFieldScreenScheme(final FieldScreen fieldScreenCreate,
+			final FieldScreen fieldScreenEdit, final FieldScreen fieldScreenView, final String fieldScreenSchemeName)
+			throws Exception {
 		final FieldScreenManager fieldScreenManager = ComponentAccessor.getFieldScreenManager();
+		final JiraManagerPlugin JiraManagerPlugin = ComponentAccessor
+				.getOSGiComponentInstanceOfType(JiraManagerPlugin.class);
+
 		if (fieldScreenCreate == null || fieldScreenEdit == null || fieldScreenView == null) {
 			throw new Exception("generateNewFieldScreenScheme: One or more field screens are null");
 		}
 
-		FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
+		final FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
 				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
 		fieldScreenSchemeItemCreate.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
 		fieldScreenSchemeItemCreate.setFieldScreen(fieldScreenCreate);
 
-		FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
+		final FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
 				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
 		fieldScreenSchemeItemEdit.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
 		fieldScreenSchemeItemEdit.setFieldScreen(fieldScreenEdit);
 
-		FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
+		final FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
 				JiraManagerPlugin.fieldScreenSchemeManager, fieldScreenManager);
 		fieldScreenSchemeItemView.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
 		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
 
 		FieldScreenScheme fieldScreenScheme = null;
-		Collection<FieldScreenScheme> fieldScreenSchemes = JiraManagerPlugin.fieldScreenSchemeManager
+		final Collection<FieldScreenScheme> fieldScreenSchemes = JiraManagerPlugin.fieldScreenSchemeManager
 				.getFieldScreenSchemes(fieldScreenCreate);
 
 		if (!fieldScreenSchemes.isEmpty()) {
@@ -211,33 +225,31 @@ public class JiraObjectCreator {
 	 *            will be mapped to issue types)
 	 * @return a list of all ids of the created custom fields
 	 */
-	public static List<Long> createCustomFields(List<CustomFieldDefinition> customFields, Project project,
-			String issueTypeName) throws GenericEntityException {
+	public static List<Long> createCustomFields(final List<CustomFieldDefinition> customFields, final Project project,
+			final String issueTypeName) throws GenericEntityException {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 		final Collection<IssueType> issueTypes = issueTypeSchemeManager.getIssueTypesForProject(project);
 		final List<IssueType> issueTypesList = new ArrayList<IssueType>();
 
 		issueTypesList.addAll(issueTypes);
-		List<JiraContextNode> contexts = new ArrayList<JiraContextNode>();
+		final List<JiraContextNode> contexts = new ArrayList<JiraContextNode>();
 		contexts.add(GlobalIssueContext.getInstance());
-		List<Long> customFieldIds = new ArrayList<Long>();
-		for (CustomFieldDefinition e : customFields) {
+		final List<Long> customFieldIds = new ArrayList<Long>();
+		for (final CustomFieldDefinition customField : customFields) {
 
 			// check if custom field already exists
-			CustomField customFieldObject = customFieldManager
-					.getCustomFieldObjectByName(e.getName());
+			final Collection<CustomField> foundCustomFields = customFieldManager.getCustomFieldObjectsByName(customField.getName());
 
-			if (customFieldObject == null) {
-				log.debug(
-						"newIssueType - customField search : " + e.getName() + " null, creating");
+			if (foundCustomFields.isEmpty()) {
+				LOGGER.debug("newIssueType - customField search : " + customField.getName() + " null, creating");
 
 				// create custom field
-				customFieldObject = customFieldManager.createCustomField(e.getName(),
-						e.getName() + "-CustomField for " + issueTypeName,
-						customFieldManager.getCustomFieldType(e.getType()), null, contexts, issueTypesList);
+				final CustomField newCustomFieldObject = customFieldManager.createCustomField(customField.getName(),
+						customField.getName() + "-CustomField for " + issueTypeName,
+						customFieldManager.getCustomFieldType(customField.getType()), null, contexts, issueTypesList);
 
-				customFieldIds.add(customFieldObject.getIdAsLong());
+				customFieldIds.add(newCustomFieldObject.getIdAsLong());
 			}
 		}
 
@@ -246,18 +258,16 @@ public class JiraObjectCreator {
 	}
 
 	/**
-	 * Creates a new scheme for an issue type in Jira. The name will be
-	 * issueTypeName + ISSUETYPENSCHEME_APPENDIX (e.g. "OCN_ISSUETYPE_SCHEME",
-	 * if "OCN" is the issueTypeName)
+	 * Creates a new scheme for an issue type in Jira.
 	 * 
 	 * @author abar
 	 * @param projectKey
 	 *            : the projectKey which uses the issueType
 	 * @param issueTypeName
-	 *            : the name of the issue type we add a scheme for
-	 * @return The issue type scheme which was created
+	 *            : the name of the issue type to add the scheme to
+	 * @return The newly created issue type scheme
 	 */
-	public static FieldConfigScheme createIssueTypeScheme(Project project) {
+	public static FieldConfigScheme createIssueTypeScheme(final Project project) {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final Collection<String> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeIds();
 		FieldConfigScheme schemeExisting = issueTypeSchemeManager.getConfigScheme(project);
@@ -272,17 +282,14 @@ public class JiraObjectCreator {
 	}
 
 	/**
-	 * Creates a new IssueType in Jira. The name will be projectKey +
-	 * ISSUETYPE_APPENDIX (e.g. "OCN_ISSUETYPE", if "OCN" is the issueTypeName)
+	 * Creates a new IssueType in Jira.
 	 * 
 	 * @author abar
-	 * @param issueTypeName
-	 *            : the issueTypeName we add to our Jira configuration
-	 * @param project
-	 *            : the project which uses the issueType
-	 * @return The issue type which was created
+	 * @param issueTypeName the name of the issueType to be added to jira.
+	 * @param project the project which uses the issueType
+	 * @return The newly created issue type
 	 */
-	public static IssueType createIssueType(Project project, String issueTypeName, String workflowID)
+	public static IssueType createIssueType(final Project project, final String issueTypeName, final String workflowID)
 			throws CreateException {
 		IssueType issueType = JiraObjectGetter.findIssueTypeByName(project, issueTypeName);
 		if (issueType == null) {
@@ -290,120 +297,77 @@ public class JiraObjectCreator {
 			// issueType).getPropertySet().setString("workflowID", workflowID);
 			issueType = ComponentAccessor.getConstantsManager().insertIssueType(issueTypeName, new Long(1), null,
 					"Issue type for PubFlow", new Long(10300));
-			log.info("createIssueType: create new issuteType " + issueType.getName());
+			LOGGER.info("createIssueType: create new issuteType " + issueType.getName());
 		} else {
-			log.debug("createIssueType: issueType " + issueType.getName() + " already exists");
+			LOGGER.debug("createIssueType: issueType " + issueType.getName() + " already exists");
 		}
 		return issueType;
 	}
 
 	/**
-	 * Creates a new workflow scheme in Jira. The name will be projectKey +
-	 * WorkflowAppendix (e.g. "PUB_WorkflowScheme", if "PUB" is the projectKey)
+	 * Creates a new workflow scheme in Jira.
 	 * 
 	 * @author abar
-	 * @param projectKey
-	 *            : the workflow-scheme's name
-	 * @param user
-	 *            : Admin-User to add the workflow-scheme (ApplicationUser)
-	 * @param jiraWorkflow
-	 *            : the default workflow we add to the scheme
+	 * @param projectKey the project's key
+	 * @param user a user with permission to create a new workflow scheme
+	 * @param jiraWorkflow the workflow to be added to the scheme
 	 * @return returns WorkflowScheme
 	 */
 
-	public static WorkflowScheme createWorkflowScheme(String projectKey, ApplicationUser user,
-			JiraWorkflow jiraWorkflow, String issueTypeName) {
+	public static WorkflowScheme createWorkflowScheme(final String projectKey, final ApplicationUser user,
+			final JiraWorkflow jiraWorkflow, final String issueTypeName) {
 		final WorkflowSchemeManager workflowSchemeManger = ComponentAccessor.getWorkflowSchemeManager();
-		AssignableWorkflowScheme workflowScheme = workflowSchemeManger
-				.getWorkflowSchemeObj(projectKey);
+		AssignableWorkflowScheme workflowScheme = workflowSchemeManger.getWorkflowSchemeObj(projectKey);
 
 		if (workflowScheme == null) {
-			Scheme scheme = workflowSchemeManger.createSchemeObject(projectKey ,
+			final Scheme scheme = workflowSchemeManger.createSchemeObject(projectKey,
 					"Workflow scheme for the Pubflow project");
 			workflowScheme = workflowSchemeManger.getWorkflowSchemeObj(scheme.getName()); // necessary
 																							// intermediate
 																							// step
 
-			AssignableWorkflowScheme.Builder workflowSchemeBuilder = workflowScheme.builder();
-			IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
+			final AssignableWorkflowScheme.Builder workflowSchemeBuilder = workflowScheme.builder();
+			final IssueType ocnIssueType = JiraObjectGetter.getIssueTypeByName(issueTypeName);
 
 			workflowSchemeBuilder.setName(projectKey);
 			workflowSchemeBuilder.setDescription("Workflow scheme for Pubflow.");
 			// workflowSchemeBuilder.setDefaultWorkflow(jiraWorkflow.getName());
 			workflowSchemeBuilder.setMapping(ocnIssueType.getId(), jiraWorkflow.getName());
-			log.info("createWorkflowScheme: created new WorkflowScheme " + scheme.getName());
+			LOGGER.info("createWorkflowScheme: created new WorkflowScheme " + scheme.getName());
 			return workflowSchemeManger.updateWorkflowScheme(workflowSchemeBuilder.build());
 		} else {
-			log.debug("createWorkflowScheme: WorkflowScheme " + workflowScheme.getName() + " already exists");
+			LOGGER.debug("createWorkflowScheme: WorkflowScheme " + workflowScheme.getName() + " already exists");
 		}
 
 		return workflowScheme;
 	}
 
-	@SuppressWarnings("unused")
-	private static FieldScreen createHumbleFieldScreen(String name) {
-		log.info("generateHumbleFieldScreen - name : " + name);
-
-		FieldScreen fieldScreen = new FieldScreenImpl(ComponentAccessor.getFieldScreenManager());
-		fieldScreen.setName(name);
-		FieldScreenTab fieldScreenTab = fieldScreen.addTab("Job");
-		fieldScreenTab.setPosition(0);
-		fieldScreenTab.addFieldScreenLayoutItem(
-				ComponentAccessor.getFieldManager().getField(IssueFieldConstants.REPORTER).getId());
-		fieldScreenTab.addFieldScreenLayoutItem(
-				ComponentAccessor.getFieldManager().getField(IssueFieldConstants.SUMMARY).getId());
-
-		return fieldScreen;
-	}
-
-	@SuppressWarnings("unused")
-	private static FieldScreenScheme createNewFieldScreenScheme(FieldScreen fieldScreenCreate,
-			FieldScreen fieldScreenEdit, FieldScreen fieldScreenView, String fieldScreenSchemeName) throws Exception {
-		log.info("createNewFieldScreenScheme - fieldScreenSchemeName : " + fieldScreenSchemeName);
-
-		if (fieldScreenCreate == null || fieldScreenEdit == null || fieldScreenView == null) {
-			throw new Exception("One or more field screens are null");
-		}
-
-		FieldScreenSchemeItem fieldScreenSchemeItemCreate = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemCreate.setIssueOperation(IssueOperations.CREATE_ISSUE_OPERATION);
-		fieldScreenSchemeItemCreate.setFieldScreen(fieldScreenCreate);
-
-		FieldScreenSchemeItem fieldScreenSchemeItemEdit = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemEdit.setIssueOperation(IssueOperations.EDIT_ISSUE_OPERATION);
-		fieldScreenSchemeItemEdit.setFieldScreen(fieldScreenEdit);
-
-		FieldScreenSchemeItem fieldScreenSchemeItemView = new FieldScreenSchemeItemImpl(
-				JiraManagerPlugin.fieldScreenSchemeManager, ComponentAccessor.getFieldScreenManager());
-		fieldScreenSchemeItemView.setIssueOperation(IssueOperations.VIEW_ISSUE_OPERATION);
-		fieldScreenSchemeItemView.setFieldScreen(fieldScreenView);
-
-		FieldScreenScheme fieldScreenScheme = new FieldScreenSchemeImpl(JiraManagerPlugin.fieldScreenSchemeManager,
-				null);
-		fieldScreenScheme.setName(fieldScreenSchemeName );
-		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemView);
-		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemEdit);
-		fieldScreenScheme.addFieldScreenSchemeItem(fieldScreenSchemeItemCreate);
-
-		return fieldScreenScheme;
-	}
-
-	private static MutableIssue createNewMutableIssue(String projectKey, String summary, String description,
-			ApplicationUser reporter, ApplicationUser user, String issueTypeName) throws Exception {
+	/**
+	 * 
+	 * @param projectKey
+	 * @param summary
+	 * @param description
+	 * @param reporter
+	 * @param user
+	 * @param issueTypeName
+	 * @return
+	 * @throws Exception
+	 */
+	private static MutableIssue createNewMutableIssue(final String projectKey, final String summary,
+			final String description, final ApplicationUser reporter, final ApplicationUser user,
+			final String issueTypeName) throws Exception {
 		if (user == null) {
-			log.error("generateNewMutableIssue - user null");
+			LOGGER.error("generateNewMutableIssue - user null");
 			throw new Exception("User is null");
 		}
 
-		log.info("generateNewMutableIssue - projectKey : " + projectKey + " / issueTypeName : " + issueTypeName
+		LOGGER.info("generateNewMutableIssue - projectKey : " + projectKey + " / issueTypeName : " + issueTypeName
 				+ " / user : " + user.getName() + " / summary : " + summary + " / description : " + description
 				+ " / reporter : " + reporter);
 
-		MutableIssue newIssue = ComponentAccessor.getIssueFactory().getIssue();
+		final MutableIssue newIssue = ComponentAccessor.getIssueFactory().getIssue();
 		newIssue.setProjectObject(ComponentAccessor.getProjectManager().getProjectObjByKey(projectKey));
-		newIssue.setIssueTypeObject(JiraObjectGetter.findIssueTypeByName(issueTypeName));
+		newIssue.setIssueTypeObject(JiraObjectGetter.getIssueTypeByName(issueTypeName));
 		newIssue.setSummary(issueTypeName + " / " + summary);
 		newIssue.setDescription(description);
 		// Assignment for an entire group would be nicer
@@ -414,23 +378,22 @@ public class JiraObjectCreator {
 	}
 
 	/**
-	 * Add a User to a group in Jira
+	 * Create a new user group for Jira.
 	 * 
 	 * @author abar
 	 * 
-	 * @param name:
-	 *            the name of the group we want to creat
+	 * @param name the name of the group to be created
 	 * 
-	 * @return returns the created Group object
+	 * @return returns the created group
 	 */
-	public static Group createGroup(String name) throws OperationNotPermittedException, InvalidGroupException {
+	public static Group createGroup(final String name) throws OperationNotPermittedException, InvalidGroupException {
 		final GroupManager groupManager = ComponentAccessor.getGroupManager();
 		Group group = groupManager.getGroup(name);
 		if (group == null) {
 			group = groupManager.createGroup(name);
-			log.info("createGroup: created a new group " + group.getName());
+			LOGGER.info("createGroup: created a new group " + group.getName());
 		} else {
-			log.debug("createGroup: group " + group.getName() + " already exists");
+			LOGGER.debug("createGroup: group " + group.getName() + " already exists");
 		}
 
 		return group;
@@ -440,28 +403,26 @@ public class JiraObjectCreator {
 	 * Add custom statuses to Jira
 	 * 
 	 * @author abar
-	 * @param statuses
-	 *            : a list of all statuses we want to add to our Jira
-	 *            configuration
-	 * @param projectKey
-	 *            : the project we add the statuses to
+	 * @param statuses a list of all statuses to be added to Jira
+	 * @param projectKey the project to map the statuses to
 	 * @return A Map of statuses and their ids
 	 */
-	public static Map<String, String> addStatuses(String projectKey, List<String> statuses) {
+	public static Map<String, String> addStatuses(final String projectKey, final List<String> statuses) {
 		final StatusManager statusManager = ComponentAccessor.getComponent(StatusManager.class);
-		final StatusCategoryManager statusManagerCategory = ComponentAccessor.getComponent(StatusCategoryManager.class);
-		final int catId = 2;
-		Map<String, String> statusMap = new HashMap<String, String>();
+		// final StatusCategoryManager statusManagerCategory =
+		// ComponentAccessor.getComponent(StatusCategoryManager.class);
+		// final int catId = 2;
+		final Map<String, String> statusMap = new HashMap<String, String>();
 
-		for (String status : statuses) {
+		for (final String status : statuses) {
 			Status tempStatus = JiraObjectGetter.getStatusByName(projectKey, status);
 
 			if (tempStatus == null) {
-				tempStatus = statusManager.createStatus(status, "", "/images/icons/status_open.gif",
-						statusManagerCategory.getStatusCategory(new Long(catId)));
-				log.info("addStatuses: status " + tempStatus.getName() + " was created with ID: " + tempStatus.getId());
+				tempStatus = statusManager.createStatus(status, "", "/images/icons/statuses/generic.png");
+				LOGGER.info(
+						"addStatuses: status " + tempStatus.getName() + " was created with ID: " + tempStatus.getId());
 			} else {
-				log.debug("addStatuses: status " + tempStatus.getName() + " already exists with ID: "
+				LOGGER.debug("addStatuses: status " + tempStatus.getName() + " already exists with ID: "
 						+ tempStatus.getId());
 			}
 
@@ -475,13 +436,14 @@ public class JiraObjectCreator {
 	 * Creates a new workflow in Jira
 	 * 
 	 * @author arl, abar
-	 * @param projectKey
-	 * @param workflowXML
-	 * @return returns the created JiraWorkflow object
+	 * @param projectKey the project's key to add a workflow to
+	 * @param workflowXML the xml file of the workflow to add
+	 * 
+	 * @return returns the newly created JiraWorkflow
 	 */
-	public static JiraWorkflow addWorkflow(String projectKey, String workflowXML, ApplicationUser user,
-			String issueTypeName) {
-		String workflowName = issueTypeName;
+	public static JiraWorkflow addWorkflow(final String projectKey, final String workflowXML,
+			final ApplicationUser user, final String issueTypeName) {
+		final String workflowName = issueTypeName;
 		final WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager();
 		JiraWorkflow jiraWorkflow = workflowManager.getWorkflow(workflowName);
 
@@ -490,13 +452,13 @@ public class JiraObjectCreator {
 				jiraWorkflow = new ConfigurableJiraWorkflow(workflowName,
 						WorkflowUtil.convertXMLtoWorkflowDescriptor(workflowXML), workflowManager);
 				workflowManager.createWorkflow(user, jiraWorkflow);
-				log.info("addWorkflow: Successfully added a new workflow " + jiraWorkflow.getName());
-			} catch (FactoryException e) {
-				log.info("Error during initialization  xml -> Jira workflow");
+				LOGGER.info("addWorkflow: Successfully added a new workflow " + jiraWorkflow.getName());
+			} catch (final FactoryException e) {
+				LOGGER.info("Error during initialization  xml -> Jira workflow");
 				e.printStackTrace();
 			}
 		} else {
-			log.info("addWorkflow: Workflow " + jiraWorkflow.getName() + " already exists.");
+			LOGGER.info("addWorkflow: Workflow " + jiraWorkflow.getName() + " already exists.");
 		}
 
 		return jiraWorkflow;
@@ -516,21 +478,17 @@ public class JiraObjectCreator {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String createIssue(String projectKey, String issueTypeName, String summary, String description,
-			ApplicationUser reporter, ApplicationUser user, HashMap<String, String> parameters) throws Exception {
+	public static String createIssue(final String projectKey, final String issueTypeName, final String summary,
+			final String description, final ApplicationUser reporter, final ApplicationUser user,
+			final Map<String, String> parameters) throws Exception {
 
-		System.out.println(projectKey);
-		System.out.println(issueTypeName);
-		System.out.println(summary);
-		System.out.println(description);
-		System.out.println(reporter);
-		System.out.println(user);
 		// create
-		MutableIssue newIssue = createNewMutableIssue(projectKey, summary, description, reporter, user, issueTypeName);
+		final MutableIssue newIssue = createNewMutableIssue(projectKey, summary, description, reporter, user,
+				issueTypeName);
 		// add custom fields from parameter
 		fillCustomFields(newIssue, parameters);
 		// save and return id;
-		Issue issue = ComponentAccessor.getIssueManager().createIssueObject(user, newIssue);
+		final Issue issue = ComponentAccessor.getIssueManager().createIssueObject(user, newIssue);
 		return issue.getKey();
 
 	}
@@ -542,10 +500,10 @@ public class JiraObjectCreator {
 	 * @param issue
 	 * @param parameters
 	 */
-	private static void fillCustomFields(MutableIssue issue, HashMap<String, String> parameters) {
-		CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
-		for (String entryKey : parameters.keySet()) {
-			CustomField currentField = customFieldManager.getCustomFieldObject(entryKey);
+	private static void fillCustomFields(final MutableIssue issue, final Map<String, String> parameters) {
+		final CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+		for (final String entryKey : parameters.keySet()) {
+			final CustomField currentField = customFieldManager.getCustomFieldObject(entryKey);
 			if (currentField != null) {
 				issue.setCustomFieldValue(currentField, parameters.get(entryKey));
 			}

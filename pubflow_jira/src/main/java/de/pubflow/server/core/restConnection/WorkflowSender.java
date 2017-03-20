@@ -18,6 +18,7 @@ package de.pubflow.server.core.restConnection;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
@@ -50,25 +51,25 @@ public class WorkflowSender {
 	 *             if the connection responses with a HTTP response code other
 	 *             than 2xx
 	 */
-	public static void initWorkflow(WorkflowRestCall wfCall, String workflowPath) throws WFRestException {
-		Logger myLogger = LoggerFactory.getLogger(WorkflowSender.class);
+	public static void initWorkflow(final WorkflowRestCall wfCall, final String workflowPath) throws WFRestException {
+		final Logger myLogger = LoggerFactory.getLogger(WorkflowSender.class);
 
 		myLogger.info("Trying to use workflow on: " + workflowPath);
-		Gson gson = new Gson();
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost post = new HttpPost(workflowPath);
+		final Gson gson = new Gson();
+		final HttpClient httpClient = HttpClientBuilder.create().build();
+		final HttpPost post = new HttpPost(workflowPath);
 		HttpResponse response = null;
 
 		try {
-			StringEntity postingString = new StringEntity(gson.toJson(wfCall));
+			final StringEntity postingString = new StringEntity(gson.toJson(wfCall),ContentType.APPLICATION_JSON);
 
 			post.setEntity(postingString);
-			post.setHeader("Content-type", "application/json");
+			post.setHeader("Content-type", "application/json;charset=utf-8");
 			response = httpClient.execute(post);
 			System.out.println(post.getURI());
 			myLogger.info("Http response: " + response.toString());
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			myLogger.error("Could not deploy new Workflow with ID: " + wfCall.getID());
 			myLogger.error(e.toString());
 			throw new WFRestException("Workflow could not be started");

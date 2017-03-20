@@ -15,9 +15,16 @@
  */
 package de.pubflow.jira.misc;
 
-
+/**
+ * 
+ *
+ */
 public class CustomFieldDefinition {
 
+	/**
+	 * 
+	 *
+	 */
 	public enum CustomFieldType{
 		TEXT("com.atlassian.jira.plugin.system.customfieldtypes:textfield"),
 		TEXTAREA("com.atlassian.jira.plugin.system.customfieldtypes:textarea"),
@@ -29,27 +36,57 @@ public class CustomFieldDefinition {
 		SELECT("com.atlassian.jira.plugin.system.customfieldtypes:select"),
 		MULTISELECT("com.atlassian.jira.plugin.system.customfieldtypes:multiselect"),
 		MULTISELECTCHECKBOX("com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes"),
-		CASCADESELECT("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect");
-
-		private String type = "";
+		CASCADESELECT("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect"),
+		MULTIGROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker"),
+		LABEL("com.atlassian.jira.plugin.system.customfieldtypes:labels"),
+		RADIOBUTTONS("com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons"),
+		GROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:grouppicker");
 		
-		CustomFieldType(String type) {
+		/**
+		 * 
+		 */
+		private String type = "";
+
+		CustomFieldType(final String type) {
 			this.setType(type);
 		}
 
+		/**
+		 * 
+		 * @return
+		 */
 		public String getType() {
 			return type;
 		}
 
-		public void setType(String type) {
+		/**
+		 * 
+		 * @param type
+		 */
+		public void setType(final String type) {
 			this.type = type;
 		}
 	}
 
-	private String name;
-	private CustomFieldType type;
-	private boolean required;
-	private String[] screens;
+	/**
+	 * The Name of the custom field.
+	 */
+	private final String name;
+	
+	/**
+	 * The type of the custom field.
+	 */
+	private final CustomFieldType type;
+	
+	/**
+	 * If the field is required of not
+	 */
+	private final boolean required;
+	
+	/**
+	 * The screens the field is mapped to.
+	 */
+	private final String[] screens;
 
 	/**
 	 * @param name
@@ -57,7 +94,7 @@ public class CustomFieldDefinition {
 	 * @param required
 	 * @param screens
 	 */
-	public CustomFieldDefinition(String name, CustomFieldType type, boolean required, String[] screens) {
+	public CustomFieldDefinition(final String name, final CustomFieldType type, final boolean required, final String[] screens) {
 		this.name = name;
 		this.type = type;
 		this.required = required;
@@ -65,35 +102,35 @@ public class CustomFieldDefinition {
 
 	}
 
+	/**
+	 * 
+	 * @return String the name of the custom field.
+	 */
 	public String getName() {
 		return name;
 	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
 
+	/**
+	 * 
+	 * @return String the type of the custom field.
+	 */
 	public String getType() {
 		return type.getType();
 	}
 
-	public void setType(CustomFieldType type) {
-		this.type = type;
-	}
-	
+	/**
+	 * 
+	 * @return boolean if the field is required or not
+	 */
 	public boolean isRequired() {
-		return required;
-	}
-	
-	public void setRequired(boolean required) {
-		this.required = required;
+		return this.required;
 	}
 
+	/**
+	 * 
+	 * @return String[] the field screens the custom field is mapped to.
+	 */
 	public String[] getScreens() {
-		return screens;
-	}
-
-	public void setScreens(String[] screens) {
-		this.screens = screens;
+		return this.screens;
 	}
 }

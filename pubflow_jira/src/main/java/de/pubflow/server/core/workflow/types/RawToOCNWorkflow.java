@@ -15,7 +15,6 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,26 +30,20 @@ import de.pubflow.jira.misc.CustomFieldDefinition.CustomFieldType;
  */
 public class RawToOCNWorkflow extends AbstractWorkflow {
 
+	/**
+	 * 
+	 */
 	public RawToOCNWorkflow() {
-		super("Publish Raw Cruise Data", "de.pubflow.RawToOCN", "/RAWTOCVOO-WORKFLOW.xml", "", "");
+		super("Provide Cruise Data", "de.pubflow.RawToOCN", "/RAWTOCVOO-WORKFLOW.xml", "/workflow/DataToCVOOWorkflow");
 	}
 
-	@Override
-	public List<String> getScreenNames() {
-		String issueTypeRawToOCNName = this.getWorkflowName();
-
-		List<String> screenNamesRawToOCN = new ArrayList<String>();
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionCreate");
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionEdit");
-		screenNamesRawToOCN.add(issueTypeRawToOCNName + "ActionView");
-
-		return screenNamesRawToOCN;
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<CustomFieldDefinition> getCustomFields() {
 
-		LinkedList<CustomFieldDefinition> customFieldsRawToOCN = new LinkedList<CustomFieldDefinition>();
+		final List<CustomFieldDefinition> customFieldsRawToOCN = new LinkedList<CustomFieldDefinition>();
 		customFieldsRawToOCN
 				.add(new CustomFieldDefinition("Author", CustomFieldType.TEXT, false, new String[] { "11" }));
 		customFieldsRawToOCN
@@ -59,6 +52,14 @@ public class RawToOCNWorkflow extends AbstractWorkflow {
 				.add(new CustomFieldDefinition("Title", CustomFieldType.TEXT, false, new String[] { "11" }));
 		customFieldsRawToOCN
 				.add(new CustomFieldDefinition("Cruise", CustomFieldType.TEXT, false, new String[] { "11" }));
+		customFieldsRawToOCN
+				.add(new CustomFieldDefinition("contact_email", CustomFieldType.TEXT, true, new String[] { "21" }));
+		customFieldsRawToOCN
+				.add(new CustomFieldDefinition("reference", CustomFieldType.TEXT, true, new String[] { "21" }));
+		customFieldsRawToOCN
+				.add(new CustomFieldDefinition("metadata_block", CustomFieldType.TEXT, true, new String[] { "21" }));
+		customFieldsRawToOCN
+				.add(new CustomFieldDefinition("data_block", CustomFieldType.TEXT, true, new String[] { "21" }));
 
 		return customFieldsRawToOCN;
 

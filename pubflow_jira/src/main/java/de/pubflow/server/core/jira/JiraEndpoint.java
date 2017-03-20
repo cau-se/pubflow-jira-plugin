@@ -15,9 +15,9 @@
  */
 package de.pubflow.server.core.jira;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +26,25 @@ import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.common.entity.JiraAttachment;
 import de.pubflow.common.entity.JiraComment;
-import de.pubflow.common.entity.JiraIssue;
 import de.pubflow.jira.JiraManagerPlugin;
 import de.pubflow.jira.accessors.JiraObjectCreator;
 import de.pubflow.jira.accessors.JiraObjectGetter;
 import de.pubflow.jira.accessors.JiraObjectManipulator;
 
-public class JiraEndpoint {
+/**
+ * 
+ *
+ */
+public final class JiraEndpoint {
 
-	private static Logger myLogger = LoggerFactory.getLogger(JiraEndpoint.class);
+	/**
+	 * 
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(JiraEndpoint.class);
+
+	private JiraEndpoint() {
+
+	}
 
 	/**
 	 * Creates a new Issue in Jira
@@ -46,72 +56,47 @@ public class JiraEndpoint {
 	 * @param reporter
 	 * @return
 	 */
-	public static String createIssue(String issueTypeName, String summary, String description,
-			HashMap<String, String> parameters, String reporter) {
+	public static String createIssue(final String issueTypeName, final String summary, final String description,
+			final Map<String, String> parameters, final String reporter) {
 		try {
-			ApplicationUser pubflowUser = JiraObjectGetter.getUserByName("PubFlow");
-			myLogger.info("Creating new issue with type: " + issueTypeName);
+			final ApplicationUser pubflowUser = JiraObjectGetter.getUserByName("PubFlow");
+			LOGGER.info("Creating new issue with type: " + issueTypeName);
 			return JiraObjectCreator.createIssue("PUB", issueTypeName, summary, description, pubflowUser, pubflowUser,
 					parameters);
-		} catch (Exception e) {
-			myLogger.warn("Failed to create new Issue through PubFlow", e);
+		} catch (final Exception exception) {
+			LOGGER.warn("Failed to create new Issue through PubFlow", exception);
 			return null;
 		}
 	}
 
-	public static List<String> getAllIssuesBySummaryContains(String snippet) {
+	/**
+	 * 
+	 * @param snippet
+	 * @return
+	 */
+	public static List<String> getAllIssuesBySummaryContains(final String snippet) {
 		try {
 			return JiraObjectGetter.getAllIssueSummariesBySummaryContains(snippet);
-		} catch (Exception e) {
+		} catch (final Exception exception) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
 		return null;
 	}
 
-	public static boolean lookupIssue(String name) {
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static boolean lookupIssue(final String name) {
 		try {
 			return JiraObjectGetter.lookupIssue(name);
-		} catch (Exception e) {
+		} catch (final Exception exception) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
 		return false;
-	}
-
-	public static String createIssue(JiraIssue issue) {
-		try {
-			// return JiraObjectCreator.createIssue("PUB",
-			// issue.getIssueTypeName(), issue.getSummary(),
-			// issue.getDescription(), issue.getReporter(),
-			// JiraManagerPlugin.user, issue.getParameters());
-
-			return "moin";
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
-
-	/**
-	 * Creates a new IssueType in Jira
-	 * 
-	 * @param projectKey
-	 *            : the projects key
-	 * @param issueTypeName
-	 *            :
-	 * @param parameters
-	 *            : list of custom fields (name : default value)
-	 * @return returns the issue type id
-	 */
-
-	public static String createIssueType(String projectKey, String issueTypeName, HashMap<String, String> parameters) {
-
-		String id = null;
-		// id = JiraObjectCreator.createIssueType(projectKey, issueTypeName,
-		// parameters);
-
-		return id;
 	}
 
 	/**
@@ -125,7 +110,7 @@ public class JiraEndpoint {
 	 * @return returns true if the change has been processed successfully
 	 */
 
-	public static boolean changeStatus(String issueKey, String statusName) {
+	public static boolean changeStatus(final String issueKey, final String statusName) {
 		return JiraObjectManipulator.changeStatus(issueKey, statusName);
 	}
 
@@ -137,7 +122,7 @@ public class JiraEndpoint {
 	 * @return returns true if the new comment has been added successfully
 	 */
 
-	public static boolean addIssueComment(String issueKey, String comment) {
+	public static boolean addIssueComment(final String issueKey, final String comment) {
 		if (JiraObjectManipulator.addIssueComment(issueKey, comment, JiraManagerPlugin.user) == null) {
 			return false;
 		} else {
@@ -145,7 +130,12 @@ public class JiraEndpoint {
 		}
 	}
 
-	public static boolean addIssueComment(JiraComment comment) {
+	/**
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	public static boolean addIssueComment(final JiraComment comment) {
 		if (JiraObjectManipulator.addIssueComment(comment.getIssueKey(), comment.getText(),
 				JiraManagerPlugin.user) == null) {
 			return false;
@@ -162,9 +152,9 @@ public class JiraEndpoint {
 	 * @return returns a string array of all available status names
 	 */
 
-	public static LinkedList<String> getStatusNames(String projectKey) {
-		List<String> statusNames = JiraObjectGetter.getStatusNames(projectKey);
-		LinkedList<String> namesList = new LinkedList<String>();
+	public static List<String> getStatusNames(final String projectKey) {
+		final List<String> statusNames = JiraObjectGetter.getStatusNames(projectKey);
+		final List<String> namesList = new LinkedList<String>();
 
 		namesList.addAll(statusNames);
 
@@ -186,15 +176,15 @@ public class JiraEndpoint {
 	 * @return returns true if project has been created successfully
 	 */
 
-	public static boolean createProject(String projectName, String projectKey, String workflowXML,
-			LinkedList<String> steps) {
+	public static boolean createProject(final String projectName, final String projectKey, final String workflowXML,
+			final List<String> steps) {
 		try {
 			// JiraObjectCreator.createProject(projectName, projectKey,
 			// JiraManagerPlugin.user, false);
 
 			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 		}
 
 		return true;
@@ -209,13 +199,20 @@ public class JiraEndpoint {
 	 * @param type
 	 */
 
-	public static boolean addAttachment(String issueKey, byte[] barray, String fileName, String type) {
+	public static boolean addAttachment(final String issueKey, final byte[] barray, final String fileName,
+			final String type) {
+
 		JiraObjectManipulator.addAttachment(issueKey, barray, fileName, type, JiraManagerPlugin.user);
 
 		return true;
 	}
 
-	public static boolean addAttachment(JiraAttachment attachment) {
+	/**
+	 * 
+	 * @param attachment
+	 * @return
+	 */
+	public static boolean addAttachment(final JiraAttachment attachment) {
 		JiraObjectManipulator.addAttachment(attachment.getIssueKey(), attachment.getData(), attachment.getFilename(),
 				"", JiraManagerPlugin.user);
 

@@ -17,24 +17,31 @@ package de.pubflow.jira.accessors;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.exception.RemoveException;
+import com.atlassian.jira.issue.AttachmentManager;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.attachment.Attachment;
 import com.atlassian.jira.user.ApplicationUser;
 
-public class JiraObjectRemover {
+/**
+ * A utility class to delete objects in Jira.
+ */
+public final class JiraObjectRemover {
+
+	private JiraObjectRemover() {
+
+	}
 
 	/**
-	 * Removes an User in Jira
+	 * Deletes an user account in Jira.
 	 * 
 	 * @author abar
 	 * 
 	 * @param loggedUser
-	 *            : An user that can remove another user (Administrator in
-	 *            general)
+	 *            : An user with permissions that can remove another user
 	 * @param userToDelete
 	 *            : the name of the user that shall be removed
 	 */
-	public static void deleteUser(ApplicationUser loggedUser, String userToDelete) {
+	public static void deleteUser(final ApplicationUser loggedUser, final String userToDelete) {
 		if (userToDelete != null) {
 			ComponentAccessor.getUserUtil().removeUser(loggedUser,
 					ComponentAccessor.getUserManager().getUserByName(userToDelete));
@@ -42,16 +49,19 @@ public class JiraObjectRemover {
 	}
 
 	/**
+	 * Removes and issue in Jira.
+	 * 
 	 * @param issueKey
+	 *            the key of an issue to be removed.
 	 * @return
 	 */
-	public static boolean removeIssue(String issueKey) {
+	public static boolean removeIssue(final String issueKey) {
 		try {
-			Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
+			final Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 			ComponentAccessor.getIssueManager().deleteIssueNoEvent(issue);
 			return true;
 
-		} catch (RemoveException e) {
+		} catch (final RemoveException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
@@ -59,18 +69,20 @@ public class JiraObjectRemover {
 	}
 
 	/**
-	 * removes an attachment
+	 * Removes an attachment.
 	 * 
 	 * @param attachmentId
+	 *            the id of an attachment to be removed.
 	 * @return
 	 */
-	public static boolean removeAttachment(long attachmentId) {
+	public static boolean removeAttachment(final long attachmentId) {
 		try {
-			Attachment attachment = ComponentAccessor.getAttachmentManager().getAttachment(attachmentId);
-			ComponentAccessor.getAttachmentManager().deleteAttachment(attachment);
+			final AttachmentManager attachmentManager = ComponentAccessor.getAttachmentManager();
+			final Attachment attachment = attachmentManager.getAttachment(attachmentId);
+			attachmentManager.deleteAttachment(attachment);
 			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 			return false;
 		}
 	}

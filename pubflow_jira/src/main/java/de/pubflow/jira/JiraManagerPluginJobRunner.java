@@ -28,23 +28,50 @@ import com.atlassian.scheduler.JobRunner;
 import com.atlassian.scheduler.JobRunnerRequest;
 import com.atlassian.scheduler.JobRunnerResponse;
 
+/**
+ * Run the job that starts PubFlow.
+ * 
+ * @author abar
+ *
+ */
 public class JiraManagerPluginJobRunner implements JobRunner {
-	@Override
-	public JobRunnerResponse runJob(JobRunnerRequest request) {
 
-		try
-		{
+	/**
+	 * 
+	 */
+	public JiraManagerPluginJobRunner() {
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public JobRunnerResponse runJob(final JobRunnerRequest request) {
+
+		try {
 			return JobRunnerResponse.success(initPubflow());
-		}
-		catch (Exception e)
-		{
-			return JobRunnerResponse.failed(e);
+		} catch (Exception exception) {
+			return JobRunnerResponse.failed(exception);
 		}
 	}
 
-	private String initPubflow() throws KeyManagementException, UnrecoverableKeyException, GenericEntityException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
-
-		JiraManagerInitializer.initPubFlowProject();
+	/**
+	 * Initialize PubFlow on start up.
+	 * 
+	 * @return
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws GenericEntityException
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyStoreException
+	 * @throws CertificateException
+	 * @throws IOException
+	 */
+	private String initPubflow() throws KeyManagementException, UnrecoverableKeyException, GenericEntityException,
+			NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+		final JiraManagerInitializer jiraManagerInitializer = new JiraManagerInitializer();
+		jiraManagerInitializer.initPubFlowProject();
 		return "Initilizing pubflow.";
 	}
 }

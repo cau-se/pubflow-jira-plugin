@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.fields.screen.FieldScreen;
-import com.atlassian.jira.issue.fields.screen.FieldScreenManager;
 import com.atlassian.jira.issue.issuetype.IssueType;
 import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
@@ -36,19 +35,34 @@ import com.atlassian.jira.user.ApplicationUser;
 
 import de.pubflow.jira.JiraManagerPlugin;
 
-public class JiraObjectGetter {
+/**
+ * A Utility class to retrieve objects from jira.
+ *
+ */
+public final class JiraObjectGetter {
+	/**
+	 * Logger for debuging and info messages.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(JiraObjectGetter.class);
 
-	private static Logger log = LoggerFactory.getLogger(JiraObjectGetter.class);
+	private JiraObjectGetter() {
+
+	}
 
 	/**
+	 * Find a Fieldscreen by its name.
+	 * 
 	 * @author abar
 	 * 
+	 * @param name
+	 *            the name of a fieldscreen to search for
+	 *            
+	 * @return the found fieldscreen
 	 */
-	static FieldScreen findFieldScreenByName(String name) {
-		final FieldScreenManager fieldScreenManager = ComponentAccessor.getFieldScreenManager();
-		Collection<FieldScreen> fieldScreens = fieldScreenManager.getFieldScreens();
+	static FieldScreen findFieldScreenByName(final String name) {
+		final Collection<FieldScreen> fieldScreens = ComponentAccessor.getFieldScreenManager().getFieldScreens();
 
-		for (FieldScreen fieldScreen : fieldScreens) {
+		for (final FieldScreen fieldScreen : fieldScreens) {
 			if (fieldScreen.getName().equals(name)) {
 				return fieldScreen;
 			}
@@ -58,73 +72,95 @@ public class JiraObjectGetter {
 	}
 
 	/**
+	 * Get an issuetype with a given name.
+	 * 
 	 * @author abar
-	 * @param issueTypeName:
-	 *            The issue type we want to look up
-	 * @return the issueType we looked for (null if it does not exist)
+	 * 
+	 * @param issueTypeName
+	 *            The issue type to search for
+	 * @return the found issuetype
 	 */
-	public static IssueType getIssueTypeByName(String issueTypeName) {
-	    IssueType issueType = null;
-	    
-	    Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
-	    
-	    for(IssueType tempIssueType : issueTypes) {
-	      if(tempIssueType.getName().equals(issueTypeName)) {
-	        return tempIssueType;
-	      }
-	    }
-	    
-	    return issueType;
+	public static IssueType getIssueTypeByName(final String issueTypeName) {
+		final Collection<IssueType> issueTypes = ComponentAccessor.getConstantsManager().getAllIssueTypeObjects();
+
+		for (final IssueType issueType : issueTypes) {
+			if (issueType.getName().equals(issueTypeName)) {
+				return issueType;
+			}
+		}
+
+		return null;
 	}
-	
-	public static String getIssueTypeNamebyJiraKey(String jiraKey){
+
+	/**
+	 * 
+	 * @param jiraKey
+	 * @return
+	 */
+	public static String getIssueTypeNamebyJiraKey(final String jiraKey) {
 		return getIssueByJiraKey(jiraKey).getIssueType().getName();
 	}
 
 	/**
-	 * @param id
-	 * @return
+	 * Find an issue for a given name.
+	 * 
+	 * @param name the name of an issue
+	 * @return if an issue with the name exists.
+	 * 
 	 * @throws GenericEntityException
 	 */
-	public static boolean lookupIssue(String name) throws GenericEntityException {
-		long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
-		Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
-		List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
+	public static boolean lookupIssue(final String name) throws GenericEntityException {
+		final long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
+		final Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
+		final List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
 
-		log.info("lookupIssue - name : " + name);
+		LOGGER.info("lookupIssue - name : " + name);
 
-		for (Issue issue : issues) {
+		for (final Issue issue : issues) {
 			if (issue.getSummary().equals(name)) {
-				log.info("lookupIssue - return true");
+				LOGGER.info("lookupIssue - return true");
 				return true;
 			}
 		}
 
-		log.info("lookupIssue - return false");
+		LOGGER.info("lookupIssue - return false");
 		return false;
 
 	}
 
 	/**
-	 * @param id
-	 * @return
+	 * Get the issue key for a given id.
+	 * 
+	 * @param issueID
+	 *            the id of an issue
+	 * 
+	 * @return the key of an issue with the given id
 	 */
-	public static String getIssueKeyById(long id) {
-		String key = ComponentAccessor.getIssueManager().getIssueObject(id).getKey();
-		log.info("getIssueKeyById - id : " + id);
-		log.info("getIssueKeyById - return " + key);
+	public static String getIssueKeyById(final long issueID) {
+		final String key = ComponentAccessor.getIssueManager().getIssueObject(issueID).getKey();
+		LOGGER.info("getIssueKeyById - id : " + issueID);
+		LOGGER.info("getIssueKeyById - return " + key);
 
 		return key;
 	}
 
-	public static List<String> getAllIssueSummariesBySummaryContains(String snippet) throws GenericEntityException {
-		long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
-		Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
-		List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
-		log.info("getAllIssueSummariesBySummaryContains - snippet : " + snippet);
+	/**
+	 * Get all summaries containing a given snippet
+	 * 
+	 * @param snippet
+	 *            the part a summary should contain
+	 * @return all summaries that contain a given snippet
+	 * @throws GenericEntityException
+	 */
+	public static List<String> getAllIssueSummariesBySummaryContains(final String snippet)
+			throws GenericEntityException {
+		final long projectId = ComponentAccessor.getProjectManager().getProjectByCurrentKey("PUB").getId();
+		final Collection<Long> issueIds = ComponentAccessor.getIssueManager().getIssueIdsForProject(projectId);
+		final List<Issue> issues = ComponentAccessor.getIssueManager().getIssueObjects(issueIds);
+		LOGGER.info("getAllIssueSummariesBySummaryContains - snippet : " + snippet);
 
-		List<String> resultList = new LinkedList<String>();
-		for (Issue issue : issues) {
+		final List<String> resultList = new LinkedList<String>();
+		for (final Issue issue : issues) {
 			if (issue.getSummary().contains(snippet)) {
 				resultList.add(issue.getSummary());
 			}
@@ -133,133 +169,109 @@ public class JiraObjectGetter {
 	}
 
 	/**
-	 * @param key
-	 * @return
+	 * Find an issue for a given key.
+	 * 
+	 * @param key the key of an issue
+	 * @return the ID of the searched issue
 	 */
-	public static long getIssueIdByKey(String key) {
-		long id = ComponentAccessor.getIssueManager().getIssueObject(key).getId();
-		log.info("getIssueIdByKey - id : " + id);
-		log.info("getIssueIdByKey - return " + key);
+	public static long getIssueIdByKey(final String key) {
+		final long issueID = ComponentAccessor.getIssueManager().getIssueObject(key).getId();
+		LOGGER.info("getIssueIdByKey - id : " + issueID);
+		LOGGER.info("getIssueIdByKey - return " + key);
 
-		return id;
+		return issueID;
 	}
 
 	/**
-	 * @param projectKey
-	 * @param statusName
-	 * @return
+	 * Find a status with a given name.
+	 * 
+	 * @param projectKey the project containing the searched status
+	 * @param statusName the name of the searched status
+	 * 
+	 * @return the status object of a searched status
 	 */
-	public static Status getStatusByName(String projectKey, String statusName) {
-		Collection<Status> statuses = JiraManagerPlugin.statusManager.getStatuses();
-		log.info("getStatusByName - projectKey : " + projectKey);
-		log.info("getStatusByName - statusName : " + statusName);
-		log.info("getStatusByName - statuses.size : " + statuses.size());
+	public static Status getStatusByName(final String projectKey, final String statusName) {
+		final Collection<Status> statuses = JiraManagerPlugin.statusManager.getStatuses();
+		LOGGER.info("getStatusByName - projectKey : " + projectKey);
+		LOGGER.info("getStatusByName - statusName : " + statusName);
+		LOGGER.info("getStatusByName - statuses.size : " + statuses.size());
 
-		for (Status statusItem : statuses) {
+		for (final Status statusItem : statuses) {
 			if (statusItem != null) {
-				
-				log.info("getStatusByName - status iteration 1:" + Arrays.toString(statusItem.getName().getBytes()));
-				log.info("getStatusByName - status iteration 2: " + Arrays.toString(statusName.getBytes()));
-				
+
+				LOGGER.info("getStatusByName - status iteration 1:" + Arrays.toString(statusItem.getName().getBytes()));
+				LOGGER.info("getStatusByName - status iteration 2: " + Arrays.toString(statusName.getBytes()));
+
 				if (statusItem.getName().equalsIgnoreCase(statusName)) {
 					return statusItem;
 				}
 			}
 		}
-		log.debug("getStatusByName: no status with name " + statusName + " was found.");
+		LOGGER.debug("getStatusByName: no status with name " + statusName + " was found.");
 		return null;
 	}
 
 	/**
 	 * Get available status names
 	 * 
-	 * @param projectKey
-	 *            : the projects key
+	 * @param projectKey the project's key
 	 * @return returns a string array of all available status names
 	 */
 
-	public static List<String> getStatusNames(String projectKey) {
-		List<Status> status = ComponentAccessor.getWorkflowManager()
-				.getWorkflow(projectKey).getLinkedStatusObjects();
-		List<String> result = new ArrayList<String>();
+	public static List<String> getStatusNames(final String projectKey) {
+		final List<Status> status = ComponentAccessor.getWorkflowManager().getWorkflow(projectKey)
+				.getLinkedStatusObjects();
+		final List<String> result = new ArrayList<String>();
 
-		for (Status statusItem : status) {
+		for (final Status statusItem : status) {
 			result.add(statusItem.getName());
 		}
 
 		return result;
 	}
 
-	public static ApplicationUser getUserByName(String userName) {
+	/**
+	 * Find a user with a given name
+	 * 
+	 * @param userName the name of the searched user
+	 * @return the searched user
+	 */
+	public static ApplicationUser getUserByName(final String userName) {
 		return ComponentAccessor.getUserManager().getUserByName(userName);
 	}
-
-	/**
-	   * searches for an issue type by its name quite expensive
-	   * 
-	   * @param name
-	   *          : the issue type's name
-	   * 
-	   * @return returns the issue type id returns null if no or more than one issue type with the
-	   *         provided name has been found
-	   * 
-	   */
-
-	  public static IssueType findIssueTypeByName(Project project, String name) {
-	    log.debug("findIssueTypeByName - name : " + name);
-	    Collection<IssueType> issueTypes = project.getIssueTypes();
-
-	    for (IssueType issueType : issueTypes) {
-	      if (issueType.getName().equals(name)) {
-	        return issueType;
-	      }
-	    }
-	    
-	    log.debug("findIssueTypeByName: no issueType named "+name+" was found.");
-	    return null;
-	  }
-	
 
 	/**
 	 * searches for an issue type by its name quite expensive
 	 * 
 	 * @param name
 	 *            : the issue type's name
+	 * 
 	 * @return returns the issue type id returns null if no or more than one
 	 *         issue type with the provided name has been found
+	 * 
 	 */
 
-	public static IssueType findIssueTypeByName(String name) {
-		int counter = 0;
-		IssueType result = null;
+	public static IssueType findIssueTypeByName(final Project project, final String name) {
+		LOGGER.debug("findIssueTypeByName - name : " + name);
+		final Collection<IssueType> issueTypes = project.getIssueTypes();
 
-		log.info("findIssueTypeByName - name : " + name);
-
-		// iterate through all available issue types and check for equality of
-		// names
-		for (IssueType it : JiraManagerPlugin.issueTypeManager.getIssueTypes()) {
-			if (it.getName().equals(name)) {
-				counter++;
-				result = it;
+		for (final IssueType issueType : issueTypes) {
+			if (issueType.getName().equals(name)) {
+				return issueType;
 			}
 		}
 
-		if (counter == 1) {
-			log.info("findIssueTypeByName - return");
-			return result;
-		} else {
-			log.info("findIssueTypeByName - return null " + counter);
-			return null;
-		}
+		LOGGER.debug("findIssueTypeByName: no issueType named " + name + " was found.");
+		return null;
 	}
-	
+
 	/**
-	 * Looks up the issue to the given key.
+	 * Looks up the issue for the given key.
 	 * 
 	 * @param issueKey
 	 * @return
 	 */
-	public static Issue getIssueByJiraKey(String issueKey) {
+	public static Issue getIssueByJiraKey(final String issueKey) {
 		return ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 	}
 

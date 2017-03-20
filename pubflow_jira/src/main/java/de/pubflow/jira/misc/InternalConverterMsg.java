@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.atlassian.jira.component.ComponentAccessor;
@@ -30,73 +31,109 @@ import com.atlassian.jira.issue.customfields.impl.DateTimeCFType;
 import com.atlassian.jira.issue.fields.CustomField;
 
 /**
- * @author arl
- *	This class extracts relevant information from an issueEvent
+ * @author arl This class extracts relevant information from an issueEvent
  */
 
 public class InternalConverterMsg {
 
-	private long eventType;
-	private Date date;
-	private String issueTypeName;
-	private Map<String, String> values = new HashMap<String, String>();
+	/**
+	 * Placeholder for an empty string
+	 */
+	private static final String EMPTY_STRING = "";
+	
+	/**
+	 * The type of the entity
+	 */
+	private final long eventType;
+	
+	/**
+	 * The date it was created.
+	 */
+	private final Date date;
+	
+	/**
+	 * the corresponding issuetype name
+	 */
+	private final String issueTypeName;
+	
+	/**
+	 * 
+	 */
+	private final Map<String, String> values = new HashMap<String, String>();
 
 	/**
 	 * @param issueEvent
 	 */
-	public InternalConverterMsg(IssueEvent issueEvent) {
+	public InternalConverterMsg(final IssueEvent issueEvent) {
 
-		eventType = issueEvent.getEventTypeId();
-		date = issueEvent.getTime();
+		this.eventType = issueEvent.getEventTypeId();
+		this.date = issueEvent.getTime();
 
-		Issue issue = issueEvent.getIssue();
-		issueTypeName = issue.getIssueType().getName();
+		final Issue issue = issueEvent.getIssue();
+		this.issueTypeName = issue.getIssueType().getName();
 
-		values.put("reporter", issue.getReporterId());
-		values.put("assignee", issue.getAssigneeId());
-		values.put("workflowName", issueTypeName);
-		values.put("issueKey", issue.getKey() + "");
-		values.put("eventType", eventType + "");
-		values.put("date", date.getTime() + "");
-		values.put("status", issue.getStatus().getName());
+		getValues().put("reporter", issue.getReporterId());
+		getValues().put("assignee", issue.getAssigneeId());
+		getValues().put("workflowName", getIssueTypeName());
+		getValues().put("issueKey", issue.getKey() + EMPTY_STRING);
+		getValues().put("eventType", getEventType() + EMPTY_STRING);
+		getValues().put("date", getDate().getTime() + EMPTY_STRING);
+		getValues().put("status", issue.getStatus().getName());
 
-		List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
+		final List<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects(issue);
 
-		for (CustomField customField : customFields) {
-			if (customField != null && customField.getName() != null && issue.getCustomFieldValue(customField) != null) {
+		for (final CustomField customField : customFields) {
+			if (customField != null && customField.getName() != null
+					&& issue.getCustomFieldValue(customField) != null) {
 
-				String customFieldName = customField.getName();
+				final String customFieldName = customField.getName();
 
 				if (customField.getCustomFieldType() instanceof DateTimeCFType) {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+					final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
 					Date date;
 					try {
 						date = formatter.parse(issue.getCustomFieldValue(customField).toString());
-						values.put("quartzMillis", date.getTime() + "");
+						getValues().put("quartzMillis", date.getTime() + EMPTY_STRING);
 					} catch (ParseException e) {
 						e.printStackTrace();
-						values.put(customFieldName, null);
+						getValues().put(customFieldName, null);
 					}
 
 				} else {
-					values.put(customFieldName, issue.getCustomFieldValue(customField).toString());
+					getValues().put(customFieldName, issue.getCustomFieldValue(customField).toString());
 				}
 			}
 		}
 	}
 
+	/**
+	 * 
+	 * @return long the type of the event.
+	 */
 	public long getEventType() {
 		return eventType;
 	}
 
+	/**
+	 * 
+	 * @return Date the date the entity were created.
+	 */
 	public Date getDate() {
 		return date;
 	}
 
+	/**
+	 * 
+	 * @return String the issuetype the event is corresponding to
+	 */
 	public String getIssueTypeName() {
 		return issueTypeName;
 	}
 
+	/**
+	 * 
+	 * @return Map<String, String> values that are mapped to the entity.
+	 */
 	public Map<String, String> getValues() {
 		return values;
 	}

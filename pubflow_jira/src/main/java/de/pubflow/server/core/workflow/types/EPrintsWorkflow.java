@@ -15,7 +15,6 @@
  */
 package de.pubflow.server.core.workflow.types;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,23 +28,16 @@ import de.pubflow.jira.misc.CustomFieldDefinition;
  */
 public class EPrintsWorkflow extends AbstractWorkflow {
 
+	/**
+	 * 
+	 */
 	public EPrintsWorkflow() {
 		super("EPRINTS", "de.pubflow.EPRINTS", "/EPRINTS.xml", "/workflow/EPrintsWorkflow");
 	}
 
-	@Override
-	public List<String> getScreenNames() {
-		String issueTypeEprintsName = this.getWorkflowName();
-
-		List<String> screenNamesEprints = new ArrayList<String>();
-		screenNamesEprints.add(issueTypeEprintsName + "ActionCreate");
-		screenNamesEprints.add(issueTypeEprintsName + "ActionEdit");
-		screenNamesEprints.add(issueTypeEprintsName + "ActionView");
-
-		return screenNamesEprints;
-
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<CustomFieldDefinition> getCustomFields() {
 		return new LinkedList<CustomFieldDefinition>();

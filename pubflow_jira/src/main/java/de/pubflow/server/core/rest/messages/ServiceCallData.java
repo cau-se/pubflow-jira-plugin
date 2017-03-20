@@ -24,22 +24,37 @@ import javax.xml.bind.annotation.XmlRootElement;
 import de.pubflow.server.common.entity.workflow.WFParameter;
 import de.pubflow.server.common.enumeration.WFType;
 
+/**
+ * 
+ * @author alexanderbarbie
+ *
+ */
 @XmlRootElement(namespace = "http://pubflow.de/message/workflow")
 public class ServiceCallData implements Serializable {
-
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = -4931074023209271264L;
 
 	/**
 	 * The id used to get the (bpmn) workflow
 	 */
 	private String workflowID = "";
-	
-	private WFType type = null;
-	private List<WFParameter> parameters = null;
-	private String jiraKey;
 
-	public ServiceCallData() {
-	}
+	/**
+	 * 
+	 */
+	private WFType type;
+	
+	/**
+	 * 
+	 */
+	private List<WFParameter> parameters;
+	
+	/**
+	 * 
+	 */
+	private String jiraKey;
 
 	/**
 	 * @return the workflowID
@@ -53,7 +68,7 @@ public class ServiceCallData implements Serializable {
 	 * @param workflowID
 	 *            the workflowID to set
 	 */
-	public synchronized void setWorkflowID(String workflowID) {
+	public synchronized void setWorkflowID(final String workflowID) {
 		this.workflowID = workflowID;
 	}
 
@@ -69,10 +84,9 @@ public class ServiceCallData implements Serializable {
 	 * @param wftype
 	 *            the wftype to set
 	 */
-	public synchronized void setType(WFType wftype) {
+	public synchronized void setType(final WFType wftype) {
 		this.type = wftype;
 	}
-
 
 	/**
 	 * @return the wfparams
@@ -86,26 +100,41 @@ public class ServiceCallData implements Serializable {
 	 * @param parameters
 	 *            the wfparams to set
 	 */
-	public synchronized void setParameters(List<WFParameter> parameters) {
+	public synchronized void setParameters(final List<WFParameter> parameters) {
 		this.parameters = parameters;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isValid() {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getJiraKey() {
 		return jiraKey;
 	}
 
-	public void setJiraKey(String jiraKey) {
+	/**
+	 * 
+	 * @param jiraKey
+	 */
+	public void setJiraKey(final String jiraKey) {
 		this.jiraKey = jiraKey;
 	}
 
-
+	/**
+	 * 
+	 * @return
+	 */
 	public WFType getType() {
 		return type;
 	}
-	
+
 }

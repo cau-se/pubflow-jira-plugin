@@ -44,80 +44,93 @@ import de.pubflow.server.core.workflow.types.AbstractWorkflow;
  * @author Marc Adolf, Peer Brauer
  *
  */
-public class WorkflowBroker {
-	static private Logger myLogger;
-
-	static private final WorkflowBroker instance = new WorkflowBroker();
-	static private Map<String, AbstractWorkflow> registeredWorkflows = new HashMap<String, AbstractWorkflow>();
+public final class WorkflowBroker {
+	/**
+	 * 
+	 */
+	private final static Logger LOGGER = LoggerFactory.getLogger(WorkflowBroker.class);
+	
+	/**
+	 * 
+	 */
+	private static final Map<String, AbstractWorkflow> REGISTEREDWORKFLOWS = new HashMap<String, AbstractWorkflow>();
 
 	private WorkflowBroker() {
-		myLogger = LoggerFactory.getLogger(this.getClass());
-		myLogger.info("Starting WorkflowBroker");
+		LOGGER.info("Starting WorkflowBroker");
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	static public WorkflowBroker getInstance() {
-		return instance;
+		return new WorkflowBroker();
 	}
 
 	/**
 	 * Handles new Workflow calls for PubFlow. They will be saved and send to
-	 * the Workflow Microservice.
-	 * Works only if a Workflow service should be called. 
+	 * the Workflow Microservice. Works only if a Workflow service should be
+	 * called.
 	 * 
 	 * @param callData
 	 * @throws WFException
 	 */
-	public void receiveWFCall(ServiceCallData callData) throws WFException {
+	public void receiveWFCall(final ServiceCallData callData) throws WFException {
 
 		// TODO Save Workflows in DB and load from it on startup
 
 		if (!callData.isValid()) {
-			myLogger.error("Workflow NOT deployed >> Msg is not valid ");
+			LOGGER.error("Workflow NOT deployed >> Msg is not valid ");
 			return;
 		}
-		myLogger.info("Creating new Instance of the '" + callData.getWorkflowID() + "' Workflow");
-		WorkflowRestCall wfRestCall = new WorkflowRestCall();
+		LOGGER.info("Creating new Instance of the '" + callData.getWorkflowID() + "' Workflow");
+		final WorkflowRestCall wfRestCall = new WorkflowRestCall();
 
 		wfRestCall.setID(callData.getJiraKey());
 
 		// add Callback address to the REST call
 		try {
 			wfRestCall.setCallbackAddress(JiraRestConnector.getCallbackAddress());
-		} catch (UnknownHostException e) {
-			myLogger.error("Could not set callback address for the REST call");
+		} catch (final UnknownHostException exception) {
+			LOGGER.error("Could not set callback address for the REST call");
 			throw new WFException("  Could not set callback address");
 		}
 
-		myLogger.info("Deploying new Workflow");
+		LOGGER.info("Deploying new Workflow");
 
 		// set parameters for the REST call
 		wfRestCall.setWorkflowParameters(computeParameter(callData));
 
 		// lookup the URL
-		AbstractWorkflow workflow = registeredWorkflows.get(callData.getWorkflowID());
+		final AbstractWorkflow workflow = REGISTEREDWORKFLOWS.get(callData.getWorkflowID());
 		if (workflow == null) {
-			myLogger.error(callData.getWorkflowID() + " was not found by the WorkflowBroker");
+			LOGGER.error(callData.getWorkflowID() + " was not found by the WorkflowBroker");
 			throw new WFException("Workflow not found/registered");
 		}
-		String workflowURL = workflow.getCompleteServiceURL();
-		myLogger.info("Using REST-API: " + workflowURL);
+		final String workflowURL = workflow.getCompleteServiceURL();
+		LOGGER.info("Using REST-API: " + workflowURL);
 		try {
 			WorkflowSender.initWorkflow(wfRestCall, workflowURL);
-			myLogger.info("Workflow deployed");
-		} catch (WFRestException e) {
-			myLogger.error("Could not deploy workflow");
+			LOGGER.info("Workflow deployed");
+		} catch (final WFRestException e) {
+			LOGGER.error("Could not deploy workflow");
 			throw e;
 		}
 	}
 
-	private List<WFParameter> computeParameter(ServiceCallData data) {
+	/**
+	 * 
+	 * @param data
+	 * @return
+	 */
+	private List<WFParameter> computeParameter(final ServiceCallData data) {
 
-		List<WFParameter> parameters = data.getParameters();
-		List<WFParameter> filteredParameters = new LinkedList<WFParameter>();
+		final List<WFParameter> parameters = data.getParameters();
+		final List<WFParameter> filteredParameters = new LinkedList<WFParameter>();
 
-		for (WFParameter parameter : parameters) {
-			myLogger.info(parameter.getKey() + " : " + parameter.getValue());
-			String key = parameter.getKey();
+		for (final WFParameter parameter : parameters) {
+			LOGGER.info(parameter.getKey() + " : " + parameter.getValue());
+			final String key = parameter.getKey();
 
 			if (parameter.getPayloadClazz().equals(ParameterType.STRING)) {
 
@@ -152,31 +165,13 @@ public class WorkflowBroker {
 						parameter.setKey(key);
 						filteredParameters.add(parameter);
 						// }
-					} catch (Exception e) {
-						myLogger.error(e.getCause().toString() + " : " + e.getMessage());
+					} catch (final Exception exception) {
+						LOGGER.error(exception.getCause().toString() + " : " + exception.getMessage());
 					}
 
 				}
 			}
 		}
-		// TODO the case of scheduled Workflows is not considered in the moment
-		// and may be needed in the future (?)
-
-		// msg.setParameters(filteredParameters);
-		//
-		// if(!quartzCron.equals("")){
-		// myLogger.info("Scheduling new job");
-		// final ServiceCallData schedulerMsg = msg;
-		// Scheduler s = new Scheduler();
-		//
-		// s.schedule(quartzCron, new Runnable() {
-		// public void run() {
-		// PubFlowJob.execute(schedulerMsg);
-		// }
-		// });
-		// s.start();
-		//
-		// }
 
 		return filteredParameters;
 	}
@@ -188,21 +183,21 @@ public class WorkflowBroker {
 	 * 
 	 * @throws WFRestException
 	 */
-	public void receiveWorkflowAnswer(String jiraKey, ReceivedWorkflowAnswer answer) {
-		// TODO a generic mapping for available Workflows, which tells what to
-		// do in certain events
+	public void receiveWorkflowAnswer(final String jiraKey, final ReceivedWorkflowAnswer answer) {
+		LOGGER.debug("Receveived answer to issue " + jiraKey + ".");
+
 		if (JiraObjectGetter.getIssueByJiraKey(jiraKey) == null) {
-			myLogger.info("Got answer to non-existing issue  with key: " + jiraKey + " with message: ");
-			myLogger.info(answer.toString());
+			LOGGER.info("Got answer to non-existing issue  with key: " + jiraKey + " with message: ");
+			LOGGER.info(answer.toString());
 			return;
 		}
 
-		String workflowName = JiraObjectGetter.getIssueTypeNamebyJiraKey(jiraKey);
+		final String workflowName = JiraObjectGetter.getIssueTypeNamebyJiraKey(jiraKey);
 
-		AbstractWorkflow workflow = registeredWorkflows.get(workflowName);
+		final AbstractWorkflow workflow = REGISTEREDWORKFLOWS.get(workflowName);
 
 		if (workflow == null) {
-			myLogger.info("Got answer to issue with key " + jiraKey + " but the issue type is not registered.");
+			LOGGER.info("Got answer to issue with key " + jiraKey + " but the issue type is not registered.");
 			return;
 		}
 
@@ -215,8 +210,8 @@ public class WorkflowBroker {
 	 * 
 	 * @param workflow
 	 */
-	static public void addWorkflow(AbstractWorkflow workflow) {
-		registeredWorkflows.put(workflow.getWorkflowName(), workflow);
-		myLogger.info("Registered Workflow: "+workflow.getWorkflowName() +" at the WorkflowBroker");
+	static public void addWorkflow(final AbstractWorkflow workflow) {
+		REGISTEREDWORKFLOWS.put(workflow.getWorkflowName(), workflow);
+		LOGGER.info("Registered Workflow: " + workflow.getWorkflowName() + " at the WorkflowBroker");
 	}
 }

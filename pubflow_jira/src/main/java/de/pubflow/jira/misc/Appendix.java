@@ -15,6 +15,10 @@
  */
 package de.pubflow.jira.misc;
 
+/**
+ * Appendix that are added workflows, fieldscreens, issueTypes, and schemes
+ *
+ */
 public enum Appendix{
 //	ISSUETYPE(""),
 	FIELDSCREEN("_FieldScreen"),
@@ -23,17 +27,30 @@ public enum Appendix{
 	FIELDSCREENSCHEME("_FieldScreenScheme"),
 	ISSUETYPESCHEME("_IssueTypeScheme");
 
+	/**
+	 * The name of the appendix.
+	 */
 	private String name = "";
 
-	Appendix (String type) {
+	/**
+	 * 
+	 * @param type
+	 */
+	Appendix (final String type) {
 		this.getType(type);
 	}
 
+	/**
+	 * @return String the name of the appendix
+	 */
 	public String getName() {
 		return name;
 	}
 
-	public void getType(String type) {
+	/**
+	 * @param type set the name of the appendix.
+	 */
+	public void getType(final String type) {
 		this.name = type;
 	}
 }

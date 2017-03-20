@@ -329,7 +329,7 @@
       <actions>
         <action id="131" name="Send To PubFlow" view="fieldscreen">
           <meta name="jira.description"></meta>
-          <meta name="jira.fieldscreen.id">10006</meta>
+          <meta name="jira.fieldscreen.id">10456</meta>
           <restrict-to>
             <conditions>
               <condition type="class">
@@ -394,12 +394,12 @@
       <actions>
         <action id="201" name="Prepare for PubFlow">
           <meta name="jira.description"></meta>
-          <meta name="jira.fieldscreen.id"></meta>
+          <meta name="jira.fieldscreen.id">10107</meta>
           <restrict-to>
             <conditions>
               <condition type="class">
                 <arg name="class.name">com.atlassian.jira.workflow.condition.UserInGroupCondition</arg>
-                <arg name="group">librarian</arg>
+                <arg name="group">librarians</arg>
               </condition>
             </conditions>
           </restrict-to>

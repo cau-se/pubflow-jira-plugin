@@ -56,40 +56,49 @@ import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.scheme.Scheme;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.workflow.ConfigurableJiraWorkflow;
 import com.atlassian.jira.workflow.JiraWorkflow;
 import com.atlassian.jira.workflow.WorkflowScheme;
 import com.atlassian.jira.workflow.WorkflowSchemeManager;
-import com.atlassian.jira.workflow.WorkflowUtil;
-import com.opensymphony.workflow.FactoryException;
 
 import de.pubflow.jira.JiraManagerPlugin;
 
-public class JiraObjectManipulator {
+/**
+ * A utility class to manipulate objects of Jira
+ *
+ */
+public final class JiraObjectManipulator {
+	/**
+	 * Logger for debuging and info messages.
+	 */
+	private final static Logger LOGGER = LoggerFactory.getLogger(JiraObjectManipulator.class);
 
-	private static Logger log = LoggerFactory.getLogger(JiraObjectManipulator.class);
+	private JiraObjectManipulator() {
+
+	}
 
 	/**
+	 * Map an issue type scheme to a project
+	 * 
 	 * @author abar
 	 * @param issueTypeScheme
-	 *            : the issue type Scheme we map to the project
+	 *            : the issue type Scheme to map to the a project
 	 */
-	public static void addIssueTypeSchemeToProject(FieldConfigScheme issueTypeScheme, Project project) {
+	public static void addIssueTypeSchemeToProject(final FieldConfigScheme issueTypeScheme, final Project project) {
 		final IssueTypeSchemeManager issueTypeSchemeManager = ComponentAccessor.getIssueTypeSchemeManager();
 		final FieldConfigSchemeManager fieldConfigSchemeManager = ComponentAccessor.getFieldConfigSchemeManager();
 		final FieldManager fieldManager = ComponentAccessor.getFieldManager();
 
-		Collection<Project> projects = new ArrayList<Project>();
+		final Collection<Project> projects = new ArrayList<Project>();
 		projects.add(project);
 
 		if (issueTypeScheme != issueTypeSchemeManager.getDefaultIssueTypeScheme()) {
-			List<Long> projectIds = new ArrayList<Long>();
+			final List<Long> projectIds = new ArrayList<Long>();
 			projectIds.add(project.getId());
-			log.debug("projectIds: $projectIds");
-			Long[] ids = new Long[projectIds.size()];
+			LOGGER.debug("projectIds: $projectIds");
+			final Long[] ids = new Long[projectIds.size()];
 
-			List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true, projectIds.toArray(ids),
-					ComponentAccessor.getProjectManager());
+			final List<JiraContextNode> contexts = CustomFieldUtils.buildJiraIssueContexts(true,
+					projectIds.toArray(ids), ComponentAccessor.getProjectManager());
 			fieldConfigSchemeManager.updateFieldConfigScheme(issueTypeScheme, contexts,
 					fieldManager.getConfigurableField(IssueFieldConstants.ISSUE_TYPE));
 		}
@@ -102,13 +111,13 @@ public class JiraObjectManipulator {
 	 * @param project
 	 *            : the project which uses the issueType
 	 * @param issueTypeScheme
-	 *            : the issue type scheme that will be used
+	 *            : the issue type scheme to use
 	 * @param issueType
 	 *            : the issue type which will be used
 	 * @return The issue type screen scheme which was created
 	 */
-	public static IssueTypeScreenScheme addIssueTypeScreenSchemeToProject(Project project,
-			FieldScreenScheme fieldScreenScheme, IssueType issueType) {
+	public static IssueTypeScreenScheme addIssueTypeScreenSchemeToProject(final Project project,
+			final FieldScreenScheme fieldScreenScheme, final IssueType issueType) {
 
 		final IssueTypeScreenSchemeManager issueTypeScreenSchemeManager = ComponentAccessor
 				.getIssueTypeScreenSchemeManager();
@@ -121,7 +130,7 @@ public class JiraObjectManipulator {
 		}
 
 		// compose
-		IssueTypeScreenSchemeEntity issueTypeScreenSchemeEntity = new IssueTypeScreenSchemeEntityImpl(
+		final IssueTypeScreenSchemeEntity issueTypeScreenSchemeEntity = new IssueTypeScreenSchemeEntityImpl(
 				issueTypeScreenSchemeManager, (GenericValue) null, JiraManagerPlugin.fieldScreenSchemeManager,
 				ComponentAccessor.getConstantsManager());
 		issueTypeScreenSchemeEntity.setIssueTypeId(issueType.getId());
@@ -136,19 +145,19 @@ public class JiraObjectManipulator {
 	 * 
 	 * @author abar
 	 * @param workflow:
-	 *            the workflow we take to map its scheme to a project
+	 *            the workflow to map its scheme to a project
 	 * @param project:
 	 *            the project we add the given workflow scheme to
 	 */
-	public static void addWorkflowToProject(WorkflowScheme workflowScheme, Project project) {
+	public static void addWorkflowToProject(final WorkflowScheme workflowScheme, final Project project) {
 		final WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager();
-		Scheme scheme = workflowSchemeManager.getSchemeObject(workflowScheme.getId());
-		if (scheme != null && project != null) {
+		final Scheme scheme = workflowSchemeManager.getSchemeObject(workflowScheme.getId());
+		if (!(scheme == null || project == null)) {
 			workflowSchemeManager.addSchemeToProject(project, scheme);
-			log.info("addWorkflowToProject: the workflowscheme " + scheme.getName() + " was added to the project "
+			LOGGER.info("addWorkflowToProject: the workflowscheme " + scheme.getName() + " was added to the project "
 					+ project.getName());
 		} else {
-			log.debug("addWorkflowToProject: the project is already mapped to the scheme " + scheme.getName());
+			LOGGER.debug("addWorkflowToProject: the project is already mapped to the scheme " + scheme.getName());
 		}
 	}
 
@@ -162,19 +171,20 @@ public class JiraObjectManipulator {
 	 * @param user
 	 * @return
 	 */
-	public static long addAttachment(String issueKey, byte[] barray, String fileName, String type,
-			ApplicationUser user) {
+	public static long addAttachment(final String issueKey, final byte[] barray, final String fileName,
+			final String type, final ApplicationUser user) {
 
 		try {
-			MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
+			final MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
 
 			// TODO : path os?
-			String filePath = "/tmp/pubflow_tmp" + new BigInteger(130, JiraManagerPlugin.secureRandom).toString(32);
-			FileOutputStream stream = new FileOutputStream(filePath);
+			final String filePath = "/tmp/pubflow_tmp"
+					+ new BigInteger(130, JiraManagerPlugin.SECURERANDOM).toString(32);
+			final FileOutputStream stream = new FileOutputStream(filePath);
 
 			stream.write(barray);
 			stream.close();
-			File barrayFile = new File(filePath);
+			final File barrayFile = new File(filePath);
 			ComponentAccessor.getAttachmentManager()
 					.createAttachment(new CreateAttachmentParamsBean(barrayFile, fileName + type, "text/plain", user,
 							issue, false, false, null, new Timestamp(System.currentTimeMillis()), true));
@@ -182,8 +192,8 @@ public class JiraObjectManipulator {
 			// TODO: no id?
 			return 0L;
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
 			return 0L;
 		}
 	}
@@ -197,47 +207,47 @@ public class JiraObjectManipulator {
 	 * @return returns if the new comment has been added successful
 	 */
 
-	public static Comment addIssueComment(String issueKey, String comment, ApplicationUser user) {
-		log.info("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
+	public static Comment addIssueComment(final String issueKey, final String comment, final ApplicationUser user) {
+		LOGGER.info("addIssueComment - issueKey : " + issueKey + " / comment : " + comment);
 
 		if (user != null) {
-			log.info("addIssueComment - user : " + user.getName());
+			LOGGER.info("addIssueComment - user : " + user.getName());
 		} else {
-			log.info("addIssueComment - user : null");
+			LOGGER.info("addIssueComment - user : null");
 		}
 
-		Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
-		Comment commentObject = ComponentAccessor.getCommentManager().create(issue, user, comment, false);
+		final Issue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
+		final Comment commentObject = ComponentAccessor.getCommentManager().create(issue, user, comment, false);
 
 		if (commentObject != null) {
-			log.info("addIssueComment - return commentObject");
+			LOGGER.info("addIssueComment - return commentObject");
 			return commentObject;
 		} else {
-			log.info("addIssueComment - return null");
+			LOGGER.info("addIssueComment - return null");
 			return null;
 		}
 	}
 
 	/**
-	 * Add a User to a group in Jira
+	 * Add a user to a group in Jira
 	 * 
 	 * @author abar
 	 * 
 	 * @param pubFlowUser
-	 *            : a user we want to a group
+	 *            : a user to add to a group
 	 * @param pGroup:
-	 *            the name of a group we want to add an user to
+	 *            the name of a group to add a user to
 	 * 
 	 */
-	public static void addUserToGroup(ApplicationUser pubflowUser, String pGroup)
+	public static void addUserToGroup(final ApplicationUser pubflowUser, final String pGroup)
 			throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
 			OperationNotPermittedException, OperationFailedException {
-		Group group = ComponentAccessor.getGroupManager().getGroup(pGroup);
+		final Group group = ComponentAccessor.getGroupManager().getGroup(pGroup);
 		if (pubflowUser != null && group != null) {
 			ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-			log.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
+			LOGGER.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
 		} else {
-			log.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
+			LOGGER.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
 		}
 	}
 
@@ -247,19 +257,19 @@ public class JiraObjectManipulator {
 	 * @author abar
 	 * 
 	 * @param pubFlowUser
-	 *            : a user we want to a group
-	 * @param group:
+	 *            a user to add to a group
+	 * @param group
 	 *            the group we want to add an user to
 	 * 
 	 */
-	public static void addUserToGroup(ApplicationUser pubflowUser, Group group)
+	public static void addUserToGroup(final ApplicationUser pubflowUser, final Group group)
 			throws PermissionException, AddException, GroupNotFoundException, UserNotFoundException,
 			OperationNotPermittedException, OperationFailedException {
-		if (pubflowUser != null && group != null) {
+		if (pubflowUser != null || group != null) {
 			ComponentAccessor.getGroupManager().addUserToGroup(pubflowUser, group);
-			log.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
+			LOGGER.info("addUserToGroup: added the user " + pubflowUser.getUsername() + " to group " + group.getName());
 		} else {
-			log.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
+			LOGGER.error("addUserToGroup: user " + pubflowUser + " can't be added to group " + group);
 		}
 
 	}
@@ -268,25 +278,24 @@ public class JiraObjectManipulator {
 	 * Changes the status of an issue
 	 * 
 	 * @param issueKey
-	 *            : issue key
+	 *             issue key
 	 * @param statusName
-	 *            : has to be a preexisiting status name, eg. provided by
-	 *            getStatusNames(..)
+	 * 
 	 * @return returns true if the change has been processed successfully
 	 */
 
-	public static boolean changeStatus(String issueKey, String statusName) {
-		MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
-		JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issue);
+	public static boolean changeStatus(final String issueKey, final String statusName) {
+		final MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(issueKey);
+		final JiraWorkflow jiraWorkflow = ComponentAccessor.getWorkflowManager().getWorkflow(issue);
 
-		Status nextStatus = JiraObjectGetter.getStatusByName(issue.getProjectObject().getKey(), statusName);
+		final Status nextStatus = JiraObjectGetter.getStatusByName(issue.getProjectObject().getKey(), statusName);
 
 		if (issue == null || jiraWorkflow == null || nextStatus == null) {
-			log.debug("changeStatus: issue, jiraworklfow, or nextStatus is null.");
+			LOGGER.debug("changeStatus: issue, jiraworklfow, or nextStatus is null.");
 			return false;
 		} else {
 			ComponentAccessor.getWorkflowManager().migrateIssueToWorkflow(issue, jiraWorkflow, nextStatus);
-			log.info("changeStatus: successfully changed current status of an issue to next status.");
+			LOGGER.info("changeStatus: successfully changed current status of an issue to next status.");
 			return true;
 		}
 	}

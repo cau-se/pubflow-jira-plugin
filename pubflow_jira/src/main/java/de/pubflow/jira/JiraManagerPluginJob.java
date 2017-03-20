@@ -28,30 +28,64 @@ import com.atlassian.scheduler.config.JobRunnerKey;
 import com.atlassian.scheduler.config.RunMode;
 import com.atlassian.scheduler.config.Schedule;
 
+/**
+ * The lifecycle of Jira schedules different jobs. Register PubFlow as a job and
+ * add it to the lifecycle. Without this job Jira starts the plugin before the
+ * whole system is ready. Some managers (i.e. StatusManager) are not initialized
+ * then.
+ * 
+ * @author abar
+ *
+ */
 public class JiraManagerPluginJob {
-	private static final JobRunnerKey JOB_RUNNER_KEY = JobRunnerKey
-			.of(JiraManagerPluginJobRunner.class.getName());
+	/**
+	 * Logger for debuging and info messages.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(JiraManagerPluginJobRunner.class);
+	
+	/**
+	 * The key this job is mapped to.
+	 */
+	private static final JobRunnerKey JOB_RUNNER_KEY = JobRunnerKey.of(JiraManagerPluginJobRunner.class.getName());
+	
+	/**
+	 * The job's id.
+	 */
 	private static final JobId JOB_ID = JobId.of(JiraManagerPluginJobRunner.class.getName());
-	private static final Logger log = LoggerFactory.getLogger(JiraManagerPluginJobRunner.class);
+	
+	/**
+	 * The schedule service this job will be added to.
+	 */
 	private final SchedulerService schedulerService;
 
-	public JiraManagerPluginJob(SchedulerService schedulerService) {
+	/**
+	 * Create a job to run PubFlow
+	 * 
+	 * @param schedulerService The schedule service this job will be added to
+	 */
+	public JiraManagerPluginJob(final SchedulerService schedulerService) {
 		this.schedulerService = schedulerService;
 	}
 
+	/**
+	 * Start the job that runs pubflow
+	 */
 	public void init() {
-		JiraManagerPluginJobRunner jobRunner = new JiraManagerPluginJobRunner();
+		final JiraManagerPluginJobRunner jobRunner = new JiraManagerPluginJobRunner();
 		schedulerService.registerJobRunner(JOB_RUNNER_KEY, jobRunner);
-		log.info("here");
+
 		try {
 			schedulerService.scheduleJob(JOB_ID,
 					JobConfig.forJobRunnerKey(JOB_RUNNER_KEY).withRunMode(RunMode.RUN_LOCALLY)
-					.withSchedule(Schedule.runOnce(new Date(System.currentTimeMillis() + 2000))));
-		} catch (SchedulerServiceException se) {
-			log.warn("nö " + se);
+							.withSchedule(Schedule.runOnce(new Date(System.currentTimeMillis() + 2000))));
+		} catch (SchedulerServiceException schedulerException) {
+			LOGGER.warn("Error: " + schedulerException);
 		}
 	}
 
+	/**
+	 * Shut down the job.
+	 */
 	public void destroy() {
 		schedulerService.unregisterJobRunner(JOB_RUNNER_KEY);
 	}

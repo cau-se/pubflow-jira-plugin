@@ -24,8 +24,18 @@ import com.opensymphony.workflow.Validator;
 import com.opensymphony.workflow.loader.DescriptorFactory;
 import com.opensymphony.workflow.loader.ValidatorDescriptor;
 
+/**
+ * 
+ * @author alexanderbarbie
+ *
+ */
 public class IssueAttachmentValidator implements Validator {
 
+	/**
+	 * 
+	 * @param issueType
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static ValidatorDescriptor makeDescriptor(final String issueType) {
 		final ValidatorDescriptor issueAttachmentValidator = DescriptorFactory.getFactory().createValidatorDescriptor();
@@ -35,14 +45,24 @@ public class IssueAttachmentValidator implements Validator {
 		return issueAttachmentValidator;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void validate(final Map transientVars, final Map args, final PropertySet ps) throws InvalidInputException {
 		hasAttachment(args, transientVars);
 	}
 
+	/**
+	 * 
+	 * @param args
+	 * @param transientVars
+	 * @return
+	 * @throws InvalidInputException
+	 */
 	public boolean hasAttachment(final Map args, final Map transientVars) throws InvalidInputException {
 
-		Issue issue = (Issue) transientVars.get("issue");
+		final Issue issue = (Issue) transientVars.get("issue");
 
 		// Check Issue permission
 		if (issue.getAttachments().size() > 0) {

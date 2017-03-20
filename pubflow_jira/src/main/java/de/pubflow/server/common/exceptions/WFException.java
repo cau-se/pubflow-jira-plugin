@@ -15,6 +15,10 @@
  */
 package de.pubflow.server.common.exceptions;
 
+/**
+ * 
+ *
+ */
 public class WFException extends Exception {
 
 	/**
@@ -22,7 +26,11 @@ public class WFException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public WFException(String string) {
+	/**
+	 * 
+	 * @param string
+	 */
+	public WFException(final String string) {
 		super(string);
 	}
 
