@@ -125,9 +125,12 @@ public class JiraManagerInitializer {
 	/**
 	 * Creates a new Jira project
 	 * 
-	 * @param projectName the name of the new project
-	 * @param projectKey the project's key
-	 * @param user the ApplicationUser that holds the project (lead of the
+	 * @param projectName
+	 *            the name of the new project
+	 * @param projectKey
+	 *            the project's key
+	 * @param user
+	 *            the ApplicationUser that holds the project (lead of the
 	 *            project)
 	 * 
 	 * @return returns the created project object
@@ -170,8 +173,10 @@ public class JiraManagerInitializer {
 	 * Initializes the issue types, issue type scheme and maps them to a project
 	 *
 	 * @author abar
-	 * @param projectKey the project's key to add the issue type and scheme to
-	 * @param issueTypeName the name of the issue type to create
+	 * @param projectKey
+	 *            the project's key to add the issue type and scheme to
+	 * @param issueTypeName
+	 *            the name of the issue type to create
 	 */
 	public void initIssueManagement(final String projectKey, final String issueTypeName, final String workflowID)
 			throws CreateException {
@@ -270,11 +275,13 @@ public class JiraManagerInitializer {
 	}
 
 	/**
-	 * Initializes the Look&Feel.
+	 * Create a generic application link to allow an incomming 0-legged oauth 1
+	 * connection. The configuration can be done in
+	 * {resources/OAuthWorkflowService.properties}
 	 */
 
-	private void createAppLinks() throws ManifestNotFoundException, NoSuchAlgorithmException,
-			InvalidKeySpecException, InstantiationException, IllegalAccessException, TypeNotInstalledException {
+	private void createAppLinks() throws ManifestNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException,
+			InstantiationException, IllegalAccessException, TypeNotInstalledException {
 		final String TD_APPLICATION_LINK_URL = "pubflow.application.link.url";
 		final String TD_APPLICATION_LINK_NAME = "pubflow.application.link.name";
 		final String TD_CONSUMER_KEY = "pubflow.consumer.key";
@@ -300,18 +307,23 @@ public class JiraManagerInitializer {
 			final String consumerPublicKey = i18nResolver.getText(TD_CONSUMER_PUBLIC_KEY);
 
 			final PublicKey publicKey = RSAKeys.fromPemEncodingToPublicKey(consumerPublicKey);
-			final Consumer consumer = 
-					Consumer.key(consumerKey)
-					.name(consumerName).publicKey(publicKey).twoLOAllowed(true)
-					.twoLOImpersonationAllowed(true).executingTwoLOUser("PubFlow")
+			final Consumer consumer = Consumer.key(consumerKey).name(consumerName).publicKey(publicKey)
+					.twoLOAllowed(true).twoLOImpersonationAllowed(true).executingTwoLOUser("PubFlow")
 					.signatureMethod(SignatureMethod.RSA_SHA1).build();
-			
+
 			serviceProviderConsumerStore.put(consumer);
 			appLink.putProperty("oauth.incoming.consumerkey", consumer.getKey());
 		}
 
 	}
 
+	/**
+	 * Due to a bug in the Jira api, it is not possible to access the
+	 * GenericApplicationType directly. Thus, this function iterates through all
+	 * application types and returns the generic application type.
+	 * 
+	 * @return
+	 */
 	private ApplicationType findGenericApplicationType() {
 		// need GenericApplicationType but can not to use
 		// typeAccessor.getApplicationType(GenericApplicationType.class) because
@@ -531,9 +543,12 @@ public class JiraManagerInitializer {
 	/**
 	 * Create a new workflow in PubFlow
 	 * 
-	 * @param workflow an abstract workflow
-	 * @param project the project the workflow to add the workflow to
-	 * @param user a user with the permission to create a workflow
+	 * @param workflow
+	 *            an abstract workflow
+	 * @param project
+	 *            the project the workflow to add the workflow to
+	 * @param user
+	 *            a user with the permission to create a workflow
 	 * 
 	 * @throws Exception
 	 */
@@ -567,7 +582,6 @@ public class JiraManagerInitializer {
 			e.printStackTrace();
 		}
 
-
 		final List<CustomFieldDefinition> customFields = workflow.getCustomFields();
 		final List<Long> customFieldIds = JiraObjectCreator.createCustomFields(customFields, project, workflowName);
 
@@ -590,9 +604,12 @@ public class JiraManagerInitializer {
 	 * Gathers the steps defined in the Workflow XML files and maps the id's of
 	 * the status accordingly
 	 * 
-	 * @param projectKey the project's key of to add a workflow to
-	 * @param workflow the workflow to be mapped to the project
-	 * @param user a user with the permission to map a workflow to a project
+	 * @param projectKey
+	 *            the project's key of to add a workflow to
+	 * @param workflow
+	 *            the workflow to be mapped to the project
+	 * @param user
+	 *            a user with the permission to map a workflow to a project
 	 * @param workflowXMLString
 	 *            the XML that defines the workflow
 	 */
@@ -659,10 +676,11 @@ public class JiraManagerInitializer {
 	 * Creates the fieldscreen to create, edit and delete a workflow. This
 	 * fieldscreens can take default mappings from Jira.
 	 * 
-	 * @param workflow the workflow to add the fieldscreens to
+	 * @param workflow
+	 *            the workflow to add the fieldscreens to
 	 * 
-	 * @return FieldScreenScheme with the fieldscreens to create, edit and
-	 *         view an issue for a workflow
+	 * @return FieldScreenScheme with the fieldscreens to create, edit and view
+	 *         an issue for a workflow
 	 * 
 	 * @throws Exception
 	 */

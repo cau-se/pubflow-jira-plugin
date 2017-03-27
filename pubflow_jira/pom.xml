@@ -33,10 +33,10 @@
 		</repository>
 	</repositories>
 
-    <properties>
-    	<applinks.version>5.2.4</applinks.version>
-    </properties>
-    
+	<properties>
+		<applinks.version>5.2.4</applinks.version>
+	</properties>
+
 	<developers>
 		<developer>
 			<id>mad</id>
@@ -208,56 +208,60 @@
 		<dependency>
 			<groupId>com.fasterxml.woodstox</groupId>
 			<artifactId>woodstox-core</artifactId>
-			<version>5.0.3</version>
+			<version>5.0.2</version>
 		</dependency>
 
-
-
-
+		<!-- https://mvnrepository.com/artifact/org.codehaus.woodstox/stax2-api -->
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>stax2-api</artifactId>
+			<version>4.0.0</version>
+			<scope>compile</scope>
+		</dependency>
 		
-		       <!--  Applinks -->
-                <dependency>
-            <groupId>com.atlassian.applinks</groupId>
-            <artifactId>applinks-api</artifactId>
-            <version>${applinks.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.applinks</groupId>
-            <artifactId>applinks-spi</artifactId>
-            <version>${applinks.version}</version>
-            <scope>provided</scope>
-        </dependency>
-                <dependency>
-            <groupId>com.atlassian.applinks</groupId>
-            <artifactId>applinks-host</artifactId>
-            <version>${applinks.version}</version>
-            <scope>provided</scope>
-        </dependency>
-                        <dependency>
-            <groupId>com.atlassian.applinks</groupId>
-            <artifactId>applinks-plugin</artifactId>
-            <version>${applinks.version}</version>
-            <scope>provided</scope>
-        </dependency> 
-        <dependency>
-            <groupId>com.atlassian.oauth</groupId>
-            <artifactId>atlassian-oauth-api</artifactId>
-            <version>2.0.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.oauth</groupId>
-            <artifactId>atlassian-oauth-service-provider-spi</artifactId>
-            <version>2.0.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.plugins</groupId>
-            <artifactId>atlassian-plugins-osgi-bridge</artifactId>
-            <version>4.1.0</version>
-            <scope>provided</scope>
-        </dependency>        
+		<!-- Applinks -->
+		<dependency>
+			<groupId>com.atlassian.applinks</groupId>
+			<artifactId>applinks-api</artifactId>
+			<version>${applinks.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.applinks</groupId>
+			<artifactId>applinks-spi</artifactId>
+			<version>${applinks.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.applinks</groupId>
+			<artifactId>applinks-host</artifactId>
+			<version>${applinks.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.applinks</groupId>
+			<artifactId>applinks-plugin</artifactId>
+			<version>${applinks.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.oauth</groupId>
+			<artifactId>atlassian-oauth-api</artifactId>
+			<version>2.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.oauth</groupId>
+			<artifactId>atlassian-oauth-service-provider-spi</artifactId>
+			<version>2.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.plugins</groupId>
+			<artifactId>atlassian-plugins-osgi-bridge</artifactId>
+			<version>4.1.0</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
