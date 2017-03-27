@@ -7,9 +7,9 @@
 		<version>${project.version}</version>
 		<vendor name="${project.organization.name}" url="${project.organization.url}" />
 	</plugin-info>
-	
-	<resource type="i18n" name="i18nOAuth" location="OAuthWorkflowService"/>
-	
+
+	<resource type="i18n" name="i18nOAuth" location="OAuthWorkflowService" />
+
 	<!-- Components whose declarations are different when using the compat library -->
 	<component key="jiraManagerPluginJobRunner" class="de.pubflow.jira.JiraManagerPluginJobRunner">
 		<description>The job runner for processing scheduled tasks
@@ -59,22 +59,24 @@
 	<!-- AppLinks Imports -->
 	<component-import key="authenticationConfigurationManager"
 		interface="com.atlassian.applinks.spi.auth.AuthenticationConfigurationManager" />
-		
+
 	<component-import key="manifestRetriever"
 		interface="com.atlassian.applinks.spi.manifest.ManifestRetriever" />
- 	
- 	<component-import key="applicationLinkService"
-                      interface="com.atlassian.applinks.spi.link.MutatingApplicationLinkService"/>
 
-    <component-import key="typeAccessor" interface="com.atlassian.applinks.spi.util.TypeAccessor"/>
-                 
-    <component-import key="serviceProviderConsumerStore" interface="com.atlassian.oauth.serviceprovider.ServiceProviderConsumerStore"/>
-	
+	<component-import key="applicationLinkService"
+		interface="com.atlassian.applinks.spi.link.MutatingApplicationLinkService" />
+
+	<component-import key="typeAccessor"
+		interface="com.atlassian.applinks.spi.util.TypeAccessor" />
+
+	<component-import key="serviceProviderConsumerStore"
+		interface="com.atlassian.oauth.serviceprovider.ServiceProviderConsumerStore" />
+
 	<workflow-validator key="attachmentvalidator" name="Attachment Validator">
 		<validator-class>de.pubflow.jira.misc.IssueAttachmentValidator
 		</validator-class>
 	</workflow-validator>
-	
+
 	<component key="wstxInputFactory" class="com.ctc.wstx.stax.WstxInputFactory" />
 
 	<resource type="i18n" name="i18n"

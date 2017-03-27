@@ -36,7 +36,6 @@ import de.pubflow.server.core.workflow.WorkflowBroker;
 
 /**
  * 
- * @author alexanderbarbie
  *
  */
 @Path(JiraRestConnector.BASEPATH)
